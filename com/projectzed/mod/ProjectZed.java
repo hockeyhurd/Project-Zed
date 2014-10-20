@@ -3,6 +3,7 @@ package com.projectzed.mod;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.mod.proxy.CommonProxy;
+import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.Mod;
@@ -68,6 +69,7 @@ public class ProjectZed {
 		lh.info("Init started");
 		
 		loadObj();
+		BlockRegistry.instance().init(instance.getClass());
 		proxy.init();
 		proxy.registerRenderInformation();
 		
