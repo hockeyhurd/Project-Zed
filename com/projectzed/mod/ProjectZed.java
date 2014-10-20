@@ -1,7 +1,13 @@
 package com.projectzed.mod;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
+import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.util.Reference;
@@ -32,6 +38,12 @@ public class ProjectZed {
 	public static LogHelper lh;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
 	public static final String modID = Reference.MOD_NAME;
+	
+	// Creative Tabs:
+	public static CreativeTabs modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
+	
+	// Blocks:
+	public static Block solarArray;
 	
 	/**
 	 * Default constructor.
@@ -95,6 +107,7 @@ public class ProjectZed {
 	 * Method used to instantiate objects: blocks, items, etc.
 	 */
 	private void loadObj() {
+		solarArray = new BlockSolarArray(Material.rock);
 	}
 
 }

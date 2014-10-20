@@ -2,12 +2,15 @@ package com.projectzed.mod.proxy;
 
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
-import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.util.Reference;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Common proxy for both client and server.
@@ -37,8 +40,15 @@ public class CommonProxy {
 	 * Method used for init everything: blocks, items, handlers, etc.
 	 */
 	public void init() {
+		registerBlocks();
 	}
 	
+	private void registerBlocks() {
+		for (Block b : BlockRegistry.instance().getBlocks()) {
+			if (b != null) GameRegistry.registerBlock(b, b.getUnlocalizedName());
+		}
+	}
+
 	public void registerUpdateHandler() {
 		updateHandler = new UpdateHandler(Reference.class);
 		updateHandler.check();
