@@ -59,5 +59,24 @@ public class BlockRegistry {
 	public List<Block> getBlocks() {
 		return blocks;
 	}
+	
+	/**
+	 * Gets the block by name specified.
+	 * @param name = name of block to find.
+	 * @return block if found, else null.
+	 */
+	public Block getBlockByName(String name) {
+		Block block = null;
+		if (reg == null || reg.blocks == null || reg.blocks.size() == 0) return null; // if null or no objects, return null.
+		
+		for (Block b : reg.blocks) {
+			if (b.getUnlocalizedName().equals(name)) { // if found, exit loop.
+				block = b;
+				break;
+			}
+		}
+		
+		return block;
+	}
 
 }

@@ -58,5 +58,24 @@ public class ItemRegistry {
 	public List<Item> getItems() {
 		return items;
 	}
+	
+	/**
+	 * Gets the item by name specified.
+	 * @param name = name of item to find.
+	 * @return item if found, else null.
+	 */
+	public Item getItemByName(String name) {
+		Item item = null;
+		if (reg == null || reg.items == null || reg.items.size() == 0) return null; // if null or no objects, return null.
+		
+		for (Item i : reg.items) {
+			if (i.getUnlocalizedName().equals(name)) { // if found, exit loop.
+				item = i;
+				break;
+			}
+		}
+		
+		return item;
+	}
 
 }

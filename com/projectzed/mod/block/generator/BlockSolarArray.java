@@ -25,7 +25,7 @@ public class BlockSolarArray extends Block {
 	 */
 	public BlockSolarArray(Material material) {
 		super(material);
-		this.setBlockName("SolarArray");
+		this.setBlockName("solarArray");
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 	}
