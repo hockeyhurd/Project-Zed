@@ -10,6 +10,7 @@ import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.Mod;
@@ -82,6 +83,7 @@ public class ProjectZed {
 		
 		loadObj();
 		BlockRegistry.instance().init(instance.getClass());
+		ItemRegistry.instance().init(instance.getClass());
 		proxy.init();
 		proxy.registerRenderInformation();
 		

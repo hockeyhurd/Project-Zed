@@ -3,11 +3,13 @@ package com.projectzed.mod.proxy;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -41,11 +43,18 @@ public class CommonProxy {
 	 */
 	public void init() {
 		registerBlocks();
+		registerItems();
 	}
-	
+
 	private void registerBlocks() {
 		for (Block b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) GameRegistry.registerBlock(b, b.getUnlocalizedName());
+		}
+	}
+	
+	private void registerItems() {
+		for (Item i : ItemRegistry.instance().getItems()) {
+			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
 		}
 	}
 
