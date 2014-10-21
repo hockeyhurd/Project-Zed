@@ -1,15 +1,19 @@
 package com.projectzed.mod.proxy;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
+import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -44,6 +48,7 @@ public class CommonProxy {
 	public void init() {
 		registerBlocks();
 		registerItems();
+		registerTileEntities();
 	}
 
 	private void registerBlocks() {
@@ -55,6 +60,14 @@ public class CommonProxy {
 	private void registerItems() {
 		for (Item i : ItemRegistry.instance().getItems()) {
 			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
+		}
+	}
+	
+	private void registerTileEntities() {
+		Iterator iter = TileEntityRegistry.instance().getMapping().entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<Class<? extends TileEntity>, String> entry = (Entry<Class<? extends TileEntity>, String>) iter.next();
+			if (entry.getKey() != null && entry.getValue() != null) GameRegistry.registerTileEntity(entry.getKey(), entry.getValue());
 		}
 	}
 
