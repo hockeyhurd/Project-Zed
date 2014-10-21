@@ -12,7 +12,7 @@ import com.projectzed.api.storage.IEnergyContainer;
 public interface IEnergyGeneration extends IEnergyContainer {
 
 	/** Method used to define source of power. */
-	public void defineSource(Source source);
+	public void defineSource();
 	
 	/** Getter function for getting the source of power defined. */
 	public Source getSource();

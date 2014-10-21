@@ -1,5 +1,6 @@
 package com.projectzed.api.tileentity;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,6 +60,50 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public ItemStack getStackInSlot(int slot) {
 		return this.invContents[slot];
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#decrStackSize(int, int)
+	 */
+	public ItemStack decrStackSize(int par1, int par2) {
+		if (this.invContents[par1] != null) {
+			ItemStack itemstack;
+
+			if (this.invContents[par1].stackSize <= par2) {
+				itemstack = this.invContents[par1];
+				this.invContents[par1] = null;
+				return itemstack;
+			}
+			else {
+				itemstack = this.invContents[par1].splitStack(par2);
+
+				if (this.invContents[par1].stackSize == 0) this.invContents[par1] = null;
+				return itemstack;
+			}
+		}
+		else return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#getStackInSlotOnClosing(int)
+	 */
+	public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#setInventorySlotContents(int, net.minecraft.item.ItemStack)
+	 */
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		this.invContents[slot] = stack;
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#isUseableByPlayer(net.minecraft.entity.player.EntityPlayer)
+	 */
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return true;
 	}
 	
 	/**

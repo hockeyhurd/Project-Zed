@@ -8,7 +8,7 @@ package com.projectzed.api.source;
  */
 public enum EnumType {
 
-	SUN("Sun", 10), BURNABLE("Burnable", 20), LAVA("Lava", 50), WATER("Water", 5), OTHER("Other", 1);
+	SOLAR("Sun", 10), BURNABLE("Burnable", 20), LAVA("Lava", 50), WATER("Water", 5), OTHER("Other", 1);
 	
 	private String name;
 	private int size;

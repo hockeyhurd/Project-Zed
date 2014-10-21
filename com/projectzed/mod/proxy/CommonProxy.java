@@ -11,11 +11,14 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.GuiHandler;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
@@ -29,6 +32,7 @@ public class CommonProxy {
 	protected UpdateHandler updateHandler;
 	protected HashMap<Short, String> map;
 	public boolean updateFlag = false;
+	protected GuiHandler guiHandler;
 	
 	/**
 	 * Default Constructor
@@ -49,6 +53,7 @@ public class CommonProxy {
 		registerBlocks();
 		registerItems();
 		registerTileEntities();
+		registerGuiHandler();
 	}
 
 	private void registerBlocks() {
@@ -68,6 +73,14 @@ public class CommonProxy {
 		while (iter.hasNext()) {
 			Entry<Class<? extends TileEntity>, String> entry = (Entry<Class<? extends TileEntity>, String>) iter.next();
 			if (entry.getKey() != null && entry.getValue() != null) GameRegistry.registerTileEntity(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	private void registerGuiHandler() {
+		if (guiHandler != null) NetworkRegistry.INSTANCE.registerGuiHandler(ProjectZed.instance, guiHandler);
+		else {
+			guiHandler = new GuiHandler();
+			NetworkRegistry.INSTANCE.registerGuiHandler(ProjectZed.instance, guiHandler);
 		}
 	}
 

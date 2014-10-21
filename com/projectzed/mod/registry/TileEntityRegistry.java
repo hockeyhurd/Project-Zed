@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -15,13 +17,17 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntityRegistry {
 
 	private HashMap<Class<? extends TileEntity>, String> map;
+	private HashMap<Class<? extends TileEntity>, Integer> idMap;
 	private static TileEntityRegistry reg = new TileEntityRegistry();
 	
 	private TileEntityRegistry() {
 		map = new HashMap<Class<? extends TileEntity>, String>();
+		idMap = new HashMap<Class<? extends TileEntity>, Integer>();
 	}
 	
 	public void init() {
+		reg.map.put(TileEntitySolarArray.class, "solarArrayTileEntity");
+		reg.idMap.put(TileEntitySolarArray.class, getNextID());
 	}
 	
 	/**
@@ -38,6 +44,31 @@ public class TileEntityRegistry {
 	 */
 	public HashMap<Class<? extends TileEntity>, String> getMapping() {
 		return reg.map;
+	}
+	
+	/**
+	 * Get the id mapping.
+	 * @return id mapping.
+	 */
+	public HashMap<Class<? extends TileEntity>, Integer> getIDMap() {
+		return reg.idMap;
+	}
+	
+	/**
+	 * Get the id by class.
+	 * @param theClass = class of te.
+	 * @return id for correct te.
+	 */
+	public int getID(Class<? extends TileEntity> theClass) {
+		return idMap.containsKey(theClass) ? idMap.get(theClass) : -1;
+	}
+	
+	/**
+	 * Gets the next id
+	 * @return id.
+	 */
+	private static int getNextID() {
+		return reg.idMap.size() + 1;
 	}
 
 }
