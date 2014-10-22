@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
  */
 public abstract class AbstractTileEntityGeneric extends TileEntity implements ISidedInventory {
 
-	protected static int[] slots;
+	protected int[] slots;
 	
 	/**
 	 * Include only slots in the UI and specifically not the player's inventory.
@@ -120,7 +120,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
-		NBTTagList tagList = comp.getTagList("Items", 10);
+		/*NBTTagList tagList = comp.getTagList("Items", 10);
 		this.invContents = new ItemStack[this.getSizeInvenotry()];
 		
 		for (int i = 0; i < tagList.tagCount(); i++) {
@@ -128,7 +128,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 			byte b0 = temp.getByte("Slot");
 			
 			if (b0 >= 0 && b0 < this.invContents.length) this.invContents[b0] = ItemStack.loadItemStackFromNBT(temp);
-		}
+		}*/
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
-		NBTTagList tagList = new NBTTagList();
+		/*NBTTagList tagList = new NBTTagList();
 		
 		for (int i = 0; i < this.invContents.length; i++) {
 			if (this.invContents[i] != null) {
@@ -146,7 +146,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 				this.invContents[i].writeToNBT(compound);
 				tagList.appendTag(compound);
 			}
-		}
+		}*/
 	}
 	
 	/**

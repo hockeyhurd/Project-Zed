@@ -19,6 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerGenerator extends Container {
 
 	private AbstractTileEntityGenerator te;
+	private int stored;
 
 	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		this.te = te;
@@ -52,6 +53,11 @@ public class ContainerGenerator extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
+	}
+	
+	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
+		this.stored = this.te.getEnergyStored();
 	}
 	
 	@SideOnly(Side.CLIENT)

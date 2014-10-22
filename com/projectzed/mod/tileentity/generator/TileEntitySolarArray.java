@@ -1,6 +1,7 @@
 package com.projectzed.mod.tileentity.generator;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;

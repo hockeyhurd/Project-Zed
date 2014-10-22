@@ -32,7 +32,7 @@ public class CommonProxy {
 	protected UpdateHandler updateHandler;
 	protected HashMap<Short, String> map;
 	public boolean updateFlag = false;
-	protected GuiHandler guiHandler;
+	protected static GuiHandler guiHandler;
 	
 	/**
 	 * Default Constructor

@@ -1,12 +1,10 @@
 package com.projectzed.mod.registry;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
 import net.minecraft.tileentity.TileEntity;
+
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
 /**
  * Class container for all registered tile enties in this mod.

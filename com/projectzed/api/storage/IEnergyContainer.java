@@ -8,8 +8,11 @@ package com.projectzed.api.storage;
  */
 public interface IEnergyContainer {
 	
-	/** Max allowed capactiy */
+	/** Max allowed capacity */
 	public void setMaxStorage(int max);
+	
+	/** Get the max capacity */
+	public int getMaxStorage();
 	
 	/** Set the amount of energy stored. */
 	public void setEnergyStored(int amount);

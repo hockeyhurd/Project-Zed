@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Generic class for gui's of generators.
@@ -21,29 +21,33 @@ public class GuiGenerator extends GuiContainer {
 
 	public final ResourceLocation texture;
 	private AbstractTileEntityGenerator te;
-	public int storedEnergy;
-	
-	public GuiGenerator(InventoryPlayer inv, TileEntitySolarArray te) {
+
+	public GuiGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		super(new ContainerGenerator(inv, te));
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic.png");
-		
+
 		this.te = te;
 		this.xSize = 176;
 		this.ySize = 166;
 	}
-	
+
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
-		
+
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
-		this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+
+		this.fontRendererObj.drawString(I18n.format("Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage(), new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth("Power: " + this.te.getEnergyStored() + " / " + this.te.getMaxStorage()) / 2, this.ySize - 116,
+				4210752);
 	}
 
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-		// int i1 = this.te.getCookProgressScaled(24);
-        // this.drawTexturedModalRect(guiLeft + 79, guiTop + 34, 176, 14, i1 + 1, 16);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+
+		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 	}
 
 }

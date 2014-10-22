@@ -1,5 +1,9 @@
 package com.projectzed.mod.block.generator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -81,9 +85,16 @@ public class BlockSolarArray extends BlockContainer {
 		
 		else {
 			TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
+			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
 			return true;
 		}
+	}
+	
+	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
+		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
+		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
+		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
 	}
 
 }

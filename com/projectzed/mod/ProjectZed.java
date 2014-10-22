@@ -37,7 +37,7 @@ public class ProjectZed {
 	@Instance(Reference.MOD_NAME)
 	public static ProjectZed instance;
 	
-	public static LogHelper lh;
+	public static LogHelper logHelper;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
 	public static final String modID = Reference.MOD_NAME;
 	
@@ -56,7 +56,7 @@ public class ProjectZed {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		TimeLapse tl = new TimeLapse();
-		lh = new LogHelper(Reference.class);
+		logHelper = new LogHelper(Reference.class);
 		
 		/* lh.info("Pre-init started, looking for config info!");
 		configHandler = new ConfigHandler(event, Reference.class);
@@ -74,13 +74,13 @@ public class ProjectZed {
 		}
 		while (iter.hasNext());*/
 		
-		lh.info("Pre-init finished succesfully after", tl.getEffectiveTimeSince(), "ms!");
+		logHelper.info("Pre-init finished succesfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		TimeLapse tl = new TimeLapse();
-		lh.info("Init started");
+		logHelper.info("Init started");
 		
 		loadObj();
 		BlockRegistry.instance().init(instance.getClass());
@@ -89,13 +89,13 @@ public class ProjectZed {
 		proxy.init();
 		proxy.registerRenderInformation();
 		
-		lh.info("Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
+		logHelper.info("Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		TimeLapse tl = new TimeLapse();
-		lh.info("Post-Init started");
+		logHelper.info("Post-Init started");
 		
 		/*if (configHandler.allowUpdating()) {
 			proxy.registerUpdateHandler();
@@ -104,7 +104,7 @@ public class ProjectZed {
 		}
 		else lh.warn("Skipping checking for updates. WARNING: bugs may exist!");*/
 		
-		lh.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
+		logHelper.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
 	
 	/**
