@@ -1,11 +1,14 @@
 package com.projectzed.mod.tileentity.generator;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.handler.MessageTileEntityGenerator;
+import com.projectzed.mod.handler.PacketHandler;
 
 /**
  * Class used for creating a new tile entity in the form of a solar array.
@@ -51,6 +54,14 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 
 	public void defineSource() {
 		this.source = new Source(EnumType.SOLAR);
+	}
+
+	public void updateEntity() {
+		if (this.worldObj != null && !worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0L) {
+			this.powerMode = worldObj.isDaytime();
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+		}
+		super.updateEntity();
 	}
 
 }

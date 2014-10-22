@@ -2,11 +2,14 @@ package com.projectzed.api.tileentity.generator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 
 import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.MessageTileEntityGenerator;
+import com.projectzed.mod.handler.PacketHandler;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod. 
@@ -19,6 +22,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	protected int maxStored = 10000;
 	protected int stored;
 	protected Source source;
+	protected boolean powerMode = false;
 	
 	/**
 	 * Default constructor.
@@ -129,7 +133,23 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
 	public void generatePower() {
-		if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.generation.IEnergyGeneration#canProducePower()
+	 */
+	public boolean canProducePower() {
+		return this.powerMode;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.generation.IEnergyGeneration#setPowerMode(boolean)
+	 */
+	public void setPowerMode(boolean state) {
+		this.powerMode = state;
 	}
 	
 	/*
@@ -147,7 +167,8 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 */
 	public void readFromNBT(NBTTagCompound comp) { 
 		super.readFromNBT(comp);
-		int size = comp.getInteger("ZedPower");
+		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
+		int size = comp.getInteger("ProjectZedPowerStored");
 		this.stored =  size >= 0 && size <= this.maxStored ? size : 0;
 	}
 	
@@ -157,7 +178,13 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 */
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
-		comp.setInteger("ZedPower", this.stored);
+		comp.setInteger("ProjectZedPowerStored", this.stored);
+		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+	}
+	
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityGenerator(this));
 	}
 
 }

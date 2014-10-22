@@ -20,6 +20,7 @@ public class ContainerGenerator extends Container {
 
 	private AbstractTileEntityGenerator te;
 	private int stored;
+	private boolean powerMode;
 
 	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		this.te = te;
@@ -56,13 +57,23 @@ public class ContainerGenerator extends Container {
 	}
 	
 	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
 		this.stored = this.te.getEnergyStored();
+		this.powerMode = this.te.canProducePower();
+		super.detectAndSendChanges();
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int newVal) {
+	public void updateProgressBar(int newVal, boolean mode) {
 		this.te.setEnergyStored(newVal);
+		this.te.setPowerMode(mode);
+	}
+	
+	/**
+	 * Gets the TE instance.
+	 * @return te object.
+	 */
+	public AbstractTileEntityGenerator getTE() {
+		return this.te;
 	}
 
 }

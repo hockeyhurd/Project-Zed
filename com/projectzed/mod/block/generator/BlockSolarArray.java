@@ -1,8 +1,5 @@
 package com.projectzed.mod.block.generator;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -32,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockSolarArray extends BlockContainer {
 
 	private IIcon top, base;
-	
+
 	/**
 	 * @param material = material of block
 	 */
@@ -42,23 +39,23 @@ public class BlockSolarArray extends BlockContainer {
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "solar_side");
 		this.top = reg.registerIcon(ProjectZed.assetDir + "solar_top");
 		this.base = reg.registerIcon(ProjectZed.assetDir + "solar_base");
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int metadata) {
-		return side == 1 ? this.top : (side  == 0 ? this.base : this.blockIcon);
+		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
 	}
 
 	public TileEntity createNewTileEntity(World world, int id) {
 		return new TileEntitySolarArray();
 	}
-	
+
 	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
 		int metaData = world.getBlockMetadata(x, y, z);
 		TileEntity tileentity = world.getTileEntity(x, y, z);
@@ -70,6 +67,7 @@ public class BlockSolarArray extends BlockContainer {
 			world.setTileEntity(x, y, z, tileentity);
 		}
 	}
+
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
@@ -79,18 +77,19 @@ public class BlockSolarArray extends BlockContainer {
 		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
-	
+
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
-		
+
 		else {
 			TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
+			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
+			// world, x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
 			return true;
 		}
 	}
-	
+
 	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
 		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());

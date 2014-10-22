@@ -20,4 +20,10 @@ public interface IEnergyGeneration extends IEnergyContainer {
 	/** Method used for power generation */
 	public void generatePower();
 	
+	/** Function returning whether this machine can currently produce power. */
+	public boolean canProducePower();
+	
+	/** Method used to set whether this generator can currently produce its power. */
+	public void setPowerMode(boolean state);
+	
 }

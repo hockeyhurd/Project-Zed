@@ -12,6 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.GuiHandler;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -50,10 +51,15 @@ public class CommonProxy {
 	 * Method used for init everything: blocks, items, handlers, etc.
 	 */
 	public void init() {
+		registerEventHandlers();
 		registerBlocks();
 		registerItems();
 		registerTileEntities();
 		registerGuiHandler();
+	}
+
+	private void registerEventHandlers() {
+		PacketHandler.init();
 	}
 
 	private void registerBlocks() {
