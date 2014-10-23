@@ -1,5 +1,7 @@
 package com.projectzed.mod.handler;
 
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -19,6 +21,7 @@ public class PacketHandler {
 	
 	public static void init() {
 		INSTANCE.registerMessage(MessageTileEntityGenerator.class, MessageTileEntityGenerator.class, 0, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, 1, Side.CLIENT);
 	}
 	
 }

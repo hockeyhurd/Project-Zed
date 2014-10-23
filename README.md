@@ -1,4 +1,4 @@
 Project-Zed
 ===========
 
-Mineraft tech mod for 1.7.10
+Minecraft tech mod for 1.7.10

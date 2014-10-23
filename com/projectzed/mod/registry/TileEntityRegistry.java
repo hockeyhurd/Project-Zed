@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 
 /**
  * Class container for all registered tile enties in this mod.
@@ -26,6 +27,9 @@ public class TileEntityRegistry {
 	public void init() {
 		reg.map.put(TileEntitySolarArray.class, "solarArrayTileEntity");
 		reg.idMap.put(TileEntitySolarArray.class, getNextID());
+		
+		reg.map.put(TileEntityIndustrialFurnace.class, "industrialFurnaceTileEntity");
+		reg.idMap.put(TileEntityIndustrialFurnace.class, getNextID());
 	}
 	
 	/**

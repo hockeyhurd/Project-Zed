@@ -1,10 +1,9 @@
-package com.projectzed.mod.handler;
+package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.ProjectZed;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -12,28 +11,27 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 /**
- * TileEntity message handler for packets.
  * 
  * @author hockeyhurd
- * @version Oct 22, 2014
+ * @version Oct 23, 2014
  */
-public class MessageTileEntityGenerator implements IMessage, IMessageHandler<MessageTileEntityGenerator, IMessage> {
+public class MessageTileEntityMachine implements IMessage, IMessageHandler<MessageTileEntityMachine, IMessage> {
 
-	public AbstractTileEntityGenerator te;
+	public AbstractTileEntityMachine te;
 	public int x, y, z;
 	public int stored;
 	public boolean powerMode;
 	
-	public MessageTileEntityGenerator() {
+	public MessageTileEntityMachine() {
 	}
 	
-	public MessageTileEntityGenerator(AbstractTileEntityGenerator te) {
+	public MessageTileEntityMachine(AbstractTileEntityMachine te) {
 		this.te = te;
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
-		this.powerMode = te.canProducePower();
+		this.powerMode = te.isPoweredOn();
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -52,14 +50,15 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeBoolean(powerMode);
 	}
 
-	public IMessage onMessage(MessageTileEntityGenerator message, MessageContext ctx) {
+	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
-		if (te instanceof AbstractTileEntityGenerator) {
-			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
-			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);
+		if (te instanceof AbstractTileEntityMachine) {
+			((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
+			((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
 		}
 		
 		return null;
 	}
+
 }

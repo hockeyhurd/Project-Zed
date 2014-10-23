@@ -1,4 +1,4 @@
-package com.projectzed.mod.gui;
+package com.projectzed.mod.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

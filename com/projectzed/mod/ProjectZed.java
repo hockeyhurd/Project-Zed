@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
@@ -44,8 +45,9 @@ public class ProjectZed {
 	// Creative Tabs:
 	public static CreativeTabs modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
 	
-	// Blocks:
+	// Blocks: 
 	public static Block solarArray;
+	public static Block industrialFurnace;
 	
 	/**
 	 * Default constructor.
@@ -112,6 +114,7 @@ public class ProjectZed {
 	 */
 	private void loadObj() {
 		solarArray = new BlockSolarArray(Material.rock);
+		industrialFurnace = new BlockIndustrialFurnace();
 	}
 
 }

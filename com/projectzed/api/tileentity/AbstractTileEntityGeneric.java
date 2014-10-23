@@ -14,13 +14,11 @@ import net.minecraft.tileentity.TileEntity;
  * @version Oct 21, 2014
  */
 public abstract class AbstractTileEntityGeneric extends TileEntity implements ISidedInventory {
-
-	protected int[] slots;
 	
 	/**
 	 * Include only slots in the UI and specifically not the player's inventory.
 	 */
-	protected ItemStack[] invContents;
+	protected ItemStack[] slots;
 	protected String customName;
 	
 	public AbstractTileEntityGeneric() {
@@ -50,7 +48,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @return inventory size as integer.
 	 */
 	public int getSizeInvenotry() {
-		return this.invContents.length;
+		return this.slots.length;
 	}
 	
 	/**
@@ -59,25 +57,25 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @return itemstack in slot.
 	 */
 	public ItemStack getStackInSlot(int slot) {
-		return this.invContents[slot];
+		return this.slots[slot];
 	}
 	
 	/* (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#decrStackSize(int, int)
 	 */
 	public ItemStack decrStackSize(int par1, int par2) {
-		if (this.invContents[par1] != null) {
+		if (this.slots[par1] != null) {
 			ItemStack itemstack;
 
-			if (this.invContents[par1].stackSize <= par2) {
-				itemstack = this.invContents[par1];
-				this.invContents[par1] = null;
+			if (this.slots[par1].stackSize <= par2) {
+				itemstack = this.slots[par1];
+				this.slots[par1] = null;
 				return itemstack;
 			}
 			else {
-				itemstack = this.invContents[par1].splitStack(par2);
+				itemstack = this.slots[par1].splitStack(par2);
 
-				if (this.invContents[par1].stackSize == 0) this.invContents[par1] = null;
+				if (this.slots[par1].stackSize == 0) this.slots[par1] = null;
 				return itemstack;
 			}
 		}
@@ -95,7 +93,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @see net.minecraft.inventory.IInventory#setInventorySlotContents(int, net.minecraft.item.ItemStack)
 	 */
 	public void setInventorySlotContents(int slot, ItemStack stack) {
-		this.invContents[slot] = stack;
+		this.slots[slot] = stack;
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
 	}
 	

@@ -8,23 +8,23 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.container.ContainerGenerator;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.container.ContainerMachine;
 
 /**
- * Generic class for gui's of generators.
  * 
  * @author hockeyhurd
- * @version Oct 21, 2014
+ * @version Oct 23, 2014
  */
-public class GuiGenerator extends GuiContainer {
+public class GuiMachine extends GuiContainer {
 
 	public final ResourceLocation texture;
-	private AbstractTileEntityGenerator te;
-
-	public GuiGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
-		super(new ContainerGenerator(inv, te));
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic.png");
+	private AbstractTileEntityMachine te;
+	
+	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
+		super(new ContainerMachine(inv, te));
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
 
 		this.te = te;
 		this.xSize = 176;
@@ -48,6 +48,14 @@ public class GuiGenerator extends GuiContainer {
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
+		
+		int i1 = 0;
+		if (this.te.isPoweredOn() && this.te.cookTime > 0) {
+            i1 = this.te.getCookProgressScaled(24);
+            ProjectZed.logHelper.info(i1);
+            this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
+		}
 	}
+
 
 }

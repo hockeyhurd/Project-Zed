@@ -5,10 +5,8 @@ import net.minecraft.item.ItemStack;
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.generator.BlockSolarArray;
-import com.projectzed.mod.handler.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
 /**
  * Class used for creating a new tile entity in the form of a solar array.

@@ -44,7 +44,7 @@ public class BlockSolarArray extends BlockContainer {
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "solar_side");
 		this.top = reg.registerIcon(ProjectZed.assetDir + "solar_top");
-		this.base = reg.registerIcon(ProjectZed.assetDir + "solar_base");
+		this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -7,9 +7,8 @@ import net.minecraft.network.Packet;
 import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod. 
@@ -19,7 +18,7 @@ import com.projectzed.mod.handler.PacketHandler;
  */
 public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGeneric implements IEnergyGeneration {
 
-	protected int maxStored = 10000;
+	protected int maxStored = 100000;
 	protected int stored;
 	protected Source source;
 	protected boolean powerMode = false;
@@ -183,7 +182,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	}
 	
 	@Override
-	public Packet getDescriptionPacket() {
+	public Packet getDescriptionPacket() { 
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityGenerator(this));
 	}
 
