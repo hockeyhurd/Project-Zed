@@ -26,4 +26,7 @@ public interface IEnergyGeneration extends IEnergyContainer {
 	/** Method used to set whether this generator can currently produce its power. */
 	public void setPowerMode(boolean state);
 	
+	/** Method used for dispersing power to all other nodes. */
+	public void transferPower();
+	
 }

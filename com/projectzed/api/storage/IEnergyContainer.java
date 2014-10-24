@@ -1,5 +1,6 @@
 package com.projectzed.api.storage;
 
+
 /**
  * Interface for an object (TileEntity, tool, etc.) that contains power.
  * 

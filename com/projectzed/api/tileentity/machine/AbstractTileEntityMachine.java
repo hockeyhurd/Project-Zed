@@ -9,6 +9,7 @@ import net.minecraft.network.Packet;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.machine.IEnergyMachine;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -132,7 +133,29 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		}
 	}
 	
+	// TODO: Fix this!
+	public void transferPower() {
+		
+		for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
+			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
+				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
+					
+					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityGenerator) {
+						AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) worldObj.getTileEntity(x, y, z);
+						if (te.getEnergyStored() > 0 && this.stored + 5 <= this.maxStorage) {
+							// ProjectZed.logHelper.info("Boobs! 2");
+							this.stored += 5; 
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
 	public void updateEntity() {
+		transferPower();
 		boolean flag = this.stored > 0;
 		boolean flag1 = false;
 

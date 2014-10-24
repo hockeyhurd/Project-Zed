@@ -52,7 +52,6 @@ public class GuiMachine extends GuiContainer {
 		int i1 = 0;
 		if (this.te.isPoweredOn() && this.te.cookTime > 0) {
             i1 = this.te.getCookProgressScaled(24);
-            ProjectZed.logHelper.info(i1);
             this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
 		}
 	}

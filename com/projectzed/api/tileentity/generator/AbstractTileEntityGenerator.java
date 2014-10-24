@@ -7,6 +7,8 @@ import net.minecraft.network.Packet;
 import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -132,7 +134,33 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
 	public void generatePower() {
-		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+		if (canProducePower() && this.stored < this.maxStored) this.stored += this.source.getEffectiveSize();
+		if (this.stored > this.maxStored) this.stored = this.maxStored;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
+	 */ // TODO: Fix this!
+	public void transferPower() {
+		
+		for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
+			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
+				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
+					
+					// System.err.println(x);
+					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityMachine) {
+						AbstractTileEntityMachine te = (AbstractTileEntityMachine) worldObj.getTileEntity(x, y, z);
+						if (te.getEnergyStored() + 5 <= te.getMaxStorage() && this.stored - 1 >= 0) {
+							// ProjectZed.logHelper.info("Boobs! 1");
+							this.stored -= 5; 
+							break;
+						}
+					}
+				}
+			}
+		}
+		
 	}
 	
 	/*
@@ -157,6 +185,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 */
 	public void updateEntity() {
 		generatePower();
+		transferPower();
 		super.updateEntity();
 	}
 	
