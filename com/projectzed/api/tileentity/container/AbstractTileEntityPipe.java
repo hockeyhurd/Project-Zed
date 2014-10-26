@@ -1,6 +1,7 @@
 package com.projectzed.api.tileentity.container;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * 
@@ -8,9 +9,13 @@ import net.minecraft.item.ItemStack;
  * @version Oct 25, 2014
  */
 public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer {
-
+	
+	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
+	public ForgeDirection[] connections;
+	
 	public AbstractTileEntityPipe(String name) {
 		super(name);
+		connections = new ForgeDirection[6];
 		this.maxStorage = 10;
 	}
 
@@ -73,6 +78,20 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 */
 	protected void transferContents() {
 		// TODO: make this work!
+	}
+	
+	/**
+	 * Method used to update connections.
+	 */
+	protected abstract void updateConnections();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
+	 */
+	public void updateEntity() {
+		updateConnections();
+		transferContents();
 	}
 
 }
