@@ -36,7 +36,7 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderInformation() {
 		energyPipe = RenderingRegistry.getNextAvailableRenderId();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipe.class, new EnergyPipeRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipe), new EnergyPipeItemRenderer());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipe), new EnergyPipeItemRenderer(ProjectZed.energyPipe.getBlockTextureFromSide(0)));
 	}
 
 }

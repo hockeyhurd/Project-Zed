@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Oct 25, 2014
  */
 public class BlockEnergyPipe extends AbstractBlockPipe {
-
+	
 	/**
 	 * @param material
 	 * @param name
@@ -30,7 +30,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy");
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item");
 	}
 
 	/* (non-Javadoc)
