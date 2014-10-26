@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
+import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
@@ -48,6 +49,7 @@ public class ProjectZed {
 	// Blocks: 
 	public static Block solarArray;
 	public static Block industrialFurnace;
+	public static Block energyPipe;
 	
 	/**
 	 * Default constructor.
@@ -115,6 +117,7 @@ public class ProjectZed {
 	private void loadObj() {
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
+		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe");
 	}
 
 }

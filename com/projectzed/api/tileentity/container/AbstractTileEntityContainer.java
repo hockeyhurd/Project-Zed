@@ -1,0 +1,169 @@
+package com.projectzed.api.tileentity.container;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+
+import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+
+/**
+ * Class containing generic abstractions for all containers.
+ * <br>NOTE: By container, this class assumes the te will be containing
+ * energy, <strike>liquids, etc</strike>; explicitly not to be confused with a chest like container.
+ * 
+ * @author hockeyhurd
+ * @version Oct 25, 2014
+ */
+public abstract class AbstractTileEntityContainer extends AbstractTileEntityGeneric implements IEnergyContainer {
+
+	protected int maxStorage = 100000;
+	protected int stored;
+	protected boolean powerMode;
+	
+	/**
+	 * Init class object through parameters.
+	 * @param name = name of te (its custom name).
+	 */
+	public AbstractTileEntityContainer(String name) {
+		super();
+		setCustomName("container." + name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
+	 */
+	public abstract int getSizeInventory();
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
+	 */
+	public abstract int getInventoryStackLimit();
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
+	 */
+	protected abstract void initContentsArray();
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
+	 */
+	protected abstract void initSlotsArray();
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
+	 */
+	public void setCustomName(String name) {
+		this.customName = name;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
+	 */
+	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
+	 */
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
+	 */
+	public abstract int[] getAccessibleSlotsFromSide(int side);
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
+	 */
+	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
+	 */
+	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#setMaxStorage(int)
+	 */
+	public void setMaxStorage(int max) {
+		this.maxStorage = max;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxStorage()
+	 */
+	public int getMaxStorage() {
+		return this.maxStorage;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#setEnergyStored(int)
+	 */
+	public void setEnergyStored(int amount) {
+		this.stored = amount;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#getEnergyStored()
+	 */
+	public int getEnergyStored() {
+		return this.stored;
+	}
+	
+	/**
+	 * Method to be defined controlling mechanism for transferring energy only (for now).
+	 */
+	protected abstract void transferContents(); 
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
+	 */
+	public void updateEntity() {
+		transferContents();
+		super.updateEntity();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void readFromNBT(NBTTagCompound comp) { 
+		super.readFromNBT(comp);
+		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
+		int size = comp.getInteger("ProjectZedPowerStored");
+		this.stored =  size >= 0 && size <= this.maxStorage ? size : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setInteger("ProjectZedPowerStored", this.stored);
+		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+	}
+	
+	// TODO: add description packet, applicable for most te's!
+	/*@Override
+	public Packet getDescriptionPacket() { 
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityGenerator(this));
+	}*/
+
+}
