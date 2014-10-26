@@ -15,6 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Class handling rendering information for generic energy pipe.
  * 
  * @author hockeyhurd
  * @version Oct 25, 2014
@@ -25,7 +26,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	private ResourceLocation texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy.png");
 	private final float PIXEL = 1f / 16f;
 	private final float TEXTURE_PIXEL = 1f / 32f;
-	private boolean renderInside = true;
+	private boolean renderInside = false;
 
 	private float calc = 11 * PIXEL / 2;
 
@@ -125,7 +126,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
 
-		// if (!zLeft) {
+		if (!zRight) {
 			// -Z
 			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -138,9 +139,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			}
-		// }
+		}
 
-		// if (!zRight) {
+		if (!zLeft) {
 			// +z
 			tess.addVertexWithUV(calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -153,9 +154,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			}
-		// }
+		}
 
-		// if (!xLeft) {
+		if (!xLeft) {
 			// -x
 			tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -168,9 +169,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			}
-		// }
+		}
 
-		// if (!xRight) {
+		if (!xRight) {
 			// +x
 			tess.addVertexWithUV(1 - calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -183,9 +184,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(1 - calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			}
-		// }
+		}
 
-		// if (!yBottom) {
+		if (!yBottom) {
 			// -y
 			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -198,7 +199,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			}
-		// }
+		}
 
 		if (!yTop) {
 			// +y
