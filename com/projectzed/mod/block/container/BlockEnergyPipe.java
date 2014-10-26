@@ -1,10 +1,12 @@
 package com.projectzed.mod.block.container;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
@@ -24,6 +26,11 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 */
 	public BlockEnergyPipe(Material material, String name) {
 		super(material, name);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg) {
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy");
 	}
 
 	/* (non-Javadoc)

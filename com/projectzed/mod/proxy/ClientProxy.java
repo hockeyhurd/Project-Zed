@@ -1,5 +1,10 @@
 package com.projectzed.mod.proxy;
 
+import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
@@ -31,7 +36,7 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderInformation() {
 		energyPipe = RenderingRegistry.getNextAvailableRenderId();
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipe.class, new EnergyPipeRenderer());
-		// MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(glowChest), new ItemRendererGlowChest());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipe), new EnergyPipeItemRenderer());
 	}
 
 }
