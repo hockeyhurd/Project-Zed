@@ -15,13 +15,13 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 public class BlockIndustrialFurnace extends AbstractBlockMachine {
 
 	public BlockIndustrialFurnace() {
-		super("");
+		super("industrialFurnace");
 		this.name = "industrialFurnace";
 		this.setBlockName(name);
 	}
 
 	protected AbstractTileEntityMachine getTileEntity() {
-		return new TileEntityIndustrialFurnace(this.name);
+		return new TileEntityIndustrialFurnace();
 	}
 
 	protected Block getBlockInstance() {

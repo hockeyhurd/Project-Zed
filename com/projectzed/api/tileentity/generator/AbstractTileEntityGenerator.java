@@ -141,18 +141,16 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
-	 */ // TODO: Fix this!
+	 */ 
 	public void transferPower() {
 		
 		for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
 			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
 				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
 					
-					// System.err.println(x);
 					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityMachine) {
 						AbstractTileEntityMachine te = (AbstractTileEntityMachine) worldObj.getTileEntity(x, y, z);
 						if (te.getEnergyStored() + 5 <= te.getMaxStorage() && this.stored - 1 >= 0) {
-							// ProjectZed.logHelper.info("Boobs! 1");
 							this.stored -= 5; 
 							break;
 						}

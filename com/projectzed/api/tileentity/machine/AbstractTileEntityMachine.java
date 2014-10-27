@@ -133,9 +133,11 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		}
 	}
 	
-	// TODO: Fix this!
+	/**
+	 * Method used to transfer power from one te to another. 
+	 */
 	public void transferPower() {
-		
+		// System.out.println(this.stored);
 		for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
 			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
 				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
@@ -143,7 +145,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityGenerator) {
 						AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) worldObj.getTileEntity(x, y, z);
 						if (te.getEnergyStored() > 0 && this.stored + 5 <= this.maxStorage) {
-							// ProjectZed.logHelper.info("Boobs! 2");
 							this.stored += 5; 
 							break;
 						}
@@ -154,6 +155,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
+	 */
 	public void updateEntity() {
 		transferPower();
 		boolean flag = this.stored > 0;
@@ -251,6 +256,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		NBTTagList tagList = comp.getTagList("Items", 10);
@@ -270,6 +279,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setShort("CookTime", (short) this.cookTime);

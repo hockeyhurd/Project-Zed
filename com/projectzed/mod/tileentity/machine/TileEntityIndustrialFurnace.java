@@ -12,8 +12,8 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
  */
 public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 
-	public TileEntityIndustrialFurnace(String name) {
-		super(name);
+	public TileEntityIndustrialFurnace() {
+		super("industrialFurnace");
 		this.slots = new ItemStack[3];
 	}
 
