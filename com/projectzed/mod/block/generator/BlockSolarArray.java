@@ -1,7 +1,6 @@
 package com.projectzed.mod.block.generator;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,6 +11,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -26,15 +26,13 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 20, 2014
  */
-public class BlockSolarArray extends BlockContainer {
-
-	private IIcon top, base;
+public class BlockSolarArray extends AbstractBlockGenerator {
 
 	/**
 	 * @param material = material of block
 	 */
 	public BlockSolarArray(Material material) {
-		super(material);
+		super(material, "solarArray");
 		this.setBlockName("solarArray");
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
@@ -52,6 +50,10 @@ public class BlockSolarArray extends BlockContainer {
 		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
+	 */
 	public TileEntity createNewTileEntity(World world, int id) {
 		return new TileEntitySolarArray();
 	}
@@ -68,6 +70,10 @@ public class BlockSolarArray extends BlockContainer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
@@ -78,6 +84,10 @@ public class BlockSolarArray extends BlockContainer {
 		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
@@ -90,10 +100,13 @@ public class BlockSolarArray extends BlockContainer {
 		}
 	}
 
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
+	 */
+	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
-		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
 	}
 
 }

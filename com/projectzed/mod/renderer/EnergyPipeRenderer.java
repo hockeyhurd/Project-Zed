@@ -1,5 +1,6 @@
 package com.projectzed.mod.renderer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.mod.block.container.BlockEnergyPipe;
 
 import cpw.mods.fml.relauncher.Side;
@@ -39,14 +41,14 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		int yy = te.yCoord;
 		int zz = te.zCoord;
 
-		boolean xLeft = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx - 1, yy, zz);
-		boolean xRight = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx + 1, yy, zz);
+		boolean xLeft = canConnect(te.getWorldObj(), te.blockType, xx - 1, yy, zz) || canConnect(te.getWorldObj(), te.blockType, xx - 1, yy, zz); 
+		boolean xRight = canConnect(te.getWorldObj(), te.blockType, xx + 1, yy, zz) || canConnect(te.getWorldObj(), te.blockType, xx + 1, yy, zz);
 
-		boolean yBottom = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx, yy - 1, zz);
-		boolean yTop = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx, yy + 1, zz);
+		boolean yBottom = canConnect(te.getWorldObj(), te.blockType, xx, yy - 1, zz) || canConnect(te.getWorldObj(), te.blockType, xx, yy - 1, zz);
+		boolean yTop = canConnect(te.getWorldObj(), te.blockType, xx, yy + 1, zz) || canConnect(te.getWorldObj(), te.blockType, xx, yy + 1, zz);
 
-		boolean zLeft = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx, yy, zz - 1);
-		boolean zRight = canConnect(te.getWorldObj(), (BlockEnergyPipe) te.blockType, xx, yy, zz + 1);
+		boolean zLeft = canConnect(te.getWorldObj(), te.blockType, xx, yy, zz - 1) || canConnect(te.getWorldObj(), te.blockType, xx, yy, zz - 1);
+		boolean zRight = canConnect(te.getWorldObj(), te.blockType, xx, yy, zz + 1) || canConnect(te.getWorldObj(), te.blockType, xx, yy, zz + 1);
 
 		drawPipe(te, xLeft, xRight, yBottom, yTop, zLeft, zRight);
 
@@ -64,8 +66,8 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslated(-x, -y, -z);
 	}
 
-	private boolean canConnect(World world, BlockEnergyPipe block, double x, double y, double z) {
-		return world.getBlock((int) x, (int) y, (int) z) == block;
+	private boolean canConnect(World world, Block block, int x, int y, int z) {
+		return world.getBlock((int) x, (int) y, (int) z) instanceof BlockEnergyPipe || world.getBlock((int) x, (int) y, (int) z) instanceof AbstractBlockGenerator;
 	}
 
 	private void drawConnection(ForgeDirection dir) {

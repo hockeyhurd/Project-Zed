@@ -64,6 +64,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 
 		// Check if block exists.
 		if (pipe != null) {
+			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
 			boolean up = pipe.connections[0] != null;

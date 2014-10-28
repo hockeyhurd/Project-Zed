@@ -18,6 +18,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
  * @author hockeyhurd
  * @version Oct 21, 2014
  */
+// TODO: AbstractTileEntityGenerator should extend AbstractTileEntityContainer
 public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGeneric implements IEnergyGeneration {
 
 	protected int maxStored = 100000;
