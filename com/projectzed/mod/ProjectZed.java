@@ -10,6 +10,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
+import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -40,6 +41,7 @@ public class ProjectZed {
 	public static ProjectZed instance;
 	
 	public static LogHelper logHelper;
+	public static ConfigHandler configHandler;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
 	public static final String modID = Reference.MOD_NAME;
 	
@@ -62,10 +64,10 @@ public class ProjectZed {
 		TimeLapse tl = new TimeLapse();
 		logHelper = new LogHelper(Reference.class);
 		
-		/* lh.info("Pre-init started, looking for config info!");
+		logHelper.info("Pre-init started, looking for config info!");
 		configHandler = new ConfigHandler(event, Reference.class);
 		configHandler.handleConfiguration();
-		lh.info("Config loaded successfully! Patching mod now!"); */
+		logHelper.info("Config loaded successfully! Patching mod now!"); 
 		
 		/*lh.info("Detecting other soft-dependent mods.");
 		ModsLoadedHelper.init();

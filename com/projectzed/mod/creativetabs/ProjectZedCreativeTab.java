@@ -1,6 +1,12 @@
 package com.projectzed.mod.creativetabs;
 
+import net.minecraft.item.Item;
+
 import com.hockeyhurd.api.creativetab.AbstractCreativeTab;
+import com.projectzed.mod.ProjectZed;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * 
@@ -15,6 +21,11 @@ public class ProjectZedCreativeTab extends AbstractCreativeTab {
 	 */
 	public ProjectZedCreativeTab(int par1, String par2) {
 		super(par1, par2);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public Item getTabIconItem() {
+		return Item.getItemFromBlock(ProjectZed.industrialFurnace);
 	}
 
 }
