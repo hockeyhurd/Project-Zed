@@ -8,7 +8,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.proxy.ClientProxy;
 
 import cpw.mods.fml.relauncher.Side;
