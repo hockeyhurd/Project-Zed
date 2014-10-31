@@ -58,8 +58,6 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		if (zLeft) drawConnection(ForgeDirection.NORTH);
 		if (zRight) drawConnection(ForgeDirection.SOUTH);
 
-		// drawConnection(ForgeDirection.NORTH);
-
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glTranslated(-x, -y, -z);
 	}
