@@ -21,4 +21,7 @@ public interface IEnergyContainer {
 	/** Get the amount currently stored. */
 	public int getEnergyStored();
 	
+	/** Function used to get the max transfer rate */
+	public int getMaxTransferRate();
+	
 }

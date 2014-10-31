@@ -125,6 +125,12 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		return this.stored;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
+	 */
+	public abstract int getMaxTransferRate();
+	
 	/**
 	 * Method to be defined controlling mechanism for transferring energy only (for now).
 	 */

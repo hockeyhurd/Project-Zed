@@ -1,14 +1,17 @@
 package com.projectzed.api.tileentity.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 
 import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
+import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -115,6 +118,14 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	public int getEnergyStored() {
 		return this.stored;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
+	 */
+	public int getMaxTransferRate() {
+		return 10;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -145,20 +156,26 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 */ 
 	public void transferPower() {
 		
+		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
 		for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
 			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
 				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
 					
-					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityMachine) {
-						AbstractTileEntityMachine te = (AbstractTileEntityMachine) worldObj.getTileEntity(x, y, z);
-						if (te.getEnergyStored() + 5 <= te.getMaxStorage() && this.stored - 1 >= 0) {
-							this.stored -= 5; 
-							break;
-						}
+					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityGenerator)) {
+						IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z);
+						if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont); 
 					}
 				}
 			}
 		}
+		
+		if (containers.size() > 0) {
+			for (IEnergyContainer c : containers) {
+				if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate();
+			}
+		}
+		
+		containers.removeAll(Collections.EMPTY_LIST);
 		
 	}
 	

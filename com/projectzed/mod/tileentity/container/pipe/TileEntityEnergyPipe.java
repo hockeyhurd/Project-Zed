@@ -48,4 +48,12 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 		super.updateEntity();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxTransferRate()
+	 */
+	public int getMaxTransferRate() {
+		return 10;
+	}
+
 }
