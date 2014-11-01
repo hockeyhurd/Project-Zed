@@ -2,12 +2,9 @@ package com.projectzed.api.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
 /**
  * Class containing generic abstractions for all containers.

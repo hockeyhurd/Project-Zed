@@ -12,7 +12,6 @@ import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -201,45 +200,42 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		// -x
 		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			ProjectZed.logHelper.info(containers.size());
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-			ProjectZed.logHelper.info(containers.size());
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +x
 		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// -y
 		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +y
 		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// -z
 		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +z
 		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
-		// ProjectZed.logHelper.info(containers.size(), worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer);
 		if (containers.size() > 0) {
 			for (IEnergyContainer c : containers) {
-				if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate();
+				if (this.stored - this.getMaxTransferRate() >= 0) this.stored -= this.getMaxTransferRate();
 			}
 		}
 

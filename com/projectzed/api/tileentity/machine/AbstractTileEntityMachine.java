@@ -163,37 +163,41 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		int y = this.yCoord;
 		int z = this.zCoord;
 		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-		/*for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) {
-			for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) {
-				for (int z = this.zCoord - 1; z <= this.zCoord + 1; z++) {
 
-					if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z) instanceof AbstractTileEntityMachine)) {
-						IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z);
-						if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-					}
-				}
-			}
-		}*/
-		
-		for (int yy = this.yCoord - 1; yy <= this.yCoord + 1; yy++) {
-			if (worldObj.getTileEntity(x, yy, z) != null && worldObj.getTileEntity(x, yy, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, yy, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, yy, z);
-				if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont); 
-			}
+		// -x
+		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
 		}
-		
-		for (int xx = this.xCoord - 1; xx <= this.xCoord + 1; xx++) {
-			if (worldObj.getTileEntity(xx, y, z) != null && worldObj.getTileEntity(xx, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(xx, y, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(xx, y, z);
-				if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont); 
-			}
+
+		// +x
+		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
 		}
-		
-		for (int zz = this.zCoord - 1; zz <= this.zCoord + 1; zz++) {
-			if (worldObj.getTileEntity(x, y, zz) != null && worldObj.getTileEntity(x, y, zz) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, zz) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, zz);
-				if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont); 
-			}
+
+		// -y
+		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+		}
+
+		// +y
+		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+		}
+
+		// -z
+		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+		}
+
+		// +z
+		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
+			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
 		}
 
 		if (containers.size() > 0) {
@@ -241,7 +245,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		}
 
 		if (flag1) this.markDirty();
-		// ProjectZed.logHelper.info(this.stored);
 	}
 
 	/** Max allowed capacity */
