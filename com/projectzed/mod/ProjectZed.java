@@ -6,6 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
+import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
@@ -119,7 +120,7 @@ public class ProjectZed {
 	private void loadObj() {
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
-		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe");
+		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe", EnumColor.RED);
 	}
 
 }

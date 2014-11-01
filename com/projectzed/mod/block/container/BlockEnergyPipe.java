@@ -7,6 +7,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
@@ -21,17 +22,20 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockEnergyPipe extends AbstractBlockPipe {
 
+	protected EnumColor color;
+	
 	/**
 	 * @param material
 	 * @param name
 	 */
-	public BlockEnergyPipe(Material material, String name) {
+	public BlockEnergyPipe(Material material, String name, EnumColor color) {
 		super(material, name);
+		this.color = color;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item");
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item_red");
 	}
 
 	/*

@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
-	private ResourceLocation texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy.png");
+	private ResourceLocation texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_red.png");
 	private final float PIXEL = 1f / 16f;
 	private final float TEXTURE_PIXEL = 1f / 32f;
 	private boolean renderInside = false;
