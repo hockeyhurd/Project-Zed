@@ -1,17 +1,10 @@
 package com.projectzed.api.tileentity.container;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.projectzed.api.generation.IEnergyGeneration;
-import com.projectzed.api.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-
 /**
+ * Generic class used for creating new te pipes for transport.
  * 
  * @author hockeyhurd
  * @version Oct 25, 2014
@@ -23,7 +16,6 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 
 	public AbstractTileEntityPipe(String name) {
 		super(name);
-		this.maxStorage = 200;
 		connections = new ForgeDirection[6];
 	}
 
@@ -102,112 +94,14 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
 	 */
-	protected void importContents() {
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
-		}
-
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (this.stored + c.getMaxTransferRate() <= this.maxStorage) this.stored += c.getMaxTransferRate();
-			}
-		}
-
-		containers.removeAll(Collections.EMPTY_LIST);
-	}
+	protected abstract void importContents();
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#transferContents()
 	 */
-	protected void exportContents() {
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0) containers.add(cont);
-		}
-
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate();
-			}
-		}
-
-		containers.removeAll(Collections.EMPTY_LIST);
-	}
+	protected abstract void exportContents();
 
 	/**
 	 * Method used to update connections.
