@@ -132,16 +132,21 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	public abstract int getMaxTransferRate();
 	
 	/**
-	 * Method to be defined controlling mechanism for transferring energy only (for now).
+	* Method to be defined controlling mechanism for importing energy only (for now).
+	*/ 
+	protected abstract void importContents();
+	
+	/**
+	 * Method to be defined controlling mechanism for exporting energy only (for now).
 	 */
-	protected abstract void transferContents(); 
+	protected abstract void exportContents(); 
 	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	public void updateEntity() {
-		transferContents();
+		exportContents();
 		super.updateEntity();
 	}
 	

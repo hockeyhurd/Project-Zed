@@ -35,7 +35,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item_red");
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item_" + this.color.getColorAsString());
 	}
 
 	/*

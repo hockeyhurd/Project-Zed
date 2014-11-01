@@ -36,7 +36,7 @@ public enum EnumColor {
 	 * Function used to get the color represented in a string.
 	 * @return return string value stored for said color.
 	 */
-	public String getColor() {
+	public String getColorAsString() {
 		return this.color;
 	}
 	
