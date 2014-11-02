@@ -368,6 +368,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				tagList.appendTag(temp);
 			}
 		}
+		
+		comp.setTag("Items", tagList);
 
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
