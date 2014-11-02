@@ -204,6 +204,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			for (IEnergyContainer c : containers) {
 				if (this.stored + c.getMaxTransferRate() <= this.maxStorage) this.stored += c.getMaxTransferRate();
 			}
+			
+			if (this.stored > this.maxStorage) this.stored = this.maxStorage;
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
@@ -240,7 +242,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 			if (flag != this.stored > 0) {
 				flag1 = true;
-				((AbstractBlockMachine) this.blockType).updateBlockState(this.stored > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+				((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 			}
 		}
 

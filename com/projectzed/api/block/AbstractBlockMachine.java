@@ -17,7 +17,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
@@ -69,7 +68,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1? this.iconBottom : (side != meta ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
+		return side == 0 || side == 1? this.iconBottom : (side != meta ? this.blockIcon : (meta == 2 && this.active ? this.iconFrontOn : this.iconFront));
 	}
 
 	/*
@@ -82,30 +81,6 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	}
 
 	protected abstract AbstractTileEntityMachine getTileEntity();
-
-	/*
-	 * TODO: Make necessary changes.
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onNeighborBlockChange(net.minecraft.world.World, int, int, int, net.minecraft.block.Block)
-	 */
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-		AbstractTileEntityMachine thisTe = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-		
-		AbstractTileEntityGenerator te = null;
-		for (int xx = -1; xx <= 1; xx++) {
-			for (int zz = -1; zz <= 1; zz++) {
-				if (world.getTileEntity(xx, y, zz) instanceof AbstractTileEntityGenerator) {
-					te = (AbstractTileEntityGenerator) world.getTileEntity(xx, y, zz);
-					break;
-				}
-			}
-		}
-		
-		if (thisTe != null && te != null) {
-			thisTe.setEnergyStored(thisTe.getEnergyStored() + 1);
-			te.setEnergyStored(te.getEnergyStored() - 1);
-		}
-	}
 
 	/**
 	 * Handles updating the blocks state being called from its te class.
