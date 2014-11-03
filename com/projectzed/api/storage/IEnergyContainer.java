@@ -1,5 +1,7 @@
 package com.projectzed.api.storage;
 
+import com.hockeyhurd.api.math.Vector4Helper;
+
 
 /**
  * Interface for an object (TileEntity, tool, etc.) that contains power.
@@ -23,5 +25,8 @@ public interface IEnergyContainer {
 	
 	/** Function used to get the max transfer rate */
 	public int getMaxTransferRate();
+	
+	/** Gets and stored the vector co-ordinates of this te. */
+	public Vector4Helper<Integer> worldVec();
 	
 }

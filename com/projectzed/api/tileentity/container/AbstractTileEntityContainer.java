@@ -3,6 +3,7 @@ package com.projectzed.api.tileentity.container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 
@@ -137,6 +138,14 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * Method to be defined controlling mechanism for exporting energy only (for now).
 	 */
 	protected abstract void exportContents(); 
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
+	 */
+	public Vector4Helper<Integer> worldVec() {
+		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
 	
 	/*
 	 * (non-Javadoc)

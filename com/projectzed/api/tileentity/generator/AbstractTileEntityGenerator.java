@@ -8,12 +8,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -200,47 +203,66 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		// -x
 		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +x
 		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// -y
 		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +y
 		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// -z
 		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		// +z
 		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
 		if (containers.size() > 0) {
+			// ProjectZed.logHelper.info(containers.size());
 			for (IEnergyContainer c : containers) {
-				if (this.stored - this.getMaxTransferRate() >= 0) this.stored -= this.getMaxTransferRate();
+				if (this.stored - c.getMaxTransferRate() + 10 > 0) {
+					if (c instanceof TileEntityEnergyPipe) {
+						TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
+						if (te.getContainerSize() > 0) {
+							if (this.stored - c.getMaxTransferRate() + (10 * te.getContainerSize()) < 0) continue;
+							else this.stored -= c.getMaxTransferRate() + (10 * te.getContainerSize());
+						}
+						else this.stored -= c.getMaxTransferRate() + 10;
+					}
+					else this.stored -= c.getMaxTransferRate() + 10;
+				}
 			}
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
+	 */
+	public Vector4Helper<Integer> worldVec() {
+		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*

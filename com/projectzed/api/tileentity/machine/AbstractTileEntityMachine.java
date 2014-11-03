@@ -10,12 +10,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.machine.IEnergyMachine;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -202,13 +204,28 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 		if (containers.size() > 0) {
 			for (IEnergyContainer c : containers) {
-				if (this.stored + c.getMaxTransferRate() <= this.maxStorage) this.stored += c.getMaxTransferRate();
+				if (this.stored + c.getMaxTransferRate() <= this.maxStorage) {
+					if (c instanceof TileEntityEnergyPipe) {
+						TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
+						if (te.getContainerSize() > 0) this.stored += (double) (te.getMaxTransferRate() / te.getContainerSize());
+						else this.stored += c.getMaxTransferRate();
+					}
+					else this.stored += c.getMaxTransferRate();
+				}
 			}
 			
 			if (this.stored > this.maxStorage) this.stored = this.maxStorage;
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
+	 */
+	public Vector4Helper<Integer> worldVec() {
+		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*

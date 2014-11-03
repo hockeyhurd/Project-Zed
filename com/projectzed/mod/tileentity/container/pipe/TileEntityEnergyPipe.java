@@ -10,6 +10,7 @@ import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing coode for energy pipe;
@@ -19,36 +20,41 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
  */
 public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 
+	public boolean flag;
+	protected int transferRate;
+	protected int containerSize = 0;
+	
 	public TileEntityEnergyPipe() {
 		super("energyPipe");
 		this.maxStorage = 200;
+		this.transferRate = 10;
 	}
 
-	/* TODO: Change ... instanceof AbstractTileEntityGenerator to ... instanceof AbstractTileEntityContainer once properly changed!
-	 * (non-Javadoc)
+	/*
+	 * TODO: Change ... instanceof AbstractTileEntityGenerator to ... instanceof AbstractTileEntityContainer once properly changed! (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
 	 */
 	protected void updateConnections() {
 		if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IEnergyContainer) connections[0] = ForgeDirection.UP;
 		else connections[0] = null;
-		
+
 		if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof IEnergyContainer) connections[1] = ForgeDirection.DOWN;
 		else connections[1] = null;
-		
+
 		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof IEnergyContainer) connections[2] = ForgeDirection.NORTH;
 		else connections[2] = null;
-		
+
 		if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof IEnergyContainer) connections[3] = ForgeDirection.EAST;
 		else connections[3] = null;
-		
+
 		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof IEnergyContainer) connections[4] = ForgeDirection.SOUTH;
 		else connections[4] = null;
-		
+
 		if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof IEnergyContainer) connections[5] = ForgeDirection.WEST;
 		else connections[5] = null;
 	}
-	
+
 	protected void importContents() {
 		int x = this.xCoord;
 		int y = this.yCoord;
@@ -99,12 +105,13 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 
 		containers.removeAll(Collections.EMPTY_LIST);
 	}
-	
+
 	protected void exportContents() {
 		int x = this.xCoord;
 		int y = this.yCoord;
 		int z = this.zCoord;
 		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
+		flag = false;
 
 		// -x
 		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
@@ -143,11 +150,20 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 		}
 
 		if (containers.size() > 0) {
+
 			for (IEnergyContainer c : containers) {
-				if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate();
+				if (!(c instanceof TileEntityEnergyPipe)) flag = true;
+			}
+
+			if (flag) {
+				this.containerSize = containers.size();
+				for (IEnergyContainer c : containers) {
+					if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate() * containers.size();
+				}
 			}
 		}
 
+		ProjectZed.logHelper.info(this.stored);
 		containers.removeAll(Collections.EMPTY_LIST);
 	}
 
@@ -157,10 +173,15 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxTransferRate()
 	 */
 	public int getMaxTransferRate() {
-		return 10;
+		return this.transferRate;
+	}
+	
+	public int getContainerSize() {
+		return this.containerSize;
 	}
 
 }
