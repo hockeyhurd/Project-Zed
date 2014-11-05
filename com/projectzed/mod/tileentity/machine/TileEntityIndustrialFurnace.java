@@ -117,4 +117,23 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
+	 */
+	public void smeltItem() {
+		if (this.canSmelt()) {
+			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+
+			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
+			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
+
+			this.slots[0].stackSize--;
+
+			if (this.slots[0].stackSize <= 0) {
+				this.slots[0] = null;
+			}
+		}
+	}
+
 }

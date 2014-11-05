@@ -126,28 +126,15 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	protected abstract boolean canSmelt();
 
-	public void smeltItem() {
-		if (this.canSmelt()) {
-			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
-
-			if (this.slots[1] == null) {
-				this.slots[1] = itemstack.copy();
-			}
-			else if (this.slots[1].isItemEqual(itemstack)) {
-				slots[1].stackSize += itemstack.stackSize;
-			}
-
-			this.slots[0].stackSize--;
-
-			if (this.slots[0].stackSize <= 0) {
-				this.slots[0] = null;
-			}
-		}
-	}
+	/**
+	 * Method used to perform 'smelting'
+	 */
+	public abstract void smeltItem();
 
 	/**
 	 * Method used to transfer power from one te to another.
 	 */
+	// TODO: Change this code to match better with AbstractTileEntityEnergyPipe and AbstractTileEntityGenerator.
 	public void transferPower() {
 
 		int x = this.xCoord;

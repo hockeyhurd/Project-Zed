@@ -2,7 +2,6 @@ package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
@@ -115,6 +114,25 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 
 			// Make sure we aren't going over the set stack limit's size.
 			return (result <= getInventoryStackLimit() && result <= stack.getMaxStackSize());
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
+	 */
+	public void smeltItem() {
+		if (this.canSmelt()) {
+			ItemStack itemstack = CrusherRecipesRegistry.crusherList(this.slots[0]);
+
+			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
+			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
+
+			this.slots[0].stackSize--;
+
+			if (this.slots[0].stackSize <= 0) {
+				this.slots[0] = null;
+			}
 		}
 	}
 

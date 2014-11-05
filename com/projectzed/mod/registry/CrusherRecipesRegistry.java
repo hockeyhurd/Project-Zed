@@ -5,9 +5,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing code for initializing the crusher's smelting recipe list.
@@ -31,10 +35,10 @@ public class CrusherRecipesRegistry {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping
-		/*mapVanilla.put(new ItemStack(Blocks.iron_ore, 1), new ItemStack(pulverizedIron, 2));
-		mapVanilla.put(new ItemStack(Blocks.gold_ore, 1), new ItemStack(pulverizedGold, 2));
-		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(pulverizedIron, 1));
-		mapVanilla.put(new ItemStack(Items.gold_ingot, 1), new ItemStack(pulverizedGold, 1));*/
+		mapVanilla.put(new ItemStack(Blocks.iron_ore, 1), new ItemStack(ProjectZed.dustIron, 2));
+		mapVanilla.put(new ItemStack(Blocks.gold_ore, 1), new ItemStack(ProjectZed.dustGold, 2));
+		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(ProjectZed.dustIron, 1));
+		mapVanilla.put(new ItemStack(Items.gold_ingot, 1), new ItemStack(ProjectZed.dustGold, 1));
 
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");

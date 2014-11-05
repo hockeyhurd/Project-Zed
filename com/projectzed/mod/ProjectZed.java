@@ -3,6 +3,7 @@ package com.projectzed.mod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
@@ -13,6 +14,8 @@ import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
+import com.projectzed.mod.item.ItemDustGold;
+import com.projectzed.mod.item.ItemDustIron;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -55,6 +58,10 @@ public class ProjectZed {
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block energyPipe;
+	
+	// Items:
+	public static Item dustGold;
+	public static Item dustIron;
 	
 	/**
 	 * Default constructor.
@@ -120,10 +127,15 @@ public class ProjectZed {
 	 * Method used to instantiate objects: blocks, items, etc.
 	 */
 	private void loadObj() {
+		// Blocks:
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe", EnumColor.RED);
+		
+		// Items:
+		dustGold = new ItemDustGold("dustGold", assetDir);
+		dustIron = new ItemDustIron("dustIron", assetDir);
 	}
 
 }

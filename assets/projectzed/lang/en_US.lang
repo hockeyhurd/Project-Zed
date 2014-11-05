@@ -1,4 +1,9 @@
+// Blocks:
 tile.solarArray.name=Solar Array
 tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
 tile.energyPipe.name=Energy Pipe
+
+// Items:
+item.dustGold.name=Gold Dust
+item.dustIron.name=Iron Dust
