@@ -10,7 +10,6 @@ import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing coode for energy pipe;
@@ -158,12 +157,16 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 			if (flag) {
 				this.containerSize = containers.size();
 				for (IEnergyContainer c : containers) {
+					if (c instanceof TileEntityEnergyPipe) {
+						TileEntityEnergyPipe te = (TileEntityEnergyPipe) c; 
+						if (te.getContainerSize() - 1 > 0) this.containerSize = te.getContainerSize() - 1;
+					}
+					if (this.containerSize < 0) this.containerSize = 0; // Redundant check
 					if (this.stored - this.getMaxTransferRate() > 0) this.stored -= this.getMaxTransferRate() * containers.size();
 				}
 			}
 		}
 
-		ProjectZed.logHelper.info(this.stored);
 		containers.removeAll(Collections.EMPTY_LIST);
 	}
 

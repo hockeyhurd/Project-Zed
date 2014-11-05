@@ -13,7 +13,6 @@ import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
@@ -236,21 +235,20 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
 		}
 
+		// TODO: Remove redundancies and add optimizations for here and other te's
 		if (containers.size() > 0) {
 			// ProjectZed.logHelper.info(containers.size());
+			int containerSizeOffset = 0;
 			for (IEnergyContainer c : containers) {
-				if (this.stored - c.getMaxTransferRate() + 10 > 0) {
-					if (c instanceof TileEntityEnergyPipe) {
-						TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
-						if (te.getContainerSize() > 0) {
-							if (this.stored - c.getMaxTransferRate() + (10 * te.getContainerSize()) < 0) continue;
-							else this.stored -= c.getMaxTransferRate() + (10 * te.getContainerSize());
-						}
-						else this.stored -= c.getMaxTransferRate() + 10;
-					}
-					else this.stored -= c.getMaxTransferRate() + 10;
+				containerSizeOffset = 0;
+				if (c instanceof TileEntityEnergyPipe) {
+					TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
+					if (te.getContainerSize() - 1 > 0) containerSizeOffset = te.getContainerSize() - 1;
 				}
+				if (containerSizeOffset < 0) containerSizeOffset = 0; // Redundant check
+				if (this.stored - (c.getMaxTransferRate() * (containers.size() + containerSizeOffset)) > 0 ) this.stored -= c.getMaxTransferRate() * (containers.size() + containerSizeOffset);
 			}
+			
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
