@@ -120,22 +120,11 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return this.stored > 0;
 	}
 
-	protected boolean canSmelt() {
-		if (this.slots[0] == null || this.stored + this.energyBurnRate <= 0) return false;
-		else {
-			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
-			if (stack == null) return false;
-			if (this.slots[1] == null) return true;
-			if (!this.slots[1].isItemEqual(stack)) return false;
-
-			// Add the result of the furnace recipe to the current stack size (already smelted so far).
-			int result = this.slots[1].stackSize + stack.stackSize;
-
-			// Make sure we aren't going over the set stack limit's size.
-			return (result <= getInventoryStackLimit() && result <= stack.getMaxStackSize());
-		}
-	}
+	/**
+	 * Function used to determine if item x is able to be used in slot y.
+	 * @return true if valid, else return false.
+	 */
+	protected abstract boolean canSmelt();
 
 	public void smeltItem() {
 		if (this.canSmelt()) {
@@ -213,15 +202,16 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					else this.stored += c.getMaxTransferRate();
 				}
 			}
-			
+
 			if (this.stored > this.maxStorage) this.stored = this.maxStorage;
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
 	public Vector4Helper<Integer> worldVec() {
@@ -385,7 +375,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				tagList.appendTag(temp);
 			}
 		}
-		
+
 		comp.setTag("Items", tagList);
 
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);

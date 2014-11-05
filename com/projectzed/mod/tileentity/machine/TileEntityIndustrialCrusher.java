@@ -5,16 +5,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.registry.CrusherRecipesRegistry;
 
 /**
+ * Class containing code for te data for industrial crusher.
  * 
  * @author hockeyhurd
- * @version Oct 22, 2014
+ * @version Nov 4, 2014
  */
-public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
+public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 
-	public TileEntityIndustrialFurnace() {
-		super("industrialFurnace");
+	public TileEntityIndustrialCrusher() {
+		super("industrialCrusher");
 		this.slots = new ItemStack[3];
 	}
 
@@ -50,7 +52,6 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
 	 */
-	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
 			0
@@ -95,7 +96,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return side != 0 || slot != 1 || stack.getItem() == Items.bucket;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
@@ -104,7 +105,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		if (this.slots[0] == null || this.stored + this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+			ItemStack stack = CrusherRecipesRegistry.crusherList(this.slots[0]);
 			if (stack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(stack)) return false;

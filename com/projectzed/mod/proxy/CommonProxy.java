@@ -15,6 +15,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
@@ -56,6 +57,7 @@ public class CommonProxy {
 		registerItems();
 		registerTileEntities();
 		registerGuiHandler();
+		registerRegisters();
 	}
 
 	private void registerEventHandlers() {
@@ -90,6 +92,10 @@ public class CommonProxy {
 		}
 	}
 
+	protected void registerRegisters() {
+		CrusherRecipesRegistry.init();
+	}
+	
 	public void registerUpdateHandler() {
 		updateHandler = new UpdateHandler(Reference.class);
 		updateHandler.check();

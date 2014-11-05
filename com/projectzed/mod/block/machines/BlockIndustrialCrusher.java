@@ -8,35 +8,47 @@ import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 /**
- * Class containing the power controlled furnace.
+ * Class containing code for industrial crusher.
  * 
  * @author hockeyhurd
- * @version Oct 22, 2014
+ * @version Nov 4, 2014
  */
-public class BlockIndustrialFurnace extends AbstractBlockMachine {
+public class BlockIndustrialCrusher extends AbstractBlockMachine {
 
-	public BlockIndustrialFurnace() {
-		super("industrialFurnace");
-		this.name = "industrialFurnace";
+	public BlockIndustrialCrusher() {
+		super("industrialCrusher");
+		this.name = "industrialCrusher";
 		this.setBlockName(name);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
+	 */
 	protected AbstractTileEntityMachine getTileEntity() {
-		return new TileEntityIndustrialFurnace();
+		return new TileEntityIndustrialCrusher();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
+	 */
 	protected Block getBlockInstance() {
 		return this;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int,
+	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
@@ -45,7 +57,7 @@ public class BlockIndustrialFurnace extends AbstractBlockMachine {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
 			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
 			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialFurnace.class), world, x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCrusher.class), world, x, y, z);
 			return true;
 		}
 	}

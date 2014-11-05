@@ -9,6 +9,7 @@ import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
@@ -52,6 +53,7 @@ public class ProjectZed {
 	// Blocks: 
 	public static Block solarArray;
 	public static Block industrialFurnace;
+	public static Block industrialCrusher;
 	public static Block energyPipe;
 	
 	/**
@@ -120,6 +122,7 @@ public class ProjectZed {
 	private void loadObj() {
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
+		industrialCrusher = new BlockIndustrialCrusher();
 		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe", EnumColor.RED);
 	}
 

@@ -237,7 +237,6 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 		// TODO: Remove redundancies and add optimizations for here and other te's
 		if (containers.size() > 0) {
-			// ProjectZed.logHelper.info(containers.size());
 			int containerSizeOffset = 0;
 			for (IEnergyContainer c : containers) {
 				containerSizeOffset = 0;

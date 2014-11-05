@@ -174,17 +174,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		if (world.isRemote) return true;
-
-		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
-			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialFurnace.class), world, x, y, z);
-			return true;
-		}
-	}
+	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
 	
 	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
 		if (!keepInventory) {
