@@ -43,6 +43,8 @@ public class CrusherRecipesRegistry {
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");
 		mapModded.put("ingotGlow", "dustGlow");
+		mapModded.put("oreTitanium", "dustTitanium");
+		mapModded.put("ingotTitanium", "dustTitanium");
 		mapModded.put("oreXynite", "dustXynite");
 		mapModded.put("ingotXynite", "dustXynite");
 		mapModded.put("oreFermite", "dustFermite");

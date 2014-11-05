@@ -135,7 +135,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	// TODO: Change this code to match better with AbstractTileEntityEnergyPipe and AbstractTileEntityGenerator.
 	public void transferPower() {
-		if (this.stored == this.maxStorage) return;
+		if (this.stored >= this.maxStorage) {
+			this.stored = this.maxStorage;
+			return;
+		}
 
 		int x = this.xCoord;
 		int y = this.yCoord;

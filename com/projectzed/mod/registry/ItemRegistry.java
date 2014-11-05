@@ -15,10 +15,12 @@ import net.minecraft.item.Item;
 public class ItemRegistry {
 
 	private static List<Item> items;
+	private static List<Item> itemOres;
 	private static ItemRegistry reg = new ItemRegistry();
 	
 	private ItemRegistry() {
 		items = new ArrayList<Item>();
+		itemOres = new ArrayList<Item>();
 	}
 	
 	/**
@@ -33,7 +35,10 @@ public class ItemRegistry {
 			try {
 				if (f.get(mainClass) instanceof Item) {
 					Item item = (Item) f.get(mainClass); // cast object to a item.
-					if (item != null) reg.items.add(item); // add block to list if not null.
+					if (item != null) {
+						reg.items.add(item); // add block to list if not null.
+						if (item.getUnlocalizedName().toLowerCase().contains("ingot") || item.getUnlocalizedName().toLowerCase().contains("dust")) reg.itemOres.add(item);
+					}
 				}
 			}
 			catch (Exception e) {
@@ -60,6 +65,14 @@ public class ItemRegistry {
 	}
 	
 	/**
+	 * Gets the list for ore dictionary.
+	 * @return list of items to be registered in ore dictionary.
+	 */
+	public List<Item> getItemOres() {
+		return itemOres;
+	}
+	
+	/**
 	 * Gets the item by name specified.
 	 * @param name = name of item to find.
 	 * @return item if found, else null.
@@ -76,6 +89,15 @@ public class ItemRegistry {
 		}
 		
 		return item;
+	}
+	
+	/**
+	 * Returns the actual unlocalized name for said block.
+	 * @param i = block to get name for.
+	 * @return block's unlocalized name.
+	 */
+	public static String getBlockName(Item i) {
+		return i.getUnlocalizedName().substring(5);
 	}
 
 }

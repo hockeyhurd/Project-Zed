@@ -15,10 +15,12 @@ import net.minecraft.block.Block;
 public class BlockRegistry {
 
 	private static List<Block> blocks;
+	private static List<Block> blockOres;
 	private static BlockRegistry reg = new BlockRegistry();
 
 	private BlockRegistry() {
 		blocks = new ArrayList<Block>();
+		blockOres = new ArrayList<Block>();
 	}
 
 	/**
@@ -33,7 +35,10 @@ public class BlockRegistry {
 			try {
 				if (f.get(mainClass) instanceof Block) {
 					Block block = (Block) f.get(mainClass); // cast object to a block.
-					if (block != null) reg.blocks.add(block); // add block to list if not null.
+					if (block != null) {
+						reg.blocks.add(block); // add block to list if not null.
+						if (block.getUnlocalizedName().toLowerCase().contains("ore")) reg.blockOres.add(block);
+					}
 				}
 			}
 			catch (Exception e) {
@@ -61,6 +66,14 @@ public class BlockRegistry {
 	}
 	
 	/**
+	 * Gets the list for ore dictionary.
+	 * @return list of blocks to be registered in ore dictionary.
+	 */
+	public List<Block> getOreBlocks() {
+		return blockOres;
+	}
+	
+	/**
 	 * Gets the block by name specified.
 	 * @param name = name of block to find.
 	 * @return block if found, else null.
@@ -77,6 +90,15 @@ public class BlockRegistry {
 		}
 		
 		return block;
+	}
+	
+	/**
+	 * Returns the actual unlocalized name for said block.
+	 * @param b = block to get name for.
+	 * @return block's unlocalized name.
+	 */
+	public static String getBlockName(Block b) {
+		return b.getUnlocalizedName().substring(5);
 	}
 
 }

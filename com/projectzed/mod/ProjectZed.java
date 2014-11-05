@@ -12,10 +12,13 @@ import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
+import com.projectzed.mod.block.ore.BlockTitaniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
+import com.projectzed.mod.item.metals.ItemDustTitanium;
+import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -59,9 +62,17 @@ public class ProjectZed {
 	public static Block industrialCrusher;
 	public static Block energyPipe;
 	
+	// Ores
+	public static Block titaniumOre;
+	
 	// Items:
+	
+	// Metals:
 	public static Item dustGold;
 	public static Item dustIron;
+	public static Item dustTitanium;
+	
+	public static Item ingotTitanium;
 	
 	/**
 	 * Default constructor.
@@ -133,9 +144,17 @@ public class ProjectZed {
 		industrialCrusher = new BlockIndustrialCrusher();
 		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe", EnumColor.RED);
 		
+		// Ores:
+		titaniumOre = new BlockTitaniumOre(Material.rock, "oreTitanium");
+		
 		// Items:
+		
+		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);
 		dustIron = new ItemDustIron("dustIron", assetDir);
+		dustTitanium = new ItemDustTitanium("dustTitanium", assetDir);
+		
+		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 	}
 
 }

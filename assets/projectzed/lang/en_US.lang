@@ -4,6 +4,18 @@ tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
 tile.energyPipe.name=Energy Pipe
 
+// Ores:
+tile.oreTitanium.name=Titanium Ore
+
 // Items:
+
+// Metals:
 item.dustGold.name=Gold Dust
 item.dustIron.name=Iron Dust
+item.dustTitanium.name=Titanium Dust
+
+item.ingotTitanium.name=Titanium Ingot
+
+// Containers/GUIs
+container.industrialFurnace=Industrial Furnace
+container.industrialCrusher=Industrial Crusher

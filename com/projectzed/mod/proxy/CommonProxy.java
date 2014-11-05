@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
@@ -55,10 +56,12 @@ public class CommonProxy {
 		registerEventHandlers();
 		registerBlocks();
 		registerItems();
+		registerOreDictionaryEntries();
 		registerTileEntities();
 		registerGuiHandler();
 		registerRegisters();
 	}
+
 
 	private void registerEventHandlers() {
 		PacketHandler.init();
@@ -73,6 +76,16 @@ public class CommonProxy {
 	private void registerItems() {
 		for (Item i : ItemRegistry.instance().getItems()) {
 			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
+		}
+	}
+	
+	private void registerOreDictionaryEntries() {
+		for (Block b : BlockRegistry.instance().getOreBlocks()) {
+			if (b != null) OreDictionary.registerOre(BlockRegistry.instance().getBlockName(b), b);
+		}
+		
+		for (Item i : ItemRegistry.instance().getItemOres()) {
+			if (i != null) OreDictionary.registerOre(ItemRegistry.instance().getBlockName(i), i);
 		}
 	}
 	
