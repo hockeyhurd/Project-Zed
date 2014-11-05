@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
@@ -15,9 +14,9 @@ import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.machine.IEnergyMachine;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -136,6 +135,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	// TODO: Change this code to match better with AbstractTileEntityEnergyPipe and AbstractTileEntityGenerator.
 	public void transferPower() {
+		if (this.stored == this.maxStorage) return;
 
 		int x = this.xCoord;
 		int y = this.yCoord;
@@ -145,52 +145,43 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		// -x
 		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +x
 		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// -y
 		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +y
 		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// -z
 		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +z
 		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() > 0 && this.stored + cont.getMaxTransferRate() <= this.maxStorage) containers.add(cont);
+			containers.add(cont);
 		}
 
 		if (containers.size() > 0) {
 			for (IEnergyContainer c : containers) {
-				if (this.stored + c.getMaxTransferRate() <= this.maxStorage) {
-					if (c instanceof TileEntityEnergyPipe) {
-						TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
-						if (te.getContainerSize() > 0) this.stored += (double) (te.getMaxTransferRate() / te.getContainerSize());
-						else this.stored += c.getMaxTransferRate();
-					}
-					else this.stored += c.getMaxTransferRate();
-				}
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
-
-			if (this.stored > this.maxStorage) this.stored = this.maxStorage;
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
@@ -266,12 +257,29 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
-	public int getMaxTransferRate() {
+	public int getMaxImportRate() {
 		return 10;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
+	 */
+	public int getMaxExportRate() {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
+	 */
+	public int requestPower(IEnergyContainer cont, int amount) {
+		return 0;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

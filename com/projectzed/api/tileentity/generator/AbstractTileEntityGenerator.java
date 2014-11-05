@@ -1,9 +1,5 @@
 package com.projectzed.api.tileentity.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -15,7 +11,6 @@ import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -145,11 +140,31 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
+	 */
+	public int getMaxImportRate() {
+		return 0; 
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
-	public int getMaxTransferRate() {
-		return 10;
+	public int getMaxExportRate() {
+		return 20;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
+	 */
+	public int requestPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxExportRate() >= amount && this.stored - amount >= 0) {
+			this.stored -= amount;
+			return amount;
+		}
+		
+		else return 0;
 	}
 
 	/*
@@ -174,8 +189,8 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
 	public void generatePower() {
-		if (canProducePower() && this.stored < this.maxStored) this.stored += this.source.getEffectiveSize();
-		if (this.stored > this.maxStored) this.stored = this.maxStored;
+		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 
 	/*
@@ -184,73 +199,57 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
 	 */
 	public void transferPower() {
-		// TODO: Fix this method! NOTE: Transfers energy correctly when to machine but not to pipe!
+		/*// TODO: Fix this method! NOTE: Transfers energy correctly when to machine but not to pipe!
+		if (this.stored - this.getMaxExportRate() < 0) return;
+
 		int x = this.xCoord;
 		int y = this.yCoord;
 		int z = this.zCoord;
 		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-		/*
-		 * for (int y = this.yCoord - 1; y <= this.yCoord + 1; y++) { for (int x = this.xCoord - 1; x <= this.xCoord + 1; x++) { for (int z =
-		 * this.zCoord - 1; z <= this.zCoord + 1; z++) {
-		 * 
-		 * if (worldObj.getTileEntity(x, y, z) != null && worldObj.getTileEntity(x, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x,
-		 * y, z) instanceof AbstractTileEntityGenerator)) { IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z); if
-		 * (cont.getEnergyStored() + cont.getMaxTransferRate() <= cont.getMaxStorage() && this.stored - this.getMaxTransferRate() > 0)
-		 * containers.add(cont); } } } }
-		 */
 
 		// -x
 		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +x
 		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// -y
 		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +y
 		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// -z
 		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
 		// +z
 		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyGeneration)) {
 			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont.getEnergyStored() + cont.getMaxTransferRate() < cont.getMaxStorage() && this.stored - this.getMaxTransferRate() >= 0) containers.add(cont);
+			containers.add(cont);
 		}
 
-		// TODO: Remove redundancies and add optimizations for here and other te's
 		if (containers.size() > 0) {
-			int containerSizeOffset = 0;
 			for (IEnergyContainer c : containers) {
-				containerSizeOffset = 0;
-				if (c instanceof TileEntityEnergyPipe) {
-					TileEntityEnergyPipe te = (TileEntityEnergyPipe) c;
-					if (te.getContainerSize() - 1 > 0) containerSizeOffset = te.getContainerSize() - 1;
-				}
-				if (containerSizeOffset < 0) containerSizeOffset = 0; // Redundant check
-				if (this.stored - (c.getMaxTransferRate() * (containers.size() + containerSizeOffset)) > 0 ) this.stored -= c.getMaxTransferRate() * (containers.size() + containerSizeOffset);
+				if (c.getEnergyStored() + this.getMaxExportRate() <= c.getMaxStorage()) this.stored -= this.getMaxExportRate();
 			}
-			
 		}
 
-		containers.removeAll(Collections.EMPTY_LIST);
+		containers.removeAll(Collections.EMPTY_LIST);*/
 	}
 
 	/*

@@ -3,6 +3,8 @@ package com.projectzed.api.tileentity.container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.projectzed.api.storage.IEnergyContainer;
+
 /**
  * Generic class used for creating new te pipes for transport.
  * 
@@ -91,17 +93,9 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
+	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
-	protected abstract void importContents();
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#transferContents()
-	 */
-	protected abstract void exportContents();
+	public abstract int requestPower(IEnergyContainer cont, int amount);
 
 	/**
 	 * Method used to update connections.
