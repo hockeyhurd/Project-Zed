@@ -27,6 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Class containing framework code for all block machines.
  * 
  * @author hockeyhurd
  * @version Oct 23, 2014

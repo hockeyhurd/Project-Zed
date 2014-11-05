@@ -199,57 +199,6 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
 	 */
 	public void transferPower() {
-		/*// TODO: Fix this method! NOTE: Transfers energy correctly when to machine but not to pipe!
-		if (this.stored - this.getMaxExportRate() < 0) return;
-
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			containers.add(cont);
-		}
-
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			containers.add(cont);
-		}
-
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			containers.add(cont);
-		}
-
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			containers.add(cont);
-		}
-
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			containers.add(cont);
-		}
-
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyGeneration)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			containers.add(cont);
-		}
-
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (c.getEnergyStored() + this.getMaxExportRate() <= c.getMaxStorage()) this.stored -= this.getMaxExportRate();
-			}
-		}
-
-		containers.removeAll(Collections.EMPTY_LIST);*/
 	}
 
 	/*

@@ -125,9 +125,21 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	
 	/*
 	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
+	 */
+	public abstract int getMaxImportRate();
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
 	public abstract int getMaxExportRate();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
+	 */
+	public abstract int requestPower(IEnergyContainer cont, int amount);
 	
 	/**
 	* Method to be defined controlling mechanism for importing energy only (for now).
