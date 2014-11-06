@@ -148,6 +148,10 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 
 		if (containers.size() > 0) {
 			for (IEnergyContainer c : containers) {
+				if (this.stored >= this.maxStorage) {
+					this.stored = this.maxStorage;
+					break;
+				}
 				if (c.getEnergyStored() - c.getMaxExportRate() > 0) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
