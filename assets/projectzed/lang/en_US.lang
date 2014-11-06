@@ -8,6 +8,7 @@ tile.energyPipe.name=Energy Pipe
 tile.oreTitanium.name=Titanium Ore
 tile.oreCopper.name=Copper Ore
 tile.oreNickel.name=Nickel Ore
+tile.oreAluminium.name=Aluminium Ore
 
 // Items:
 
@@ -17,10 +18,12 @@ item.dustIron.name=Iron Dust
 item.dustTitanium.name=Titanium Dust
 item.dustCopper.name=Copper Dust
 item.dustNickel.name=Nickel Dust
+item.dustAluminium.name=Aluminium Dust
 
 item.ingotTitanium.name=Titanium Ingot
 item.ingotCopper.name=Copper Ingot
 item.ingotNickel.name=Nickel Ingot
+item.ingotAluminium.name=Aluminium Ingot
 
 // Containers/GUIs
 container.industrialFurnace=Industrial Furnace
