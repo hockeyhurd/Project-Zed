@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
@@ -59,9 +60,9 @@ public class CommonProxy {
 		registerOreDictionaryEntries();
 		registerTileEntities();
 		registerGuiHandler();
+		registerFurnaceRecipes();
 		registerRegisters();
 	}
-
 
 	private void registerEventHandlers() {
 		PacketHandler.init();
@@ -107,6 +108,20 @@ public class CommonProxy {
 
 	protected void registerRegisters() {
 		CrusherRecipesRegistry.init();
+	}
+	
+	protected void registerFurnaceRecipes() {
+		GameRegistry.addSmelting(ProjectZed.oreTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
+		GameRegistry.addSmelting(ProjectZed.dustTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
+		
+		GameRegistry.addSmelting(ProjectZed.oreCopper, new ItemStack(ProjectZed.ingotCopper, 1), 50f);
+		GameRegistry.addSmelting(ProjectZed.dustCopper, new ItemStack(ProjectZed.ingotCopper, 1), 50f);
+		
+		GameRegistry.addSmelting(ProjectZed.oreNickel, new ItemStack(ProjectZed.ingotNickel, 1), 50f);
+		GameRegistry.addSmelting(ProjectZed.dustNickel, new ItemStack(ProjectZed.ingotNickel, 1), 50f);
+		
+		GameRegistry.addSmelting(ProjectZed.oreAluminium, new ItemStack(ProjectZed.ingotAluminium, 1), 50f);
+		GameRegistry.addSmelting(ProjectZed.dustAluminium, new ItemStack(ProjectZed.ingotAluminium, 1), 50f);
 	}
 	
 	public void registerUpdateHandler() {
