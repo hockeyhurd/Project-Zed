@@ -145,7 +145,7 @@ public class ProjectZed {
 		energyPipe = new BlockEnergyPipe(Material.rock, "energyPipe", EnumColor.RED);
 		
 		// Ores:
-		titaniumOre = new BlockTitaniumOre(Material.rock, "oreTitanium");
+		titaniumOre = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");
 		
 		// Items:
 		

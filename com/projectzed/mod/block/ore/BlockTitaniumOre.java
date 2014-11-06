@@ -20,8 +20,8 @@ public class BlockTitaniumOre extends AbstractBlockOre {
 	 * @param material
 	 * @param name
 	 */
-	public BlockTitaniumOre(Material material, String name) {
-		super(material, name);
+	public BlockTitaniumOre(Material material, String assetDir, String name) {
+		super(material, assetDir, name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.fileName = name;
 	}
