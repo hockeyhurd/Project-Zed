@@ -12,12 +12,15 @@ import com.projectzed.mod.block.container.BlockEnergyPipe;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
+import com.projectzed.mod.block.ore.BlockCopperOre;
 import com.projectzed.mod.block.ore.BlockTitaniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
+import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustTitanium;
+import com.projectzed.mod.item.metals.ItemIngotCopper;
 import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
@@ -64,6 +67,7 @@ public class ProjectZed {
 	
 	// Ores
 	public static Block titaniumOre;
+	public static Block copperOre;
 	
 	// Items:
 	
@@ -71,8 +75,10 @@ public class ProjectZed {
 	public static Item dustGold;
 	public static Item dustIron;
 	public static Item dustTitanium;
+	public static Item dustCopper;
 	
 	public static Item ingotTitanium;
+	public static Item ingotCopper;
 	
 	/**
 	 * Default constructor.
@@ -146,6 +152,7 @@ public class ProjectZed {
 		
 		// Ores:
 		titaniumOre = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");
+		copperOre = new BlockCopperOre(Material.rock, assetDir, "oreCopper");
 		
 		// Items:
 		
@@ -153,8 +160,10 @@ public class ProjectZed {
 		dustGold = new ItemDustGold("dustGold", assetDir);
 		dustIron = new ItemDustIron("dustIron", assetDir);
 		dustTitanium = new ItemDustTitanium("dustTitanium", assetDir);
+		dustCopper = new ItemDustCopper("dustCopper", assetDir);
 		
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
+		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);
 	}
 
 }
