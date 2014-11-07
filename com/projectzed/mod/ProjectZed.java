@@ -16,6 +16,7 @@ import com.projectzed.mod.block.ore.BlockAluminiumOre;
 import com.projectzed.mod.block.ore.BlockCopperOre;
 import com.projectzed.mod.block.ore.BlockNickelOre;
 import com.projectzed.mod.block.ore.BlockTitaniumOre;
+import com.projectzed.mod.block.ore.BlockUraniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.ItemDustGold;
@@ -24,10 +25,12 @@ import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustNickel;
 import com.projectzed.mod.item.metals.ItemDustTitanium;
+import com.projectzed.mod.item.metals.ItemDustUranium;
 import com.projectzed.mod.item.metals.ItemIngotAluminium;
 import com.projectzed.mod.item.metals.ItemIngotCopper;
 import com.projectzed.mod.item.metals.ItemIngotNickel;
 import com.projectzed.mod.item.metals.ItemIngotTitanium;
+import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -76,6 +79,7 @@ public class ProjectZed {
 	public static Block oreCopper;
 	public static Block oreNickel;
 	public static Block oreAluminium;
+	public static Block oreUranium;
 	
 	// Items:
 	
@@ -86,11 +90,13 @@ public class ProjectZed {
 	public static Item dustCopper;
 	public static Item dustNickel;
 	public static Item dustAluminium;
+	public static Item dustUranium;
 	
 	public static Item ingotTitanium;
 	public static Item ingotCopper;
 	public static Item ingotNickel;
 	public static Item ingotAluminium;
+	public static Item ingotUranium;
 	
 	/**
 	 * Default constructor.
@@ -167,6 +173,7 @@ public class ProjectZed {
 		oreCopper = new BlockCopperOre(Material.rock, assetDir, "oreCopper");
 		oreNickel = new BlockNickelOre(Material.rock, assetDir, "oreNickel"); 
 		oreAluminium = new BlockAluminiumOre(Material.rock, assetDir, "oreAluminium");
+		oreUranium = new BlockUraniumOre(Material.rock, assetDir, "oreUranium");
 		
 		// Items:
 		
@@ -177,11 +184,13 @@ public class ProjectZed {
 		dustCopper = new ItemDustCopper("dustCopper", assetDir);
 		dustNickel = new ItemDustNickel("dustNickel", assetDir);
 		dustAluminium = new ItemDustAluminium("dustAluminium", assetDir);
+		dustUranium = new ItemDustUranium("dustUranium", assetDir);
 		
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);
 		ingotNickel = new ItemIngotNickel("ingotNickel", assetDir);
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
+		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
 	}
 
 }
