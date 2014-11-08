@@ -110,17 +110,18 @@ public class ContainerMachine extends Container {
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
 	 */
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-		// TODO: Fix this transfering shift-click problem.
 		ItemStack stack = null;
 		Slot slot = (Slot) this.inventorySlots.get(index);
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
-			if (index < 8) {
-				if (!this.mergeItemStack(slotStack, 8, this.inventorySlots.size(), false)) return null;
+			if (index < te.getSizeInvenotry()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
 			}
-
-			else if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, 3, false)) return null;
+			
+			else {
+				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
+			}
 
 			if (slotStack.stackSize == 0) slot.putStack((ItemStack) null);
 			else slot.onSlotChanged();

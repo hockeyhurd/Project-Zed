@@ -16,7 +16,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 
 	public TileEntityIndustrialCrusher() {
 		super("industrialCrusher");
-		this.slots = new ItemStack[3];
+		this.slots = new ItemStack[2];
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
 	 */
 	protected void initContentsArray() {
-		this.slots = new ItemStack[3];
+		this.slots = new ItemStack[2];
 	}
 
 	/*
