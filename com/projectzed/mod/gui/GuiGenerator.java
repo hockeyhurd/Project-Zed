@@ -4,14 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.container.ContainerGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.util.Reference.Constants;
 
 /**
  * Generic class for gui's of generators.
@@ -23,6 +22,7 @@ public class GuiGenerator extends GuiContainer {
 
 	public final ResourceLocation texture;
 	private AbstractTileEntityGenerator te;
+	private String stringToDraw;
 
 	public GuiGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		super(new ContainerGenerator(inv, te));
@@ -39,7 +39,8 @@ public class GuiGenerator extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.fontRendererObj.drawString(I18n.format("Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage(), new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth("Power: " + this.te.getEnergyStored() + " / " + this.te.getMaxStorage()) / 2, this.ySize - 116,
+		this.stringToDraw = "Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
+		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
 				4210752);
 	}
 

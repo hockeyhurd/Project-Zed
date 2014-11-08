@@ -11,6 +11,7 @@ import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.util.Reference;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -151,7 +152,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
 	public int getMaxExportRate() {
-		return 20;
+		return Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
 	
 	/*

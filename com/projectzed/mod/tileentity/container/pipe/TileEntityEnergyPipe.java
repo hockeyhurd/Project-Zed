@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.util.Reference;
 
 /**
  * Class containing coode for energy pipe;
@@ -25,8 +26,8 @@ public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
 	public TileEntityEnergyPipe() {
 		super("energyPipe");
 		this.maxStorage = 200;
-		this.importRate = 20;
-		this.exportRate = 10;
+		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
+		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2;
 	}
 
 	/*

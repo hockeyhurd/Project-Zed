@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.util.Reference.Constants;
 
 /**
  * 
@@ -20,6 +21,7 @@ public class GuiMachine extends GuiContainer {
 
 	public final ResourceLocation texture;
 	private AbstractTileEntityMachine te;
+	private String stringToDraw;
 	
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
@@ -36,7 +38,8 @@ public class GuiMachine extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.fontRendererObj.drawString(I18n.format("Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage(), new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth("Power: " + this.te.getEnergyStored() + " / " + this.te.getMaxStorage()) / 2, this.ySize - 116,
+		this.stringToDraw = "Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
+		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
 				4210752);
 	}
 

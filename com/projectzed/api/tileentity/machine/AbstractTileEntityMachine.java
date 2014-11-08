@@ -14,9 +14,9 @@ import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.machine.IEnergyMachine;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
+import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -267,7 +267,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
 	public int getMaxImportRate() {
-		return 10;
+		return Reference.Constants.BASE_MACH_USAGE;
 	}
 
 	/*
