@@ -2,6 +2,7 @@ package com.projectzed.mod.proxy;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
@@ -10,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
@@ -17,6 +20,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
@@ -54,7 +58,6 @@ public class CommonProxy {
 	 * Method used for init everything: blocks, items, handlers, etc.
 	 */
 	public void init() {
-		registerEventHandlers();
 		registerBlocks();
 		registerItems();
 		registerOreDictionaryEntries();
@@ -62,19 +65,18 @@ public class CommonProxy {
 		registerGuiHandler();
 		registerFurnaceRecipes();
 		registerRegisters();
-	}
-
-	private void registerEventHandlers() {
-		PacketHandler.init();
+		registerEventHandlers();
 	}
 
 	private void registerBlocks() {
+		BlockRegistry.instance().init(ProjectZed.instance.getClass());
 		for (Block b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) GameRegistry.registerBlock(b, b.getUnlocalizedName());
 		}
 	}
 	
 	private void registerItems() {
+		ItemRegistry.instance().init(ProjectZed.instance.getClass());
 		for (Item i : ItemRegistry.instance().getItems()) {
 			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
 		}
@@ -91,6 +93,8 @@ public class CommonProxy {
 	}
 	
 	private void registerTileEntities() {
+		TileEntityRegistry.instance().init();
+		
 		Iterator iter = TileEntityRegistry.instance().getMapping().entrySet().iterator();
 		while (iter.hasNext()) {
 			Entry<Class<? extends TileEntity>, String> entry = (Entry<Class<? extends TileEntity>, String>) iter.next();
@@ -107,7 +111,31 @@ public class CommonProxy {
 	}
 
 	protected void registerRegisters() {
+		CraftingRegistry.instance().init();
+		
+		List<ShapelessOreRecipe> shapelessList = CraftingRegistry.instance().getShapelessList();
+		if (shapelessList != null && shapelessList.size() > 0) {
+			for (int i = 0; i < shapelessList.size(); i++) {
+				ShapelessOreRecipe rec = shapelessList.get(i);
+				if (rec != null) GameRegistry.addRecipe(rec);
+				else ProjectZed.logHelper.severe("Error registering shapeless recipe at index", i);
+			}
+		}
+		
+		List<ShapedOreRecipe> shapedList = CraftingRegistry.instance().getShapedList();
+		if (shapedList != null && shapedList.size() > 0) {
+			for (int i = 0; i < shapedList.size(); i++) {
+				ShapedOreRecipe rec = shapedList.get(i);
+				if (rec != null) GameRegistry.addRecipe(rec);
+				else ProjectZed.logHelper.severe("Error registering shaped recipe at index", i);
+			}
+		}
+		
 		CrusherRecipesRegistry.init();
+	}
+	
+	private void registerEventHandlers() {
+		PacketHandler.init();
 	}
 	
 	protected void registerFurnaceRecipes() {

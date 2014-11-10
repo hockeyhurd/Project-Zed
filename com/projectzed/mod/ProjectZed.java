@@ -32,9 +32,6 @@ import com.projectzed.mod.item.metals.ItemIngotNickel;
 import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.proxy.CommonProxy;
-import com.projectzed.mod.registry.BlockRegistry;
-import com.projectzed.mod.registry.ItemRegistry;
-import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.Mod;
@@ -134,9 +131,6 @@ public class ProjectZed {
 		logHelper.info("Init started");
 		
 		loadObj();
-		BlockRegistry.instance().init(instance.getClass());
-		ItemRegistry.instance().init(instance.getClass());
-		TileEntityRegistry.instance().init();
 		proxy.init();
 		proxy.registerRenderInformation();
 		
