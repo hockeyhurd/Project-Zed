@@ -61,6 +61,7 @@ public class CommonProxy {
 		registerBlocks();
 		registerItems();
 		registerOreDictionaryEntries();
+		registerWorldgen();
 		registerTileEntities();
 		registerGuiHandler();
 		registerFurnaceRecipes();
@@ -90,6 +91,14 @@ public class CommonProxy {
 		for (Item i : ItemRegistry.instance().getItemOres()) {
 			if (i != null) OreDictionary.registerOre(ItemRegistry.instance().getBlockName(i), i);
 		}
+	}
+	
+	private void registerWorldgen() {
+		GameRegistry.registerWorldGenerator(ProjectZed.worldgenTitanium, 1);
+		GameRegistry.registerWorldGenerator(ProjectZed.worldgenNickel, 1);
+		GameRegistry.registerWorldGenerator(ProjectZed.worldgenAluminium, 1);
+		GameRegistry.registerWorldGenerator(ProjectZed.worldgenCopper, 1);
+		GameRegistry.registerWorldGenerator(ProjectZed.worldgenUranium, 1);
 	}
 	
 	private void registerTileEntities() {

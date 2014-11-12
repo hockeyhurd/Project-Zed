@@ -19,6 +19,7 @@ import com.projectzed.mod.block.ore.BlockTitaniumOre;
 import com.projectzed.mod.block.ore.BlockUraniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
+import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
@@ -33,6 +34,7 @@ import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.Reference;
+import com.projectzed.mod.worldgen.OreWorldgen;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -79,6 +81,7 @@ public class ProjectZed {
 	public static Block oreUranium;
 	
 	// Items:
+	public static Item itemDongle;
 	
 	// Metals:
 	public static Item dustGold;
@@ -94,6 +97,12 @@ public class ProjectZed {
 	public static Item ingotNickel;
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
+	
+	public static OreWorldgen worldgenTitanium;
+	public static OreWorldgen worldgenNickel;
+	public static OreWorldgen worldgenAluminium;
+	public static OreWorldgen worldgenCopper;
+	public static OreWorldgen worldgenUranium;
 	
 	/**
 	 * Default constructor.
@@ -170,6 +179,7 @@ public class ProjectZed {
 		oreUranium = new BlockUraniumOre(Material.rock, assetDir, "oreUranium");
 		
 		// Items:
+		itemDongle = new ItemDongle();
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);
@@ -185,6 +195,13 @@ public class ProjectZed {
 		ingotNickel = new ItemIngotNickel("ingotNickel", assetDir);
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
+		
+		// Worldgen:
+		worldgenTitanium = new OreWorldgen(oreTitanium, 6, 3, 6, 8, 24);
+		worldgenNickel = new OreWorldgen(oreNickel, 6, 4, 6, 10, 30);
+		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 3, 7, 10, 64);
+		worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
+		worldgenUranium = new OreWorldgen(oreUranium, 4, 2, 4, 4, 16);
 	}
 
 }
