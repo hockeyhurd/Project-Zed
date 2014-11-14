@@ -9,7 +9,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.projectzed.api.source.EnumColor;
 import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,12 +25,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
-	private ResourceLocation texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_red.png");
+	private ResourceLocation texture;
+	private EnumColor color;
 	private final float PIXEL = 1f / 16f;
 	private final float TEXTURE_PIXEL = 1f / 32f;
 	private boolean renderInside = false;
 
 	private float calc = 11 * PIXEL / 2;
+	
+	public EnergyPipeRenderer(EnumColor color) {
+		super();
+		this.color = color;
+		texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_" + color.getColorAsString() + ".png");
+	}
 
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		GL11.glTranslated(x, y, z);
@@ -63,7 +72,21 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	}
 
 	private boolean canConnect(World world, TileEntity te, int x, int y, int z) {
-		return world.getTileEntity(x, y, z) instanceof IEnergyContainer;
+		boolean flag = false;
+		
+		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
+			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
+			
+			if (cont instanceof TileEntityEnergyPipeBase) {
+				TileEntityEnergyPipeBase _te = (TileEntityEnergyPipeBase) cont;
+				if (_te != null && this.color == _te.getColor()) flag = true;
+				return flag;
+			}
+			
+			flag = true;
+		}
+		
+		return flag;
 	}
 
 	private void drawConnection(ForgeDirection dir) {

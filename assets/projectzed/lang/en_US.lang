@@ -2,7 +2,8 @@
 tile.solarArray.name=Solar Array
 tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
-tile.energyPipe.name=Energy Pipe
+tile.energyPipeRed.name=Energy Pipe - Red
+tile.energyPipeOrange.name=Energy Pipe - Orange
 
 // Ores:
 tile.oreTitanium.name=Titanium Ore

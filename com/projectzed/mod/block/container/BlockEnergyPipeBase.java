@@ -10,7 +10,7 @@ import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public class BlockEnergyPipe extends AbstractBlockPipe {
+public class BlockEnergyPipeBase extends AbstractBlockPipe {
 
 	protected EnumColor color;
 	
@@ -28,7 +28,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 * @param material
 	 * @param name
 	 */
-	public BlockEnergyPipe(Material material, String name, EnumColor color) {
+	public BlockEnergyPipeBase(Material material, String name, EnumColor color) {
 		super(material, name);
 		this.color = color;
 	}
@@ -45,7 +45,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 */
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
-		return ClientProxy.energyPipe;
+		return ClientProxy.energyPipeRed;
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 * @see com.projectzed.api.block.AbstractBlockPipe#createNewTileEntity(net.minecraft.world.World, int)
 	 */
 	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntityEnergyPipe();
+		return new TileEntityEnergyPipeBase();
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 */
 	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
 		// Create tile entity object at world coordinate.
-		TileEntityEnergyPipe pipe = (TileEntityEnergyPipe) world.getTileEntity(x, y, z);
+		TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) world.getTileEntity(x, y, z);
 
 		// Check if block exists.
 		if (pipe != null) {
@@ -101,7 +101,7 @@ public class BlockEnergyPipe extends AbstractBlockPipe {
 	 */
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
 		// Create tile entity object at world coordinate.
-		TileEntityEnergyPipe pipe = (TileEntityEnergyPipe) world.getTileEntity(x, y, z);
+		TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) world.getTileEntity(x, y, z);
 
 		// Check if block exists.
 		if (pipe != null) {

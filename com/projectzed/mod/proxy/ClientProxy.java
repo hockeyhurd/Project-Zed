@@ -3,10 +3,12 @@ package com.projectzed.mod.proxy;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 
+import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipe;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -21,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 
 	/** Stating variable for tracking the current render pass in special renderers. */
 	public static int renderPass;
-	public static int energyPipe;
+	public static int energyPipeRed, energyPipeOrange;
 	
 	/**
 	 * Default Constructor.
@@ -34,9 +36,13 @@ public class ClientProxy extends CommonProxy {
 	 * and to register any special renderer's we may have.
 	 */
 	public void registerRenderInformation() {
-		energyPipe = RenderingRegistry.getNextAvailableRenderId();
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipe.class, new EnergyPipeRenderer());
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipe), new EnergyPipeItemRenderer(ProjectZed.energyPipe.getBlockTextureFromSide(0)));
+		energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
+		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
 	}
 
 }

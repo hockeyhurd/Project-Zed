@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.projectzed.api.source.EnumColor;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -17,17 +18,21 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public class TileEntityEnergyPipe extends AbstractTileEntityPipe {
+public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 
 	public boolean flag;
 	protected int importRate, exportRate;
 	protected int containerSize = 0;
 
-	public TileEntityEnergyPipe() {
+	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
 		this.maxStorage = 200;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2;
+	}
+	
+	public EnumColor getColor() {
+		return null;
 	}
 
 	/*

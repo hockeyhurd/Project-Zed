@@ -8,7 +8,7 @@ package com.projectzed.api.source;
  */
 public enum EnumColor {
 
-	RED("red", 0), GREEN("green", 1), BLUE("blue", 2);
+	RED("red", 0), ORANGE("orange", 1), GREEN("green", 2), BLUE("blue", 3);
 	
 	private static int counter = 0;
 	private String color;
