@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,6 +74,9 @@ public class CraftingRegistry {
 	 */
 	private void initShaped() {
 		reg.shapedList.add(createShapedRecipe(ProjectZed.machineContainer, 1, "xyx", "yzy", "xyx", 'x', ProjectZed.screw, 'y', "plateAluminium", 'z', "ingotTitanium"));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.gearAluminium, 1, " x ", "xyx", " x ", 'x', "ingotAluminium", 'y', "ingotIron"));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.gearAluminium, 'f', ProjectZed.energyPipeRed));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.gearAluminium, 'f', ProjectZed.energyPipeRed));
 	}
 	
 	/**

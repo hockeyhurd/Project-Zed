@@ -24,6 +24,7 @@ import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
+import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemScrew;
 import com.projectzed.mod.item.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
@@ -92,6 +93,7 @@ public class ProjectZed {
 	public static Item itemDongle;
 	public static Item screw;
 	public static Item sheetAluminium;
+	public static Item gearAluminium;
 	
 	// Metals:
 	public static Item dustGold;
@@ -196,6 +198,7 @@ public class ProjectZed {
 		itemDongle = new ItemDongle();
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
+		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);
