@@ -13,6 +13,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
+import com.projectzed.mod.block.machines.BlockMachineContainer;
 import com.projectzed.mod.block.ore.BlockAluminiumOre;
 import com.projectzed.mod.block.ore.BlockCopperOre;
 import com.projectzed.mod.block.ore.BlockNickelOre;
@@ -23,6 +24,8 @@ import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
+import com.projectzed.mod.item.ItemScrew;
+import com.projectzed.mod.item.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustNickel;
@@ -68,7 +71,10 @@ public class ProjectZed {
 	// Creative Tabs:
 	public static CreativeTabs modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
 	
-	// Blocks: 
+	// Blocks:
+	public static Block machineContainer;
+	
+	// Machines: 
 	public static Block solarArray;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
@@ -84,6 +90,8 @@ public class ProjectZed {
 	
 	// Items:
 	public static Item itemDongle;
+	public static Item screw;
+	public static Item sheetAluminium;
 	
 	// Metals:
 	public static Item dustGold;
@@ -168,6 +176,9 @@ public class ProjectZed {
 	 */
 	private void loadObj() {
 		// Blocks:
+		machineContainer = new BlockMachineContainer();
+		
+		// Machines:
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
@@ -183,6 +194,8 @@ public class ProjectZed {
 		
 		// Items:
 		itemDongle = new ItemDongle();
+		screw = new ItemScrew("screw", assetDir);
+		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);

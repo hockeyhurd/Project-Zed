@@ -91,6 +91,8 @@ public class CommonProxy {
 		for (Item i : ItemRegistry.instance().getItemOres()) {
 			if (i != null) OreDictionary.registerOre(ItemRegistry.instance().getBlockName(i), i);
 		}
+		
+		OreDictionary.registerOre("plateAluminium", ProjectZed.sheetAluminium);
 	}
 	
 	private void registerWorldgen() {

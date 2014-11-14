@@ -65,12 +65,14 @@ public class CraftingRegistry {
 	 */
 	private void initShapeless() {
 		reg.shapelessList.add(createShapelessRecipe(ProjectZed.energyPipeRed, 8, "ingotTitanium", Items.redstone, "ingotTitanium"));
+		reg.shapelessList.add(createShapelessRecipe(ProjectZed.screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 	}
 	
 	/**
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShaped() {
+		reg.shapedList.add(createShapedRecipe(ProjectZed.machineContainer, 1, "xyx", "yzy", "xyx", 'x', ProjectZed.screw, 'y', "plateAluminium", 'z', "ingotTitanium"));
 	}
 	
 	/**
