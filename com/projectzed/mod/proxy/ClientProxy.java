@@ -7,6 +7,7 @@ import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 
@@ -23,7 +24,7 @@ public class ClientProxy extends CommonProxy {
 
 	/** Stating variable for tracking the current render pass in special renderers. */
 	public static int renderPass;
-	public static int energyPipeRed, energyPipeOrange;
+	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
 	
 	/**
 	 * Default Constructor.
@@ -38,11 +39,15 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderInformation() {
 		energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
+		energyPipeClear = RenderingRegistry.getNextAvailableRenderId();
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
+		
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeClear), new EnergyPipeItemRenderer(ProjectZed.energyPipeClear.getBlockTextureFromSide(0), true));
 	}
 
 }

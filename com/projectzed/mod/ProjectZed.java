@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.source.EnumColor;
+import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -81,6 +82,7 @@ public class ProjectZed {
 	public static Block industrialCrusher;
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
+	public static Block energyPipeClear;
 	
 	// Ores
 	public static Block oreTitanium;
@@ -186,6 +188,7 @@ public class ProjectZed {
 		industrialCrusher = new BlockIndustrialCrusher();
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
+		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
 		
 		// Ores:
 		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");

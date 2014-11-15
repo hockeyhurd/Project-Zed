@@ -36,6 +36,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	public EnergyPipeRenderer(EnumColor color) {
 		super();
 		this.color = color;
+		this.renderInside = this.color == EnumColor.CLEAR;
 		texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_" + color.getColorAsString() + ".png");
 	}
 
@@ -109,12 +110,26 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		
+		if (renderInside) {
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
 
 		// +z
 		tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		
+		if (renderInside) {
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
 
 		// -x
 		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
@@ -122,11 +137,25 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		
+		if (renderInside) {
+			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
+		
 		// +x
 		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		
+		if (renderInside) {
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
 
 		tess.draw();
 

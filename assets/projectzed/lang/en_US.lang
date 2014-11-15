@@ -1,9 +1,13 @@
 // Blocks:
+tile.machineContainer.name=Machine Container Frame
+
+// Machines:
 tile.solarArray.name=Solar Array
 tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
+tile.energyPipeClear.name=Energy Pipe - Clear
 
 // Ores:
 tile.oreTitanium.name=Titanium Ore
@@ -13,6 +17,10 @@ tile.oreAluminium.name=Aluminium Ore
 tile.oreUranium.name=Uranium Ore
 
 // Items:
+item.itemDongle.name=Dev Dongle
+item.screw.name=Screw
+item.sheetAluminium.name=Sheet of Aluminium
+item.gearAluminium.name=Aluminium Gear
 
 // Metals:
 item.dustGold.name=Gold Dust

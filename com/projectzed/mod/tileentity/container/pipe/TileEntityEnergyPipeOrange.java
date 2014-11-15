@@ -13,8 +13,8 @@ public class TileEntityEnergyPipeOrange extends TileEntityEnergyPipeBase {
 
 	public TileEntityEnergyPipeOrange() {
 		super();
-		this.importRate = super.importRate * 4;
-		this.exportRate = super.exportRate * 4;
+		this.importRate = super.importRate * 2;
+		this.exportRate = super.exportRate * 2;
 	}
 	
 	public EnumColor getColor() {
