@@ -230,7 +230,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored < c.getEnergyStored()) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 
