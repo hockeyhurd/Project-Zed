@@ -133,7 +133,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	/**
 	 * Method used to transfer power from one te to another.
 	 */
-	// TODO: Change this code to match better with AbstractTileEntityEnergyPipe and AbstractTileEntityGenerator.
 	public void transferPower() {
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;

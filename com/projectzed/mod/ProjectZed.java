@@ -165,12 +165,12 @@ public class ProjectZed {
 		TimeLapse tl = new TimeLapse();
 		logHelper.info("Post-Init started");
 		
-		/*if (configHandler.allowUpdating()) {
+		if (configHandler.allowUpdating()) {
 			proxy.registerUpdateHandler();
-			if (!proxy.updateFlag) lh.warn("Found an update!");
-			else lh.info("Everything is up to date!");
+			if (!proxy.updateFlag) logHelper.warn("Found an update!");
+			else logHelper.info("Everything is up to date!");
 		}
-		else lh.warn("Skipping checking for updates. WARNING: bugs may exist!");*/
+		else logHelper.warn("Skipping checking for updates. WARNING: bugs may exist!");
 		
 		logHelper.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}

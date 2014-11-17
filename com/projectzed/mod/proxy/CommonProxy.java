@@ -169,8 +169,7 @@ public class CommonProxy {
 		this.map = updateHandler.getMap();
 		this.updateFlag = updateHandler.getUpToDate();
 		
-		// TODO: Temporarily set to false until set-up is done on the update-server first.
-		MinecraftForge.EVENT_BUS.register(new NotifyPlayerOnJoinHandler(updateHandler, this.map, Reference.class, this.updateFlag, true, false /*ProjectZed.configHandler.allowUpdating()*/));
+		MinecraftForge.EVENT_BUS.register(new NotifyPlayerOnJoinHandler(updateHandler, this.map, Reference.class, this.updateFlag, true, ProjectZed.configHandler.allowUpdating()));
 	}
 
 }
