@@ -14,6 +14,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
+import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
 import com.projectzed.mod.block.machines.BlockMachineContainer;
 import com.projectzed.mod.block.ore.BlockAluminiumOre;
 import com.projectzed.mod.block.ore.BlockCopperOre;
@@ -80,6 +81,7 @@ public class ProjectZed {
 	public static Block solarArray;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
+	public static Block industrialLumberMill;
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
@@ -186,6 +188,7 @@ public class ProjectZed {
 		solarArray = new BlockSolarArray(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
+		industrialLumberMill = new BlockIndustrialLumberMill();
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
 		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);

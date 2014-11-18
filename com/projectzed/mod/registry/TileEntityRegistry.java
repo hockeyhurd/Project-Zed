@@ -10,6 +10,7 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
 
 /**
  * Class container for all registered tile enties in this mod.
@@ -37,6 +38,9 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityIndustrialCrusher.class, "industrialCrusherTileEntity");
 		reg.idMap.put(TileEntityIndustrialCrusher.class, getNextID());
+		
+		reg.map.put(TileEntityIndustrialLumberMill.class, "industrialLumberMillTileEntity");
+		reg.idMap.put(TileEntityIndustrialLumberMill.class, getNextID());
 		
 		reg.map.put(TileEntityEnergyPipeRed.class,  "energyPipeTileEntityRed");
 		reg.idMap.put(TileEntityEnergyPipeRed.class, getNextID());

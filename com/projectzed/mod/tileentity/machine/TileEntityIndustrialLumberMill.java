@@ -2,108 +2,94 @@ package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 
 /**
  * 
  * @author hockeyhurd
- * @version Oct 22, 2014
+ * @version Nov 17, 2014
  */
-public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
+public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 
-	public TileEntityIndustrialFurnace() {
-		super("industrialFurnace");
+	/**
+	 * @param name
+	 */
+	public TileEntityIndustrialLumberMill() {
+		super("industrialLumberMill");
 		this.slots = new ItemStack[2];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
 	 */
 	public int getSizeInventory() {
 		return 2;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
 	 */
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
 	 */
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
 	 */
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
-			0
-		};
-		this.slotRight = new int[] {
-			1
-		};
+				0
+			};
+			this.slotRight = new int[] {
+				1
+			};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot == 1 ? false : true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return side == 0 ? this.slotBottom : (side == 1 ? this.slotTop : this.slotRight);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return this.isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return side != 0 || slot != 1 || stack.getItem() == Items.bucket;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
 	 */
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.stored + this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+			ItemStack stack = LumberMillRecipesRegistry.millingList(this.slots[0]);
 			if (stack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(stack)) return false;
@@ -116,13 +102,12 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
 	 */
 	public void smeltItem() {
 		if (this.canSmelt()) {
-			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+			ItemStack itemstack = LumberMillRecipesRegistry.millingList(this.slots[0]);
 
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
 			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
