@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
+import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
@@ -32,6 +33,9 @@ public class TileEntityRegistry {
 	public void init() {
 		reg.map.put(TileEntitySolarArray.class, "solarArrayTileEntity");
 		reg.idMap.put(TileEntitySolarArray.class, getNextID());
+		
+		reg.map.put(TileEntityFurnaceGenerator.class, "furnaceGenTileEntity");
+		reg.idMap.put(TileEntityFurnaceGenerator.class, getNextID());
 		
 		reg.map.put(TileEntityIndustrialFurnace.class, "industrialFurnaceTileEntity");
 		reg.idMap.put(TileEntityIndustrialFurnace.class, getNextID());

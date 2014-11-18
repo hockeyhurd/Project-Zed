@@ -86,7 +86,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
 	 */
 	protected boolean canSmelt() {
-		if (this.slots[0] == null || this.stored + this.energyBurnRate <= 0) return false;
+		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
 			ItemStack stack = LumberMillRecipesRegistry.millingList(this.slots[0]);

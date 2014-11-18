@@ -8,6 +8,7 @@ import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.GuiGenerator;
 import com.projectzed.mod.gui.GuiMachine;
+import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
@@ -28,6 +29,7 @@ public class GuiHandler implements IGuiHandler {
 		TileEntity te = world.getTileEntity(x, y, z);
 
 		if (te instanceof TileEntitySolarArray) return new ContainerGenerator(player.inventory, (TileEntitySolarArray) te);
+		else if (te instanceof TileEntityFurnaceGenerator) return new ContainerGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
 		else if (te instanceof TileEntityIndustrialFurnace) return new ContainerMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new ContainerMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new ContainerMachine(player.inventory, (TileEntityIndustrialLumberMill) te);
@@ -40,6 +42,7 @@ public class GuiHandler implements IGuiHandler {
 		TileEntity te = world.getTileEntity(x, y, z);
 
 		if (te instanceof TileEntitySolarArray) return new GuiGenerator(player.inventory, (TileEntitySolarArray) te);
+		else if (te instanceof TileEntityFurnaceGenerator) return new GuiGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
 		else if (te instanceof TileEntityIndustrialFurnace) return new GuiMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new GuiMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new GuiMachine(player.inventory, (TileEntityIndustrialLumberMill) te);

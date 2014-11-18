@@ -11,6 +11,7 @@ import com.projectzed.api.source.EnumColor;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
+import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
@@ -79,6 +80,7 @@ public class ProjectZed {
 	
 	// Machines: 
 	public static Block solarArray;
+	public static Block furnaceGen;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
@@ -186,6 +188,7 @@ public class ProjectZed {
 		
 		// Machines:
 		solarArray = new BlockSolarArray(Material.rock);
+		furnaceGen = new BlockFurnaceGenerator(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();

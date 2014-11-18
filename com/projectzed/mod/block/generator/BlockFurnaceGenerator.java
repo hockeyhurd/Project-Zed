@@ -1,0 +1,62 @@
+package com.projectzed.mod.block.generator;
+
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+
+/**
+ * 
+ * @author hockeyhurd
+ * @version Nov 18, 2014
+ */
+public class BlockFurnaceGenerator extends AbstractBlockGenerator {
+
+	/**
+	 * @param material
+	 * @param name
+	 */
+	public BlockFurnaceGenerator(Material material) {
+		super(material, "furnaceGen");
+		this.setBlockName("furnaceGen");
+		this.setCreativeTab(ProjectZed.modCreativeTab);
+		this.setHardness(1.0f);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
+	 */
+	public TileEntity createNewTileEntity(World world, int id) {
+		return new TileEntityFurnaceGenerator();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 */
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+		if (world.isRemote) return true;
+
+		else {
+			TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
+			return true;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
+	 */
+	protected void doBreakBlock(World world, int x, int y, int z) {
+		TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
+		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
+	}
+
+}
