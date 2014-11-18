@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -55,9 +56,13 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	}
 
 	public void updateEntity() {
-		if (this.worldObj != null && !worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0L) {
-			this.powerMode = worldObj.isDaytime();
-			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+		if (this.worldObj != null && !this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0L) {
+			if (this.getBlockType() instanceof BlockSolarArray) {
+				BlockSolarArray b = (BlockSolarArray) this.getBlockType();
+				boolean clear = b.canSeeAbove(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+				this.powerMode = worldObj.isDaytime() && clear;
+				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+			}
 		}
 		super.updateEntity();
 	}

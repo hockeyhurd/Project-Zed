@@ -1,6 +1,7 @@
 package com.projectzed.mod.block.generator;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -52,6 +53,7 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
 	 */
 	public TileEntity createNewTileEntity(World world, int id) {
@@ -72,7 +74,9 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int,
+	 * net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -86,15 +90,15 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int,
+	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
 			TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
-			// world, x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
 			return true;
 		}
@@ -102,11 +106,35 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
+	}
+
+	/**
+	 * Method used to detect if a block is above this block (blocking our sunlight).
+	 * @param world = world object.
+	 * @param x = x-pos.
+	 * @param y = y-pos.
+	 * @param z = z-pos.
+	 */
+	public boolean canSeeAbove(World world, int x, int y, int z) {
+		boolean clear = true;
+		
+		if (!world.isRemote) {
+			for (int yy = y + 1; yy < 255; yy++) {
+				Block b = world.getBlock(x, yy, z);
+				if (b != null && !(b instanceof BlockAir)) {
+					clear = false;
+					break;
+				}
+			}
+		}
+		
+		return clear;
 	}
 
 }
