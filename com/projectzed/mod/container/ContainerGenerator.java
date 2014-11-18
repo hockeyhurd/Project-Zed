@@ -87,7 +87,6 @@ public class ContainerGenerator extends Container {
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack itemstack = null;
 		Slot slot = (Slot) this.inventorySlots.get(index);
-		// TODO: Fix duping glitch when shift-clicking somewhere in here!
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
@@ -98,7 +97,7 @@ public class ContainerGenerator extends Container {
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 			else {
-				if (!this.mergeItemStack(itemstack1, 0, this.getInventory().size(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 0, te.getSizeInvenotry(), false)) return null;
 			}
 
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);

@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -117,15 +118,17 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
-		/*NBTTagList tagList = comp.getTagList("Items", 10);
-		this.invContents = new ItemStack[this.getSizeInvenotry()];
+		this.slots = new ItemStack[this.getSizeInvenotry()];
+		NBTTagList tagList = comp.getTagList("Items", 10);
 		
 		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
 			byte b0 = temp.getByte("Slot");
-			
-			if (b0 >= 0 && b0 < this.invContents.length) this.invContents[b0] = ItemStack.loadItemStackFromNBT(temp);
-		}*/
+
+			if (b0 >= 0 && b0 < this.slots.length) this.slots[b0] = ItemStack.loadItemStackFromNBT(temp);
+		}
+
+		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
 	}
 	
 	/**
@@ -134,16 +137,20 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
-		/*NBTTagList tagList = new NBTTagList();
-		
-		for (int i = 0; i < this.invContents.length; i++) {
-			if (this.invContents[i] != null) {
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setByte("Slot", (byte) i);
-				this.invContents[i].writeToNBT(compound);
-				tagList.appendTag(compound);
+		NBTTagList tagList = comp.getTagList("Items", 10);
+
+		for (int i = 0; i < this.slots.length; i++) {
+			if (this.slots[i] != null) {
+				NBTTagCompound temp = new NBTTagCompound();
+				comp.setByte("Slot", (byte) i);
+				this.slots[i].writeToNBT(temp);
+				tagList.appendTag(temp);
 			}
-		}*/
+		}
+
+		comp.setTag("Items", tagList);
+
+		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 	
 	/**
