@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -48,7 +47,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @return inventory size as integer.
 	 */
 	public int getSizeInvenotry() {
-		return this.slots.length;
+		return this.slots != null ? this.slots.length : 0;
 	}
 	
 	/**

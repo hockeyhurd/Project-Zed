@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AbstractBlockGenerator extends BlockContainer {
 
 	protected String name;
-	protected IIcon top, base;
+	protected IIcon top, base, front;
 
 	/**
 	 * @param material = material of block
@@ -45,11 +45,17 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + name + "_side");
 		this.top = reg.registerIcon(ProjectZed.assetDir + name + "_top");
 		this.base = reg.registerIcon(ProjectZed.assetDir + name + "_base");
+		this.front = reg.registerIcon(ProjectZed.assetDir + name + "_front");
 	}
 
+	/**
+	 * NOTE: You probably want to overwrite this method if this method is used in another mod!
+	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int metadata) {
-		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
+	public IIcon getIcon(int side, int meta) {
+		if (side == 3 && meta == 0) return this.front;
+		return side == 0 ? this.base : (side == 1 ? this.top: (side != meta ? this.blockIcon : this.front));
 	}
 
 	public abstract TileEntity createNewTileEntity(World world, int id);

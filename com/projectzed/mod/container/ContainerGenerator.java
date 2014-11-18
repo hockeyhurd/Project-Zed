@@ -92,12 +92,12 @@ public class ContainerGenerator extends Container {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 			
-			if (index < te.getSizeInvenotry()) {
+			if (index <= te.getSizeInvenotry() - 1) {
 				if (!this.mergeItemStack(itemstack1, te.getSizeInvenotry(), this.getInventory().size(), true)) return null; 
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
-			else if (index > 0) {
+			else {
 				if (!this.mergeItemStack(itemstack1, 0, this.getInventory().size(), false)) return null;
 			}
 

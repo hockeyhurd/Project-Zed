@@ -10,6 +10,8 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;
@@ -150,10 +152,10 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
 			else this.slots[0].stackSize--;
-			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
+			if (this.slots[0].stackSize <= 0) this.slots[0] = (ItemStack) null;
 		}
 	}
-	
+
 	public void generatePower() {
 		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
@@ -167,13 +169,61 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 					consumeFuel();
 				}
 			}
-			
+
 			if (this.burnTime > 0) this.burnTime--;
-			
+
 			this.powerMode = this.burnTime > 0;
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 		super.updateEntity();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		this.burnTime = comp.getInteger("ProjectZedBurnTime") > 0 ? comp.getInteger("ProjectZedBurnTime") : 0;
+
+		this.slots = new ItemStack[this.getSizeInvenotry()];
+		NBTTagList tagList = comp.getTagList("Items", 10);
+		
+		for (int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
+			byte b0 = temp.getByte("Slot");
+
+			if (b0 >= 0 && b0 < this.slots.length) this.slots[b0] = ItemStack.loadItemStackFromNBT(temp);
+		}
+
+		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setInteger("ProjectZedBurnTime", this.burnTime);
+
+		NBTTagList tagList = comp.getTagList("Items", 10);
+
+		for (int i = 0; i < this.slots.length; i++) {
+			if (this.slots[i] != null) {
+				NBTTagCompound temp = new NBTTagCompound();
+				comp.setByte("Slot", (byte) i);
+				this.slots[i].writeToNBT(temp);
+				tagList.appendTag(temp);
+			}
+		}
+
+		comp.setTag("Items", tagList);
+
+		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
 }

@@ -44,6 +44,7 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "solar_side");
 		this.top = reg.registerIcon(ProjectZed.assetDir + "solar_top");
 		this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
+		this.front = this.blockIcon;
 	}
 
 	@SideOnly(Side.CLIENT)

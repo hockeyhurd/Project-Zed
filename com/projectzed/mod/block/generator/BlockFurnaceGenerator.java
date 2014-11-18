@@ -1,6 +1,7 @@
 package com.projectzed.mod.block.generator;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -12,6 +13,8 @@ import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * 
@@ -19,11 +22,7 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
  * @version Nov 18, 2014
  */
 public class BlockFurnaceGenerator extends AbstractBlockGenerator {
-
-	/**
-	 * @param material
-	 * @param name
-	 */
+	
 	public BlockFurnaceGenerator(Material material) {
 		super(material, "furnaceGen");
 		this.setBlockName("furnaceGen");
@@ -31,6 +30,13 @@ public class BlockFurnaceGenerator extends AbstractBlockGenerator {
 		this.setHardness(1.0f);
 	}
 
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg) {
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
+		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
+		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
 	 */
