@@ -26,11 +26,12 @@ public class GuiGenerator extends GuiContainer {
 
 	public GuiGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		super(new ContainerGenerator(inv, te));
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic.png");
-
 		this.te = te;
 		this.xSize = 176;
 		this.ySize = 166;
+		int slots = this.te.getSizeInventory();
+		
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic" + slots + ".png");
 	}
 
 	public void drawGuiContainerForegroundLayer(int x, int y) {

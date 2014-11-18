@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 
-import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.source.EnumType;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
@@ -31,6 +30,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 
 	public TileEntityFurnaceGenerator() {
 		super("furnaceGen");
+		this.slots = new ItemStack[1];
 	}
 
 	/*
@@ -160,18 +160,18 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	}
 
 	public void updateEntity() {
-		if (this.worldObj != null && !this.worldObj.isRemote && this.slots[0] != null) {
-			if (isFuel()) {
+		if (this.worldObj != null && !this.worldObj.isRemote) {
+			if (this.slots[0] != null && isFuel()) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
 					consumeFuel();
 				}
-				
-				else if (this.burnTime > 0) this.burnTime--;
-				else this.burnTime = 0;	
 			}
 			
+			if (this.burnTime > 0) this.burnTime--;
+			
 			this.powerMode = this.burnTime > 0;
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 		super.updateEntity();
 	}
