@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.source.EnumColor;
+import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
@@ -77,6 +78,7 @@ public class ProjectZed {
 	
 	// Blocks:
 	public static Block machineContainer;
+	public static Block thickenedGlass;
 	
 	// Machines: 
 	public static Block solarArray;
@@ -185,6 +187,7 @@ public class ProjectZed {
 	private void loadObj() {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
+		thickenedGlass = new BlockThickenedGlass();
 		
 		// Machines:
 		solarArray = new BlockSolarArray(Material.rock);

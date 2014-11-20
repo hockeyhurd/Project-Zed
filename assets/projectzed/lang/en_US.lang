@@ -1,5 +1,6 @@
 // Blocks:
 tile.machineContainer.name=Machine Container Frame
+tile.thickenedGlass.name=Thickened Glass
 
 // Machines:
 tile.solarArray.name=Solar Array
