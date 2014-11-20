@@ -3,8 +3,10 @@ tile.machineContainer.name=Machine Container Frame
 
 // Machines:
 tile.solarArray.name=Solar Array
+tile.furnaceGen.name=Furnace Generator
 tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
+tile.industrialLumberMill.name=Industrial Lumber Mill
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
