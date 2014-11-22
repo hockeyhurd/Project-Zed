@@ -4,10 +4,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.gui.GuiFabricationTable;
 import com.projectzed.mod.gui.GuiGenerator;
 import com.projectzed.mod.gui.GuiMachine;
+import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
@@ -33,6 +36,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialFurnace) return new ContainerMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new ContainerMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new ContainerMachine(player.inventory, (TileEntityIndustrialLumberMill) te);
+		else if (te instanceof TileEntityFabricationTable) return new ContainerFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 
 		return null;
 	}
@@ -46,6 +50,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialFurnace) return new GuiMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new GuiMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new GuiMachine(player.inventory, (TileEntityIndustrialLumberMill) te);
+		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 
 		return null;
 	}
