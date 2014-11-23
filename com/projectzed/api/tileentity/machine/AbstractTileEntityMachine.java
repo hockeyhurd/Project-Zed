@@ -371,7 +371,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		for (int i = 0; i < this.slots.length; i++) {
 			if (this.slots[i] != null) {
 				NBTTagCompound temp = new NBTTagCompound();
-				comp.setByte("Slot", (byte) i);
+				temp.setByte("Slot", (byte) i);
 				this.slots[i].writeToNBT(temp);
 				tagList.appendTag(temp);
 			}

@@ -19,7 +19,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	public TileEntityFabricationTable() {
 		super();
 		this.customName = "fabricationTable";
-		this.slots = new ItemStack[10 + 4 * 9 + 6 * 12];
+		this.slots = new ItemStack[10 + 6 * 12 + 4 * 9];
 	}
 
 	/* (non-Javadoc)
@@ -102,12 +102,11 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		NBTTagList tagList = comp.getTagList("Items", 10);
 		this.slots = new ItemStack[this.getSizeInvenotry()];
 
-		for (int i = 0; i < tagList.tagCount(); ++i) {
+		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound temp = tagList.getCompoundTagAt(i);
-			int b0 = temp.getByte("Slot") & 255;
+			byte b0 = temp.getByte("Slot");
 
 			if (b0 >= 0 && b0 < this.slots.length) this.slots[b0] = ItemStack.loadItemStackFromNBT(temp);
-			System.out.println("Loading:\t" + this.slots[b0].getItem().getUnlocalizedName());
 		}
 
 		if (comp.hasKey("CustomName", 8)) this.customName = comp.getString("CustomName");
@@ -120,11 +119,11 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		NBTTagList tagList = comp.getTagList("Items", 10);
-
-		for (int i = 0; i < this.slots.length; ++i) {
+		
+		for (int i = 0; i < this.slots.length; i++) {
 			if (this.slots[i] != null) {
 				NBTTagCompound temp = new NBTTagCompound();
-				comp.setByte("Slot", (byte) i);
+				temp.setByte("Slot", (byte) i);
 				this.slots[i].writeToNBT(temp);
 				tagList.appendTag(temp);
 			}

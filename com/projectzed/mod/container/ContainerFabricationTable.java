@@ -54,7 +54,7 @@ public class ContainerFabricationTable extends Container {
 		// Add 'chest' slots
 		for (int y = 0; y < 6; y++) {
 			for (int x = 0; x < 12; x++) {
-				this.addSlotToContainer(new Slot(te, (x + y * 9) + 9, 12 + x * 18, 62 + y * 18));
+				this.addSlotToContainer(new Slot(te, (x + y * 12) + 10, 12 + x * 18, 62 + y * 18));
 			}
 		}
 		
@@ -98,10 +98,11 @@ public class ContainerFabricationTable extends Container {
 			itemstack = itemstack1.copy();
 			
 			if (index < 10) {
-				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), true)) return null; 
+				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null; 
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
+			
 			else if (index >= 10 && index < 10 + 6 * 12) {
 				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null;
 			}
