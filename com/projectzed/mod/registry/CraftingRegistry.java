@@ -65,8 +65,6 @@ public class CraftingRegistry {
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShapeless() {
-		reg.shapelessList.add(createShapelessRecipe(ProjectZed.energyPipeRed, 8, "ingotTitanium", Items.redstone, "ingotTitanium"));
-		reg.shapelessList.add(createShapelessRecipe(ProjectZed.energyPipeOrange, 8, "ingotTitanium", "dustCopper", "ingotTitanium"));
 		reg.shapelessList.add(createShapelessRecipe(ProjectZed.screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 	}
 	
@@ -75,7 +73,10 @@ public class CraftingRegistry {
 	 */
 	private void initShaped() {
 		// Blocks:
+		reg.shapedList.add(createShapedRecipe(ProjectZed.fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
 		reg.shapedList.add(createShapedRecipe(ProjectZed.thickenedGlass, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', "blockGlass", 'z', "stone"));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeRed, 8, "xyx", 'x', "ingotTitanium", 'y', Items.redstone));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeOrange, 8, "xyx", 'x', "ingotTitanium", 'y', "dustCopper"));
 		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeClear, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', ProjectZed.energyPipeOrange, 'z', ProjectZed.thickenedGlass));
 		
 		// Machine stuff:
