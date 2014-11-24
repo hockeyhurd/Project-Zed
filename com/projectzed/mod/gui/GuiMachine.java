@@ -58,5 +58,4 @@ public class GuiMachine extends GuiContainer {
 		}
 	}
 
-
 }

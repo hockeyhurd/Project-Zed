@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -152,6 +153,9 @@ public class CommonProxy {
 	}
 	
 	protected void registerFurnaceRecipes() {
+		GameRegistry.addSmelting(ProjectZed.dustIron, new ItemStack(Items.iron_ingot), 25f);
+		GameRegistry.addSmelting(ProjectZed.dustGold, new ItemStack(Items.gold_ingot), 25f);
+		
 		GameRegistry.addSmelting(ProjectZed.oreTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
 		GameRegistry.addSmelting(ProjectZed.dustTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
 		

@@ -22,14 +22,16 @@ import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 public class ContainerFabricationTable extends Container {
 
 	/** The crafting matrix inventory (3x3). */
-    public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
-    public IInventory craftResult = new InventoryCraftResult();
-	
+	public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+	public IInventory craftResult = new InventoryCraftResult();
+
 	private TileEntityFabricationTable te;
 	private final int NUM_SLOTS;
+	private InventoryPlayer inv;
 
 	public ContainerFabricationTable(InventoryPlayer inv, TileEntityFabricationTable te) {
 		this.te = te;
+		this.inv = inv;
 		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
 	}
@@ -40,24 +42,24 @@ public class ContainerFabricationTable extends Container {
 	 * @param te = tile entity object.
 	 */
 	private void addSlots(InventoryPlayer inv, TileEntityFabricationTable te) {
-		
+
 		// Add crafing result.
 		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 0, 161, 24));
-		
+
 		// Add crafitn matrix
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
 				this.addSlotToContainer(new Slot(this.craftMatrix, y + x * 3, 67 + y * 18, 6 + x * 18));
 			}
 		}
-		
+
 		// Add 'chest' slots
 		for (int y = 0; y < 6; y++) {
 			for (int x = 0; x < 12; x++) {
 				this.addSlotToContainer(new Slot(te, (x + y * 12) + 10, 12 + x * 18, 62 + y * 18));
 			}
 		}
-		
+
 		// Adds the player inventory to table's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
@@ -70,18 +72,27 @@ public class ContainerFabricationTable extends Container {
 			this.addSlotToContainer(new Slot(inv, i, 39 + i * 18, 232)); // 198
 		}
 	}
-	
+
 	/**
-     * Callback for when the crafting matrix is changed.
-     */
-    public void onCraftMatrixChanged(IInventory p_75130_1_) {
-    	this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
-    }
+	 * Callback for when the crafting matrix is changed.
+	 */
+	public void onCraftMatrixChanged(IInventory inv) {
+		// Make sure te side is synced with this container's crafting matrix array.
+		for (int i = 0; i < inv.getSizeInventory(); i++) {
+			this.te.setStackInSlot(inv.getStackInSlot(i), i);
+		}
+
+		this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+	}
 
 	public boolean canInteractWith(EntityPlayer p_75145_1_) {
 		return true;
 	}
-	
+
+	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
+	}
+
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}
@@ -96,17 +107,17 @@ public class ContainerFabricationTable extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			
+
 			if (index < 10) {
-				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null; 
+				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null;
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
-			
+
 			else if (index >= 10 && index < 10 + 6 * 12) {
 				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null;
 			}
-			
+
 			else {
 				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry() - 4 * 9, false)) return null;
 			}
@@ -114,7 +125,7 @@ public class ContainerFabricationTable extends Container {
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);
 			else slot.onSlotChanged();
 
-			if (itemstack1.stackSize == itemstack.stackSize) return null; 
+			if (itemstack1.stackSize == itemstack.stackSize) return null;
 
 			slot.onPickupFromSlot(player, itemstack1);
 		}

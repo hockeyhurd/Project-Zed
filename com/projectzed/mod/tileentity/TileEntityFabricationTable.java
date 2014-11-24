@@ -3,8 +3,12 @@ package com.projectzed.mod.tileentity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 
 /**
  * TileEntity code for Fabrication Table.
@@ -27,6 +31,11 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 */
 	public int getSizeInventory() {
 		return this.slots.length;
+	}
+	
+	public void setStackInSlot(ItemStack stack, int slot) {
+		if (slot >= 0 && slot < this.slots.length) this.slots[slot] = stack;
+		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!");
 	}
 
 	/* (non-Javadoc)
@@ -134,4 +143,59 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
+	/**
+	 * Method used to clear the crafting grid and place them either in chest, in player's inventory, or else on the ground.
+	 */
+	public void clearCraftingGrid() {
+		for (int i = 0; i < this.slots.length; i++) {
+			if (this.slots[i] != null) {
+				ProjectZed.logHelper.info(this.slots[i].getItem().getUnlocalizedName(), i);
+				moveStack(this.slots[i], i, 10, this.slots.length);
+			}
+		}
+	}
+	
+	/**
+	 * Handles moving an itemstack from one slot to another.
+	 * @param stack = stack to move.
+	 * @param currentSlot = current slot of stack to move.
+	 * @param min = min slot index to move to.
+	 * @param max = max slot index to move to.
+	 */
+	private void moveStack(ItemStack stack, int currentSlot, int min, int max) {
+		boolean handled = false;
+		
+		// Check to see if we can add this stack to a current stack.
+		for (int i = min; i < max; i++) {
+			ItemStack currentStack = this.slots[i];
+			if (currentStack == stack && currentStack.stackSize + stack.stackSize <= stack.getMaxStackSize()) {
+				currentStack.stackSize += stack.stackSize;
+				this.slots[i] = currentStack; 
+				this.slots[currentSlot] = (ItemStack) null;
+				handled = true;
+				break;
+			}
+		}
+		
+		// If already handled, no need to continue.
+		if (handled) return;
+		
+		// Else, search for an empty slot to move this stack to.
+		else {
+			for (int i = min; i < max; i++) {
+				if (this.slots[i] == null) {
+					this.slots[i] = stack;
+					this.slots[currentSlot] = (ItemStack) null;
+					handled = true;
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
+	}
+	
 }

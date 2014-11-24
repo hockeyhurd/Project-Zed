@@ -1,0 +1,11 @@
+BUGS:
+=================================
+    - Check saving code for fab. table (crafting grid). 
+
+IDEAS:
+=================================    
+    - Add furnace recipes for all my dusts.
+    - Increase Titanium ore gen by * 2 atleast. 
+    - Check and adjust crafting recipe weirdness especially with energy pipe requirements
+    - Make energy pipes more clearly tiered? 
+    - Add transfer rate info for all te's

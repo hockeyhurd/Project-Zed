@@ -24,9 +24,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockFabricationTable extends BlockContainer {
 
-	private String name; 
+	private String name;
 	private IIcon base, top;
-	
+
 	public BlockFabricationTable(Material material) {
 		super(material);
 		this.name = "fabricationTable";
@@ -34,22 +34,24 @@ public class BlockFabricationTable extends BlockContainer {
 		this.setHardness(1.0f);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + this.name + "_side");
 		this.top = reg.registerIcon(ProjectZed.assetDir + this.name + "_top");
 		this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 * 
+	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float,
+	 * float, float)
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;

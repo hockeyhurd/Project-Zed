@@ -1,14 +1,16 @@
 package com.projectzed.mod.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.mod.container.ContainerFabricationTable;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 
 /**
@@ -31,6 +33,32 @@ public class GuiFabricationTable extends GuiContainer {
 		int slots = this.te.getSizeInventory();
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiFabricationTable.png");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#initGui()
+	 */
+	public void initGui() {
+		super.initGui();
+		
+		int posX = (this.width - this.xSize) / 2 + 10;
+		int posY = (this.height - this.ySize) / 2 + 43;
+		
+		this.buttonList.add(new GuiButton(0, posX, posY, 45, 16, "Clear"));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
+	 */
+	public void actionPerformed(GuiButton button) {
+		switch (button.id) {
+			case 0:
+				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(this.te));
+				// PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
+				break;
+		}
 	}
 
 	public void drawGuiContainerForegroundLayer(int x, int y) {
