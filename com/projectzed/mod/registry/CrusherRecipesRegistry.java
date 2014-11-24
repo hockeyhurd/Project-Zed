@@ -40,6 +40,8 @@ public class CrusherRecipesRegistry {
 		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(ProjectZed.dustIron, 1));
 		mapVanilla.put(new ItemStack(Items.gold_ingot, 1), new ItemStack(ProjectZed.dustGold, 1));
 		mapVanilla.put(new ItemStack(Blocks.coal_block, 1),  new ItemStack(Items.coal, 2));
+		mapVanilla.put(new ItemStack(Items.bone, 1), new ItemStack(Items.dye, 6, 15));
+		mapVanilla.put(new ItemStack(Items.blaze_rod, 1), new ItemStack(Items.blaze_powder, 6));
 
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");
@@ -83,7 +85,7 @@ public class CrusherRecipesRegistry {
 		 * (modded).
 		 */
 		for (ItemStack currentStack : mapVanilla.keySet()) {
-			if (stack.getItem() == currentStack.getItem()) {
+			if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
 				temp = mapVanilla.get(currentStack);
 				flag = true;
 				break;
