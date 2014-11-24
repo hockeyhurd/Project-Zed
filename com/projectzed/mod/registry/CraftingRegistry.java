@@ -80,6 +80,8 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeClear, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', ProjectZed.energyPipeOrange, 'z', ProjectZed.thickenedGlass));
 		
 		// Machine stuff:
+		reg.shapedList.add(createShapedRecipe(ProjectZed.solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.energyPipeClear));
+		reg.shapedList.add(createShapedRecipe(ProjectZed.furnaceGen, 1, "aba", "aca", "ada", 'a', "cobblestone", 'b', Blocks.furnace, 'c', ProjectZed.machineContainer, 'd', ProjectZed.screw));
 		reg.shapedList.add(createShapedRecipe(ProjectZed.machineContainer, 1, "xyx", "yzy", "xyx", 'x', ProjectZed.screw, 'y', "plateAluminium", 'z', "ingotTitanium"));
 		reg.shapedList.add(createShapedRecipe(ProjectZed.gearAluminium, 1, " x ", "xyx", " x ", 'x', "ingotAluminium", 'y', "ingotIron"));
 		reg.shapedList.add(createShapedRecipe(ProjectZed.industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.gearAluminium, 'f', ProjectZed.energyPipeRed));
