@@ -34,6 +34,7 @@ public class ContainerFabricationTable extends Container {
 		this.inv = inv;
 		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
+		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/**
@@ -83,6 +84,22 @@ public class ContainerFabricationTable extends Container {
 		}
 
 		this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#onContainerClosed(net.minecraft.entity.player.EntityPlayer)
+	 */
+	// TODO: Temp fix to spit out items until saving bug is resolved.
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed(player);
+		
+		if (!this.te.getWorldObj().isRemote) {
+			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+				ItemStack stack = this.craftMatrix.getStackInSlotOnClosing(i);
+				if (stack != null) player.dropPlayerItemWithRandomChoice(stack, false);
+			}
+		}
 	}
 
 	public boolean canInteractWith(EntityPlayer p_75145_1_) {
