@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.source.EnumColor;
@@ -230,7 +231,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored < c.getEnergyStored()) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() < c.getEnergyStored()) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 
@@ -242,6 +243,26 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
 	 */
 	protected void exportContents() {
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		
+		int size = comp.getInteger("ProjectZedPowerStored");
+		this.stored =  size >= 0 && size <= this.maxStorage ? size : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setInteger("ProjectZedPowerStored", this.stored);
 	}
 
 }

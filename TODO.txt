@@ -2,6 +2,11 @@ BUGS:
 =================================
     - Check saving code for fab. table (crafting grid). [TEMP FIXED]
 
+TODO:
+=================================
+    - Add fuel registry for nuclear stuff.
+    - Implement fuel registry to 'run' off this fuel.
+
 IDEAS:
 =================================    
     - Increase Titanium ore gen by * 2 atleast. 

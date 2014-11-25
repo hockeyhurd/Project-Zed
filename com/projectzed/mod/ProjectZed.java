@@ -14,6 +14,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
+import com.projectzed.mod.block.generator.BlockNuclearFusionController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
@@ -84,6 +85,7 @@ public class ProjectZed {
 	// Machines: 
 	public static Block solarArray;
 	public static Block furnaceGen;
+	public static Block fusionController;
 	public static Block fabricationTable;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
@@ -190,10 +192,13 @@ public class ProjectZed {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
-		
-		// Machines:
+
+		// Generators:
 		solarArray = new BlockSolarArray(Material.rock);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
+		fusionController = new BlockNuclearFusionController(Material.rock);
+		
+		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
@@ -201,6 +206,7 @@ public class ProjectZed {
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
 		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
+		
 		
 		// Ores:
 		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");

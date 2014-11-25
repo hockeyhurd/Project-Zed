@@ -9,6 +9,7 @@ import com.projectzed.api.generation.IEnergyGeneration;
 import com.projectzed.api.source.Source;
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.util.Reference;
@@ -246,10 +247,12 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
+		ProjectZed.logHelper.info("Reading: " + size);
 		this.stored = size >= 0 && size <= this.maxStored ? size : 0;
+		
+		super.readFromNBT(comp);
 	}
 
 	/*
@@ -258,9 +261,10 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+		
+		super.writeToNBT(comp);
 	}
 
 	@Override

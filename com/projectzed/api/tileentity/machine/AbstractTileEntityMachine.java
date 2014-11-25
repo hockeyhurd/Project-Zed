@@ -186,7 +186,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 
