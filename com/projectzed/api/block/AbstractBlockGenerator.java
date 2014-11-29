@@ -25,8 +25,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Oct 28, 2014
  */
 public abstract class AbstractBlockGenerator extends BlockContainer {
-
+	
+	/** Name of the block */
 	protected String name;
+	
+	/** Icons per side of block */
 	protected IIcon top, base, front;
 
 	/**
@@ -40,6 +43,10 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 		this.setHardness(1.0f);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + name + "_side");
@@ -58,8 +65,20 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 		return side == 0 ? this.base : (side == 1 ? this.top: (side != meta ? this.blockIcon : this.front));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	 */
 	public abstract TileEntity createNewTileEntity(World world, int id);
 
+	/**
+	 * Method used to update block's state
+	 * @param active = whether currently active or not.
+	 * @param world = world object.
+	 * @param x = x-position.
+	 * @param y = y-position.
+	 * @param z = z-position.
+	 */
 	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
 		int metaData = world.getBlockMetadata(x, y, z);
 		TileEntity tileentity = world.getTileEntity(x, y, z);
@@ -72,6 +91,10 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 

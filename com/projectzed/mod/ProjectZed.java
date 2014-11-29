@@ -13,6 +13,7 @@ import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
+import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearFusionController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -96,7 +97,7 @@ public class ProjectZed {
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
 	
-	// RF COVERTER:
+	// RF STUFF:
 	public static Block bridgeRF;
 	
 	// Ores
@@ -205,6 +206,8 @@ public class ProjectZed {
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
 		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
 		
+		// RF STUFF:
+		bridgeRF = new BlockRFBridge(Material.rock);
 		
 		// Ores:
 		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");
