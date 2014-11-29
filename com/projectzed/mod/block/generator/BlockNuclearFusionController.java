@@ -92,23 +92,23 @@ public class BlockNuclearFusionController extends AbstractBlockGenerator {
 		float zz = (float) z + 0.5F;
 		
 		float yOffset = 2f;
-		double vel = 0.1d;
+		double vel = 0.25d;
 
 		if (meta == 4) {
-			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, 0.0D);
-			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, 0.0D);
+			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, -vel);
+			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, -vel);
 		}
 		else if (meta == 5) {
-			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
-			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
+			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, -vel, 0.0D, vel);
+			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, -vel, 0.0D, vel);
 		}
 		else if (meta == 2) {
-			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
-			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
+			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, vel);
+			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, vel, 0.0D, vel);
 		}
 		else if (meta == 3) {
-			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
-			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, 0.0D, 0.0D, 0.0D);
+			world.spawnParticle("smoke", (double) xx, (double) (yy + yOffset), (double) zz, -vel, 0.0D, -vel);
+			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, -vel, 0.0D, -vel);
 		}
 		// }
 	}

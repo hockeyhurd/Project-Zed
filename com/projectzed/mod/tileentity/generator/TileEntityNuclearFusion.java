@@ -186,7 +186,8 @@ public class TileEntityNuclearFusion extends AbstractTileEntityGenerator {
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
-		this.burnTime = comp.getInteger("ProjectZedBurnTime") > 0 ? comp.getInteger("ProjectZedBurnTime") : 0;
+		int time = comp.getInteger("ProjectZedBurnTime");
+		this.burnTime = time > 0 ? time : 0;
 	}
 	
 	/*

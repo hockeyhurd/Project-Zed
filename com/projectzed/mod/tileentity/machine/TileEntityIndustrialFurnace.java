@@ -92,11 +92,13 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return side != 0 || slot != 1 || stack.getItem() == Items.bucket;
+		// return slot != 0 && this.slots[1] != null;
+		return false;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
 	 */
 	protected boolean canSmelt() {
@@ -118,6 +120,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
 	 */
 	public void smeltItem() {
