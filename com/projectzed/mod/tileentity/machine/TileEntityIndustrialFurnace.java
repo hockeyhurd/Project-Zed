@@ -74,7 +74,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return side == 0 ? this.slotBottom : (side == 1 ? this.slotTop : this.slotRight);
+		return side == 0 ? this.slotRight : this.slotTop;
 	}
 
 	/*
@@ -92,8 +92,8 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		// return slot != 0 && this.slots[1] != null;
-		return false;
+		// return side != 1 /*|| side != 1*/ || stack.getItem() == Items.bucket;
+		return slot == 0 || slot == 1;
 	}
 
 	/*
