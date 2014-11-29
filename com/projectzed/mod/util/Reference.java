@@ -35,16 +35,33 @@ public class Reference extends AbstractReference {
 	 * @author hockeyhurd
 	 * @version Nov 8, 2014
 	 */
-	public class Constants {
+	public static class Constants {
 
 		/** Unit represented as string. */
 		public static final String ENERGY_UNIT = "McU";
 		
 		/** Base unit for machine's energy consumption. */
-		public static final int BASE_MACH_USAGE = 10;
+		public static final int BASE_MACH_USAGE = 40;
 		
 		/** Base unit for transfer unit for basic pipe. */
 		public static final int BASE_PIPE_TRANSFER_RATE = 20;
+		
+		/**
+		 * Conversion rate from mcu to rf.
+		 * <br>MCU to EU = MCU / 10.
+		 * <br>EU to RF = EU * 2.5
+		 * <br>Therefore 1f / 10f * 2.5f
+		 */
+		public static final float MCU_TO_RF = 1f / 10f * 2.5f; 
+		
+		/**
+		 * Function used to quickly convert any amount of energy in McU to RF.
+		 * @param mcu = energy in McU
+		 * @return energy value in RF.
+		 */
+		public static float getRFFromMcU(int mcu) {
+			return mcu * MCU_TO_RF;
+		}
 		
 		private Constants() {
 		}

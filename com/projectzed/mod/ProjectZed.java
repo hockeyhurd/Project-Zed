@@ -27,6 +27,7 @@ import com.projectzed.mod.block.ore.BlockTitaniumOre;
 import com.projectzed.mod.block.ore.BlockUraniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
+import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
@@ -106,6 +107,7 @@ public class ProjectZed {
 	public static Item screw;
 	public static Item sheetAluminium;
 	public static Item gearAluminium;
+	public static Item conductiveCoil;
 	
 	// Metals:
 	public static Item dustGold;
@@ -220,6 +222,7 @@ public class ProjectZed {
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
 		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
+		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);

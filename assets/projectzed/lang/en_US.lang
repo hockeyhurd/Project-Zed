@@ -25,6 +25,7 @@ item.itemDongle.name=Dev Dongle
 item.screw.name=Screw
 item.sheetAluminium.name=Sheet of Aluminium
 item.gearAluminium.name=Aluminium Gear
+item.conductiveCoil.name=Conductive Coil
 
 // Metals:
 item.dustGold.name=Gold Dust

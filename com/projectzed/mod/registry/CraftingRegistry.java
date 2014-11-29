@@ -1,5 +1,7 @@
 package com.projectzed.mod.registry;
 
+import static com.projectzed.mod.ProjectZed.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-
-import com.projectzed.mod.ProjectZed;
 
 /**
  * Registry for all crafting recipes. 
@@ -65,27 +65,31 @@ public class CraftingRegistry {
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShapeless() {
-		reg.shapelessList.add(createShapelessRecipe(ProjectZed.screw, 27, "ingotIron", "ingotIron", "ingotIron"));
+		reg.shapelessList.add(createShapelessRecipe(screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 	}
 	
 	/**
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShaped() {
+		// Items:
+		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, "xyx", "yxy", "xyx", 'x', "ingotCopper", 'y', Items.redstone));
+		
 		// Blocks:
-		reg.shapedList.add(createShapedRecipe(ProjectZed.fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.thickenedGlass, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', "blockGlass", 'z', "stone"));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeRed, 8, "xyx", 'x', "ingotTitanium", 'y', Items.redstone));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeOrange, 8, "xyx", 'x', "ingotTitanium", 'y', "dustCopper"));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.energyPipeClear, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', ProjectZed.energyPipeOrange, 'z', ProjectZed.thickenedGlass));
+		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
+		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', "blockGlass", 'z', "stone"));
+		reg.shapedList.add(createShapedRecipe(energyPipeRed, 8, "xyx", 'x', "ingotTitanium", 'y', Items.redstone));
+		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 8, "xyx", 'x', "ingotTitanium", 'y', "dustCopper"));
+		reg.shapedList.add(createShapedRecipe(energyPipeClear, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', energyPipeOrange, 'z', thickenedGlass));
 		
 		// Machine stuff:
-		reg.shapedList.add(createShapedRecipe(ProjectZed.solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.energyPipeClear));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.furnaceGen, 1, "aba", "aca", "ada", 'a', "cobblestone", 'b', Blocks.furnace, 'c', ProjectZed.machineContainer, 'd', ProjectZed.screw));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.machineContainer, 1, "xyx", "yzy", "xyx", 'x', ProjectZed.screw, 'y', "plateAluminium", 'z', "ingotTitanium"));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.gearAluminium, 1, " x ", "xyx", " x ", 'x', "ingotAluminium", 'y', "ingotIron"));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.gearAluminium, 'f', ProjectZed.energyPipeRed));
-		reg.shapedList.add(createShapedRecipe(ProjectZed.industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', ProjectZed.screw, 'd', ProjectZed.machineContainer, 'e', ProjectZed.gearAluminium, 'f', ProjectZed.energyPipeRed));
+		reg.shapedList.add(createShapedRecipe(solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', screw, 'd', machineContainer, 'e', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(furnaceGen, 1, "aba", "aca", "ada", 'a', "cobblestone", 'b', Blocks.furnace, 'c', machineContainer, 'd', screw));
+		reg.shapedList.add(createShapedRecipe(machineContainer, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateAluminium", 'z', "ingotTitanium"));
+		reg.shapedList.add(createShapedRecipe(gearAluminium, 1, " x ", "xyx", " x ", 'x', "ingotAluminium", 'y', "ingotIron"));
+		reg.shapedList.add(createShapedRecipe(industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 	}
 	
 	/**
