@@ -45,6 +45,7 @@ import com.projectzed.mod.item.metals.ItemIngotNickel;
 import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.proxy.CommonProxy;
+import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.worldgen.OreWorldgen;
 
@@ -94,6 +95,9 @@ public class ProjectZed {
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
+	
+	// RF COVERTER:
+	public static Block bridgeRF;
 	
 	// Ores
 	public static Block oreTitanium;
@@ -146,16 +150,8 @@ public class ProjectZed {
 		configHandler.handleConfiguration();
 		logHelper.info("Config loaded successfully! Patching mod now!"); 
 		
-		/*lh.info("Detecting other soft-dependent mods.");
-		ModsLoadedHelper.init();
-		
-		Iterator iter = ModsLoadedHelper.getEntries().iterator();
-		do {
-			Entry<String, Boolean> current = (Entry<String, Boolean>) iter.next();
-			if (current.getValue()) lh.info(current.getKey(), "detected! Wrapping into mod!");
-			else lh.warn(current.getKey(), "not detected!");
-		}
-		while (iter.hasNext());*/
+		ModsLoadedHelper.instance().init();
+		ModsLoadedHelper.instance().logFindings(logHelper);
 		
 		logHelper.info("Pre-init finished succesfully after", tl.getEffectiveTimeSince(), "ms!");
 	}

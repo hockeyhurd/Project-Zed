@@ -8,6 +8,7 @@
 *.war
 *.ear
 
+/cofh
 /cpw
 /ibxm
 /net
