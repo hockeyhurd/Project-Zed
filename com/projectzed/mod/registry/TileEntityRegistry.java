@@ -40,7 +40,7 @@ public class TileEntityRegistry {
 		reg.map.put(TileEntityFurnaceGenerator.class, "furnaceGenTileEntity");
 		reg.idMap.put(TileEntityFurnaceGenerator.class, getNextID());
 		
-		reg.map.put(TileEntityNuclear.class, "fusionControllerTileEntity");
+		reg.map.put(TileEntityNuclear.class, "nuclearControllerTileEntity");
 		reg.idMap.put(TileEntityNuclear.class, getNextID());
 		
 		reg.map.put(TileEntityFabricationTable.class, "fabricationTableTileEntity");

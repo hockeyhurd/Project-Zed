@@ -34,7 +34,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	private int burnTime = 0;
 	
 	public TileEntityNuclear() {
-		super("fusionController");
+		super("nuclearController");
 	}
 
 	/* (non-Javadoc)
@@ -104,7 +104,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	 * @param type = type of source.
 	 */
 	public void setSource(EnumType type) {
-		setSource(type, 0f);
+		setSource(type, 1.0f);
 	}
 	
 	/**
@@ -190,9 +190,9 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				}
 			}
 
+			this.powerMode = this.burnTime > 0;
 			if (this.burnTime > 0) this.burnTime--;
 
-			this.powerMode = this.burnTime > 0;
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 		super.updateEntity();

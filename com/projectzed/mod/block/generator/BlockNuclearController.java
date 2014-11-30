@@ -35,8 +35,8 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 * @param name
 	 */
 	public BlockNuclearController(Material material, boolean fusion) {
-		super(material, "fusionController");
-		this.setBlockName("fusionController");
+		super(material, "nuclearController");
+		this.setBlockName("nuclearController" + (fusion ? "Fusion" : "Fission"));
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 		this.FUSION_MODE = fusion;
@@ -46,7 +46,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
 		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
+		this.front = reg.registerIcon(ProjectZed.assetDir + "nuclearController_front");
 	}
 
 	/*

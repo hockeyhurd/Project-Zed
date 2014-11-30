@@ -37,15 +37,18 @@ public class Reference extends AbstractReference {
 	 */
 	public static class Constants {
 
+		// Kept old in case of reverting or need of comparison.
+		
 		/** Unit represented as string. */
 		public static final String ENERGY_UNIT = "McU";
 		
 		/** Base unit for machine's energy consumption. */
-		public static final int BASE_MACH_USAGE = 40;
+		// public static final int BASE_MACH_USAGE = 40; 
+		public static final int BASE_MACH_USAGE = 160;
 		
 		/** Base unit for transfer unit for basic pipe. */
-		// public static final int BASE_PIPE_TRANSFER_RATE = 320;
-		public static final int BASE_PIPE_TRANSFER_RATE = 20;
+		public static final int BASE_PIPE_TRANSFER_RATE = 320;
+		// public static final int BASE_PIPE_TRANSFER_RATE = 20;
 		
 		/**
 		 * Conversion rate from mcu to rf.
