@@ -8,38 +8,39 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.block.container.TileEntityRFBridge;
+import com.projectzed.mod.container.ContainerRFBridge;
 import com.projectzed.mod.util.Reference.Constants;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class containing gui code for all machines.
+ * Class containing gui code for RF Bridge.
  * 
  * @author hockeyhurd
- * @version Oct 23, 2014
+ * @version Nov 29, 2014
  */
 @SideOnly(Side.CLIENT)
-public class GuiMachine extends GuiContainer {
+public class GuiRFBridge extends GuiContainer {
 
 	public final ResourceLocation texture;
-	private AbstractTileEntityMachine te;
+	private TileEntityRFBridge te;
 	private String stringToDraw;
-	
-	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
-		super(new ContainerMachine(inv, te));
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
 
+	public GuiRFBridge(InventoryPlayer inv, TileEntityRFBridge te) {
+		super(new ContainerRFBridge(inv, te));
 		this.te = te;
 		this.xSize = 176;
 		this.ySize = 166;
+		int slots = this.te.getSizeInventory();
+		
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiRFBridge.png");
 	}
 
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
-		
+
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
@@ -56,11 +57,8 @@ public class GuiMachine extends GuiContainer {
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 		
-		int i1 = 0;
-		if (this.te.isPoweredOn() && this.te.cookTime > 0) {
-            i1 = this.te.getCookProgressScaled(24);
-            this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
-		}
+		float progressRF = (float) ((float) this.te.storedRF / (float) this.te.getMaxEnergyStored()) * 160f;
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 - 20, 0, 26, 40, (int) progressRF);
 	}
 
 }

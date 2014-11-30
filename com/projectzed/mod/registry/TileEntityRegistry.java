@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
 
+import com.projectzed.mod.block.container.TileEntityRFBridge;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
@@ -62,6 +63,9 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityEnergyPipeClear.class,  "energyPipeTileEntityClear");
 		reg.idMap.put(TileEntityEnergyPipeClear.class, getNextID());
+		
+		reg.map.put(TileEntityRFBridge.class, "bridgeRFTileEntity");
+		reg.idMap.put(TileEntityRFBridge.class, getNextID());
 	}
 	
 	/**

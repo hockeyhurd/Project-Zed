@@ -4,12 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -59,6 +63,12 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	public TileEntity createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 */
+	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
 	
 	/*
 	 * (non-Javadoc)

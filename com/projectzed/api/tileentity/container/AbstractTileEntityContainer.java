@@ -190,10 +190,9 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 	}
 	
-	// TODO: add description packet, applicable for most te's!
 	/*@Override
-	public Packet getDescriptionPacket() { 
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityGenerator(this));
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
 	}*/
 
 }

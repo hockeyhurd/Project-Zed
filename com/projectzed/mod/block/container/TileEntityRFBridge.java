@@ -6,12 +6,14 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cofh.api.energy.IEnergyHandler;
+import net.minecraft.network.Packet;
 import cofh.api.energy.IEnergyStorage;
 
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -23,7 +25,7 @@ import com.projectzed.mod.util.Reference;
 public class TileEntityRFBridge extends AbstractTileEntityContainer implements IEnergyStorage {
 
 	private int maxStorageRF;
-	private int storedRF;
+	public int storedRF;
 	private int importRateRF, exportRateRF;
 
 	public TileEntityRFBridge() {
@@ -250,6 +252,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	public int getMaxEnergyStored() {
 		return this.storedRF;
 	}
+	
+	public void setRFStored(int amount) {
+		this.storedRF = amount;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -268,6 +274,11 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedRF", this.storedRF);
+	}
+	
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
 	}
 
 }

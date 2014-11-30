@@ -12,12 +12,16 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.util.Reference.Constants;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Generic class for gui's of generators.
  * 
  * @author hockeyhurd
  * @version Oct 21, 2014
  */
+@SideOnly(Side.CLIENT)
 public class GuiGenerator extends GuiContainer {
 
 	public final ResourceLocation texture;
