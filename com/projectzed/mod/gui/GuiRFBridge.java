@@ -44,7 +44,11 @@ public class GuiRFBridge extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.stringToDraw = "Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
+		this.stringToDraw = "Power: " + this.te.storedRF + " / " + this.te.getMaxEnergyStored() + " RF";
+		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 130,
+				4210752);
+		
+		this.stringToDraw = "Power: " + this.te.getEnergyStored() + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
 				4210752);
 	}
@@ -57,8 +61,11 @@ public class GuiRFBridge extends GuiContainer {
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 		
-		float progressRF = (float) ((float) this.te.storedRF / (float) this.te.getMaxEnergyStored()) * 160f;
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 - 20, 0, 26, 40, (int) progressRF);
+		float progressRF = (float) ((float) this.te.storedRF / (float) this.te.getMaxEnergyStored()) * 40f;
+		progressRF = 40 - progressRF;
+		int v = 192 - (int) progressRF;
+		// this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 0, 192, 16, (int) progressRF);
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 0, v, 16, guiTop + 3);
 	}
 
 }

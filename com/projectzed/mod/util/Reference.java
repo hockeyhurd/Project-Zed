@@ -44,6 +44,7 @@ public class Reference extends AbstractReference {
 		public static final int BASE_MACH_USAGE = 40;
 		
 		/** Base unit for transfer unit for basic pipe. */
+		// public static final int BASE_PIPE_TRANSFER_RATE = 320;
 		public static final int BASE_PIPE_TRANSFER_RATE = 20;
 		
 		/**

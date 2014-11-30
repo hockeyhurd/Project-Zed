@@ -7,6 +7,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyStorage;
 
 import com.projectzed.api.storage.IEnergyContainer;
@@ -27,6 +29,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	private int maxStorageRF;
 	public int storedRF;
 	private int importRateRF, exportRateRF;
+	private boolean flip = false;
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
@@ -37,6 +40,14 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		this.maxStorageRF = convertAndRoundToRF(this.maxStorage);
 		this.importRateRF = convertAndRoundToRF(this.exportRate);
 		this.exportRateRF = convertAndRoundToRF(this.importRate);
+	}
+	
+	/**
+	 * Set whether to receive rf or mcu.
+	 * @param flip = mode to set (receive == true ? McU --> RF : RF --> McU).
+	 */
+	public void setFlip(boolean flip) {
+		this.flip = flip;
 	}
 
 	private int convertAndRoundToRF(int mcu) {
@@ -119,8 +130,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxImportRate()
 	 */
 	public int getMaxImportRate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.importRate;
 	}
 
 	/*
@@ -138,7 +148,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
-		if (cont != null && this.exportRate >= amount && this.stored - amount >= 0) {
+		if (cont != null && this.exportRate >= amount && this.stored - amount >= 0 && flip) {
 			this.stored -= amount;
 			return amount;
 		}
@@ -156,6 +166,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 			this.stored = this.maxStorage;
 			return;
 		}
+		
+		if (flip) return;
 
 		int x = this.xCoord;
 		int y = this.yCoord;
@@ -204,11 +216,18 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() <= this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 
 		containers.removeAll(Collections.EMPTY_LIST);
+	}
+	
+	protected void convertEnergy() {
+		if (this.stored - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF && !flip) {
+			this.stored -= this.exportRate;
+			this.storedRF += this.importRateRF;
+		}
 	}
 
 	/*
@@ -217,14 +236,16 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
 	 */
 	protected void exportContents() {
-		if (this.stored < 0 || this.storedRF + this.importRateRF > this.maxStorageRF) {
-			this.stored = 0;
-			this.storedRF = this.maxStorageRF;
-			return;
+		if (this.storedRF > 0 && !flip) {
+			int x = this.xCoord;
+			int y = this.yCoord;
+			int z = this.zCoord;
+			
+			if (worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x - 1, y, z);
+				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(this.exportRateRF, false), false);
+			}
 		}
-		
-		this.stored -= this.exportRate;
-		this.storedRF += this.importRateRF;
 	}
 
 	// RF STUFF:
@@ -250,11 +271,21 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 	@Override
 	public int getMaxEnergyStored() {
-		return this.storedRF;
+		return this.maxStorageRF;
 	}
 	
 	public void setRFStored(int amount) {
 		this.storedRF = amount;
+	}
+	
+	public void updateEntity() {
+		importContents();
+		convertEnergy();
+		exportContents();
+		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRFBridge(this));
+		// System.out.println(this.stored + ", " + this.storedRF);
+		
+		super.updateEntity();
 	}
 
 	/*
@@ -263,6 +294,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
 		this.storedRF = comp.getInteger("ProjectZedRF");
 	}
 

@@ -65,8 +65,6 @@ public class ContainerRFBridge extends Container {
 
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int newVal, boolean mode) {
-		this.te.setEnergyStored(newVal);
-		this.te.setRFStored(newVal);
 	}
 	
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {

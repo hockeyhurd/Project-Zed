@@ -1,7 +1,14 @@
 package com.projectzed.mod.block.container;
 
+import java.util.List;
+
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockContainer;
@@ -10,6 +17,8 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for RF bridge.
@@ -19,30 +28,61 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
  */
 public class BlockRFBridge extends AbstractBlockContainer {
 
-	public BlockRFBridge(Material material) {
-		super(material, ProjectZed.assetDir, "bridgeRF");
+	private boolean flip;
+	private String[] names = new String[] {
+		"McUToRF", "RFToMcU"
+	};
+	
+	@SideOnly(Side.CLIENT)
+	private IIcon[] icons;
+
+	public BlockRFBridge(Material material, boolean flip) {
+		super(material, ProjectZed.assetDir, "bridgeMcUToRF");
+		this.flip = flip;
+		this.setBlockName(!flip ? "bridgeMcUToRF" : "bridgeRFToMcU");
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg) {
+		icons = new IIcon[names.length];
+		
+		for (int i = 0; i < icons.length; i++) {
+			icons[i] = reg.registerIcon(ProjectZed.assetDir + "bridge" + names[i]);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		if (meta < 0 || meta >= this.icons.length) meta = 0;
+		return this.icons[meta];
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	protected AbstractTileEntityContainer getTileEntity() {
-		return new TileEntityRFBridge();
+		TileEntityRFBridge te = new TileEntityRFBridge();
+		te.setFlip(this.flip);
+		return te;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
+	 * 
+	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int,
+	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
@@ -53,6 +93,5 @@ public class BlockRFBridge extends AbstractBlockContainer {
 			return true;
 		}
 	}
-
 
 }

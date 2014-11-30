@@ -98,7 +98,7 @@ public class ProjectZed {
 	public static Block energyPipeClear;
 	
 	// RF STUFF:
-	public static Block bridgeRF;
+	public static Block bridgeMcUToRF, bridgeRFToMcU;
 	
 	// Ores
 	public static Block oreTitanium;
@@ -207,7 +207,8 @@ public class ProjectZed {
 		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
 		
 		// RF STUFF:
-		bridgeRF = new BlockRFBridge(Material.rock);
+		bridgeMcUToRF = new BlockRFBridge(Material.rock, false);
+		bridgeRFToMcU = new BlockRFBridge(Material.rock, true);
 		
 		// Ores:
 		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");

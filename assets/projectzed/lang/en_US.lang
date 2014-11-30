@@ -13,6 +13,10 @@ tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
 
+// RF STUFF:
+tile.bridgeMcUToRF.name=McU To RF Bridge
+tile.bridgeRFToMcU.name=RF To McU Bridge
+
 // Ores:
 tile.oreTitanium.name=Titanium Ore
 tile.oreCopper.name=Copper Ore
