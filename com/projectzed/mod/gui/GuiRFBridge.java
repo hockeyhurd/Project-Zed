@@ -63,9 +63,8 @@ public class GuiRFBridge extends GuiContainer {
 		
 		float progressRF = (float) ((float) this.te.storedRF / (float) this.te.getMaxEnergyStored()) * 40f;
 		progressRF = 40 - progressRF;
-		int v = 192 - (int) progressRF;
-		// this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 0, 192, 16, (int) progressRF);
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 0, v, 16, guiTop + 3);
+		int v = 0 - (int) progressRF;
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 176, v, 16, guiTop + 3);
 	}
 
 }
