@@ -20,6 +20,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	protected int maxStorage = 100000;
 	protected int stored;
 	protected boolean powerMode;
+	protected int importRate, exportRate;
 	
 	/**
 	 * Init class object through parameters.

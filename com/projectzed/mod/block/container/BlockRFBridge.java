@@ -15,9 +15,8 @@ import com.projectzed.mod.ProjectZed;
  */
 public class BlockRFBridge extends AbstractBlockContainer {
 
-	public BlockRFBridge(Material material, String name) {
-		super(material, ProjectZed.assetDir, name);
-		this.setBlockName("bridgeRF");
+	public BlockRFBridge(Material material) {
+		super(material, ProjectZed.assetDir, "bridgeRF");
 	}
 
 	/*

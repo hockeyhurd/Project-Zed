@@ -1,11 +1,18 @@
 package com.projectzed.mod.block.container;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.nbt.NBTTagCompound;
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyStorage;
 
 import com.projectzed.api.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.util.Reference;
 
 /**
  * Class containing te code for RF Bridge.
@@ -13,173 +20,254 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
  * @author hockeyhurd
  * @version Nov 29, 2014
  */
-public class TileEntityRFBridge extends AbstractTileEntityContainer implements IEnergyHandler {
+public class TileEntityRFBridge extends AbstractTileEntityContainer implements IEnergyStorage {
+
+	private int maxStorageRF;
+	private int storedRF;
+	private int importRateRF, exportRateRF;
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
+		this.maxStorage /= 10;
+		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
+		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
+
+		this.maxStorageRF = convertAndRoundToRF(this.maxStorage);
+		this.importRateRF = convertAndRoundToRF(this.exportRate);
+		this.exportRateRF = convertAndRoundToRF(this.importRate);
 	}
 
-	/* (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyHandler#getMaxEnergyStored(net.minecraftforge.common.util.ForgeDirection)
-	 */
-	@Override
-	public int getMaxEnergyStored(ForgeDirection from) {
-		// TODO Auto-generated method stub
-		return 0;
+	private int convertAndRoundToRF(int mcu) {
+		return (int) Math.floor(Reference.Constants.getRFFromMcU(mcu));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getSizeInventory()
 	 */
-	@Override
 	public int getSizeInventory() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getInventoryStackLimit()
 	 */
-	@Override
 	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initContentsArray()
 	 */
-	@Override
 	protected void initContentsArray() {
-		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initSlotsArray()
 	 */
-	@Override
 	protected void initSlotsArray() {
-		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
-	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getAccessibleSlotsFromSide(int)
 	 */
-	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxImportRate()
 	 */
-	@Override
 	public int getMaxImportRate() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxExportRate()
 	 */
-	@Override
 	public int getMaxExportRate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.exportRate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
-	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (cont != null && this.exportRate >= amount && this.stored - amount >= 0) {
+			this.stored -= amount;
+			return amount;
+		}
+
+		else return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
 	 */
-	@Override
 	protected void importContents() {
-		// TODO Auto-generated method stub
+		if (this.stored >= this.maxStorage) {
+			this.stored = this.maxStorage;
+			return;
+		}
 
+		int x = this.xCoord;
+		int y = this.yCoord;
+		int z = this.zCoord;
+		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
+
+		// -x
+		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
+			containers.add(cont);
+		}
+
+		// +x
+		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
+			containers.add(cont);
+		}
+
+		// -y
+		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
+			containers.add(cont);
+		}
+
+		// +y
+		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
+			containers.add(cont);
+		}
+
+		// -z
+		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
+			containers.add(cont);
+		}
+
+		// +z
+		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
+			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
+			containers.add(cont);
+		}
+
+		if (containers.size() > 0) {
+			for (IEnergyContainer c : containers) {
+				if (this.stored >= this.maxStorage) {
+					this.stored = this.maxStorage;
+					break;
+				}
+				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+			}
+		}
+
+		containers.removeAll(Collections.EMPTY_LIST);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
 	 */
-	@Override
 	protected void exportContents() {
-		// TODO Auto-generated method stub
-
+		if (this.stored < 0 || this.storedRF + this.importRateRF > this.maxStorageRF) {
+			this.stored = 0;
+			this.storedRF = this.maxStorageRF;
+			return;
+		}
+		
+		this.stored -= this.exportRate;
+		this.storedRF += this.importRateRF;
 	}
-	
+
 	// RF STUFF:
-	/* (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyConnection#canConnectEnergy(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
-	public boolean canConnectEnergy(ForgeDirection from) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public int receiveEnergy(int maxReceive, boolean simulate) {
+		/*
+		 * int energyReceved = Math.min(this.maxStorageRF - this.storedRF, Math.min(this.importRateRF, maxReceive)); if (!simulate) this.storedRF +=
+		 * energyReceved;
+		 * 
+		 * return energyReceved;
+		 */
 
-	/* (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyHandler#receiveEnergy(net.minecraftforge.common.util.ForgeDirection, int, boolean)
-	 */
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyHandler#extractEnergy(net.minecraftforge.common.util.ForgeDirection, int, boolean)
-	 */
 	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int extractEnergy(int maxExtract, boolean simulate) {
+		int energyExtracted = Math.min(this.storedRF, Math.min(this.exportRateRF, maxExtract));
+		if (!simulate) this.storedRF -= energyExtracted;
+
+		return energyExtracted;
 	}
 
-	/* (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyHandler#getEnergyStored(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
-	public int getEnergyStored(ForgeDirection from) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getMaxEnergyStored() {
+		return this.storedRF;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void readFromNBT(NBTTagCompound comp) {
+		this.storedRF = comp.getInteger("ProjectZedRF");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
 
 }

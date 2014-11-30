@@ -11,8 +11,8 @@ public class TileEntityEnergyPipeClear extends TileEntityEnergyPipeBase {
 
 	public TileEntityEnergyPipeClear() {
 		super();
-		this.importRate = super.importRate * 4;
-		this.exportRate = super.exportRate * 4;
+		this.importRate *= 4;
+		this.exportRate *= 4;
 	}
 	
 	public EnumColor getColor() {

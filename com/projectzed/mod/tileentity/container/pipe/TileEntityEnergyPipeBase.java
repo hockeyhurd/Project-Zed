@@ -22,9 +22,8 @@ import com.projectzed.mod.util.Reference;
 public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 
 	public boolean flag;
-	protected int importRate, exportRate;
 	protected int containerSize = 0;
-
+	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
 		this.maxStorage = 200;
