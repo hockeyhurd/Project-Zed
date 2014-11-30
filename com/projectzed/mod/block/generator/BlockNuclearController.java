@@ -9,9 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.source.EnumType;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.generator.TileEntityNuclearFusion;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -24,17 +25,21 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Nov 24, 2014
  */
-public class BlockNuclearFusionController extends AbstractBlockGenerator {
+public class BlockNuclearController extends AbstractBlockGenerator {
 
+	/** Variable tracking whether to use fusion or fission. */
+	private final boolean FUSION_MODE; 
+	
 	/**
 	 * @param material
 	 * @param name
 	 */
-	public BlockNuclearFusionController(Material material) {
+	public BlockNuclearController(Material material, boolean fusion) {
 		super(material, "fusionController");
 		this.setBlockName("fusionController");
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
+		this.FUSION_MODE = fusion;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -50,7 +55,9 @@ public class BlockNuclearFusionController extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
 	 */
 	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntityNuclearFusion();
+		TileEntityNuclear te = new TileEntityNuclear();
+		if (this.FUSION_MODE) te.setSource(EnumType.FUSION);
+		return te;
 	}
 
 	/*
@@ -63,8 +70,8 @@ public class BlockNuclearFusionController extends AbstractBlockGenerator {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityNuclearFusion te = (TileEntityNuclearFusion) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearFusion.class), world, x, y, z);
+			TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclear.class), world, x, y, z);
 			return true;
 		}
 	}
@@ -75,7 +82,7 @@ public class BlockNuclearFusionController extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityNuclearFusion te = (TileEntityNuclearFusion) world.getTileEntity(x, y, z);
+		TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 

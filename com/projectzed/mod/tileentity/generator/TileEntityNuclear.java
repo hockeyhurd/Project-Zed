@@ -27,11 +27,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author hockeyhurd
  * @version Nov 24, 2014
  */
-public class TileEntityNuclearFusion extends AbstractTileEntityGenerator {
+public class TileEntityNuclear extends AbstractTileEntityGenerator {
 
+	/** Variable tracking whether to use fusion or fission. */
+	private boolean fusionMode;
 	private int burnTime = 0;
 	
-	public TileEntityNuclearFusion() {
+	public TileEntityNuclear() {
 		super("fusionController");
 	}
 
@@ -94,8 +96,24 @@ public class TileEntityNuclearFusion extends AbstractTileEntityGenerator {
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
 	 */
 	public void defineSource() {
-		// This method should be overriden for fission vs. fusion. For now, we set to fission, lesser of two.
-		this.source = new Source(EnumType.FUSION);
+		this.source = new Source(EnumType.FISSION);
+	}
+	
+	/**
+	 * Handles setting the proper source of this te.
+	 * @param type = type of source.
+	 */
+	public void setSource(EnumType type) {
+		setSource(type, 0f);
+	}
+	
+	/**
+	 * Handles setting the proper source of this te.
+	 * @param type = type of source.
+	 * @param modifier = modifier amount to offset energy output.
+	 */
+	public void setSource(EnumType type, float modifier) {
+		this.source = new Source(type, modifier);
 	}
 	
 	/*

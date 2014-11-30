@@ -15,7 +15,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
-import com.projectzed.mod.block.generator.BlockNuclearFusionController;
+import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
@@ -88,7 +88,7 @@ public class ProjectZed {
 	// Machines: 
 	public static Block solarArray;
 	public static Block furnaceGen;
-	public static Block fusionController;
+	public static Block fusionController, fissionController;
 	public static Block fabricationTable;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
@@ -195,7 +195,8 @@ public class ProjectZed {
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
-		fusionController = new BlockNuclearFusionController(Material.rock);
+		fusionController = new BlockNuclearController(Material.rock, true);
+		fissionController = new BlockNuclearController(Material.rock, false);
 		
 		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);
