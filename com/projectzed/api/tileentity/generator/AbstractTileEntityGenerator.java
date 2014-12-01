@@ -153,7 +153,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
 	public int getMaxExportRate() {
-		return Reference.Constants.BASE_PIPE_TRANSFER_RATE;
+		return Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
 	}
 	
 	/*
@@ -161,8 +161,12 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
-		if (cont != null && this.getMaxExportRate() >= amount && this.stored - amount >= 0) {
-			this.stored -= amount;
+		if (cont != null && this.getMaxExportRate() >= amount) {
+			if (this.stored - amount >= 0) this.stored -= amount;
+			else {
+				amount = this.stored;
+				this.stored = 0;
+			}
 			return amount;
 		}
 		

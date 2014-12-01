@@ -21,6 +21,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
+ * Class containing te code for furnace generator.
  * 
  * @author hockeyhurd
  * @version Nov 18, 2014

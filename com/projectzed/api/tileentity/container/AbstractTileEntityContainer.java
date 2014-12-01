@@ -165,6 +165,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	public void updateEntity() {
+		importContents();
 		exportContents();
 		super.updateEntity();
 	}

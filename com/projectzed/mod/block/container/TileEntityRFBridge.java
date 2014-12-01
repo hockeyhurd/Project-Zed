@@ -36,6 +36,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		this.maxStorage /= 10;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
+		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 
 		this.maxStorageRF = convertAndRoundToRF(this.maxStorage);
 		this.importRateRF = convertAndRoundToRF(this.exportRate);
@@ -148,11 +149,15 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
-		if (cont != null && this.exportRate >= amount && this.stored - amount >= 0 && flip) {
-			this.stored -= amount;
+		if (cont != null && this.getMaxExportRate() >= amount) {
+			if (this.stored - amount >= 0) this.stored -= amount;
+			else {
+				amount = this.stored;
+				this.stored = 0;
+			}
 			return amount;
 		}
-
+		
 		else return 0;
 	}
 
@@ -216,7 +221,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() <= this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+				// if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() <= this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (this.stored < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 

@@ -186,7 +186,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					this.stored = this.maxStorage;
 					break;
 				}
-				if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+				// if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() <= this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+				if (this.stored < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
 			}
 		}
 
@@ -266,7 +267,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
 	public int getMaxImportRate() {
-		return Reference.Constants.BASE_MACH_USAGE;
+		return Reference.Constants.BASE_MACH_USAGE * 4;
 	}
 
 	/*
