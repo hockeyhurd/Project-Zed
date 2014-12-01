@@ -220,7 +220,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 						break;
 					}
 					if (this.stored < this.maxStorage) {
-						int amount = this.importRate <= c.getMaxExportRate() ? this.importRate : c.getMaxExportRate();
+						int amount = Math.min(this.importRate, c.getMaxExportRate());
 						this.stored += c.requestPower(this, amount);
 					}
 				}
@@ -327,32 +327,32 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 			if (worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x - 1, y, z);
-				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.EAST, this.extractEnergy(this.exportRateRF, false), false);
 			}
 
 			if (worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x + 1, y, z);
-				hand.receiveEnergy(ForgeDirection.EAST, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(this.exportRateRF, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y - 1, z);
-				hand.receiveEnergy(ForgeDirection.DOWN, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.UP, this.extractEnergy(this.exportRateRF, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y + 1, z);
-				hand.receiveEnergy(ForgeDirection.UP, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.DOWN, this.extractEnergy(this.exportRateRF, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z - 1);
-				hand.receiveEnergy(ForgeDirection.NORTH, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.SOUTH, this.extractEnergy(this.exportRateRF, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z + 1);
-				hand.receiveEnergy(ForgeDirection.SOUTH, this.extractEnergy(this.exportRateRF, false), false);
+				hand.receiveEnergy(ForgeDirection.NORTH, this.extractEnergy(this.exportRateRF, false), false);
 			}
 		}
 

@@ -26,7 +26,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
-		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 2;
+		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE /** 2*/;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
@@ -236,10 +236,10 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 					break;
 				}
 				
-				if (this.stored < this.maxStorage) {
+				if (this.stored < this.maxStorage && c.getEnergyStored() > 0) {
 					if (c instanceof TileEntityEnergyPipeBase && this.stored >= c.getEnergyStored()) continue;
 					
-					int amount = this.importRate <= c.getMaxExportRate() ? this.importRate : c.getMaxExportRate();
+					int amount = Math.min(this.importRate, c.getMaxExportRate());
 					this.stored += c.requestPower(this, amount);
 				}
 			}
