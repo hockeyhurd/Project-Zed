@@ -219,7 +219,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 						this.stored = this.maxStorage;
 						break;
 					}
-					if (this.stored < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+					if (this.stored < this.maxStorage) {
+						int amount = this.importRate <= c.getMaxExportRate() ? this.importRate : c.getMaxExportRate();
+						this.stored += c.requestPower(this, amount);
+					}
 				}
 			}
 

@@ -1,6 +1,7 @@
 BUGS:
 =================================
     - Check saving code for fab. table (crafting grid). [TEMP FIXED]
+    - Energy cell input backwards?
 
 TODO:
 =================================
