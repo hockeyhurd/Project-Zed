@@ -59,13 +59,28 @@ public class Reference extends AbstractReference {
 		 */
 		public static final float MCU_TO_RF = 1f / 10f * 2.5f; 
 		
+		public static final float RF_TO_MCU = 1f * 10f / 2.5f;
+		
 		/**
 		 * Function used to quickly convert any amount of energy in McU to RF.
 		 * @param mcu = energy in McU
 		 * @return energy value in RF.
 		 */
-		public static float getRFFromMcU(int mcu) {
-			return mcu * MCU_TO_RF;
+		public static int getRFFromMcU(int mcu) {
+			float val = mcu * MCU_TO_RF;
+			int retVal = (int) Math.floor(val);
+			return retVal;
+		}
+		
+		/**
+		 * Function used to quickly convert any amount of energy in RF to McU.
+		 * @param rf = energy in RF.
+		 * @return energy value in McU
+		 */
+		public static int getMcUFromRF(int rf) {
+			float val = rf * RF_TO_MCU;
+			int retVal = (int) Math.floor(val);
+			return retVal;
 		}
 		
 		private Constants() {

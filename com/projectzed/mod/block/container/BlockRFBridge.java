@@ -29,12 +29,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockRFBridge extends AbstractBlockContainer {
 
 	private boolean flip;
-	private String[] names = new String[] {
-		"McUToRF", "RFToMcU"
-	};
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
 
 	public BlockRFBridge(Material material, boolean flip) {
 		super(material, ProjectZed.assetDir, "bridgeMcUToRF");
@@ -44,17 +38,7 @@ public class BlockRFBridge extends AbstractBlockContainer {
 
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		icons = new IIcon[names.length];
-		
-		for (int i = 0; i < icons.length; i++) {
-			icons[i] = reg.registerIcon(ProjectZed.assetDir + "bridge" + names[i]);
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		if (meta < 0 || meta >= this.icons.length) meta = 0;
-		return this.icons[meta];
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + (!flip ? "bridgeMcUToRF" : "bridgeRFToMcU"));
 	}
 
 	/*

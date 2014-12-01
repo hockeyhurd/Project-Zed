@@ -38,21 +38,17 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
 		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 
-		this.maxStorageRF = convertAndRoundToRF(this.maxStorage);
-		this.importRateRF = convertAndRoundToRF(this.exportRate);
-		this.exportRateRF = convertAndRoundToRF(this.importRate);
+		this.maxStorageRF = Reference.Constants.getRFFromMcU(this.maxStorage);
+		this.importRateRF = Reference.Constants.getRFFromMcU(this.exportRate);
+		this.exportRateRF = Reference.Constants.getRFFromMcU(this.importRate);
 	}
-	
+
 	/**
 	 * Set whether to receive rf or mcu.
 	 * @param flip = mode to set (receive == true ? McU --> RF : RF --> McU).
 	 */
 	public void setFlip(boolean flip) {
 		this.flip = flip;
-	}
-
-	private int convertAndRoundToRF(int mcu) {
-		return (int) Math.floor(Reference.Constants.getRFFromMcU(mcu));
 	}
 
 	/*
@@ -149,7 +145,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
-		if (cont != null && this.getMaxExportRate() >= amount) {
+		if (flip && cont != null && this.getMaxExportRate() >= amount) {
 			if (this.stored - amount >= 0) this.stored -= amount;
 			else {
 				amount = this.stored;
@@ -157,7 +153,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 			}
 			return amount;
 		}
-		
+
 		else return 0;
 	}
 
@@ -167,72 +163,147 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
 	 */
 	protected void importContents() {
-		if (this.stored >= this.maxStorage) {
-			this.stored = this.maxStorage;
-			return;
-		}
-		
-		if (flip) return;
 
+		// Helper variables.
 		int x = this.xCoord;
 		int y = this.yCoord;
 		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
 
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			containers.add(cont);
-		}
+		// *Converting to RF*
+		if (!flip) {
+			if (this.stored >= this.maxStorage) {
+				this.stored = this.maxStorage;
+				return;
+			}
+			List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
 
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			containers.add(cont);
-		}
+			// -x
+			if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
+				containers.add(cont);
+			}
 
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			containers.add(cont);
-		}
+			// +x
+			if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
+				containers.add(cont);
+			}
 
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			containers.add(cont);
-		}
+			// -y
+			if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
+				containers.add(cont);
+			}
 
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			containers.add(cont);
-		}
+			// +y
+			if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
+				containers.add(cont);
+			}
 
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			containers.add(cont);
-		}
+			// -z
+			if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
+				containers.add(cont);
+			}
 
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (this.stored >= this.maxStorage) {
-					this.stored = this.maxStorage;
-					break;
+			// +z
+			if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
+				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
+				containers.add(cont);
+			}
+
+			if (containers.size() > 0) {
+				for (IEnergyContainer c : containers) {
+					if (this.stored >= this.maxStorage) {
+						this.stored = this.maxStorage;
+						break;
+					}
+					if (this.stored < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
 				}
-				// if (c.getEnergyStored() - c.getMaxExportRate() > 0 && this.stored + c.getMaxExportRate() <= this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
-				if (this.stored < this.maxStorage) this.stored += c.requestPower(this, c.getMaxExportRate());
+			}
+
+			containers.removeAll(Collections.EMPTY_LIST);
+		}
+
+		// *Converting to McU*
+		else {
+			if (this.storedRF < this.maxStorageRF) {
+
+				if (worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x - 1, y, z);
+					this.storedRF += hand.extractEnergy(ForgeDirection.EAST, this.importRateRF, false);
+				}
+
+				if (worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x + 1, y, z);
+					this.storedRF += hand.extractEnergy(ForgeDirection.WEST, this.importRateRF, false);
+				}
+
+				if (worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y - 1, z);
+					this.storedRF += hand.extractEnergy(ForgeDirection.UP, this.importRateRF, false);
+				}
+
+				if (worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y + 1, z);
+					this.storedRF += hand.extractEnergy(ForgeDirection.DOWN, this.importRateRF, false);
+				}
+
+				if (worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z - 1);
+					this.storedRF += hand.extractEnergy(ForgeDirection.SOUTH, this.importRateRF, false);
+				}
+
+				if (worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyHandler) {
+					IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z + 1);
+					this.storedRF += hand.extractEnergy(ForgeDirection.NORTH, this.importRateRF, false);
+				}
+				
+				if (this.storedRF > this.maxStorageRF) this.storedRF = this.maxStorageRF;
+			}
+		}
+	}
+
+	/**
+	 * Method used to transfer energy from one unit to another.
+	 */
+	protected void convertEnergy() {
+
+		// *Converting to RF*
+		if (!flip) {
+			if (this.stored > 0 && this.storedRF < this.maxStorageRF) {
+				if (this.stored - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF) {
+					this.stored -= this.exportRate;
+					this.storedRF += this.importRateRF;
+				}
+
+				else {
+					this.storedRF += Reference.Constants.getRFFromMcU(this.stored);
+					this.stored = 0;
+				}
+
+				if (this.stored < 0) this.stored = 0;
+				if (this.storedRF > this.maxStorageRF) this.storedRF = this.maxStorageRF;
 			}
 		}
 
-		containers.removeAll(Collections.EMPTY_LIST);
-	}
-	
-	protected void convertEnergy() {
-		if (this.stored - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF && !flip) {
-			this.stored -= this.exportRate;
-			this.storedRF += this.importRateRF;
+		// *Converting to McU*
+		else {
+			if (this.storedRF > 0 && this.stored < this.maxStorage) {
+				if (this.storedRF - this.exportRateRF > 0 && this.stored + this.importRate <= this.maxStorage) {
+					this.storedRF -= this.exportRateRF;
+					this.stored += this.importRate;
+				}
+
+				else {
+					this.stored += Reference.Constants.getMcUFromRF(this.storedRF);
+					this.storedRF = 0;
+				}
+
+				if (this.storedRF < 0) this.storedRF = 0;
+				if (this.stored > this.maxStorage) this.stored = this.maxStorage;
+			}
 		}
 	}
 
@@ -242,16 +313,47 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
 	 */
 	protected void exportContents() {
+
+		// Helper variables.
+		int x = this.xCoord;
+		int y = this.yCoord;
+		int z = this.zCoord;
+
+		// *Converting to RF*
 		if (this.storedRF > 0 && !flip) {
-			int x = this.xCoord;
-			int y = this.yCoord;
-			int z = this.zCoord;
-			
+
 			if (worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x - 1, y, z);
 				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(this.exportRateRF, false), false);
 			}
+
+			if (worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x + 1, y, z);
+				hand.receiveEnergy(ForgeDirection.EAST, this.extractEnergy(this.exportRateRF, false), false);
+			}
+
+			if (worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y - 1, z);
+				hand.receiveEnergy(ForgeDirection.DOWN, this.extractEnergy(this.exportRateRF, false), false);
+			}
+
+			if (worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y + 1, z);
+				hand.receiveEnergy(ForgeDirection.UP, this.extractEnergy(this.exportRateRF, false), false);
+			}
+
+			if (worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z - 1);
+				hand.receiveEnergy(ForgeDirection.NORTH, this.extractEnergy(this.exportRateRF, false), false);
+			}
+
+			if (worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyHandler) {
+				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z + 1);
+				hand.receiveEnergy(ForgeDirection.SOUTH, this.extractEnergy(this.exportRateRF, false), false);
+			}
 		}
+
+		else return;
 	}
 
 	// RF STUFF:
@@ -279,18 +381,17 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	public int getMaxEnergyStored() {
 		return this.maxStorageRF;
 	}
-	
+
 	public void setRFStored(int amount) {
 		this.storedRF = amount;
 	}
-	
+
 	public void updateEntity() {
 		importContents();
 		convertEnergy();
 		exportContents();
 		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRFBridge(this));
-		// System.out.println(this.stored + ", " + this.storedRF);
-		
+
 		super.updateEntity();
 	}
 
@@ -313,7 +414,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
-	
+
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
