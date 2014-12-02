@@ -125,7 +125,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	public void updateEntity() {
 		super.updateEntity();
-		// System.out.println(this.stored);
+		// if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
 	}
 
 	/*

@@ -43,7 +43,8 @@ public class CrusherRecipesRegistry {
 		mapVanilla.put(new ItemStack(Blocks.quartz_ore, 1),  new ItemStack(Items.quartz, 2));
 		mapVanilla.put(new ItemStack(Items.bone, 1), new ItemStack(Items.dye, 6, 15));
 		mapVanilla.put(new ItemStack(Items.blaze_rod, 1), new ItemStack(Items.blaze_powder, 6));
-		mapVanilla.put(new ItemStack(Blocks.cobblestone, 1), new ItemStack(Blocks.sand, 1));
+		mapVanilla.put(new ItemStack(Blocks.cobblestone, 1), new ItemStack(Blocks.gravel, 1));
+		mapVanilla.put(new ItemStack(Blocks.gravel, 1), new ItemStack(Blocks.sand, 1));
 
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");
@@ -73,6 +74,7 @@ public class CrusherRecipesRegistry {
 		mapModded.put("oreCertusQuartz", "crystalCertusQuartz");
 		mapModded.put("gemQuartz", "dustNetherQuartz");
 		mapModded.put("crystalCertusQuartz", "dustCertusQuartz");
+		mapModded.put("crystalFluix", "dustFluix");
 		mapModded.put("coal", "dustCoal");
 
 		initEntries();
