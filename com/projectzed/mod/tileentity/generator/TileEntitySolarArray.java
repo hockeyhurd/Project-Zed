@@ -56,7 +56,7 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	}
 
 	public void updateEntity() {
-		if (this.worldObj != null && !this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0L) {
+		if (this.worldObj != null && !this.worldObj.isRemote /*&& this.worldObj.getTotalWorldTime() % 20L == 0L*/) {
 			if (this.getBlockType() instanceof BlockSolarArray) {
 				BlockSolarArray b = (BlockSolarArray) this.getBlockType();
 				boolean clear = b.canSeeAbove(this.worldObj, this.xCoord, this.yCoord, this.zCoord);

@@ -194,6 +194,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
 	public void generatePower() {
+		if (this.getWorldObj().isRemote) return;
 		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}

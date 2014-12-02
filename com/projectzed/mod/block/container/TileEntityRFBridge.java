@@ -163,6 +163,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
 	 */
 	protected void importContents() {
+		if (this.getWorldObj().isRemote) return;
 
 		// Helper variables.
 		int x = this.xCoord;
@@ -272,6 +273,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * Method used to transfer energy from one unit to another.
 	 */
 	protected void convertEnergy() {
+		if (this.getWorldObj().isRemote) return;
 
 		// *Converting to RF*
 		if (!flip) {
@@ -316,6 +318,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
 	 */
 	protected void exportContents() {
+		if (this.getWorldObj().isRemote) return;
 
 		// Helper variables.
 		int x = this.xCoord;

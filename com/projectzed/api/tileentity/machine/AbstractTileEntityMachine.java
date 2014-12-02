@@ -134,6 +134,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * Method used to transfer power from one te to another.
 	 */
 	public void transferPower() {
+		if (this.getWorldObj().isRemote) return;
+		
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
 			return;

@@ -14,7 +14,7 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.util.Reference;
 
 /**
- * Class containing coode for energy pipe;
+ * Class containing coe for energy pipe;
  * 
  * @author hockeyhurd
  * @version Oct 25, 2014
@@ -153,6 +153,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
 	 */
 	protected void importContents() {
+		if (this.getWorldObj().isRemote) return;
+		
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
 			return;
