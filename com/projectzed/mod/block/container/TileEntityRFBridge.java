@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyStorage;
 
+import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -194,58 +195,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 				this.stored = this.maxStorage;
 				return;
 			}
-			List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-
-			// -x
-			if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-				containers.add(cont);
-			}
-
-			// +x
-			if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-				containers.add(cont);
-			}
-
-			// -y
-			if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-				containers.add(cont);
-			}
-
-			// +y
-			if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-				containers.add(cont);
-			}
-
-			// -z
-			if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-				containers.add(cont);
-			}
-
-			// +z
-			if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
-				IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-				containers.add(cont);
-			}
-
-			if (containers.size() > 0) {
-				for (IEnergyContainer c : containers) {
-					if (this.stored >= this.maxStorage) {
-						this.stored = this.maxStorage;
-						break;
-					}
-					if (this.stored < this.maxStorage) {
-						int amount = Math.min(this.importRate, c.getMaxExportRate());
-						this.stored += c.requestPower(this, amount);
-					}
-				}
-			}
-
-			containers.removeAll(Collections.EMPTY_LIST);
+			
+			EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 		}
 
 		// *Converting to McU*

@@ -1,16 +1,12 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -31,6 +27,9 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
 	
+	/**
+	 * @return color of the energy pipe if has a color, else returns null.
+	 */
 	public EnumColor getColor() {
 		return null;
 	}
@@ -143,7 +142,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	public void updateEntity() {
 		super.updateEntity();
-		if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
+		// if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
 	}
 
 	/*
@@ -181,91 +180,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 		int x = this.xCoord;
 		int y = this.yCoord;
 		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
 
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) cont;
-				if (pipe.getColor() == this.getColor()) containers.add(cont);
-			}
-			
-			else containers.add(cont);
-		}
-
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (this.stored >= this.maxStorage) {
-					this.stored = this.maxStorage;
-					break;
-				}
-				
-				if (this.stored < this.maxStorage && c.getEnergyStored() > 0) {
-					if (c instanceof TileEntityEnergyPipeBase && this.stored >= c.getEnergyStored()) continue;
-					
-					int amount = Math.min(this.importRate, c.getMaxExportRate());
-					this.stored += c.requestPower(this, amount);
-				}
-			}
-		}
-
-		containers.removeAll(Collections.EMPTY_LIST);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 	}
 
 	/*

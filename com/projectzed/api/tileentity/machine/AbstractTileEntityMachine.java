@@ -1,9 +1,5 @@
 package com.projectzed.api.tileentity.machine;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,6 +8,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockMachine;
+import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
@@ -36,7 +33,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	protected int stored;
 	protected int energyBurnRate = 2;
 	protected boolean powerMode;
-	protected ForgeDirection lastReceivedDir;
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	public int cookTime;
 	public static int defaultCookTime = 200;
@@ -146,58 +143,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		int x = this.xCoord;
 		int y = this.yCoord;
 		int z = this.zCoord;
-		List<IEnergyContainer> containers = new ArrayList<IEnergyContainer>();
-
-		// -x
-		if (worldObj.getTileEntity(x - 1, y, z) != null && worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x - 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x - 1, y, z);
-			containers.add(cont);
-		}
-
-		// +x
-		if (worldObj.getTileEntity(x + 1, y, z) != null && worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x + 1, y, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x + 1, y, z);
-			containers.add(cont);
-		}
-
-		// -y
-		if (worldObj.getTileEntity(x, y - 1, z) != null && worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y - 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y - 1, z);
-			containers.add(cont);
-		}
-
-		// +y
-		if (worldObj.getTileEntity(x, y + 1, z) != null && worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y + 1, z) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y + 1, z);
-			containers.add(cont);
-		}
-
-		// -z
-		if (worldObj.getTileEntity(x, y, z - 1) != null && worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z - 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z - 1);
-			containers.add(cont);
-		}
-
-		// +z
-		if (worldObj.getTileEntity(x, y, z + 1) != null && worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyContainer && !(worldObj.getTileEntity(x, y, z + 1) instanceof AbstractTileEntityMachine)) {
-			IEnergyContainer cont = (IEnergyContainer) worldObj.getTileEntity(x, y, z + 1);
-			containers.add(cont);
-		}
-
-		if (containers.size() > 0) {
-			for (IEnergyContainer c : containers) {
-				if (this.stored >= this.maxStorage) {
-					this.stored = this.maxStorage;
-					break;
-				}
-				if (this.stored < this.maxStorage) {
-					int amount = Math.min(this.getMaxImportRate(), c.getMaxExportRate());
-					this.stored += c.requestPower(this, amount);
-				}
-			}
-		}
-
-		containers.removeAll(Collections.EMPTY_LIST);
+		
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 	}
 
 	/*

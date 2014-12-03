@@ -22,7 +22,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	protected int stored;
 	protected boolean powerMode;
 	protected int importRate, exportRate;
-	protected ForgeDirection lastReceivedDir;
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 	
 	/**
 	 * Init class object through parameters.
