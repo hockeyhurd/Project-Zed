@@ -6,23 +6,29 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
+import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Class containing 'container' code for energy like containers.
+ * <br>Most notably energy cells.
  * 
  * @author hockeyhurd
- * @version Nov 29, 2014
+ * @version Dec 3, 2014
  */
-public class ContainerRFBridge extends Container {
+public class ContainerEnergyContainer extends Container {
 
-	private TileEntityRFBridge te;
-	private int stored, storedRF;
+	private AbstractTileEntityContainer te;
+	private int stored;
 	private boolean powerMode;
 
-	public ContainerRFBridge(InventoryPlayer inv, TileEntityRFBridge te) {
+	/**
+	 * @param inv = player's inventory.
+	 * @param te = tileentity object as reference.
+	 */
+	public ContainerEnergyContainer(InventoryPlayer inv, AbstractTileEntityContainer te) {
 		this.te = te;
 		addSlots(inv, te);
 	}
@@ -32,7 +38,7 @@ public class ContainerRFBridge extends Container {
 	 * @param inv = inventory.
 	 * @param te = tile entity object.
 	 */
-	private void addSlots(InventoryPlayer inv, TileEntityRFBridge te) {
+	private void addSlots(InventoryPlayer inv, AbstractTileEntityContainer te) {
 
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
@@ -59,14 +65,19 @@ public class ContainerRFBridge extends Container {
 
 	public void detectAndSendChanges() {
 		this.stored = this.te.getEnergyStored();
-		this.storedRF = this.te.storedRF;
+		this.powerMode = this.te.getEnergyStored() > 0;
 		super.detectAndSendChanges();
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int newVal, boolean mode) {
+		this.te.setEnergyStored(newVal);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
+	 */
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}
@@ -100,6 +111,14 @@ public class ContainerRFBridge extends Container {
 		}
 
 		return itemstack;
+	}
+
+	/**
+	 * Gets the TE instance.
+	 * @return te object.
+	 */
+	public AbstractTileEntityContainer getTE() {
+		return this.te;
 	}
 
 }

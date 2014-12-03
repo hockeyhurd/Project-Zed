@@ -3,35 +3,28 @@ package com.projectzed.mod.handler.message;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
-import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
+import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-/**
- * Class containing messaging code for rf bridge te.
- * 
- * @author hockeyhurd
- * @version Nov 29, 2014
- */
-public class MessageTileEntityRFBridge implements IMessage, IMessageHandler<MessageTileEntityRFBridge, IMessage> {
+public class MessageTileEntityContainer implements IMessage, IMessageHandler<MessageTileEntityContainer, IMessage> {
 
-	public TileEntityRFBridge te;
+	public AbstractTileEntityContainer te;
 	public int x, y, z;
-	public int stored, storedRF;
+	public int stored;
 	
-	public MessageTileEntityRFBridge() {
+	public MessageTileEntityContainer() {
 	}
 	
-	public MessageTileEntityRFBridge(TileEntityRFBridge te) {
+	public MessageTileEntityContainer(AbstractTileEntityContainer te) {
 		this.te = te;
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
-		this.storedRF = te.storedRF;
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -39,7 +32,6 @@ public class MessageTileEntityRFBridge implements IMessage, IMessageHandler<Mess
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
-		this.storedRF = buf.readInt();
 	}
 
 	public void toBytes(ByteBuf buf) {
@@ -47,18 +39,15 @@ public class MessageTileEntityRFBridge implements IMessage, IMessageHandler<Mess
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
-		buf.writeInt(storedRF);
 	}
 
-	public IMessage onMessage(MessageTileEntityRFBridge message, MessageContext ctx) {
+	public IMessage onMessage(MessageTileEntityContainer message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
-		if (te instanceof TileEntityRFBridge) {
-			((TileEntityRFBridge) te).setEnergyStored(message.stored);
-			((TileEntityRFBridge) te).storedRF = message.storedRF;
+		if (te instanceof AbstractTileEntityContainer) {
+			((AbstractTileEntityContainer) te).setEnergyStored(message.stored);
 		}
 		
 		return null;
 	}
-
 }

@@ -2,11 +2,14 @@ package com.projectzed.api.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 
 /**
  * Class containing generic abstractions for all containers.
@@ -165,7 +168,9 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	
 	/**
 	 * Method to be defined controlling mechanism for exporting energy only (for now).
+	 * <br>Set to deprecated since 12/3/14 as mostly unuse and maybe removed later.
 	 */
+	@Deprecated
 	protected abstract void exportContents(); 
 	
 	/*
@@ -183,6 +188,9 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	public void updateEntity() {
 		importContents();
 		exportContents();
+		
+		this.powerMode = this.stored > 0;
+		
 		super.updateEntity();
 	}
 	
@@ -207,9 +215,11 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 	}
 	
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
-	}*/
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
+	@Override
+	public abstract Packet getDescriptionPacket();
 
 }

@@ -1,8 +1,4 @@
-package com.projectzed.mod.block.container;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +10,6 @@ import cofh.api.energy.IEnergyStorage;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
@@ -390,6 +385,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getDescriptionPacket()
+	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));

@@ -9,6 +9,8 @@ TODO:
     - Implement fuel registry to 'run' off this fuel.
     - Add reactor chamber wall?
     - Add rector core.
+    - Add some sort of metal former
+    - Add recipe for aluminium sheet.
 
 IDEAS:
 =================================    

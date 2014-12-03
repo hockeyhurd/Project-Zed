@@ -51,6 +51,8 @@ public class EnergyNet {
 			}
 			
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				if (sourceCont.getEnergyStored() >= sourceCont.getMaxStorage()) break;
+				
 				if (sides[dir.ordinal()] && dir != lastDir) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					

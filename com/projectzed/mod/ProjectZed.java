@@ -10,6 +10,7 @@ import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.BlockFabricationTable;
 import com.projectzed.mod.block.BlockThickenedGlass;
+import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
@@ -93,9 +94,12 @@ public class ProjectZed {
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
+	
+	// Containers:
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
+	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -203,9 +207,15 @@ public class ProjectZed {
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();
+		
+		// Containers:
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
 		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
+		energyCellTier0 = new BlockEnergyCell(Material.rock, "energyCellTier0");
+		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
+		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
+		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
 		
 		// RF STUFF:
 		bridgeMcUToRF = new BlockRFBridge(Material.rock, false);

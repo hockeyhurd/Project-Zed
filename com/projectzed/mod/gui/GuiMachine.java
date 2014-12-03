@@ -1,5 +1,7 @@
 package com.projectzed.mod.gui;
 
+import java.text.DecimalFormat;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -27,6 +29,7 @@ public class GuiMachine extends GuiContainer {
 	public final ResourceLocation texture;
 	private AbstractTileEntityMachine te;
 	private String stringToDraw;
+	private final DecimalFormat df = new DecimalFormat("###,###,###");
 	
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
@@ -43,7 +46,7 @@ public class GuiMachine extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.stringToDraw = "Power: " + (this.te.getEnergyStored()) + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
+		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + df.format(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
 				4210752);
 	}

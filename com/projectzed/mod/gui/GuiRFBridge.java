@@ -1,5 +1,7 @@
 package com.projectzed.mod.gui;
 
+import java.text.DecimalFormat;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -8,8 +10,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.projectzed.mod.block.container.TileEntityRFBridge;
 import com.projectzed.mod.container.ContainerRFBridge;
+import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
 import com.projectzed.mod.util.Reference.Constants;
 
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +29,7 @@ public class GuiRFBridge extends GuiContainer {
 	public final ResourceLocation texture;
 	private TileEntityRFBridge te;
 	private String stringToDraw;
+	private final DecimalFormat df = new DecimalFormat("###,###,###");
 
 	public GuiRFBridge(InventoryPlayer inv, TileEntityRFBridge te) {
 		super(new ContainerRFBridge(inv, te));
@@ -44,11 +47,11 @@ public class GuiRFBridge extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.stringToDraw = "Power: " + this.te.storedRF + " / " + this.te.getMaxEnergyStored() + " RF";
+		this.stringToDraw = "Power: " + df.format(this.te.storedRF) + " / " + df.format(this.te.getMaxEnergyStored()) + " RF";
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 130,
 				4210752);
 		
-		this.stringToDraw = "Power: " + this.te.getEnergyStored() + " / " + this.te.getMaxStorage() + " " + Constants.ENERGY_UNIT;
+		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + df.format(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
 				4210752);
 	}
