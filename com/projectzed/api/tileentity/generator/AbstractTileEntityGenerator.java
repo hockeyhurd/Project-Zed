@@ -3,6 +3,7 @@ package com.projectzed.api.tileentity.generator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
@@ -170,6 +171,31 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		}
 		
 		else return 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
+	 */
+	public int addPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxImportRate() >= amount) {
+			if (this.stored + amount <= this.maxStored) this.stored += amount;
+			else {
+				amount = this.maxStored - this.stored;
+				this.stored = this.maxStored;
+			}
+			
+			return amount;
+		}
+		
+		else return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir) {
 	}
 
 	/*

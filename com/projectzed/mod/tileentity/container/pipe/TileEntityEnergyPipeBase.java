@@ -26,7 +26,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
-		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE /** 2*/;
+		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE /* * 2*/;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
@@ -113,6 +113,24 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 				amount = this.stored;
 				this.stored = 0;
 			}
+			return amount;
+		}
+		
+		else return 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
+	 */
+	public int addPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxImportRate() >= amount) {
+			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			else {
+				amount = this.maxStorage - this.stored;
+				this.stored = this.maxStorage;
+			}
+			
 			return amount;
 		}
 		

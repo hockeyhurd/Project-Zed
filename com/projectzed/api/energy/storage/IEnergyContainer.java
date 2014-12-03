@@ -1,5 +1,7 @@
 package com.projectzed.api.energy.storage;
 
+import net.minecraftforge.common.util.ForgeDirection;
+
 import com.hockeyhurd.api.math.Vector4Helper;
 
 /**
@@ -35,6 +37,20 @@ public interface IEnergyContainer {
 	 * @return amount of energy able to obtain.
 	 */
 	public int requestPower(IEnergyContainer cont, int amount);
+	
+	/**
+	 * Function used to add power to this container from another.
+	 * @param cont = container from as reference.
+	 * @param amount = amount of energy able to add.
+	 * @return
+	 */
+	public int addPower(IEnergyContainer cont, int amount);
+	
+	/**
+	 * Sets the last received direction.
+	 * @param dir = direction received from.
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir);
 
 	/** Gets and stored the vector co-ordinates of this te. */
 	public Vector4Helper<Integer> worldVec();

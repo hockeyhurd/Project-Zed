@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockMachine;
@@ -35,6 +36,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	protected int stored;
 	protected int energyBurnRate = 2;
 	protected boolean powerMode;
+	protected ForgeDirection lastReceivedDir;
 
 	public int cookTime;
 	public static int defaultCookTime = 200;
@@ -291,6 +293,32 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
 		return 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
+	 */
+	public int addPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxImportRate() >= amount) {
+			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			else {
+				amount = this.maxStorage - this.stored;
+				this.stored = this.maxStorage;
+			}
+			
+			return amount;
+		}
+		
+		else return 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
 	}
 	
 	/*

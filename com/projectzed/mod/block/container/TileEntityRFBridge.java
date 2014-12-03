@@ -156,6 +156,24 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 		else return 0;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
+	 */
+	public int addPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxImportRate() >= amount) {
+			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			else {
+				amount = this.maxStorage - this.stored;
+				this.stored = this.maxStorage;
+			}
+			
+			return amount;
+		}
+		
+		else return 0;
+	}
 
 	/*
 	 * (non-Javadoc)

@@ -2,6 +2,7 @@ package com.projectzed.api.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -21,6 +22,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	protected int stored;
 	protected boolean powerMode;
 	protected int importRate, exportRate;
+	protected ForgeDirection lastReceivedDir;
 	
 	/**
 	 * Init class object through parameters.
@@ -141,6 +143,20 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public abstract int requestPower(IEnergyContainer cont, int amount);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
+	 */
+	public abstract int addPower(IEnergyContainer cont, int amount);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
 	
 	/**
 	* Method to be defined controlling mechanism for importing energy only (for now).
