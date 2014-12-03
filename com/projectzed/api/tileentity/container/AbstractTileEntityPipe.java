@@ -3,7 +3,7 @@ package com.projectzed.api.tileentity.container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 
 /**
  * Generic class used for creating new te pipes for transport.

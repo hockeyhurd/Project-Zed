@@ -1,7 +1,7 @@
-package com.projectzed.api.generation;
+package com.projectzed.api.energy.generation;
 
-import com.projectzed.api.source.Source;
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.source.Source;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 
 /**
  * Interface controlling how much energy can be created per tick.

@@ -5,9 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.api.generation.IEnergyGeneration;
-import com.projectzed.api.source.Source;
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.generation.IEnergyGeneration;
+import com.projectzed.api.energy.source.Source;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;

@@ -3,7 +3,7 @@ package com.projectzed.mod.proxy;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 
-import com.projectzed.api.source.EnumColor;
+import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;

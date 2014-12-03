@@ -1,6 +1,5 @@
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;

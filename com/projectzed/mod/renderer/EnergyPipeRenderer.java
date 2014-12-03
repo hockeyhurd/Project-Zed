@@ -9,8 +9,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.projectzed.api.source.EnumColor;
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 import cpw.mods.fml.relauncher.Side;

@@ -11,8 +11,8 @@ import net.minecraft.network.Packet;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.machine.IEnergyMachine;
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.machine.IEnergyMachine;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -240,6 +240,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				flag1 = true;
 				((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 			}
+			
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
 
 		if (flag1) this.markDirty();
@@ -334,7 +336,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	public void burnEnergy() {
 		if (isPoweredOn() && this.cookTime > 0) this.stored -= this.energyBurnRate;
-		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
+		// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 	}
 
 	/*

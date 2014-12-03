@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
-import com.projectzed.api.source.EnumColor;
+import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.BlockFabricationTable;
 import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;

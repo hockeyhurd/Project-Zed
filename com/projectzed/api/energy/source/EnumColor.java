@@ -1,4 +1,4 @@
-package com.projectzed.api.source;
+package com.projectzed.api.energy.source;
 
 /**
  * Enumeration for (pipe) colors.

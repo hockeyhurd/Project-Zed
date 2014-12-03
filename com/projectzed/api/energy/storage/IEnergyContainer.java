@@ -1,4 +1,4 @@
-package com.projectzed.api.storage;
+package com.projectzed.api.energy.storage;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 

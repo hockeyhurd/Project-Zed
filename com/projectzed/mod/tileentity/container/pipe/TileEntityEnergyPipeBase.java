@@ -7,8 +7,8 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.projectzed.api.source.EnumColor;
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.util.Reference;
@@ -125,7 +125,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	public void updateEntity() {
 		super.updateEntity();
-		// if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
+		if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
 	}
 
 	/*

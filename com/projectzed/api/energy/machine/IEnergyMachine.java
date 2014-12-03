@@ -1,6 +1,6 @@
-package com.projectzed.api.machine;
+package com.projectzed.api.energy.machine;
 
-import com.projectzed.api.storage.IEnergyContainer;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 
 /**
  * Interface for all machines

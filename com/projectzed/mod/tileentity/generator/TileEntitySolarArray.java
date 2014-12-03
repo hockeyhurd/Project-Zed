@@ -2,8 +2,8 @@ package com.projectzed.mod.tileentity.generator;
 
 import net.minecraft.item.ItemStack;
 
-import com.projectzed.api.source.EnumType;
-import com.projectzed.api.source.Source;
+import com.projectzed.api.energy.source.EnumType;
+import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.handler.PacketHandler;

@@ -1,6 +1,6 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
-import com.projectzed.api.source.EnumColor;
+import com.projectzed.api.energy.source.EnumColor;
 
 /**
  * 

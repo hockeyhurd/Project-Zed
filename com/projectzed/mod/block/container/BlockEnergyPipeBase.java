@@ -7,7 +7,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockPipe;
-import com.projectzed.api.source.EnumColor;
+import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;

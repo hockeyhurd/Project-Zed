@@ -4,7 +4,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.projectzed.api.source.EnumColor;
+import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 
 /**

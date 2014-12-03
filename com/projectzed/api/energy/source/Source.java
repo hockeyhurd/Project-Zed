@@ -1,4 +1,4 @@
-package com.projectzed.api.source;
+package com.projectzed.api.energy.source;
 
 /**
  * House keeping class to define the source of energy generation.

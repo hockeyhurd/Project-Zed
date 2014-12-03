@@ -12,8 +12,8 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.projectzed.api.source.EnumType;
-import com.projectzed.api.source.Source;
+import com.projectzed.api.energy.source.EnumType;
+import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
