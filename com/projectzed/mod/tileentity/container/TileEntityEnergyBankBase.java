@@ -1,13 +1,11 @@
 package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.util.Reference;
@@ -218,26 +216,6 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	public void updateEntity() {
 		super.updateEntity();
 		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		int size = comp.getInteger("ProjectZedPowerStored");
-		ProjectZed.logHelper.info("\t\t\t\t\t\tRead:\t" + size);
-		this.stored = size > 0 && size <= this.getMaxStorage() ? size : 0;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		comp.setInteger("ProjectZedPowerStored", this.stored);
 	}
 	
 	/*

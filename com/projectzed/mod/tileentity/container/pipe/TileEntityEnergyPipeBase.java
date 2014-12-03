@@ -1,6 +1,5 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -191,26 +190,6 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	@Deprecated
 	protected void exportContents() {
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void readFromNBT(NBTTagCompound comp) {
-		// super.readFromNBT(comp);
-		
-		int size = comp.getInteger("ProjectZedPowerStored");
-		this.stored =  size >= 0 && size <= this.maxStorage ? size : 0;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void writeToNBT(NBTTagCompound comp) {
-		// super.writeToNBT(comp);
-		comp.setInteger("ProjectZedPowerStored", this.stored);
 	}
 	
 	@Override
