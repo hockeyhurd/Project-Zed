@@ -43,13 +43,13 @@ public class ContainerEnergyContainer extends Container {
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, 8 + x * 18, 84 + y * 18));
+				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, 8 + x * 18, 32 + 84 + y * 18));
 			}
 		}
 
 		// Adds the player hotbar slots to the gui.
 		for (int i = 0; i < 9; i++) {
-			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 142)); // 198
+			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 32 + 142)); // 198
 		}
 	}
 

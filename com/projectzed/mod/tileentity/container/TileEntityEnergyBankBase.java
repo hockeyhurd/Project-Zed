@@ -2,6 +2,7 @@ package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -24,6 +25,8 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 		(int) 1e6, (int) 1e7, (int) 1e8, (int) 1e9, 	
 	};
 	
+	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length]; 
+	
 	public TileEntityEnergyBankBase() {
 		super("energyBank");
 		this.tier = 0;
@@ -39,6 +42,23 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	public void setTier(byte b) {
 		this.tier = b >= 0 && b <= tiers.length ? b : 0;
 		this.maxStorage = tiers[b];
+	}
+	
+	/**
+	 * Sets given direction to given value.
+	 * @param dir = direction to set.
+	 * @param value = value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
+	 */
+	public void setSideValve(ForgeDirection dir, byte value) {
+		openSides[dir.ordinal()] = value;
+	}
+	
+	/**
+	 * @param dir = direction to test.
+	 * @return true if can input energy, else returns false.
+	 */
+	public byte getSideValve(ForgeDirection dir) {
+		return openSides[dir.ordinal()];
 	}
 
 	/*
