@@ -17,6 +17,8 @@ import org.lwjgl.opengl.GL11;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.container.ContainerEnergyContainer;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.util.Reference.Constants;
 
@@ -119,7 +121,6 @@ public class GuiEnergyContainer extends GuiContainer {
 					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
 					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
 					
-					
 					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "W"),
 					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "E"),
 					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "S"),
@@ -132,7 +133,6 @@ public class GuiEnergyContainer extends GuiContainer {
 					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
 					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
 					
-					
 					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "E"),
 					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "W"),
 					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "N"),
@@ -144,7 +144,6 @@ public class GuiEnergyContainer extends GuiContainer {
 			buttons = new GuiButton[] {
 					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
 					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
-					
 					
 					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "S"),
 					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "N"),
@@ -160,12 +159,30 @@ public class GuiEnergyContainer extends GuiContainer {
 		return side >= 0 && side < ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.VALID_DIRECTIONS[side].getOpposite() : ForgeDirection.UNKNOWN;
 	}
 	
+	private ForgeDirection getDirectionFromName(String name) {
+		ForgeDirection dir = ForgeDirection.UNKNOWN;
+		
+		if (name.equalsIgnoreCase("n")) dir = ForgeDirection.NORTH;
+		else if (name.equalsIgnoreCase("s")) dir = ForgeDirection.SOUTH;
+		else if (name.equalsIgnoreCase("e")) dir = ForgeDirection.EAST;
+		else if (name.equalsIgnoreCase("w")) dir = ForgeDirection.WEST;
+		else if (name.equalsIgnoreCase("t")) dir = ForgeDirection.UP;
+		else if (name.equalsIgnoreCase("b")) dir = ForgeDirection.DOWN;
+		
+		return dir;
+	}
+	
 	public void actionPerformed(GuiButton button) {
 		if (isEnergyCell && button.id >= 0 && button.id < buttons.length) {
-			System.out.println(button.id);
+			ForgeDirection dirToSet = getDirectionFromName(button.displayString);
 			
+			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) this.te;
 			
-			// Do packet handling here!
+			System.out.println("Pre-Val:\t" + te.getSideValve(dirToSet));
+			te.setSideValveAndRotate(dirToSet);
+			System.out.println("Post-Val:\t" + te.getSideValve(dirToSet));
+			
+			PacketHandler.INSTANCE.sendToServer(new MessageHandlerTileEntityContainer(te));
 		}
 	}
 

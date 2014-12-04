@@ -8,7 +8,7 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -54,11 +54,27 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	}
 	
 	/**
+	 * Sets the side value after rotating to next value.
 	 * @param dir = direction to test.
-	 * @return true if can input energy, else returns false.
+	 */
+	public void setSideValveAndRotate(ForgeDirection dir) {
+		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
+	}
+	
+	/**
+	 * @param dir = direction to test.
+	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
 	public byte getSideValve(ForgeDirection dir) {
 		return openSides[dir.ordinal()];
+	}
+	
+	/**
+	 * @param dir = direction to test.
+	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
+	 */
+	public byte getSideValve(int dir) {
+		return openSides[dir];
 	}
 
 	/*
@@ -216,6 +232,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 		int z = this.zCoord;
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
+		System.out.println(getSideValve(ForgeDirection.EAST));
 	}
 
 	/*
@@ -235,7 +252,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
+		PacketHandler.INSTANCE.sendToAll(new MessageHandlerTileEntityContainer(this));
 	}
 	
 	/*
@@ -244,7 +261,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageHandlerTileEntityContainer(this));
 	}
 
 }
