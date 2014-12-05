@@ -8,7 +8,7 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -252,7 +252,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		PacketHandler.INSTANCE.sendToAll(new MessageHandlerTileEntityContainer(this));
+		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
 	}
 	
 	/*
@@ -261,7 +261,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageHandlerTileEntityContainer(this));
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
 	}
 
 }

@@ -18,7 +18,7 @@ import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.util.Reference.Constants;
 
@@ -182,7 +182,7 @@ public class GuiEnergyContainer extends GuiContainer {
 			te.setSideValveAndRotate(dirToSet);
 			System.out.println("Post-Val:\t" + te.getSideValve(dirToSet));
 			
-			PacketHandler.INSTANCE.sendToServer(new MessageHandlerTileEntityContainer(te));
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityContainer(te));
 		}
 	}
 

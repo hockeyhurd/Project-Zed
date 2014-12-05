@@ -1,7 +1,6 @@
 package com.projectzed.mod.handler;
 
-import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer;
-import com.projectzed.mod.handler.message.MessageHandlerTileEntityContainer.MessageFromServerTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -28,7 +27,8 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, 1, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, 2, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, 3, Side.CLIENT);
-		INSTANCE.registerMessage(MessageFromServerTileEntityContainer.class, MessageHandlerTileEntityContainer.class, 4, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 4, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 5, Side.SERVER);
 		
 		// INSTANCE.registerMessage(MessageFromServerTileEntityContainer.class, MessageHandlerTileEntityContainer.class, 5, Side.SERVER);
 		// INSTANCE.registerMessage(MessageFromServerTileEntityContainer.class, MessageHandlerTileEntityContainer.class, 5, Side.SERVER);
