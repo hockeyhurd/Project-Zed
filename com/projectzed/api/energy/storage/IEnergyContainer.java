@@ -51,6 +51,11 @@ public interface IEnergyContainer {
 	 * @param dir = direction received from.
 	 */
 	public void setLastReceivedDirection(ForgeDirection dir);
+	
+	/**
+	 * @return the last received direction.
+	 */
+	public ForgeDirection getLastReceivedDirection();
 
 	/** Gets and stored the vector co-ordinates of this te. */
 	public Vector4Helper<Integer> worldVec();

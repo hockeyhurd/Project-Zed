@@ -182,6 +182,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 		int z = this.zCoord;
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
+		// EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		// if (this.stored >= this.maxStorage) this.lastReceivedDir = ForgeDirection.UNKNOWN;
 	}
 
 	/*

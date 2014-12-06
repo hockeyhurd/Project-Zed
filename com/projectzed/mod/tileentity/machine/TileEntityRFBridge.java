@@ -192,6 +192,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 			}
 			
 			EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
+			EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
 		}
 
 		// *Converting to McU*

@@ -161,6 +161,14 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		this.lastReceivedDir = dir;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
+	 */
+	public ForgeDirection getLastReceivedDirection() {
+		return this.lastReceivedDir;
+	}
+	
 	/**
 	* Method to be defined controlling mechanism for importing energy only (for now).
 	*/ 

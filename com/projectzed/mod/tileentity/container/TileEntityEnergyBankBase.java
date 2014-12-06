@@ -232,7 +232,8 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 		int z = this.zCoord;
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
-		System.out.println(getSideValve(ForgeDirection.EAST));
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		// System.out.println(getSideValve(ForgeDirection.EAST));
 	}
 
 	/*

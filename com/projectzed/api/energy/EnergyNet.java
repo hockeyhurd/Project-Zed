@@ -23,7 +23,7 @@ public class EnergyNet {
 	/**
 	 * Main static method used to move energy from one container to another
 	 * from one place (here).
-	 * @param sourceCont = container requestion power.
+	 * @param sourceCont = container requesting power.
 	 * @param world = world object as reference.
 	 * @param x = x-pos as reference.
 	 * @param y = y-pos as reference.
@@ -64,15 +64,45 @@ public class EnergyNet {
 					if (sideDep && ((TileEntityEnergyBankBase) sourceCont).getSideValve(dir) != -1) continue;
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) / count;
-					if (amount >= 0 && cont.getEnergyStored() > 0) {
+					if (amount > 0 && cont.getEnergyStored() > 0) {
+						if (colorDep && cont instanceof TileEntityEnergyPipeBase && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
+						cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
 					}
 					
-					cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
 				}
 			}
 			
 		}
+	}
+	
+	/**
+	 * Method once called will attempt to resolve the 'last received direction' if applicable.
+	 * 
+	 * @param sourceCont = container requesting power.
+	 * @param world = world object as reference.
+	 * @param x = x-pos as reference.
+	 * @param y = y-pos as reference.
+	 * @param z = z-pos as reference.
+	 * @param lastDir = last direction received from (prevent continuous looping).
+	 */
+	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+		boolean shouldSend = false;
+		
+		IEnergyContainer te = (IEnergyContainer) world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
+		if (sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || te == null) {
+			shouldSend = true;
+			clearDirectionalTraffic(sourceCont);
+		}
+	}
+	
+	/**
+	 * Method when called will forcibly clear 'last received direction' regardless 
+	 * of current process state.
+	 * @param sourceCont = container to send data to.
+	 */
+	public static void clearDirectionalTraffic(IEnergyContainer sourceCont) {
+		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);
 	}
 
  }

@@ -197,6 +197,14 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 */
 	public void setLastReceivedDirection(ForgeDirection dir) {
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
+	 */
+	public ForgeDirection getLastReceivedDirection() {
+		return ForgeDirection.UNKNOWN;
+	}
 
 	/*
 	 * (non-Javadoc)

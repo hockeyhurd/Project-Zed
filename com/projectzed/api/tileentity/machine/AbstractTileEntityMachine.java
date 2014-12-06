@@ -31,7 +31,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	protected int maxStorage = 10000;
 	protected int stored;
-	protected int energyBurnRate = 2;
+	protected int energyBurnRate;
 	protected boolean powerMode;
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
@@ -42,6 +42,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public AbstractTileEntityMachine(String name) {
 		super();
 		setCustomName("container." + name);
+		this.energyBurnRate = Reference.Constants.BASE_MACH_USAGE;
 	}
 
 	/*
@@ -145,6 +146,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		int z = this.zCoord;
 		
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
 	}
 
 	/*
@@ -266,6 +268,14 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	public void setLastReceivedDirection(ForgeDirection dir) {
 		this.lastReceivedDir = dir;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
+	 */
+	public ForgeDirection getLastReceivedDirection() {
+		return this.lastReceivedDir;
 	}
 	
 	/*
