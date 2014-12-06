@@ -34,6 +34,7 @@ import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
 import com.projectzed.mod.item.ItemGearAluminium;
+import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
 import com.projectzed.mod.item.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
@@ -113,6 +114,7 @@ public class ProjectZed {
 	
 	// Items:
 	public static Item itemDongle;
+	public static Item mcuReader;
 	public static Item screw;
 	public static Item sheetAluminium;
 	public static Item gearAluminium;
@@ -230,6 +232,7 @@ public class ProjectZed {
 		
 		// Items:
 		itemDongle = new ItemDongle();
+		mcuReader = new ItemMcUReader();
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
 		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
