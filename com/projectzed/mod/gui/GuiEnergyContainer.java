@@ -9,7 +9,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -17,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.container.ContainerEnergyContainer;
+import com.projectzed.mod.gui.component.GuiIOButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
@@ -43,6 +43,7 @@ public class GuiEnergyContainer extends GuiContainer {
 	// This should only be for Energy cells.
 	private GuiButton[] buttons;
 	private boolean isEnergyCell;
+	private Waila waila;
 	
 	public GuiEnergyContainer(InventoryPlayer inv, AbstractTileEntityContainer te) {
 		super(new ContainerEnergyContainer(inv, te));
@@ -53,9 +54,17 @@ public class GuiEnergyContainer extends GuiContainer {
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiEnergyCell.png");
 		
+		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
+		
+		waila = new Waila(null, player.worldObj, player, null, 0);
+		
 		isEnergyCell = te instanceof TileEntityEnergyBankBase;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerForegroundLayer(int, int)
+	 */
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
@@ -67,6 +76,10 @@ public class GuiEnergyContainer extends GuiContainer {
 				4210752);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
+	 */
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
@@ -76,6 +89,10 @@ public class GuiEnergyContainer extends GuiContainer {
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 32, 0, 202, (int) progress, 17);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#initGui()
+	 */
 	public void initGui() {
 		super.initGui();
 		
@@ -83,9 +100,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		int posY = (this.height - this.ySize) / 2 + 36;
 
 		if (isEnergyCell) {
-			EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
 			
-			Waila waila = new Waila(null, player.worldObj, player, null, 0);
 			waila.finder(false);
 			
 			this.buttons = getLayoutFromFacingDirection(getFacingDirection(waila.getSideHit()), posX, posY);
@@ -100,65 +115,84 @@ public class GuiEnergyContainer extends GuiContainer {
 		
 	}
 	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param dir = direction player is facing.
+	 * @param posX = position x to start drawing button.
+	 * @param posY = position y to start drawing button.
+	 * @return gui button array for side player is currently facing.
+	 */
 	private GuiButton[] getLayoutFromFacingDirection(ForgeDirection dir, int posX, int posY) {
 		GuiButton[] buttons = null;
 		
 		if (dir == ForgeDirection.SOUTH) {
-			buttons = new GuiButton[] {
-					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
-					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
+			buttons = new GuiIOButton[] {
+					new GuiIOButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)),
+					new GuiIOButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)),
 					
-					
-					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "N"),
-					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "S"),
-					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "W"),
-					new GuiButton(5, posX, posY, 16, 16, "E")
+					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
+					new GuiIOButton(5, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST))
 			};
 		}
 		
 		else if (dir == ForgeDirection.EAST) {
-			buttons = new GuiButton[] {
-					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
-					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
+			buttons = new GuiIOButton[] {
+					new GuiIOButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)),
+					new GuiIOButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)),
 					
-					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "W"),
-					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "E"),
-					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "S"),
-					new GuiButton(5, posX, posY, 16, 16, "N")
+					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
+					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)),
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
+					new GuiIOButton(5, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH))
 			};
 		}
 		
 		else if (dir == ForgeDirection.WEST) {
-			buttons = new GuiButton[] {
-					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
-					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
+			buttons = new GuiIOButton[] {
+					new GuiIOButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)),
+					new GuiIOButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)),
 					
-					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "E"),
-					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "W"),
-					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "N"),
-					new GuiButton(5, posX, posY, 16, 16, "S")
+					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)),
+					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(5, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH))
 			};
 		}
 		
 		else {
-			buttons = new GuiButton[] {
-					new GuiButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B"),
-					new GuiButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T"),
+			buttons = new GuiIOButton[] {
+					new GuiIOButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)),
+					new GuiIOButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)),
 					
-					new GuiButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "S"),
-					new GuiButton(3, posX + 16 + 2, posY, 16, 16, "N"),
-					new GuiButton(4, posX + 32 + 4, posY, 16, 16, "E"),
-					new GuiButton(5, posX, posY, 16, 16, "W")
+					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
+					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)),
+					new GuiIOButton(5, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST))
 			};
 		}
 		
 		return buttons;
 	}
 	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param side = side to get.
+	 * @return opposite direction of side 'side'.
+	 */
 	private ForgeDirection getFacingDirection(int side) {
 		return side >= 0 && side < ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.VALID_DIRECTIONS[side].getOpposite() : ForgeDirection.UNKNOWN;
 	}
 	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param name = name of side.
+	 * @return direction associated by button's name.
+	 */
 	private ForgeDirection getDirectionFromName(String name) {
 		ForgeDirection dir = ForgeDirection.UNKNOWN;
 		
@@ -172,6 +206,20 @@ public class GuiEnergyContainer extends GuiContainer {
 		return dir;
 	}
 	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param dir = direction to get.
+	 * @return value of the 'valve' on side specified.
+	 */
+	private byte getSideValueFromTE(ForgeDirection dir) {
+		return te instanceof TileEntityEnergyBankBase ? ((TileEntityEnergyBankBase) te).getSideValve(dir) : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
+	 */
 	public void actionPerformed(GuiButton button) {
 		if (isEnergyCell && button.id >= 0 && button.id < buttons.length) {
 			ForgeDirection dirToSet = getDirectionFromName(button.displayString);
