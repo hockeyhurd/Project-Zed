@@ -16,6 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Class containing block code for energy bank cell.
  * 
  * @author hockeyhurd
  * @version Dec 3, 2014
@@ -41,7 +42,8 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(this.assetDir + name);
+		// blockIcon = reg.registerIcon(this.assetDir + name);
+		blockIcon = reg.registerIcon(this.assetDir + "energyCellGeneric_icon");
 	}
 	
 	/* (non-Javadoc)
