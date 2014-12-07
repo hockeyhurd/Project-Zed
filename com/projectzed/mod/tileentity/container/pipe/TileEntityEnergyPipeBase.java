@@ -7,6 +7,8 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -140,6 +142,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateEntity()
 	 */
+	@Override
 	public void updateEntity() {
 		super.updateEntity();
 		// if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
@@ -172,10 +175,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	protected void importContents() {
 		if (this.getWorldObj().isRemote) return;
 		
-		if (this.stored >= this.maxStorage) {
-			this.stored = this.maxStorage;
-			return;
-		}
+		if (this.stored >= this.maxStorage) this.stored = this.maxStorage;
 
 		int x = this.xCoord;
 		int y = this.yCoord;
@@ -183,7 +183,9 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
-		// if (this.stored >= this.maxStorage) this.lastReceivedDir = ForgeDirection.UNKNOWN;
+		
+		// We don't need to send to client every tick! Once/sec. or so should suffice. (no gui)
+		if (this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
 	}
 
 	/*
@@ -196,13 +198,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	
 	@Override
 	public Packet getDescriptionPacket() {
-		try {
-			return null;
-		}
-		
-		catch (Exception e) {
-			return null;
-		}
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
 	}
 
 }

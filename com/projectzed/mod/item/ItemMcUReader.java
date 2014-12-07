@@ -1,5 +1,7 @@
 package com.projectzed.mod.item;
 
+import java.text.DecimalFormat;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -19,6 +21,8 @@ import com.projectzed.mod.ProjectZed;
  */
 public class ItemMcUReader extends AbstractItemMetalic {
 
+	private final DecimalFormat DF = new DecimalFormat("###,###.##");
+	
 	/**
 	 * @param name
 	 * @param assetDir
@@ -34,7 +38,7 @@ public class ItemMcUReader extends AbstractItemMetalic {
 			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
 			boolean full = cont.getEnergyStored() == cont.getMaxStorage();
 			
-			player.addChatComponentMessage(new ChatHelper().comp("Stored: " + cont.getEnergyStored() + " McU" + (full ? " (full)" : "")));
+			player.addChatComponentMessage(new ChatHelper().comp("Stored: " + DF.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
 		}
 		
 		return true;
