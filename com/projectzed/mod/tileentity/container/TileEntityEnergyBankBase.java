@@ -1,7 +1,9 @@
 package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.EnergyNet;
@@ -233,6 +235,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		
 		// System.out.println(getSideValve(ForgeDirection.EAST));
 	}
 
@@ -263,6 +266,15 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
 	}
 
 }

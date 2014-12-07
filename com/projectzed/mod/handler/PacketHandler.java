@@ -29,10 +29,6 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, 3, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 4, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 5, Side.SERVER);
-		
-		// INSTANCE.registerMessage(MessageFromServerTileEntityContainer.class, MessageHandlerTileEntityContainer.class, 5, Side.SERVER);
-		// INSTANCE.registerMessage(MessageFromServerTileEntityContainer.class, MessageHandlerTileEntityContainer.class, 5, Side.SERVER);
-		
 	}
 	
 }

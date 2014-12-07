@@ -62,6 +62,7 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.isEnergyCell = buf.readBoolean();
 
 		if (isEnergyCell) {
 			for (int i = 0; i < openSides.length; i++) {
@@ -79,6 +80,7 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeBoolean(isEnergyCell);
 
 		if (isEnergyCell) {
 			for (byte b : openSides) {
@@ -98,7 +100,7 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 			}
 		}
 		
-		else if (ctx.side == Side.SERVER /*&& message.isEnergyCell*/) {
+		else if (ctx.side == Side.SERVER && message.isEnergyCell) {
 			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
 			
 			if (tileEntity != null && tileEntity instanceof TileEntityEnergyBankBase) {
