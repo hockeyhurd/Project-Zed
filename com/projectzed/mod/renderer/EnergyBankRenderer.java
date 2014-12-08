@@ -45,6 +45,8 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		int yy = te.yCoord;
 		int zz = te.zCoord;
 
+		// TODO: Testing code (must remove):
+		
 		// -1
 		/*drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, -1);
 		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, -1);
@@ -56,9 +58,13 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, 1);*/
 		
 		// 0
+		/*drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, 0);
+		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, 0);
+		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, 0);*/
+
 		drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, 0);
 		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, 0);
-		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, 0);
+		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, -1);
 		
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glTranslated(-x, -y, -z);
@@ -107,8 +113,8 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 				max = 48f * this.PIXEL;
 				min = 32f * this.PIXEL;
 				
-				difU = 16f * this.PIXEL;
-				difV = 0f;
+				difU = 32f * this.PIXEL;
+				difV = 0f * this.PIXEL;
 			}
 		}
 
@@ -153,7 +159,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			else if (layer == 2) {
 				max = 32f * this.PIXEL;
 				min = 16f * this.PIXEL;
-				difU = 32f * this.PIXEL;
+				difU = 0f * this.PIXEL;
 				difV = 32f * this.PIXEL;
 			}
 		}

@@ -33,6 +33,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 	private float calc = 11 * PIXEL / 2;
 	
+	/**
+	 * @param color = color to draw.
+	 */
 	public EnergyPipeRenderer(EnumColor color) {
 		super();
 		this.color = color;
@@ -40,6 +43,10 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_" + color.getColorAsString() + ".png");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double, double, float)
+	 */
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -72,6 +79,16 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslated(-x, -y, -z);
 	}
 
+	/**
+	 * Determines whether the given pipe can connect to neighboring te.
+	 * 
+	 * @param world = world object as reference.
+	 * @param te = te object as reference.
+	 * @param x = position x.
+	 * @param y = position y.
+	 * @param z = position z.
+	 * @return true if can connect, else returns false.
+	 */
 	private boolean canConnect(World world, TileEntity te, int x, int y, int z) {
 		boolean flag = false;
 		
@@ -90,6 +107,11 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		return flag;
 	}
 
+	/**
+	 * Method used to draw connection to neighboring te if applicable.
+	 * 
+	 * @param dir = direction to draw to.
+	 */
 	private void drawConnection(ForgeDirection dir) {
 
 		Tessellator tess = Tessellator.instance;
@@ -173,6 +195,17 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 	}
 
+	/**
+	 * Method used to draw pipe generically.
+	 *  
+	 * @param te = te object as reference.
+	 * @param xLeft = flag for x position-left.
+	 * @param xRight = flag for x position-right.
+	 * @param yBottom = flag for y position-botton.
+	 * @param yTop = flag for y position-top.
+	 * @param zLeft = flag for z position-left.
+	 * @param zRight = flag for z position-right.
+	 */
 	private void drawPipe(TileEntity te, boolean xLeft, boolean xRight, boolean yBottom, boolean yTop, boolean zLeft, boolean zRight) {
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();

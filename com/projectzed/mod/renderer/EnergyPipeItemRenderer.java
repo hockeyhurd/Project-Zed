@@ -23,16 +23,27 @@ public class EnergyPipeItemRenderer extends AbstractItemRenderer {
 	protected boolean renderInside = false;
 	
 
+	/**
+	 * @param icon = icon to draw from.
+	 */
 	public EnergyPipeItemRenderer(IIcon icon) {
 		this(icon, false);
 	}
 	
+	/**
+	 * @param icon = icon to draw from.
+	 * @param renderInside = flag, should we draw the insides.
+	 */
 	public EnergyPipeItemRenderer(IIcon icon, boolean renderInside) {
 		super(icon);
 		this.tess = Tessellator.instance;
 		this.renderInside = renderInside;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.hockeyhurd.api.item.AbstractItemRenderer#renderItem(net.minecraftforge.client.IItemRenderer.ItemRenderType, net.minecraft.item.ItemStack, java.lang.Object[])
+	 */
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		tess.startDrawingQuads();
 

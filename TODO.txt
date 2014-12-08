@@ -1,7 +1,8 @@
 BUGS:
 =================================
     - Check saving code for fab. table (crafting grid). [TEMP FIXED]
-    - Fix energy cell gui input.     
+    - Fix energy cell gui input.   
+    - *Fix energy cell not saving power*  
 
 TODO:
 =================================
@@ -11,6 +12,8 @@ TODO:
     - Add rector core.
     - Add some sort of metal former
     - Add recipe for aluminium sheet.
+    - Implement new rendering code for energy cell.
+    - Make energy cell tiers unique (modify textures somehow).
 
 IDEAS:
 =================================    
