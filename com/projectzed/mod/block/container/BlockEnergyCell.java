@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
@@ -44,6 +45,32 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	public void registerBlockIcons(IIconRegister reg) {
 		// blockIcon = reg.registerIcon(this.assetDir + name);
 		blockIcon = reg.registerIcon(this.assetDir + "energyCellGeneric_icon");
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean isOpaqueCube() {
+		return false;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderInPass(int pass) {
+		ClientProxy.renderPass = pass;
+		return true;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getRenderBlockPass() {
+		return 1;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getRenderType() {
+		return ClientProxy.energyCell;
 	}
 	
 	/* (non-Javadoc)
