@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
 /**
@@ -71,9 +72,9 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	}
 
 	protected void drawCuboid(TileEntityEnergyBankBase te, float min, float max, int layer, int valve) {
-		drawCuboid(te, min, max, min, max, min, max, layer, valve);
+		drawCuboid(te, new Vector4Helper<Float>(min, min, min), new Vector4Helper<Float>(max, max, max), layer, valve);
 	}
-	
+
 	/**
 	 * Method used for drawing energy cell bank into world. <br>
 	 * <br>
@@ -81,11 +82,12 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * {@link com.hockeyhurd.api.util.TessellatorHelper#drawCuboid(float, float, float, double, com.hockeyhurd.api.renderer.Color4i)}
 	 * 
 	 * @param te = te to draw as reference.
-	 * @param x = position x.
-	 * @param y = position y.
-	 * @param z = position z.
+	 * @param minVec
+	 * @param maxVec
+	 * @param layer
+	 * @param valve
 	 */
-	protected void drawCuboid(TileEntityEnergyBankBase te, float xMin, float xMax, float yMin, float yMax, float zMin, float zMax, int layer, int valve) {
+	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, int layer, int valve) {
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
 
@@ -165,40 +167,40 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		}
 
 		// -zz
-		tess.addVertexWithUV(xMin, yMax, zMax, min - difU, min - difV);
-		tess.addVertexWithUV(xMin, yMin, zMax, min - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMin, zMax, max - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMax, zMax, max - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, min - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
 
 		// +zz
-		tess.addVertexWithUV(xMax, yMax, zMin, min - difU, min - difV);
-		tess.addVertexWithUV(xMax, yMin, zMin, min - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMin, zMin, max - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMax, zMin, max - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, max - difU, min - difV);
 
 		// -xx
-		tess.addVertexWithUV(xMin, yMax, zMin, min - difU, min - difV);
-		tess.addVertexWithUV(xMin, yMin, zMin, min - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMin, zMax, max - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMax, zMax, max - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
 
 		// +xx
-		tess.addVertexWithUV(xMax, yMax, zMax, max - difU, min - difV);
-		tess.addVertexWithUV(xMax, yMin, zMax, max - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMin, zMin, min - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMax, zMin, min - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
 
 		// +yy
-		tess.addVertexWithUV(xMin, yMax - 0.01d, zMin, min - difU, min - difV);
-		tess.addVertexWithUV(xMin, yMax - 0.01d, zMax, min - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMax - 0.01d, zMax, max - difU, max - difV);
-		tess.addVertexWithUV(xMax, yMax - 0.01d, zMin, max - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, minVec.z, min - difU, min - difV);
+		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, maxVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, maxVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, minVec.z, max - difU, min - difV);
 
 		// -yy
-		tess.addVertexWithUV(xMax, yMin, zMin, max - difU, min - difV);
-		tess.addVertexWithUV(xMax, yMin, zMax, max - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMin, zMax, min - difU, max - difV);
-		tess.addVertexWithUV(xMin, yMin, zMin, min - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, max - difU, min - difV);
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, min - difU, max - difV);
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, min - difV);
 
 		tess.draw();
 	}
