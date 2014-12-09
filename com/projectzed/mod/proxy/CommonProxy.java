@@ -18,6 +18,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.registry.BlockRegistry;
@@ -28,6 +29,7 @@ import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -150,6 +152,7 @@ public class CommonProxy {
 	
 	private void registerEventHandlers() {
 		PacketHandler.init();
+		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 	}
 	
 	protected void registerFurnaceRecipes() {
