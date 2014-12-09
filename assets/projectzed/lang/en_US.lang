@@ -28,6 +28,8 @@ tile.oreUranium.name=Uranium Ore
 
 // Items:
 item.itemDongle.name=Dev Dongle
+item.forgingHammer.name=Forging Hammer
+item.mcuReader.name=McU Reader
 item.screw.name=Screw
 item.sheetAluminium.name=Sheet of Aluminium
 item.gearAluminium.name=Aluminium Gear

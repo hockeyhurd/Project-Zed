@@ -66,6 +66,7 @@ public class CraftingRegistry {
 	 */
 	private void initShapeless() {
 		reg.shapelessList.add(createShapelessRecipe(screw, 27, "ingotIron", "ingotIron", "ingotIron"));
+		reg.shapelessList.add(createShapelessRecipe(sheetAluminium, 1, "ingotAluminium", forgingHammer));
 	}
 	
 	/**
@@ -73,6 +74,7 @@ public class CraftingRegistry {
 	 */
 	private void initShaped() {
 		// Items:
+		reg.shapedList.add(createShapedRecipe(forgingHammer, 1, "xxx", "xyx", " y ", 'x', "ingotTitanium", 'y', "stickWood"));
 		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, "xyx", "yxy", "xyx", 'x', "ingotCopper", 'y', Items.redstone));
 		
 		// Blocks:

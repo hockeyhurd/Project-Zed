@@ -33,6 +33,7 @@ import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
+import com.projectzed.mod.item.ItemForgingHammer;
 import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
@@ -114,6 +115,7 @@ public class ProjectZed {
 	
 	// Items:
 	public static Item itemDongle;
+	public static Item forgingHammer;
 	public static Item mcuReader;
 	public static Item screw;
 	public static Item sheetAluminium;
@@ -232,6 +234,7 @@ public class ProjectZed {
 		
 		// Items:
 		itemDongle = new ItemDongle();
+		forgingHammer = new ItemForgingHammer();
 		mcuReader = new ItemMcUReader();
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
