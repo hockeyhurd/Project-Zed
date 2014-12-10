@@ -3,6 +3,7 @@ BUGS:
     - Check saving code for fab. table (crafting grid). [TEMP FIXED]
     - Fix energy cell gui input.   
     - *Fix energy cell not saving power*  
+    - Fix te's not being 'active' when processing.
 
 TODO:
 =================================
@@ -10,11 +11,10 @@ TODO:
     - Implement fuel registry to 'run' off this fuel.
     - Add reactor chamber wall?
     - Add rector core.
-    - Add some sort of metal former
-    - Add recipe for aluminium sheet.
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
-    - Add saving of io sides for energy cell(s).
+    - Add saving of IO sides for energy cell(s).
+    - Verify te's aren't pulling too much power from generators (especially with solar arrays)
 
 IDEAS:
 =================================    
@@ -22,3 +22,4 @@ IDEAS:
     - Check and adjust crafting recipe weirdness 
     - Make energy pipes more clearly tiered? 
     - Add transfer rate info for all te's
+    - Add 'compact solars'?

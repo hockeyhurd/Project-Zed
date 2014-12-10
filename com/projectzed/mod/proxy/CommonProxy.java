@@ -26,6 +26,7 @@ import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
+import com.projectzed.mod.registry.MetalPressRecipesRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
@@ -148,6 +149,7 @@ public class CommonProxy {
 		
 		CrusherRecipesRegistry.init();
 		LumberMillRecipesRegistry.init();
+		MetalPressRecipesRegistry.init();
 	}
 	
 	private void registerEventHandlers() {

@@ -15,6 +15,7 @@ import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
 import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
 
 /**
@@ -55,6 +56,9 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityIndustrialLumberMill.class, "industrialLumberMillTileEntity");
 		reg.idMap.put(TileEntityIndustrialLumberMill.class, getNextID());
+		
+		reg.map.put(TileEntityIndustrialMetalPress.class, "industrialMetalPressTileEntity");
+		reg.idMap.put(TileEntityIndustrialMetalPress.class, getNextID());
 		
 		reg.map.put(TileEntityEnergyPipeRed.class,  "energyPipeTileEntityRed");
 		reg.idMap.put(TileEntityEnergyPipeRed.class, getNextID());

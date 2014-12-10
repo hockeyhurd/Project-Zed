@@ -24,6 +24,7 @@ public class ItemForgingHammer extends AbstractItemMetalic {
 		super("forgingHammer", ProjectZed.assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxDamage(256);
+		this.setMaxStackSize(1);
 	}
 	
 	

@@ -30,6 +30,9 @@ public class CrusherRecipesRegistry {
 	private CrusherRecipesRegistry() {
 	}
 
+	/**
+	 * Main init method for initializing all the things.
+	 */
 	public static void init() {
 		mapVanilla = new HashMap<ItemStack, ItemStack>();
 		mapModded = new HashMap<String, String>();
@@ -80,10 +83,20 @@ public class CrusherRecipesRegistry {
 		initEntries();
 	}
 
+	/**
+	 * Method used to init entries mapping.
+	 */
 	private static void initEntries() {
 		mapSet = mapModded.entrySet();
 	}
 	
+	/**
+	 * Static function used to get output of said itemstack from internal
+	 * mappings and contacting to/from ore dictionary.
+	 * 
+	 * @param stack = stact to reference.
+	 * @return output as itemstack.
+	 */
 	public static ItemStack crusherList(ItemStack stack) {
 		boolean flag = false;
 		ItemStack temp = null;

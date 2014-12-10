@@ -1,25 +1,20 @@
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.registry.LumberMillRecipesRegistry;
+import com.projectzed.mod.registry.MetalPressRecipesRegistry;
 
 /**
- * Class containing te code for industrialLumberMill.
+ * Class containing te code for industrialMetalPress.
  * 
  * @author hockeyhurd
- * @version Nov 17, 2014
+ * @version Dec 9, 2014
  */
-public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
+public class TileEntityIndustrialMetalPress extends AbstractTileEntityMachine {
 
-	/**
-	 * @param name
-	 */
-	public TileEntityIndustrialLumberMill() {
-		super("industrialLumberMill");
-		this.slots = new ItemStack[2];
+	public TileEntityIndustrialMetalPress() {
+		super("industrialMetalPress");
 	}
 
 	/*
@@ -27,6 +22,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
 	 */
+	@Override
 	public int getSizeInventory() {
 		return 2;
 	}
@@ -36,6 +32,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
 	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
@@ -54,6 +51,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
 	 */
+	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
 			0
@@ -68,6 +66,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot == 1 ? false : true;
 	}
@@ -77,6 +76,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
+	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return side == 0 ? this.slotRight : this.slotTop;
 	}
@@ -86,6 +86,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return this.isItemValidForSlot(slot, stack);
 	}
@@ -95,6 +96,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		// return side != 1 /*|| side != 1*/ || stack.getItem() == Items.bucket;
 		return slot == 0 || slot == 1;
@@ -105,11 +107,12 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
 	 */
+	@Override
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = LumberMillRecipesRegistry.millingList(this.slots[0]);
+			ItemStack stack = MetalPressRecipesRegistry.pressList(this.slots[0]);
 			if (stack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(stack)) return false;
@@ -127,9 +130,10 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
 	 */
+	@Override
 	public void smeltItem() {
 		if (this.canSmelt()) {
-			ItemStack itemstack = LumberMillRecipesRegistry.millingList(this.slots[0]);
+			ItemStack itemstack = MetalPressRecipesRegistry.pressList(this.slots[0]);
 
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
 			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;

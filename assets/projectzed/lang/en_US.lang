@@ -11,6 +11,7 @@ tile.nuclearControllerFusion.name=Fusion Controller
 tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
 tile.industrialLumberMill.name=Industrial Lumber Mill
+tile.industrialMetalPress.name=Industrial Metal Press
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear

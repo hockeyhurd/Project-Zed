@@ -8,34 +8,35 @@ import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 /**
- * Class containing block code for industrialLumberMill.
+ * Class containing block code for industrialMetalPress
  * 
  * @author hockeyhurd
- * @version Nov 17, 2014
+ * @version Dec 9, 2014
  */
-public class BlockIndustrialLumberMill extends AbstractBlockMachine {
+public class BlockIndustrialMetalPress extends AbstractBlockMachine {
 
-	public BlockIndustrialLumberMill() {
-		super("industrialLumberMill");
-		this.name = "industrialLumberMill";
-		this.setBlockName(name);
+	public BlockIndustrialMetalPress() {
+		super("industrialMetalPress");
+		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
 	 */
+	@Override
 	protected AbstractTileEntityMachine getTileEntity() {
-		return new TileEntityIndustrialLumberMill();
+		return new TileEntityIndustrialMetalPress();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
 	 */
+	@Override
 	protected Block getBlockInstance() {
 		return this;
 	}
@@ -43,6 +44,7 @@ public class BlockIndustrialLumberMill extends AbstractBlockMachine {
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
@@ -50,7 +52,7 @@ public class BlockIndustrialLumberMill extends AbstractBlockMachine {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
 			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
 			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLumberMill.class), world, x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialMetalPress.class), world, x, y, z);
 			return true;
 		}
 	}

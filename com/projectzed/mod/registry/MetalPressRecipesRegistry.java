@@ -5,51 +5,43 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
- * Class containing code for initializing the lumber mill's smelting recipe list. <br>
+ * Class containing code for initializing the metal press's smelting recipe list. <br>
  * NOTE: This class was closely followed to PulverizerRecipes.java by author hockeyhurd. <br>
  * For more info on this click here to view in repo: click <a href="http://goo.gl/L7oiKb">here</a>.
  * 
  * @author hockeyhurd
- * @version Nov 17, 2014
+ * @version Dec 9, 2014
  */
-public class LumberMillRecipesRegistry {
+public class MetalPressRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;
 	private static Set<Entry<String, String>> mapSet;
-
-	private LumberMillRecipesRegistry() {
+	
+	private MetalPressRecipesRegistry() {
 	}
-
+	
 	/**
 	 * Main init method for initializing all the things.
 	 */
 	public static void init() {
 		mapVanilla = new HashMap<ItemStack, ItemStack>();
 		mapModded = new HashMap<String, String>();
-
+		
 		// Normal mapping.
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 0), new ItemStack(Blocks.planks, 8, 0));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 1), new ItemStack(Blocks.planks, 8, 1));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 2), new ItemStack(Blocks.planks, 8, 2));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 3), new ItemStack(Blocks.planks, 8, 3));
-		mapVanilla.put(new ItemStack(Blocks.log2, 1, 0), new ItemStack(Blocks.planks, 8, 4));
-		mapVanilla.put(new ItemStack(Blocks.log2, 1, 1), new ItemStack(Blocks.planks, 8, 5));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 0), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 1), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 2), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 3), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 4), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 5), new ItemStack(Items.stick, 8));
-
+		
 		// Fall back/modded mapping.
+		mapModded.put("ingotAluminium", "plateAluminium");
+		mapModded.put("ingotIron", "plateIron");
+		mapModded.put("ingotGold", "plateGold");
+		mapModded.put("ingotTin", "plateTin");
+		mapModded.put("ingotCopper", "plateCopper");
+		mapModded.put("ingotBronze", "plateBronze");
 		
 		initEntries();
 	}
@@ -60,7 +52,7 @@ public class LumberMillRecipesRegistry {
 	private static void initEntries() {
 		mapSet = mapModded.entrySet();
 	}
-
+	
 	/**
 	 * Static function used to get output of said itemstack from internal
 	 * mappings and contacting to/from ore dictionary.
@@ -68,7 +60,7 @@ public class LumberMillRecipesRegistry {
 	 * @param stack = stact to reference.
 	 * @return output as itemstack.
 	 */
-	public static ItemStack millingList(ItemStack stack) {
+	public static ItemStack pressList(ItemStack stack) {
 		boolean flag = false;
 		ItemStack temp = null;
 
@@ -76,11 +68,13 @@ public class LumberMillRecipesRegistry {
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
 		 */
-		for (ItemStack currentStack : mapVanilla.keySet()) {
-			if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
-				temp = mapVanilla.get(currentStack);
-				flag = true;
-				break;
+		if (mapVanilla.size() > 0) {
+			for (ItemStack currentStack : mapVanilla.keySet()) {
+				if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
+					temp = mapVanilla.get(currentStack);
+					flag = true;
+					break;
+				}
 			}
 		}
 
