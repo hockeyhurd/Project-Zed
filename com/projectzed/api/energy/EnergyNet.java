@@ -9,6 +9,8 @@ import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 /**
+ * Class containing code for how energy is to transfer from 
+ * <br>one te object to another across the power network system.
  * 
  * @author hockeyhurd
  * @version Dec 2, 2014
@@ -19,7 +21,6 @@ public class EnergyNet {
 	}
 	
 	// TODO: Make this class not need 'TileEntityEnergyPipeBase' class (not in the API).
-	
 	/**
 	 * Main static method used to move energy from one container to another
 	 * from one place (here).
@@ -99,6 +100,7 @@ public class EnergyNet {
 	/**
 	 * Method when called will forcibly clear 'last received direction' regardless 
 	 * of current process state.
+	 * 
 	 * @param sourceCont = container to send data to.
 	 */
 	public static void clearDirectionalTraffic(IEnergyContainer sourceCont) {

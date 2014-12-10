@@ -32,7 +32,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	public TileEntityEnergyBankBase() {
 		super("energyBank");
 		this.tier = 0;
-		this.maxStorage = (int) 1e6;
+		this.maxStorage = this.tiers[0];
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 	}
@@ -44,6 +44,13 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	public void setTier(byte b) {
 		this.tier = b >= 0 && b <= tiers.length ? b : 0;
 		this.maxStorage = tiers[b];
+	}
+	
+	/**
+	 * @return tier of energy cell.
+	 */
+	public byte getTier() {
+		return this.tier;
 	}
 	
 	/**
@@ -226,7 +233,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
-			return;
+			// return; // Should be safe to comment this out.
 		}
 
 		int x = this.xCoord;
@@ -235,8 +242,6 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
-		
-		// System.out.println(getSideValve(ForgeDirection.EAST));
 	}
 
 	/*

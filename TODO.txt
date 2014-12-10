@@ -14,6 +14,7 @@ TODO:
     - Add recipe for aluminium sheet.
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
+    - Add saving of io sides for energy cell(s).
 
 IDEAS:
 =================================    
