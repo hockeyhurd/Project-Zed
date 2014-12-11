@@ -138,7 +138,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
-			return;
+			// return;
 		}
 
 		int x = this.xCoord;

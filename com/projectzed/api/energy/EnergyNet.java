@@ -65,8 +65,10 @@ public class EnergyNet {
 					if (sideDep && ((TileEntityEnergyBankBase) sourceCont).getSideValve(dir) != -1) continue;
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) /*/ count*/;
+					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());
 					if (amount > 0 && cont.getEnergyStored() > 0) {
 						if (colorDep && cont instanceof TileEntityEnergyPipeBase && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
+
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
 						cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
 					}

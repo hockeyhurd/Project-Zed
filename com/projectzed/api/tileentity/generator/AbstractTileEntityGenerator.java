@@ -142,22 +142,25 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
 	public int getMaxImportRate() {
-		return 0; 
+		return 0;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
 	public int getMaxExportRate() {
-		return Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
+		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
@@ -169,12 +172,13 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 			}
 			return amount;
 		}
-		
+
 		else return 0;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
 	 */
 	public int addPower(IEnergyContainer cont, int amount) {
@@ -184,22 +188,24 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 				amount = this.maxStored - this.stored;
 				this.stored = this.maxStored;
 			}
-			
+
 			return amount;
 		}
-		
+
 		else return 0;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
 	public void setLastReceivedDirection(ForgeDirection dir) {
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
 	public ForgeDirection getLastReceivedDirection() {
@@ -276,6 +282,9 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	public void updateEntity() {
 		generatePower();
 		transferPower();
+		
+		// If server side and every '1' second, send packet message to all clients.
+		if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		super.updateEntity();
 	}
 
@@ -284,11 +293,11 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
-	public void readFromNBT(NBTTagCompound comp) { 
+	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
-		this.stored =  size >= 0 && size <= this.maxStored ? size : 0;
+		this.stored = size >= 0 && size <= this.maxStored ? size : 0;
 	}
 
 	/*
