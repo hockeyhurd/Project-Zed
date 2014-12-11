@@ -5,6 +5,9 @@ tile.thickenedGlass.name=Thickened Glass
 
 // Machines:
 tile.solarArray.name=Solar Array
+tile.solarArray1.name=Solar Array - LV
+tile.solarArray2.name=Solar Array - MV
+tile.solarArray3.name=Solar Array - HV
 tile.furnaceGen.name=Furnace Generator
 tile.nuclearControllerFission.name=Fission Controller
 tile.nuclearControllerFusion.name=Fusion Controller

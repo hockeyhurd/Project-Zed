@@ -10,6 +10,7 @@ public class Source {
 
 	private EnumType type;
 	private int packetSize;
+	private float modifier;
 	
 	/**
 	 * Default constructor.
@@ -18,6 +19,7 @@ public class Source {
 	 */
 	public Source(EnumType type, float modifier) {
 		this.type = type;
+		this.modifier = modifier;
 		this.packetSize = (int) Math.round(type.getSize() * modifier);
 	}
 
@@ -28,6 +30,7 @@ public class Source {
 	public Source(EnumType type) {
 		this.type = type;
 		this.packetSize = type.getSize();
+		this.modifier = 1.0f;
 	}
 	
 	/**
@@ -38,6 +41,7 @@ public class Source {
 	 */
 	public Source(String sourceName, int size, float modifier) {
 		this.type = EnumType.OTHER;
+		this.modifier = modifier;
 		this.type.setName(sourceName);
 		this.type.setSize(size);
 		this.packetSize = (int) Math.round(this.type.getSize() * modifier);
@@ -50,7 +54,7 @@ public class Source {
 	 * @param size = size of said source per tick.
 	 */
 	public Source(String sourceName, int size) {
-		this(sourceName, size, 1);
+		this(sourceName, size, 1.0f);
 	}
 	
 	/**
@@ -59,6 +63,22 @@ public class Source {
 	 */
 	public int getEffectiveSize() {
 		return this.packetSize;
+	}
+	
+	/**
+	 * Allows changing of the modifier and updates the new packet size.
+	 * @param modifier
+	 */
+	public void setModifier(float modifier) {
+		this.modifier = modifier > 0.0f ? modifier : 1.0f;
+		this.packetSize = (int) Math.round(this.type.getSize() * modifier);
+	}
+	
+	/**
+	 * @return source's modifier.
+	 */
+	public float getModifier() {
+		return this.modifier;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.projectzed.mod.tileentity.generator;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
@@ -17,44 +18,106 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
  */
 public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 
+	private byte tier = 0;
+	private final float[] TIER_MODIFIER = new float[] {
+		1.0f, 8.0f, 64.0f, 512.0f	 
+	};
+	
 	public TileEntitySolarArray() {
 		super("solarArray");
 	}
+	
+	/**
+	 * Updates tier to said value.
+	 * 
+	 * @param tier = tier to set.
+	 */
+	public void setTier(byte tier) {
+		this.tier = tier >= 0 && tier < this.TIER_MODIFIER.length ? tier : 0;
+		this.source.setModifier(this.TIER_MODIFIER[this.tier]);
+	}
+	
+	/**
+	 * @return tier to get.
+	 */
+	public byte getTier() {
+		return this.tier;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
+	 */
 	public int getSizeInventory() {
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
+	 */
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
+	 */
 	protected void initContentsArray() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initSlotsArray()
+	 */
 	protected void initSlotsArray() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
+	 */
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
+	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canInsertItem(int, net.minecraft.item.ItemStack, int)
+	 */
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canExtractItem(int, net.minecraft.item.ItemStack, int)
+	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
+	 */
 	public void defineSource() {
 		this.source = new Source(EnumType.SOLAR);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#updateEntity()
+	 */
 	public void updateEntity() {
 		if (this.worldObj != null && !this.worldObj.isRemote /*&& this.worldObj.getTotalWorldTime() % 20L == 0L*/) {
 			if (this.getBlockType() instanceof BlockSolarArray) {
@@ -65,6 +128,26 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 			}
 		}
 		super.updateEntity();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		byte tier = comp.getByte("ProjectZedSolarArrayTier");
+		this.tier = tier >= 0 && tier < this.TIER_MODIFIER.length ? tier : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setByte("ProjectZedSolarArrayTier", this.tier);
 	}
 
 }

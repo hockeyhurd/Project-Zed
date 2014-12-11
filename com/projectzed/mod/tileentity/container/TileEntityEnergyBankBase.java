@@ -1,6 +1,7 @@
 package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -280,6 +281,29 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	@Override
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		
+		// Make sure the tier from nbt is acceptable.
+		byte tier = comp.getByte("ProjectZedEnergyBankTier");
+		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setByte("ProjectZedEnergyBankTier", this.tier);
 	}
 
 }

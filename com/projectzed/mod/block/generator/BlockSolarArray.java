@@ -29,14 +29,17 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockSolarArray extends AbstractBlockGenerator {
 
+	private final byte TIER;
+	
 	/**
 	 * @param material = material of block
 	 */
-	public BlockSolarArray(Material material) {
-		super(material, "solarArray");
-		this.setBlockName("solarArray");
+	public BlockSolarArray(Material material, byte tier) {
+		super(material, "solarArray" + (tier > 0 ? tier : ""));
+		this.setBlockName("solarArray" + (tier > 0 ? tier : ""));
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
+		this.TIER = tier;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -58,7 +61,9 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
 	 */
 	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntitySolarArray();
+		TileEntitySolarArray te = new TileEntitySolarArray();
+		if (this.TIER > 0) te.setTier(this.TIER);
+		return te;
 	}
 
 	public static void updateBlockState(boolean active, World world, int x, int y, int z) {

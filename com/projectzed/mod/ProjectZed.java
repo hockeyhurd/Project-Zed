@@ -90,7 +90,7 @@ public class ProjectZed {
 	public static Block thickenedGlass;
 	
 	// Machines: 
-	public static Block solarArray;
+	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
 	public static Block furnaceGen;
 	public static Block fusionController, fissionController;
 	public static Block fabricationTable;
@@ -204,7 +204,10 @@ public class ProjectZed {
 		thickenedGlass = new BlockThickenedGlass();
 
 		// Generators:
-		solarArray = new BlockSolarArray(Material.rock);
+		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
+		solarArrayLV = new BlockSolarArray(Material.rock, (byte) 1);
+		solarArrayMV = new BlockSolarArray(Material.rock, (byte) 2);
+		solarArrayHV = new BlockSolarArray(Material.rock, (byte) 3);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
 		fusionController = new BlockNuclearController(Material.rock, true);
 		fissionController = new BlockNuclearController(Material.rock, false);
