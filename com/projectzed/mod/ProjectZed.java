@@ -139,6 +139,7 @@ public class ProjectZed {
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
 	
+	// Worldgen stuff:
 	public static OreWorldgen worldgenTitanium;
 	public static OreWorldgen worldgenNickel;
 	public static OreWorldgen worldgenAluminium;

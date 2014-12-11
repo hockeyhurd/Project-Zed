@@ -64,7 +64,7 @@ public class EnergyNet {
 					// if (cont instanceof TileEntityEnergyBankBase && ((TileEntityEnergyBankBase) cont).getSideValve(dir) != 1) continue;
 					if (sideDep && ((TileEntityEnergyBankBase) sourceCont).getSideValve(dir) != -1) continue;
 					
-					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) /*/ count*/;
+					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) / count;
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());
 					if (amount > 0 && cont.getEnergyStored() > 0) {
 						if (colorDep && cont instanceof TileEntityEnergyPipeBase && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
