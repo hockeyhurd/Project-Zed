@@ -29,7 +29,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	protected int[] slotTop, slotBottom, slotRight;
 
-	protected int maxStorage = 10000;
+	protected int maxStorage = 50000;
 	protected int stored;
 	protected int energyBurnRate;
 	protected boolean powerMode;
