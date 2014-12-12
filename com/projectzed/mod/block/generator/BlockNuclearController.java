@@ -1,7 +1,5 @@
 package com.projectzed.mod.block.generator;
 
-import java.util.Random;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -89,7 +87,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	/**
 	 * A randomly called display update to be able to add particles or other items for display
 	 */
-	@SideOnly(Side.CLIENT)
+	/*@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
 		// If active.
 		// if (this.field_149932_b) {
@@ -118,6 +116,6 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 			world.spawnParticle("flame", (double) xx, (double) (yy + yOffset), (double) zz, -vel, 0.0D, -vel);
 		}
 		// }
-	}
+	} */
 
 }

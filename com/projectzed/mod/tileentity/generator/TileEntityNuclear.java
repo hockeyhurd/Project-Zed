@@ -35,6 +35,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
+		this.maxStored = (int) 1e6;
 	}
 
 	/* (non-Javadoc)
