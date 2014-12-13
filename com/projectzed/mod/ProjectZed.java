@@ -9,6 +9,7 @@ import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.BlockFabricationTable;
+import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
@@ -88,6 +89,7 @@ public class ProjectZed {
 	// Blocks:
 	public static Block machineContainer;
 	public static Block thickenedGlass;
+	public static Block nuclearChamberWall;
 	
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -202,6 +204,7 @@ public class ProjectZed {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
+		nuclearChamberWall = new BlockNuclearChamberWall();
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
