@@ -33,9 +33,24 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	private boolean fusionMode;
 	private int burnTime = 0;
 	
+	private byte placeDir, size;
+	
 	public TileEntityNuclear() {
 		super("nuclearController");
 		this.maxStored = (int) 1e6;
+	}
+	
+	public void setPlaceDir(byte dir, byte size) {
+		this.placeDir = dir;
+		this.size = size;
+	}
+	
+	public byte getPlaceDir() {
+		return this.placeDir;
+	}
+	
+	public byte getChamberSize() {
+		return this.size;
 	}
 
 	/* (non-Javadoc)

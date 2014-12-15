@@ -66,7 +66,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1? this.iconBottom : (side != meta ? this.blockIcon : (meta == 1 && this.active ? this.iconFrontOn : this.iconFront));
+		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (meta == 1 && this.active ? this.iconFrontOn : this.iconFront));
 	}
 
 	/*
