@@ -38,6 +38,9 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	/** Variable tracking size of nuclear reactant chamber */
 	private byte size;
 	
+	/** Variable containing relative location. */
+	private byte rel;
+	
 	/**
 	 * @param material
 	 * @param name
@@ -64,7 +67,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	public TileEntity createNewTileEntity(World world, int id) {
 		TileEntityNuclear te = new TileEntityNuclear();
-		te.setPlaceDir(this.placeDir, size);
+		te.setPlaceDir(placeDir, size, rel);
 		if (this.FUSION_MODE) te.setSource(EnumType.FUSION);
 		return te;
 	}
@@ -150,6 +153,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		
 		else size = Byte.MAX_VALUE;
 		
+		this.rel = size;
 		size = (byte) Math.abs(size);
 		if (size == 1) return (byte) (size * 3);
 		else if (size != Byte.MAX_VALUE && size < 4) return (byte) (size * 3 - (size - 1));

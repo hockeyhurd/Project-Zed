@@ -15,6 +15,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.block.BlockNuclearChamberLock;
+import com.projectzed.mod.block.BlockNuclearChamberWall;
+import com.projectzed.mod.block.BlockNuclearReactantCore;
+import com.projectzed.mod.block.BlockThickenedGlass;
+import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -33,22 +38,37 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	private boolean fusionMode;
 	private int burnTime = 0;
 	
-	private byte placeDir, size;
+	private byte placeDir, size, rel;
+	private Block[] blocksArray;
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
 		this.maxStored = (int) 1e6;
 	}
 	
-	public void setPlaceDir(byte dir, byte size) {
+	/**
+	 * Sets direction of placed nuclear controller.
+	 * 
+	 * @param dir = direction.
+	 * @param size = expected size of chamber.
+	 */
+	public void setPlaceDir(byte dir, byte size, byte rel) {
 		this.placeDir = dir;
 		this.size = size;
+		this.rel = rel;
+		this.blocksArray = new Block[(int)(size * size * size)];
 	}
 	
+	/**
+	 * @return placed direction.
+	 */
 	public byte getPlaceDir() {
 		return this.placeDir;
 	}
 	
+	/**
+	 * @return expected chamber size.
+	 */
 	public byte getChamberSize() {
 		return this.size;
 	}
@@ -140,6 +160,56 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canProducePower()
+	 */
+	@Override
+	public boolean canProducePower() {
+		boolean flag = false;
+		if (blocksArray == null || blocksArray.length == 0 || worldObj.getTotalWorldTime() % 20L != 0 || worldObj.isRemote) return false;
+		
+		else {
+			// TODO: Correct offsets.
+			
+			int xp = this.xCoord + (placeDir == 1 || placeDir == 3 ? rel : -1);
+			int yp = this.yCoord + ((size + 1) / 2);
+			int zp = this.zCoord + (placeDir == 0 || placeDir == 2 ? rel : -1);
+			int counter = 0;
+
+			System.out.println("(" + (xp + size) + ", " + (yp - size) + ", " + (zp + size) + ")");
+			
+			for (int y = 0; y < size; y++) {
+				for (int x = 0; x < size; x++) {
+					for (int z = 0; z < size; z++) {
+						// this.blocksArray[x + size * (y * size * z)] = worldObj.getBlock(xp + x, yp + y, zp + z);
+						this.blocksArray[counter++] = worldObj.getBlock(xp + x, yp - y, zp + z);
+					}
+				}
+			}
+			
+			int[] types = new int[6];
+			for (Block b : this.blocksArray) {
+				if (b instanceof BlockNuclearChamberLock) types[0]++;
+				else if (b instanceof BlockNuclearChamberWall) types[1]++;
+				else if (b instanceof BlockNuclearReactantCore) types[2]++;
+				else if (b instanceof BlockNuclearController) types[3]++;
+				else if (b instanceof BlockThickenedGlass) types[4]++;
+				else types[5]++;
+			}
+
+			/*System.out.println(types[0] + " locks");
+			System.out.println(types[1] + " walls");
+			System.out.println(types[2] + " cores");
+			System.out.println(types[3] + " controllers");
+			System.out.println(types[4] + " thickened glass");
+			System.out.println(types[5] + " other");*/
+			
+		}
+		
+		return flag;
+	}
 
 	// TODO: This needs to be changed to uranium / w/e this requires for fuel.
 	/**
@@ -199,7 +269,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	 */
 	public void updateEntity() {
 		if (this.worldObj != null && !this.worldObj.isRemote) {
-			if (this.slots[0] != null && isFuel()) {
+			if (this.slots[0] != null && isFuel() && canProducePower()) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
 					consumeFuel();
@@ -222,6 +292,17 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		super.readFromNBT(comp);
 		int time = comp.getInteger("ProjectZedBurnTime");
 		this.burnTime = time > 0 ? time : 0;
+		
+		byte dir = comp.getByte("ProjectZedNuclearDir");
+		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
+
+		byte rel = comp.getByte("ProjectZedNuclearRel");
+		this.rel = rel > -4 && rel < 4 ? rel : 0;
+		
+		byte size = comp.getByte("ProjectZedNuclearSize");
+		this.size = size > 0 && size <= 7 ? size : 0;
+		
+		this.blocksArray = size > 0 ? new Block[(int)(size * size * size)] : null;
 	}
 	
 	/*
@@ -231,6 +312,9 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedBurnTime", this.burnTime);
+		comp.setByte("ProjectZedNuclearDir", this.placeDir);
+		comp.setByte("ProjectZedNuclearRel", this.rel);
+		comp.setByte("ProjectZedNuclearSize", this.size);
 	}
 	
 }
