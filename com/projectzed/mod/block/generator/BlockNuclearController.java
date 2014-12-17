@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.mod.ProjectZed;
@@ -98,7 +99,9 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		
 		this.placeDir = (byte) dir;
 		this.size = getSizeFromDir(world, x, y, z, dir);
-		System.out.println(this.size);
+		if (size > 7 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
+		System.out.println("Placed Dir: " + this.placeDir);
+		System.out.println("Size: " + this.size + "x" + this.size);
 		
 		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);

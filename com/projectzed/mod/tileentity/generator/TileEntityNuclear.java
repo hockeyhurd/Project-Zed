@@ -1,5 +1,7 @@
 package com.projectzed.mod.tileentity.generator;
 
+import java.util.HashMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -15,11 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.block.BlockNuclearChamberLock;
-import com.projectzed.mod.block.BlockNuclearChamberWall;
-import com.projectzed.mod.block.BlockNuclearReactantCore;
-import com.projectzed.mod.block.BlockThickenedGlass;
-import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -173,38 +170,39 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		else {
 			// TODO: Correct offsets.
 			
-			int xp = this.xCoord + (placeDir == 1 || placeDir == 3 ? rel : -1);
+			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			int yp = this.yCoord + ((size + 1) / 2);
-			int zp = this.zCoord + (placeDir == 0 || placeDir == 2 ? rel : -1);
+			// int zp = this.zCoord + (placeDir == 0 || placeDir == 2 ? rel : 0);
+			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
 			int counter = 0;
+			boolean show = false;
 
-			System.out.println("(" + (xp + size) + ", " + (yp - size) + ", " + (zp + size) + ")");
+			if (show) {
+				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
+				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
+			}
+			
+			HashMap<Block, Integer> mapping = new HashMap<Block, Integer>();
 			
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
 						// this.blocksArray[x + size * (y * size * z)] = worldObj.getBlock(xp + x, yp + y, zp + z);
-						this.blocksArray[counter++] = worldObj.getBlock(xp + x, yp - y, zp + z);
+						Block b = worldObj.getBlock(xp + x, yp - y, zp + z);
+						// System.out.println(b.getUnlocalizedName() + " (" + (xp + x) + ", " + (yp - y) + ", " + (zp + z) + ").");
+						this.blocksArray[counter++] = b;
+						
+						if (!mapping.containsKey(b)) mapping.put(b, 1);
+						else mapping.put(b, mapping.get(b) + 1);
 					}
 				}
 			}
 			
-			int[] types = new int[6];
-			for (Block b : this.blocksArray) {
-				if (b instanceof BlockNuclearChamberLock) types[0]++;
-				else if (b instanceof BlockNuclearChamberWall) types[1]++;
-				else if (b instanceof BlockNuclearReactantCore) types[2]++;
-				else if (b instanceof BlockNuclearController) types[3]++;
-				else if (b instanceof BlockThickenedGlass) types[4]++;
-				else types[5]++;
-			}
-
-			/*System.out.println(types[0] + " locks");
-			System.out.println(types[1] + " walls");
-			System.out.println(types[2] + " cores");
-			System.out.println(types[3] + " controllers");
-			System.out.println(types[4] + " thickened glass");
-			System.out.println(types[5] + " other");*/
+			/*if (mapping.size() > 0) {
+				for (Entry<Block, Integer> b : mapping.entrySet()) {
+					System.out.println(b.getKey().getUnlocalizedName() + ", " + b.getValue());
+				}
+			}*/
 			
 		}
 		
