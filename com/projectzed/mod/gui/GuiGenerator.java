@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.container.ContainerGenerator;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
 import com.projectzed.mod.util.Reference.Constants;
 
 import cpw.mods.fml.relauncher.Side;
@@ -49,6 +50,7 @@ public class GuiGenerator extends GuiContainer {
 		
 		if (this.te.getSource().getEffectiveSize() > 0) {
 			String genSize = "Generation rate: " + df.format(this.te.getSource().getEffectiveSize()) + " McU/t";
+			// if (this.te instanceof TileEntityNuclear && !this.te.canProducePower()) genSize = "Error! Reactor not set correctly!"; 
 			this.fontRendererObj.drawString(I18n.format(genSize, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(genSize) / 2, this.ySize - 126,
 					4210752);
 		}
