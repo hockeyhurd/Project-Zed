@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -151,27 +152,18 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#generatePower()
-	 */
-	public void generatePower() {
-		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
-		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
-	}
-	
-	/*
-	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canProducePower()
 	 */
 	@Override
 	public boolean canProducePower() {
 		boolean flag = false;
-		if (blocksArray == null || blocksArray.length == 0 || worldObj.getTotalWorldTime() % 20L != 0 || worldObj.isRemote) return false;
+		if (blocksArray == null || blocksArray.length == 0 /*|| worldObj.getTotalWorldTime() % 20L != 0*/ || worldObj.isRemote) return false;
 		
 		else {
 			// TODO: Correct offsets.
 			
 			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
-			int yp = this.yCoord + ((size + 1) / 2);
+			int yp = this.yCoord + ((size - 1) / 2);
 			// int zp = this.zCoord + (placeDir == 0 || placeDir == 2 ? rel : 0);
 			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
 			int counter = 0;
@@ -187,9 +179,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
-						// this.blocksArray[x + size * (y * size * z)] = worldObj.getBlock(xp + x, yp + y, zp + z);
 						Block b = worldObj.getBlock(xp + x, yp - y, zp + z);
-						// System.out.println(b.getUnlocalizedName() + " (" + (xp + x) + ", " + (yp - y) + ", " + (zp + z) + ").");
 						this.blocksArray[counter++] = b;
 						
 						if (!mapping.containsKey(b)) mapping.put(b, 1);
@@ -198,11 +188,30 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				}
 			}
 			
-			/*if (mapping.size() > 0) {
-				for (Entry<Block, Integer> b : mapping.entrySet()) {
+			if (mapping.size() > 0) {
+				/*for (Entry<Block, Integer> b : mapping.entrySet()) {
 					System.out.println(b.getKey().getUnlocalizedName() + ", " + b.getValue());
+				}*/
+				
+				boolean[] checks = new boolean[5];
+				if (mapping.containsKey(ProjectZed.nuclearChamberWall) && mapping.get(ProjectZed.nuclearChamberWall) == 12) checks[0] = true;
+				if (mapping.containsKey(ProjectZed.nuclearChamberLock) && mapping.get(ProjectZed.nuclearChamberLock) == 8) checks[1] = true;
+				if (mapping.containsKey(ProjectZed.nuclearReactantCore) && mapping.get(ProjectZed.nuclearReactantCore) == 1) checks[2] = true;
+				if (mapping.containsKey(ProjectZed.thickenedGlass) && mapping.get(ProjectZed.thickenedGlass) == 5) checks[3] = true;
+				if (mapping.containsKey(ProjectZed.fissionController) && mapping.get(ProjectZed.fissionController) == 1 && size == 3) checks[4] = true;
+				else if (mapping.containsKey(ProjectZed.fusionController) && mapping.get(ProjectZed.fusionController) == 1 && size > 3) checks[4] = true;
+				
+				boolean flag2 = true;
+				for (boolean b : checks) {
+					if (!b) {
+						flag2 = false;
+						break;
+					}
 				}
-			}*/
+
+				flag = flag2;
+				return flag;
+			}
 			
 		}
 		
@@ -263,6 +272,15 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	/*
 	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#generatePower()
+	 */
+	public void generatePower() {
+		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored && this.burnTime > 0) this.stored += this.source.getEffectiveSize();
+		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#updateEntity()
 	 */
 	public void updateEntity() {
@@ -274,7 +292,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				}
 			}
 
-			this.powerMode = this.burnTime > 0;
+			// this.powerMode = this.burnTime > 0;
 			if (this.burnTime > 0) this.burnTime--;
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
