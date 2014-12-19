@@ -1,0 +1,67 @@
+// Blocks:
+tile.machineContainer.name=Cadre de conteneur de machine
+tile.fabricationTable.name=Table de fabrication
+tile.thickenedGlass.name=Verre épaissi
+tile.nuclearChamberWall.name=Mur de chambre de réactif
+tile.nuclearChamberLock.name=Verrou de chambre de réactif
+tile.nuclearReactantCore.name=Cœur de réactif
+
+// Machines:
+tile.solarArray.name=Panneau solaire
+tile.solarArray1.name=Panneau solaire - BT
+tile.solarArray2.name=Panneau solaire - MT
+tile.solarArray3.name=Panneau solaire - HT
+tile.furnaceGen.name=Générateur de four
+tile.nuclearControllerFission.name=Contrôleur de fission
+tile.nuclearControllerFusion.name=Contrôleur de fusion
+tile.industrialFurnace.name=Four industriel
+tile.industrialCrusher.name=Broyeur industriel
+tile.industrialLumberMill.name=Scirie industrielle
+tile.industrialMetalPress.name=Presse métalique industrielle
+tile.energyPipeRed.name=Conduit d'énergie - Rouge
+tile.energyPipeOrange.name=Conduit d'énergie - Orange
+tile.energyPipeClear.name=Conduit d'énergie - Claire
+
+// RF STUFF:
+tile.bridgeMcUToRF.name=Pont McU vers RF
+tile.bridgeRFToMcU.name=Pont RF vers McU
+
+// Ores:
+tile.oreTitanium.name=Minerai de titane
+tile.oreCopper.name=Minerai de cuivre
+tile.oreNickel.name=Minerai de nickel 
+tile.oreAluminium.name=Minerai d'aluminium 
+tile.oreUranium.name=Minerai d'uranium 
+
+// Items:
+item.itemDongle.name=Clé électronique Dév.
+item.forgingHammer.name=Forging Hammer
+item.mcuReader.name=Lecteur McU
+item.screw.name=Tournevis
+item.sheetAluminium.name=Feuille d'aluminium
+item.gearAluminium.name=Mécanisme d'aluminium
+item.conductiveCoil.name=Bobine conductrice
+
+// Metals:
+item.dustGold.name=Poussière d'or
+item.dustIron.name=Poussière de fer
+item.dustTitanium.name=Poussière de titane
+item.dustCopper.name=Poussière de cuivre
+item.dustNickel.name=Poussière de nickel
+item.dustAluminium.name=Poussière d'aluminium
+item.dustUranium.name=Poussière d'uranium 
+item.enrichedUranium.name=Uranium enrichi
+
+item.ingotTitanium.name=Lingot de titane
+item.ingotCopper.name=Lingot de cuivre
+item.ingotNickel.name=Lingot de nickel
+item.ingotAluminium.name=Lingot d'aluminium 
+item.ingotUranium.name=Lingot d'uranium 
+
+// Fuels:
+item.emptyFuelRod.name=Barre de carburant vide
+item.fuelRod.name=Barre d'uranium
+
+// Containers/GUIs
+container.industrialFurnace= Four industriel
+container.industrialCrusher=Broyeur industriel
