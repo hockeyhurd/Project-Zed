@@ -139,6 +139,7 @@ public class ProjectZed {
 	public static Item dustNickel;
 	public static Item dustAluminium;
 	public static Item dustUranium;
+	public static Item enrichedUranium;
 	
 	public static Item ingotTitanium;
 	public static Item ingotCopper;
@@ -269,7 +270,8 @@ public class ProjectZed {
 		dustCopper = new ItemDustCopper("dustCopper", assetDir);
 		dustNickel = new ItemDustNickel("dustNickel", assetDir);
 		dustAluminium = new ItemDustAluminium("dustAluminium", assetDir);
-		dustUranium = new ItemDustUranium("dustUranium", assetDir);
+		dustUranium = new ItemDustUranium("dustUranium", assetDir, 235);
+		enrichedUranium = new ItemDustUranium("enrichedUranium", assetDir, 238);
 		
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);
