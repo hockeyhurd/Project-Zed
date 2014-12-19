@@ -3,15 +3,8 @@ package com.projectzed.mod.tileentity.generator;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.energy.source.EnumType;
@@ -20,8 +13,6 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Class used to calculate and generate power through
@@ -34,6 +25,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 
 	/** Variable tracking whether to use fusion or fission. */
 	private boolean fusionMode;
+	private boolean poweredLastUpdate = false;
 	private int burnTime = 0;
 	
 	private byte placeDir, size, rel;
@@ -41,7 +33,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
-		this.maxStored = (int) 1e6;
+		this.maxStored = (int) 1e7;
 	}
 	
 	/**
@@ -229,25 +221,9 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		else {
 			Item item = stack.getItem();
 
-			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air) {
-				Block block = Block.getBlockFromItem(item);
-
-				if (block == Blocks.wooden_slab) { return 150; }
-
-				if (block.getMaterial() == Material.wood) { return 300; }
-
-				if (block == Blocks.coal_block) { return 16000; }
-			}
-
-			if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-			if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-			if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
-			if (item == Items.stick) return 100;
-			if (item == Items.coal) return 1600;
-			if (item == Items.lava_bucket) return 20000;
-			if (item == Item.getItemFromBlock(Blocks.sapling)) return 100;
-			if (item == Items.blaze_rod) return 2400;
-			return GameRegistry.getFuelValue(stack);
+			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return 1600;
+			
+			return 0;
 		}
 	}
 
@@ -265,8 +241,15 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	protected void consumeFuel() {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
-			else this.slots[0].stackSize--;
-			if (this.slots[0].stackSize <= 0) this.slots[0] = (ItemStack) null;
+			else {
+				ItemStack stack = this.slots[0];
+				if (stack.getItemDamage() < stack.getMaxDamage() - 1) {
+					stack.setItemDamage(stack.getItemDamage() + 1);
+					this.slots[0] = stack;
+				}
+				
+				else this.slots[0] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
+			}
 		}
 	}
 	
@@ -274,8 +257,9 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#generatePower()
 	 */
+	@Override
 	public void generatePower() {
-		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored && this.burnTime > 0) this.stored += this.source.getEffectiveSize();
+		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && this.burnTime > 0) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 	
@@ -283,9 +267,14 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#updateEntity()
 	 */
+	@Override
 	public void updateEntity() {
 		if (this.worldObj != null && !this.worldObj.isRemote) {
-			if (this.slots[0] != null && isFuel() && canProducePower()) {
+			
+			// Small, yet significant optimization to call checking of multiblock structure 1/tick instead of 20/tick.
+			if (this.worldObj.getTotalWorldTime() % 20L == 0) poweredLastUpdate = canProducePower();
+			
+			if (this.slots[0] != null && isFuel() && poweredLastUpdate) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
 					consumeFuel();

@@ -9,10 +9,10 @@ BUGS:
 TODO:
 =================================
     - Add fuel registry for nuclear stuff.
-    - Implement fuel registry to 'run' off this fuel.
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
     - Add saving of IO sides for energy cell(s). (kinda)
+    - Add poison effect when user is exposed to unstable uranium - 238 dust.
 
 IDEAS:
 =================================    

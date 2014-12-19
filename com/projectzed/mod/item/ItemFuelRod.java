@@ -1,7 +1,11 @@
 package com.projectzed.mod.item;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 
 import com.hockeyhurd.api.item.AbstractItemMetalic;
@@ -31,7 +35,7 @@ public class ItemFuelRod extends AbstractItemMetalic {
 		this.assetDir = assetDir;
 		this.isEmpty = isEmpty;
 		this.setMaxDamage(10);
-		if (isEmpty) this.setDamage(new ItemStack(this), 10);
+		if (!isEmpty) this.maxStackSize = 1;
 	}
 	
 	/*
@@ -46,11 +50,28 @@ public class ItemFuelRod extends AbstractItemMetalic {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.item.Item#getIconFromDamage(int)
+	 */
 	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int meta) {
-		if (this.isEmpty) return this.itemIcon;
+		if (this.isEmpty || meta >= this.getMaxDamage()) return this.itemIcon;
 		else if (meta >= 0 && meta < this.icons.length) return this.icons[this.icons.length - meta - 1];
 		else return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.item.Item#addInformation(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, java.util.List, boolean)
+	 */
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
+		
+		if (!isEmpty && stack.getItemDamage() < stack.getMaxDamage()) {
+			int left = this.icons.length - stack.getItemDamage();
+			list.add(EnumChatFormatting.GREEN + "Uses left: " + EnumChatFormatting.WHITE + left);
+		}
+	}
+	
 }
