@@ -3,6 +3,8 @@ tile.machineContainer.name=Machine Container Frame
 tile.fabricationTable.name=Fabrication Table
 tile.thickenedGlass.name=Thickened Glass
 tile.nuclearChamberWall.name=Reactant Chamber Wall
+tile.nuclearChamberLock.name=Reactant Chamber Lock
+tile.nuclearReactantCore.name=Reactant Core
 
 // Machines:
 tile.solarArray.name=Solar Array
@@ -54,6 +56,10 @@ item.ingotCopper.name=Copper Ingot
 item.ingotNickel.name=Nickel Ingot
 item.ingotAluminium.name=Aluminium Ingot
 item.ingotUranium.name=Uranium Ingot
+
+// Fuels:
+item.emptyFuelRod.name=Empty Fuel Rod
+item.fuelRod.name=Uranium Fuel Rod
 
 // Containers/GUIs
 container.industrialFurnace=Industrial Furnace

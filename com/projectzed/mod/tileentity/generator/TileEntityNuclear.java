@@ -160,11 +160,10 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		if (blocksArray == null || blocksArray.length == 0 /*|| worldObj.getTotalWorldTime() % 20L != 0*/ || worldObj.isRemote) return false;
 		
 		else {
-			// TODO: Correct offsets.
+			// TODO: Varify offsets such that it works past 3x3x3 reaction chamber.
 			
 			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			int yp = this.yCoord + ((size - 1) / 2);
-			// int zp = this.zCoord + (placeDir == 0 || placeDir == 2 ? rel : 0);
 			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
 			int counter = 0;
 			boolean show = false;
@@ -193,6 +192,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 					System.out.println(b.getKey().getUnlocalizedName() + ", " + b.getValue());
 				}*/
 				
+				// TODO: Make this scalable past 3x3x3 reaction chamber!
 				boolean[] checks = new boolean[5];
 				if (mapping.containsKey(ProjectZed.nuclearChamberWall) && mapping.get(ProjectZed.nuclearChamberWall) == 12) checks[0] = true;
 				if (mapping.containsKey(ProjectZed.nuclearChamberLock) && mapping.get(ProjectZed.nuclearChamberLock) == 8) checks[1] = true;

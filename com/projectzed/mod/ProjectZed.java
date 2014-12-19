@@ -38,6 +38,7 @@ import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
 import com.projectzed.mod.item.ItemDustIron;
 import com.projectzed.mod.item.ItemForgingHammer;
+import com.projectzed.mod.item.ItemFuelRod;
 import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
@@ -144,6 +145,10 @@ public class ProjectZed {
 	public static Item ingotNickel;
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
+	
+	// Fuels
+	public static Item emptyFuelRod;
+	public static Item fullFuelRod;
 	
 	// Worldgen stuff:
 	public static OreWorldgen worldgenTitanium;
@@ -271,6 +276,10 @@ public class ProjectZed {
 		ingotNickel = new ItemIngotNickel("ingotNickel", assetDir);
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
+		
+		// Fuels:
+		emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);
+		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
 		
 		// Worldgen:
 		worldgenTitanium = new OreWorldgen(oreTitanium, 6, 3, 6, 8, 24);
