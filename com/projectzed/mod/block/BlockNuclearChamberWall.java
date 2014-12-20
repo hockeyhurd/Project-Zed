@@ -62,6 +62,7 @@ public class BlockNuclearChamberWall extends Block {
 		else world.setBlockMetadataWithNotify(x, y, z, 1, 2);
 	}
 	
+	@Deprecated
 	private boolean isBlockTopBottom(BlockHelper bh, int x, int y, int z) {
 		boolean ret = false;
 		if (bh.blockExists(x, y - 1, z) || bh.blockExists(x, y + 1, z)) {

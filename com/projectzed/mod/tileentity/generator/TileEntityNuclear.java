@@ -1,7 +1,5 @@
 package com.projectzed.mod.tileentity.generator;
 
-import java.util.HashMap;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,6 +9,7 @@ import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -33,7 +32,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
-		this.maxStored = (int) 1e7;
+		this.maxStored = (int) 1e8;
 	}
 	
 	/**
@@ -153,6 +152,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		
 		else {
 			// TODO: Varify offsets such that it works past 3x3x3 reaction chamber.
+			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 			
 			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			int yp = this.yCoord + ((size - 1) / 2);
@@ -165,46 +165,21 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
 			}
 			
-			HashMap<Block, Integer> mapping = new HashMap<Block, Integer>();
-			
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
 						Block b = worldObj.getBlock(xp + x, yp - y, zp + z);
 						this.blocksArray[counter++] = b;
-						
-						if (!mapping.containsKey(b)) mapping.put(b, 1);
-						else mapping.put(b, mapping.get(b) + 1);
 					}
 				}
 			}
 			
-			if (mapping.size() > 0) {
-				/*for (Entry<Block, Integer> b : mapping.entrySet()) {
-					System.out.println(b.getKey().getUnlocalizedName() + ", " + b.getValue());
-				}*/
-				
-				// TODO: Make this scalable past 3x3x3 reaction chamber!
-				boolean[] checks = new boolean[5];
-				if (mapping.containsKey(ProjectZed.nuclearChamberWall) && mapping.get(ProjectZed.nuclearChamberWall) == 12) checks[0] = true;
-				if (mapping.containsKey(ProjectZed.nuclearChamberLock) && mapping.get(ProjectZed.nuclearChamberLock) == 8) checks[1] = true;
-				if (mapping.containsKey(ProjectZed.nuclearReactantCore) && mapping.get(ProjectZed.nuclearReactantCore) == 1) checks[2] = true;
-				if (mapping.containsKey(ProjectZed.thickenedGlass) && mapping.get(ProjectZed.thickenedGlass) == 5) checks[3] = true;
-				if (mapping.containsKey(ProjectZed.fissionController) && mapping.get(ProjectZed.fissionController) == 1 && size == 3) checks[4] = true;
-				else if (mapping.containsKey(ProjectZed.fusionController) && mapping.get(ProjectZed.fusionController) == 1 && size > 3) checks[4] = true;
-				
-				boolean flag2 = true;
-				for (boolean b : checks) {
-					if (!b) {
-						flag2 = false;
-						break;
-					}
+			for (Block b : this.blocksArray) {
+				if (b == ProjectZed.nuclearChamberLock && ((BlockNuclearChamberLock)b).isMultiBlockStructure() ) {
+					flag = true;
+					break;
 				}
-
-				flag = flag2;
-				return flag;
 			}
-			
 		}
 		
 		return flag;

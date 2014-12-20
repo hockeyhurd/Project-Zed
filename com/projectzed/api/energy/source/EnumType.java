@@ -8,7 +8,7 @@ package com.projectzed.api.energy.source;
  */
 public enum EnumType {
 
-	SOLAR("Sun", 10), BURNABLE("Burnable", 20), LAVA("Lava", 50), WATER("Water", 5), FISSION("Fission", 1000), FUSION("Fusion", 4000), OTHER("Other", 1);
+	SOLAR("Sun", 10), BURNABLE("Burnable", 20), LAVA("Lava", 50), WATER("Water", 5), FISSION("Fission", 10000), FUSION("Fusion", 40000), OTHER("Other", 1);
 	
 	private String name;
 	private int size;
