@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -22,6 +23,9 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	public int stored;
 	public boolean powerMode;
 	
+	public boolean containsFluid;
+	public int fluidStored;
+	
 	public MessageTileEntityMachine() {
 	}
 	
@@ -32,6 +36,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.isPoweredOn();
+		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
+		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getWaterInTank();
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -40,6 +46,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
+		this.containsFluid = buf.readBoolean();
+		if (this.containsFluid) this.fluidStored = buf.readInt();
 	}
 
 	public void toBytes(ByteBuf buf) {
@@ -48,6 +56,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		buf.writeInt(z);
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
+		buf.writeBoolean(containsFluid);
+		if (this.containsFluid) buf.writeInt(this.fluidStored);
 	}
 
 	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
@@ -56,6 +66,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		if (te instanceof AbstractTileEntityMachine) {
 			((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
 			((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
+			
+			if (message.containsFluid) ((TileEntityIndustrialCentrifuge) te).setWaterInTank(message.fluidStored);
 		}
 		
 		return null;

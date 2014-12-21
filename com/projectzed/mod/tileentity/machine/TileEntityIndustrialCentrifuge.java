@@ -157,6 +157,44 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	public boolean hasWaterInTank() {
 		return this.waterStored > 0;
 	}
+	
+	/**
+	 * Sets the amount of water the tank should now contain.
+	 * @param amount = amount to try and set.
+	 */
+	public void setWaterInTank(int amount) {
+		this.waterStored = amount >= 0 && amount <= this.MAX_WATER_STORAGE ? amount : 0;
+	}
+	
+	/**
+	 * Adds default amount of water to tank (1000 mb).
+	 */
+	public void addWaterToTank() {
+		addWaterToTank(1000);
+	}
+	
+	/**
+	 * Adds given amount of water to tank.
+	 * @param amount = amount of water to add in mb.
+	 */
+	public void addWaterToTank(int amount) {
+		this.waterStored += canAddWaterToTank(1000) ? amount : 0; 
+	}
+	
+	/**
+	 * @return true if can add 1000 mb, else returns false.
+	 */
+	public boolean canAddWaterToTank() {
+		return canAddWaterToTank(1000);
+	}
+	
+	/**
+	 * @param amount = amount to try and add.
+	 * @return result of trying to add said amount.
+	 */
+	public boolean canAddWaterToTank(int amount) {
+		return amount > 0 && this.waterStored + amount <= this.MAX_WATER_STORAGE;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -183,19 +221,21 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
 		int amount = comp.getInteger("ProjectZedWaterTank");
 		this.waterStored = amount >= 0 && amount <= this.MAX_WATER_STORAGE ? amount : 0;
+		
+		super.readFromNBT(comp);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#writeToNBT(net.minecraft.nbt.NBTTagCompound) 
 	 */
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedWaterTank", this.waterStored);
+		
+		super.writeToNBT(comp);
 	}
 	
 }

@@ -24,6 +24,7 @@ public class ContainerMachine extends Container {
 	protected AbstractTileEntityMachine te;
 	protected int stored;
 	protected boolean powerMode;
+	protected final int NUM_SLOTS;
 
 	/** Time left for this furnace to burn for. */
 	public int lastBurnTime;
@@ -34,8 +35,13 @@ public class ContainerMachine extends Container {
 	/** How long time left before item is cooked. */
 	public int lastCookTime;
 
+	/**
+	 * @param inv = inventory of player as reference.
+	 * @param te = tile entity to append to as reference.
+	 */
 	public ContainerMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		this.te = te;
+		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
 	}
 
@@ -46,8 +52,17 @@ public class ContainerMachine extends Container {
 	 */
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
-		this.addSlotToContainer(new Slot(te, 0, 41, 21));
-		this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+		
+		if (this.NUM_SLOTS == 2) {
+			this.addSlotToContainer(new Slot(te, 0, 41, 21));
+			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+		}
+		
+		else if (this.NUM_SLOTS == 3) {
+			this.addSlotToContainer(new Slot(te, 0, 30, 21));
+			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+			this.addSlotToContainer(new Slot(te, 2, 55, 21));
+		}
 
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {

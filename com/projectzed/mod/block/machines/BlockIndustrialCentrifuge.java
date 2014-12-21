@@ -2,6 +2,8 @@ package com.projectzed.mod.block.machines;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockMachine;
@@ -53,9 +55,15 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 
 		else {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
-			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class), world, x, y, z);
+			
+			if (te != null) {
+				if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.water_bucket && ((TileEntityIndustrialCentrifuge) te).canAddWaterToTank()) {
+					((TileEntityIndustrialCentrifuge) te).addWaterToTank();
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket, 1));
+				}
+				else FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class), world, x, y, z);
+			}
+			
 			return true;
 		}
 	}
