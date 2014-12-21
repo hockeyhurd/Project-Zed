@@ -21,9 +21,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class ContainerMachine extends Container {
 
-	private AbstractTileEntityMachine te;
-	private int stored;
-	private boolean powerMode;
+	protected AbstractTileEntityMachine te;
+	protected int stored;
+	protected boolean powerMode;
 
 	/** Time left for this furnace to burn for. */
 	public int lastBurnTime;
@@ -44,7 +44,7 @@ public class ContainerMachine extends Container {
 	 * @param inv = inventory.
 	 * @param te = tile entity object.
 	 */
-	private void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
+	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
 		this.addSlotToContainer(new Slot(te, 0, 41, 21));
 		this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
@@ -62,6 +62,10 @@ public class ContainerMachine extends Container {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#addCraftingToCrafters(net.minecraft.inventory.ICrafting)
+	 */
 	public void addCraftingToCrafters(ICrafting craft) {
 		super.addCraftingToCrafters(craft);
 		craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
@@ -77,6 +81,10 @@ public class ContainerMachine extends Container {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
+	 */
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		this.stored = this.te.getEnergyStored();
@@ -88,6 +96,10 @@ public class ContainerMachine extends Container {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#updateProgressBar(int, int)
+	 */
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int slot, int newVal) {
 		if (slot == 0) this.te.cookTime = newVal;
@@ -101,6 +113,10 @@ public class ContainerMachine extends Container {
 		return this.te;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
+	 */
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}

@@ -4,11 +4,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.projectzed.mod.container.ContainerCentrifuge;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.container.ContainerRFBridge;
+import com.projectzed.mod.gui.GuiCentrifuge;
 import com.projectzed.mod.gui.GuiEnergyContainer;
 import com.projectzed.mod.gui.GuiFabricationTable;
 import com.projectzed.mod.gui.GuiGenerator;
@@ -19,6 +21,7 @@ import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
@@ -46,6 +49,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialCrusher) return new ContainerMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new ContainerMachine(player.inventory, (TileEntityIndustrialLumberMill) te);
 		else if (te instanceof TileEntityIndustrialMetalPress) return new ContainerMachine(player.inventory, (TileEntityIndustrialMetalPress) te);
+		else if (te instanceof TileEntityIndustrialCentrifuge) return new ContainerCentrifuge(player.inventory, (TileEntityIndustrialCentrifuge) te);
 		else if (te instanceof TileEntityFabricationTable) return new ContainerFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityRFBridge) return new ContainerRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new ContainerEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
@@ -64,6 +68,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialCrusher) return new GuiMachine(player.inventory, (TileEntityIndustrialCrusher) te);
 		else if (te instanceof TileEntityIndustrialLumberMill) return new GuiMachine(player.inventory, (TileEntityIndustrialLumberMill) te);
 		else if (te instanceof TileEntityIndustrialMetalPress) return new GuiMachine(player.inventory, (TileEntityIndustrialMetalPress) te);
+		else if (te instanceof TileEntityIndustrialCentrifuge) return new GuiCentrifuge(player.inventory, (TileEntityIndustrialCentrifuge) te);
 		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityRFBridge) return new GuiRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new GuiEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);

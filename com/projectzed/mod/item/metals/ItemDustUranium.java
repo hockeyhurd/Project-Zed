@@ -19,17 +19,17 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Nov 6, 2014
  */
 public class ItemDustUranium extends AbstractItemMetalic {
-
-	private final int ATOMIC_NUMBER;
+	
+	private final boolean ENRICHED;
 	
 	/**
 	 * @param name
 	 * @param assetDir
 	 */
-	public ItemDustUranium(String name, String assetDir, int atomicNum) {
+	public ItemDustUranium(String name, String assetDir, boolean enriched) {
 		super(name, assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.ATOMIC_NUMBER = atomicNum;
+		this.ENRICHED = enriched;
 	}
 
 	/*
@@ -38,8 +38,7 @@ public class ItemDustUranium extends AbstractItemMetalic {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
-		list.add("U - " + this.ATOMIC_NUMBER);
-		list.add(this.ATOMIC_NUMBER == 235 ? EnumChatFormatting.WHITE + "Stable" : EnumChatFormatting.RED + "Un-Stable");
+		list.add(this.ENRICHED ? "UF6" : "UO2");
 	}
 	
 }

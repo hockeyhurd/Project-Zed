@@ -13,6 +13,9 @@ TODO:
     - Make energy cell tiers unique (modify textures somehow).
     - Add saving of IO sides for energy cell(s). (kinda)
     - Add poison effect when user is exposed to unstable uranium - 238 dust.
+    - Recipes for nuclear stuff.
+    - Recipe for industrial centrifuge.
+    - Recipe handler for industrial centrifuge.
 
 IDEAS:
 =================================    

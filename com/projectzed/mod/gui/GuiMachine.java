@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiMachine extends GuiContainer {
 
-	public final ResourceLocation texture;
+	public ResourceLocation texture;
 	private AbstractTileEntityMachine te;
 	private String stringToDraw;
 	private final DecimalFormat df = new DecimalFormat("###,###,###");

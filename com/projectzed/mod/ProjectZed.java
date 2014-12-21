@@ -21,6 +21,7 @@ import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.block.machines.BlockIndustrialCentrifuge;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
@@ -105,6 +106,7 @@ public class ProjectZed {
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
 	public static Block industrialMetalPress;
+	public static Block industrialCentrifuge;
 	
 	// Containers:
 	public static Block energyPipeRed;
@@ -233,6 +235,7 @@ public class ProjectZed {
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();
 		industrialMetalPress = new BlockIndustrialMetalPress();
+		industrialCentrifuge = new BlockIndustrialCentrifuge();
 		
 		// Containers:
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
@@ -270,8 +273,8 @@ public class ProjectZed {
 		dustCopper = new ItemDustCopper("dustCopper", assetDir);
 		dustNickel = new ItemDustNickel("dustNickel", assetDir);
 		dustAluminium = new ItemDustAluminium("dustAluminium", assetDir);
-		dustUranium = new ItemDustUranium("dustUranium", assetDir, 235);
-		enrichedUranium = new ItemDustUranium("enrichedUranium", assetDir, 238);
+		dustUranium = new ItemDustUranium("dustUranium", assetDir, false);
+		enrichedUranium = new ItemDustUranium("enrichedUranium", assetDir, true);
 		
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);
