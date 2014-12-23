@@ -3,7 +3,9 @@ package com.projectzed.mod.tileentity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.ProjectZed;
@@ -148,10 +150,27 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * Method used to clear the crafting grid and place them either in chest, in player's inventory, or else on the ground.
 	 */
 	public void clearCraftingGrid() {
-		for (int i = 0; i < this.slots.length; i++) {
+		/*for (int i = 0; i < this.slots.length; i++) {
 			if (this.slots[i] != null) {
 				ProjectZed.logHelper.info(this.slots[i].getItem().getUnlocalizedName(), i);
 				moveStack(this.slots[i], i, 10, this.slots.length);
+			}
+		}*/
+		
+		syncSlots(false);
+		
+		for (int i = 0; i < this.craftingMatrix.length; i++) {
+			if (this.craftingMatrix[i] != null) moveStack(this.craftingMatrix[i], i, 10, this.slots.length);
+		}
+		
+		syncSlots(false);
+	}
+	
+	private void syncSlots(boolean reverse) {
+		for (int i = 0; i < this.craftingMatrix.length; i++) {
+			if (this.slots[i] != this.craftingMatrix[i]) {
+				if (!reverse) this.craftingMatrix[i] = this.slots[i];
+				else this.slots[i] = this.craftingMatrix[i];
 			}
 		}
 	}
@@ -194,9 +213,18 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
+	}
+	
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
 	}
 	
 }

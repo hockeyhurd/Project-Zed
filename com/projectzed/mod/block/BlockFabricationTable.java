@@ -1,9 +1,13 @@
 package com.projectzed.mod.block;
 
+import java.util.Random;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -11,6 +15,7 @@ import net.minecraft.world.World;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.util.WorldUtils;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -26,6 +31,7 @@ public class BlockFabricationTable extends BlockContainer {
 
 	private String name;
 	private IIcon base, top;
+	private static Random random = new Random();
 
 	public BlockFabricationTable(Material material) {
 		super(material);
@@ -63,8 +69,31 @@ public class BlockFabricationTable extends BlockContainer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	 */
 	public TileEntity createNewTileEntity(World world, int id) {
 		return new TileEntityFabricationTable();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
+	 */
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
+		if (!world.isRemote && world.getTileEntity(x, y, z) != null) {
+			TileEntityFabricationTable te = (TileEntityFabricationTable) world.getTileEntity(x, y, z);
+			
+			ItemStack[] stacks = new ItemStack[te.getSizeInvenotry()];
+			for (int i = 0; i < te.getSizeInventory(); i++) {
+				if (te.getStackInSlot(i) != null) stacks[i] = te.getStackInSlot(i);
+			}
+			
+			WorldUtils.addItemDrop(stacks, world, x, y, z, random);
+		}
+		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
 	}
 
 }
