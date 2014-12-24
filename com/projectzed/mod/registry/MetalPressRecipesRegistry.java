@@ -22,19 +22,19 @@ public class MetalPressRecipesRegistry {
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;
 	private static Set<Entry<String, String>> mapSet;
-	
+
 	private MetalPressRecipesRegistry() {
 	}
-	
+
 	/**
 	 * Main init method for initializing all the things.
 	 */
 	public static void init() {
 		mapVanilla = new HashMap<ItemStack, ItemStack>();
 		mapModded = new HashMap<String, String>();
-		
+
 		// Normal mapping.
-		
+
 		// Fall back/modded mapping.
 		mapModded.put("ingotAluminium", "plateAluminium");
 		mapModded.put("ingotIron", "plateIron");
@@ -42,20 +42,19 @@ public class MetalPressRecipesRegistry {
 		mapModded.put("ingotTin", "plateTin");
 		mapModded.put("ingotCopper", "plateCopper");
 		mapModded.put("ingotBronze", "plateBronze");
-		
+
 		initEntries();
 	}
-	
+
 	/**
 	 * Method used to init entries mapping.
 	 */
 	private static void initEntries() {
 		mapSet = mapModded.entrySet();
 	}
-	
+
 	/**
-	 * Static function used to get output of said itemstack from internal
-	 * mappings and contacting to/from ore dictionary.
+	 * Static function used to get output of said itemstack from internal mappings and contacting to/from ore dictionary.
 	 * 
 	 * @param stack = stact to reference.
 	 * @return output as itemstack.
@@ -117,7 +116,12 @@ public class MetalPressRecipesRegistry {
 		}
 
 		// If found and stored in variable temp while != null, return data.
-		return flag && temp != null ? temp : (ItemStack) null;
+		if (flag && temp != null) {
+			mapVanilla.put(stack, temp);
+			return temp;
+		}
+
+		else return (ItemStack) null;
 	}
 
 }

@@ -50,10 +50,10 @@ public class LumberMillRecipesRegistry {
 		mapVanilla.put(new ItemStack(Blocks.planks, 1, 5), new ItemStack(Items.stick, 8));
 
 		// Fall back/modded mapping.
-		
+
 		initEntries();
 	}
-	
+
 	/**
 	 * Method used to init entries mapping.
 	 */
@@ -62,8 +62,7 @@ public class LumberMillRecipesRegistry {
 	}
 
 	/**
-	 * Static function used to get output of said itemstack from internal
-	 * mappings and contacting to/from ore dictionary.
+	 * Static function used to get output of said itemstack from internal mappings and contacting to/from ore dictionary.
 	 * 
 	 * @param stack = stact to reference.
 	 * @return output as itemstack.
@@ -123,7 +122,12 @@ public class LumberMillRecipesRegistry {
 		}
 
 		// If found and stored in variable temp while != null, return data.
-		return flag && temp != null ? temp : (ItemStack) null;
+		if (flag && temp != null) {
+			mapVanilla.put(stack, temp);
+			return temp;
+		}
+
+		else return (ItemStack) null;
 	}
 
 }

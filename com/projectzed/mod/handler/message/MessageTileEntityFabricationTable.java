@@ -55,7 +55,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
 		if (te instanceof TileEntityFabricationTable) {
-			((TileEntityFabricationTable) te).clearCraftingGrid();
+			// ((TileEntityFabricationTable) te).clearCraftingGrid();
 		}
 		
 		return null;
