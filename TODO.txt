@@ -16,6 +16,7 @@ TODO:
     - Recipes for nuclear stuff.
     - Recipe for industrial centrifuge.
     - Recipe handler for industrial centrifuge.
+    - Update to latest forge beta.
 
 IDEAS:
 =================================    

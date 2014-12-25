@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.gui.component.GuiIOButton;
 import com.projectzed.mod.handler.PacketHandler;
@@ -225,10 +226,9 @@ public class GuiEnergyContainer extends GuiContainer {
 			ForgeDirection dirToSet = getDirectionFromName(button.displayString);
 			
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) this.te;
-			
-			System.out.println("Pre-Val:\t" + te.getSideValve(dirToSet));
+			ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
 			te.setSideValveAndRotate(dirToSet);
-			System.out.println("Post-Val:\t" + te.getSideValve(dirToSet));
+			ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 			
 			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityContainer(te));
 		}
