@@ -29,7 +29,7 @@ group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conv
 archivesBaseName = "Project-Zed"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.7.10-10.13.2.1277"
     runDir = "eclipse/assets"
 }
 
@@ -47,7 +47,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-	compile files('libs/HCoreLib-deobf-1.1.15.jar')
+	// compile files('libs/HCoreLib-deobf-1.1.15.jar')
+	// compile files('CoFHCore-[1.7.10]3.0.0B9-71-dev.jar')
+	
 }
 
 processResources
