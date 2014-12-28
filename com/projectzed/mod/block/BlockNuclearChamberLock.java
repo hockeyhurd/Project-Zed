@@ -3,6 +3,7 @@ package com.projectzed.mod.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 import com.hockeyhurd.api.math.Vector4Helper;
@@ -60,9 +61,8 @@ public class BlockNuclearChamberLock extends Block {
 	 * @param y = y-position.
 	 * @param z = z-position.
 	 */
-	private void updateMultiBlock(World world, int x, int y, int z) { 
+	public void updateMultiBlock(World world, int x, int y, int z) { 
 		this.mulitBlockMode = isMultiBlockStructureCheck(world, x, y, z);
-		// System.out.println(this.mulitBlockMode);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class BlockNuclearChamberLock extends Block {
 	 * @return true if valid, else returns false.
 	 */
 	private boolean isBlockValid(Block b) {
-		return b != null && (b == ProjectZed.nuclearChamberWall || b == ProjectZed.thickenedGlass); 
+		return b != null && b != Blocks.air && (b == ProjectZed.nuclearChamberWall || b == ProjectZed.thickenedGlass); 
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class BlockNuclearChamberLock extends Block {
 	 * Function to check if multiblock structure is created.
 	 * @return true if multiblock structure, else returns false.
 	 */
-	public boolean isMultiBlockStructureCheck(World world, int x, int y, int z) {
+	private boolean isMultiBlockStructureCheck(World world, int x, int y, int z) {
 		
 		// Tracking variables.
 		boolean flag = false;

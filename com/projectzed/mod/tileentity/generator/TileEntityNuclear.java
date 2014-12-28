@@ -35,6 +35,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	public TileEntityNuclear() {
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
+		
+		this.lockMap = new LockMapper[8];
 	}
 	
 	/**
@@ -47,8 +49,6 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		this.placeDir = dir;
 		this.size = size;
 		this.rel = rel;
-
-		lockMap = new LockMapper[8];
 	}
 	
 	/**
@@ -193,7 +193,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	}
 	
 	public void reCheckLocks() {
-		if (this.worldObj == null || this.worldObj.isRemote) return;
+		if (this.worldObj.isRemote) return;
 		
 		if (this.lockMap != null && this.lockMap.length > 0) {
 			
@@ -208,7 +208,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				else {
 					Vector4Helper<Integer> currentVec = this.lockMap[i].getVec();
 					BlockNuclearChamberLock lock = this.lockMap[i].getInstance(this.worldObj);
-					flag2 = lock != null && lock.isMultiBlockStructureCheck(this.worldObj, currentVec.x, currentVec.y, currentVec.z);
+					lock.updateMultiBlock(this.worldObj, currentVec.x, currentVec.y, currentVec.z);;
+					flag2 = lock != null && lock.isMultiBlockStructure();
 					
 					if (flag2) {
 						this.poweredLastUpdate = true;
