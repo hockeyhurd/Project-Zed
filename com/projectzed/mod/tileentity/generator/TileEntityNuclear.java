@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
@@ -12,6 +13,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.util.LockMapper;
 
 /**
  * Class used to calculate and generate power through
@@ -28,7 +30,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	private int burnTime = 0;
 	
 	private byte placeDir, size, rel;
-	private Block[] blocksArray;
+	private LockMapper[] lockMap;
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
@@ -45,7 +47,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		this.placeDir = dir;
 		this.size = size;
 		this.rel = rel;
-		this.blocksArray = new Block[(int)(size * size * size)];
+
+		lockMap = new LockMapper[8];
 	}
 	
 	/**
@@ -148,7 +151,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	@Override
 	public boolean canProducePower() {
 		boolean flag = false;
-		if (blocksArray == null || blocksArray.length == 0 /*|| worldObj.getTotalWorldTime() % 20L != 0*/ || worldObj.isRemote) return false;
+		if (lockMap == null || lockMap.length == 0 /*|| worldObj.getTotalWorldTime() % 20L != 0*/ || worldObj.isRemote) return false;
 		
 		else {
 			// TODO: Varify offsets such that it works past 3x3x3 reaction chamber.
@@ -158,6 +161,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			int yp = this.yCoord + ((size - 1) / 2);
 			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
 			int counter = 0;
+			Vector4Helper<Integer> currentVec;
 			boolean show = false;
 
 			if (show) {
@@ -168,14 +172,17 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
+						if (counter > lockMap.length) break;
+						
 						Block b = worldObj.getBlock(xp + x, yp - y, zp + z);
-						this.blocksArray[counter++] = b;
+						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
+						if (b == ProjectZed.nuclearChamberLock) lockMap[counter++] = new LockMapper(currentVec, ((BlockNuclearChamberLock)b).isMultiBlockStructure());
 					}
 				}
 			}
 			
-			for (Block b : this.blocksArray) {
-				if (b == ProjectZed.nuclearChamberLock && ((BlockNuclearChamberLock)b).isMultiBlockStructure() ) {
+			for (LockMapper b : this.lockMap) {
+				if (b.isMultiBlockStructure()) {
 					flag = true;
 					break;
 				}
@@ -183,6 +190,34 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		}
 		
 		return flag;
+	}
+	
+	public void reCheckLocks() {
+		if (this.worldObj == null || this.worldObj.isRemote) return;
+		
+		if (this.lockMap != null && this.lockMap.length > 0) {
+			
+			boolean flag, flag2;
+			for (int i = 0; i < this.lockMap.length; i++) {
+				flag = this.lockMap[i].isMultiBlockStructure();
+				if (flag) {
+					this.poweredLastUpdate = true;
+					break;
+				}
+				
+				else {
+					Vector4Helper<Integer> currentVec = this.lockMap[i].getVec();
+					BlockNuclearChamberLock lock = this.lockMap[i].getInstance(this.worldObj);
+					flag2 = lock != null && lock.isMultiBlockStructureCheck(this.worldObj, currentVec.x, currentVec.y, currentVec.z);
+					
+					if (flag2) {
+						this.poweredLastUpdate = true;
+						break;
+					}
+				}
+				
+			}
+		}
 	}
 
 	// TODO: This needs to be changed to uranium / w/e this requires for fuel.
@@ -246,7 +281,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	public void updateEntity() {
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			
-			// Small, yet significant optimization to call checking of multiblock structure 1/tick instead of 20/tick.
+			// Small, yet significant optimization to call checking of multiblock structure 1/sec instead of 20/sec.
 			if (this.worldObj.getTotalWorldTime() % 20L == 0) poweredLastUpdate = canProducePower();
 			
 			if (this.slots[0] != null && isFuel() && poweredLastUpdate) {
@@ -256,8 +291,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 				}
 			}
 
-			// this.powerMode = this.burnTime > 0;
-			if (this.burnTime > 0) this.burnTime--;
+			this.powerMode = this.burnTime > 0;
+			if (this.powerMode) this.burnTime--;
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
@@ -281,8 +316,6 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		
 		byte size = comp.getByte("ProjectZedNuclearSize");
 		this.size = size > 0 && size <= 7 ? size : 0;
-		
-		this.blocksArray = size > 0 ? new Block[(int)(size * size * size)] : null;
 	}
 	
 	/*

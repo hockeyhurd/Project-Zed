@@ -11,6 +11,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.util.WorldUtils;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -62,6 +63,9 @@ public class BlockFurnaceGenerator extends AbstractBlockGenerator {
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
+		
+		WorldUtils.dropItemsFromContainerOnBreak(te);
+		
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 

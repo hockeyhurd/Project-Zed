@@ -1,5 +1,7 @@
 package com.projectzed.api.block;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -10,10 +12,7 @@ import net.minecraft.world.World;
 
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,6 +29,8 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 
 	/** Asset directory of block. */
 	protected String assetDir;
+	
+	protected Random random = new Random();
 	
 	/**
 	 * @param material = material of block.

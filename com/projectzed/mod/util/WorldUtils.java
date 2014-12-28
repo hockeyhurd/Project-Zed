@@ -6,6 +6,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -17,6 +18,8 @@ import com.projectzed.mod.ProjectZed;
  */
 public class WorldUtils {
 
+	private static Random random = new Random();
+	
 	private WorldUtils() {
 	}
 
@@ -109,6 +112,24 @@ public class WorldUtils {
 				if (random == null) world.spawnEntityInWorld(createEntityItemStack(world, x, y, z, stack));
 				else world.spawnEntityInWorld(createEntityItemStack(world, x + random.nextInt(3), y + random.nextInt(3), z + random.nextInt(3), stack));
 			}
+		}
+	}
+
+	/**
+	 * Method used to drop all contents in container on break.
+	 * 
+	 * @param te = te object to perform item drop on.
+	 */
+	public static void dropItemsFromContainerOnBreak(AbstractTileEntityGeneric te) {
+		
+		if (te != null && te.getSizeInvenotry() > 0) {
+			ItemStack[] drops = new ItemStack[te.getSizeInvenotry()];
+			
+			for (int i = 0; i < drops.length; i++) {
+				drops[i] = te.getStackInSlot(i);
+			}
+			
+			addItemDrop(drops, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, random);
 		}
 	}
 

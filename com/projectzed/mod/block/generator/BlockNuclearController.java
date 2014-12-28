@@ -16,6 +16,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.util.WorldUtils;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -84,7 +85,14 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 
 		else {
 			TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclear.class), world, x, y, z);
+			if (te != null) {
+				if (!te.canProducePower()) {
+					te.reCheckLocks();
+				}
+			
+				FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclear.class), world, x, y, z);
+			}
+			
 			return true;
 		}
 	}
@@ -170,6 +178,9 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
+		
+		WorldUtils.dropItemsFromContainerOnBreak(te);
+		
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 

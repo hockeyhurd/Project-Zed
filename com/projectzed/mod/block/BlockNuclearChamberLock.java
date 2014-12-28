@@ -84,7 +84,7 @@ public class BlockNuclearChamberLock extends Block {
 	 * Function to check if multiblock structure is created.
 	 * @return true if multiblock structure, else returns false.
 	 */
-	private boolean isMultiBlockStructureCheck(World world, int x, int y, int z) {
+	public boolean isMultiBlockStructureCheck(World world, int x, int y, int z) {
 		
 		// Tracking variables.
 		boolean flag = false;
