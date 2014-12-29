@@ -22,6 +22,8 @@ public class ModsLoadedHelper {
 	/** Variable for whether Thermal Expansion Exists */
 	public boolean te4Loaded = false;
 	
+	public boolean cofhCore = false;
+	
 	/** Mapping containing name and flag of existence. */
 	private HashMap<String, Boolean> mapping;
 	
@@ -54,6 +56,7 @@ public class ModsLoadedHelper {
 	 */
 	public void init() {
 		if (isModLoaded("ThermalExpansion")) te4Loaded = true;
+		if (isModLoaded("CoFHCore")) cofhCore = true;
 		
 		initMapping();
 	}
@@ -83,6 +86,7 @@ public class ModsLoadedHelper {
 		mapping = new HashMap<String, Boolean>();
 		
 		mapping.put("Thermal Expansion", te4Loaded);
+		mapping.put("CoFH Core", cofhCore);
 	}
 	
 	/**

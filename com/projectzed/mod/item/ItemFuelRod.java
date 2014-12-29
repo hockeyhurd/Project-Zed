@@ -45,8 +45,11 @@ public class ItemFuelRod extends AbstractItemMetalic {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
 		itemIcon = reg.registerIcon(this.assetDir + name);
-		for (int i = 0; i < icons.length; i++) {
-			icons[i] = reg.registerIcon(this.assetDir + name + "_" + i);
+		
+		if (!isEmpty) {
+			for (int i = 0; i < icons.length; i++) {
+				icons[i] = reg.registerIcon(this.assetDir + name + "_" + i);
+			}
 		}
 	}
 	

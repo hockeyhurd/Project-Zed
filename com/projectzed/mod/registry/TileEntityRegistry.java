@@ -18,6 +18,7 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
 import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
+import com.projectzed.mod.util.ModsLoadedHelper;
 
 /**
  * Class container for all registered tile enties in this mod.
@@ -73,8 +74,10 @@ public class TileEntityRegistry {
 		reg.map.put(TileEntityEnergyPipeClear.class,  "energyPipeTileEntityClear");
 		reg.idMap.put(TileEntityEnergyPipeClear.class, getNextID());
 		
-		reg.map.put(TileEntityRFBridge.class, "bridgeRFTileEntity");
-		reg.idMap.put(TileEntityRFBridge.class, getNextID());
+		if (ModsLoadedHelper.instance().cofhCore) { 
+			reg.map.put(TileEntityRFBridge.class, "bridgeRFTileEntity");
+			reg.idMap.put(TileEntityRFBridge.class, getNextID());
+		}
 		
 		reg.map.put(TileEntityEnergyBankBase.class, "energyBank");
 		reg.idMap.put(TileEntityEnergyBankBase.class, getNextID());

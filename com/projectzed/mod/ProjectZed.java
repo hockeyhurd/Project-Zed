@@ -246,9 +246,11 @@ public class ProjectZed {
 		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
 		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
 		
-		// RF STUFF:
-		bridgeMcUToRF = new BlockRFBridge(Material.rock, false);
-		bridgeRFToMcU = new BlockRFBridge(Material.rock, true);
+		if (ModsLoadedHelper.instance().cofhCore) { 
+			// RF STUFF:
+			bridgeMcUToRF = new BlockRFBridge(Material.rock, false);
+			bridgeRFToMcU = new BlockRFBridge(Material.rock, true);
+		}
 		
 		// Ores:
 		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");
