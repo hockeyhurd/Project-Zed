@@ -13,6 +13,7 @@ TODO:
     - Recipes for nuclear stuff.
     - Recipe for industrial centrifuge.
     - Add implemented sounds to machines.
+    - Remove all power text in gui and change to tooltip based info (cleaner).
 
 IDEAS:
 =================================    

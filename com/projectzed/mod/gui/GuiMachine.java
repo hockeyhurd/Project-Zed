@@ -31,6 +31,17 @@ public class GuiMachine extends GuiContainer {
 	private String stringToDraw;
 	private final DecimalFormat df = new DecimalFormat("###,###,###");
 	
+	/** x-pos of mouse */
+	protected int mouseX;
+	
+	/** y-pos of mouse */
+	protected int mouseY;
+	
+	/**
+	 * 
+	 * @param inv
+	 * @param te
+	 */
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
@@ -40,6 +51,11 @@ public class GuiMachine extends GuiContainer {
 		this.ySize = 166;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerForegroundLayer(int, int)
+	 */
+	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 		
@@ -51,6 +67,11 @@ public class GuiMachine extends GuiContainer {
 				4210752);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
+	 */
+	@Override
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
@@ -64,6 +85,18 @@ public class GuiMachine extends GuiContainer {
             i1 = this.te.getCookProgressScaled(24);
             this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawScreen(int, int, float)
+	 */
+	@Override
+	public void drawScreen(int x, int y, float f) {
+		this.mouseX = x;
+		this.mouseY = y;
+		
+		super.drawScreen(x, y, f);
 	}
 
 }
