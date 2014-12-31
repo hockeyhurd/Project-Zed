@@ -46,11 +46,26 @@ public class StackMapper<T> {
 	 */
 	public boolean contains(T check) {
 		boolean flag = false;
+
+		// If we are dealing with itemstacks, do this:
+		if (check instanceof ItemStack) {
+			ItemStack stack;
+			for (T index : getArray()) {
+				stack = (ItemStack) index;
+				if (stack.getItem() == ((ItemStack) check).getItem() && stack.getItemDamage() == ((ItemStack) check).getItemDamage()) {
+					flag = true;
+					break;
+				}
+			}
+		}
 		
-		for (T map : getArray()) {
-			if (map == check) {
-				flag = true;
-				break;
+		// Else, generic checking should suffice.
+		else { 
+			for (T index : getArray()) {
+				if (index == check) {
+					flag = true;
+					break;
+				}
 			}
 		}
 		

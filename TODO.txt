@@ -5,6 +5,7 @@ BUGS:
     - Fix energy cell gui input.   
     - *Fix energy cell not saving power*  
     - Fix te's not being 'active' when processing.
+    - Fix machines not saving output stack on 'server' close.
 
 TODO:
 =================================
@@ -15,8 +16,7 @@ TODO:
     - Add poison effect when user is exposed to unstable uranium - 238 dust.
     - Recipes for nuclear stuff.
     - Recipe for industrial centrifuge.
-    - Recipe handler for industrial centrifuge.
-    - Update to latest forge beta.
+    - Add implemented sounds to machines.
 
 IDEAS:
 =================================    

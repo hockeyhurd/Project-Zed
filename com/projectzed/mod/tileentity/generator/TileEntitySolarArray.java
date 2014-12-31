@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
@@ -124,9 +125,13 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 				BlockSolarArray b = (BlockSolarArray) this.getBlockType();
 				boolean clear = b.canSeeAbove(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 				this.powerMode = worldObj.isDaytime() && clear;
+				
+				if (this.source.getEffectiveSize() != this.TIER_MODIFIER[this.tier] * EnumType.SOLAR.getSize()) this.source.setModifier(this.TIER_MODIFIER[this.tier]);
+				
 				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			}
 		}
+		
 		super.updateEntity();
 	}
 	
@@ -134,6 +139,7 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		byte tier = comp.getByte("ProjectZedSolarArrayTier");

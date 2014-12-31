@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -24,6 +24,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	public int stored;
 	public boolean powerMode;
 	
+	public byte tier;
+	public boolean tierable;
+	
 	public MessageTileEntityGenerator() {
 	}
 	
@@ -34,6 +37,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.canProducePower();
+		
+		this.tierable = te instanceof TileEntitySolarArray;
+		if (this.tierable) this.tier = ((TileEntitySolarArray) te).getTier();
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -42,6 +48,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
+		
+		this.tierable = buf.readBoolean();
+		if (this.tierable) this.tier = buf.readByte();
 	}
 
 	public void toBytes(ByteBuf buf) {
@@ -50,6 +59,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeInt(z);
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
+		
+		buf.writeBoolean(tierable);
+		if (this.tierable) buf.writeByte(tier);
 	}
 
 	public IMessage onMessage(MessageTileEntityGenerator message, MessageContext ctx) {
@@ -58,6 +70,8 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (te instanceof AbstractTileEntityGenerator) {
 			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
 			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);
+			
+			if (te instanceof TileEntitySolarArray && message.tierable) ((TileEntitySolarArray) te).setTier(message.tier);
 		}
 		
 		return null;

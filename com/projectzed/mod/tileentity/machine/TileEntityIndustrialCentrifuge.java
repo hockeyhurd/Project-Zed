@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.registry.MetalPressRecipesRegistry;
+import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 
 /**
  * Class containing code for industrialCentrifuge.
@@ -118,10 +118,11 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	 */
 	@Override
 	protected boolean canSmelt() {
-		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
+		if (this.slots[0] == null || this.slots[2] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = MetalPressRecipesRegistry.pressList(this.slots[0]);
+			ItemStack stack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+			
 			if (stack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(stack)) return false;
@@ -204,13 +205,17 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	@Override
 	public void smeltItem() {
 		if (this.canSmelt() && hasWaterInTank()) {
-			ItemStack itemstack = MetalPressRecipesRegistry.pressList(this.slots[0]);
+			ItemStack itemstack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
 
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
 			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
 
 			this.slots[0].stackSize--;
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
+			
+			this.slots[2].stackSize--;
+			if (this.slots[2].stackSize <= 0) this.slots[2] = null;
+			
 			this.waterStored -= 1000;
 		}
 	}
