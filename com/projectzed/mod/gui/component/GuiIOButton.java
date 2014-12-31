@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiIOButton extends GuiButton {
 
 	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE;
+	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");;
 	protected byte stateID;
 	protected final float PIXEL;
 	
@@ -37,7 +37,6 @@ public class GuiIOButton extends GuiButton {
 	 */
 	public GuiIOButton(int id, int x, int y, String text, byte state) {
 		super(id, x, y, text);
-		this.TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 		this.width = 16;
 		this.height = 16;
 		this.PIXEL = 1f / 64f;
@@ -56,7 +55,6 @@ public class GuiIOButton extends GuiButton {
 	 */
 	public GuiIOButton(int id, int x, int y, int width, int height, String text, byte state) {
 		super(id, x, y, 16, 16, text);
-		this.TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 		this.width = 16;
 		this.height = 16;
 		this.PIXEL = 1f / 64f;

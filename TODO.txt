@@ -1,7 +1,5 @@
 BUGS:
 =================================
-    - Check saving code for fab. table (crafting grid). [TEMP FIXED]
-    - Fix clear button for fab. table.
     - Fix te's not being 'active' when processing.
     - Fix machines not saving output stack on 'server' close.
 

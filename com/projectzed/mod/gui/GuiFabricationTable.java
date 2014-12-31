@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.mod.container.ContainerFabricationTable;
+import com.projectzed.mod.gui.component.GuiClearButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
@@ -46,10 +47,10 @@ public class GuiFabricationTable extends GuiContainer {
 	public void initGui() {
 		super.initGui();
 		
-		int posX = (this.width - this.xSize) / 2 + 10;
-		int posY = (this.height - this.ySize) / 2 + 43;
+		int posX = (this.width - this.xSize) / 2 + 50;
+		int posY = (this.height - this.ySize) / 2 + 8;
 		
-		this.buttonList.add(new GuiButton(0, posX, posY, 45, 16, "Clear"));
+		this.buttonList.add(new GuiClearButton(0, posX, posY, "x"));
 	}
 	
 	/*
@@ -67,6 +68,11 @@ public class GuiFabricationTable extends GuiContainer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerForegroundLayer(int, int)
+	 */
+	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		// String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
@@ -74,6 +80,10 @@ public class GuiFabricationTable extends GuiContainer {
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
+	 */
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
