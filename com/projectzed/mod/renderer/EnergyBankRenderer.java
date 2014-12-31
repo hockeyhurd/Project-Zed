@@ -24,6 +24,9 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	private ResourceLocation texture;
 	private final float PIXEL = 1f / 48f;
 
+	/**
+	 * @param tier
+	 */
 	public EnergyBankRenderer(byte tier) {
 		super();
 		// this.texture = new ResourceLocation("projectzed", "textures/blocks/energyCellTier" + tier + ".png");
@@ -71,6 +74,17 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslated(-x, -y, -z);
 	}
 
+	/**
+	 * Method used for drawing energy cell bank into world.<br>
+	 * NOTE: This method resembles
+	 * {@link com.hockeyhurd.api.util.TessellatorHelper#drawCuboid(float, float, float, double, com.hockeyhurd.api.renderer.Color4i)}
+	 * 
+	 * @param te = te to draw.
+	 * @param min = min size.
+	 * @param max = max size.
+	 * @param layer = layer to draw.
+	 * @param valve = valve, (blue : -1, grey : 0, orange : 1).
+	 */
 	protected void drawCuboid(TileEntityEnergyBankBase te, float min, float max, int layer, int valve) {
 		drawCuboid(te, new Vector4Helper<Float>(min, min, min), new Vector4Helper<Float>(max, max, max), layer, valve);
 	}
@@ -78,14 +92,14 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	/**
 	 * Method used for drawing energy cell bank into world. <br>
 	 * <br>
-	 * NOTE: This class resembles
+	 * NOTE: This method resembles
 	 * {@link com.hockeyhurd.api.util.TessellatorHelper#drawCuboid(float, float, float, double, com.hockeyhurd.api.renderer.Color4i)}
 	 * 
 	 * @param te = te to draw as reference.
-	 * @param minVec
-	 * @param maxVec
-	 * @param layer
-	 * @param valve
+	 * @param minVec = min vec to draw.
+	 * @param maxVec = max vec to draw.
+	 * @param layer = layer to draw.
+	 * @param valve = valve, (blue : -1, grey : 0, orange : 1).
 	 */
 	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, int layer, int valve) {
 		Tessellator tess = Tessellator.instance;

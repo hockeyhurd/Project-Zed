@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.util.WorldUtils;
 
 /**
  * Class containing container code for FabricationTable.
@@ -29,6 +30,10 @@ public class ContainerFabricationTable extends Container {
 	private final int NUM_SLOTS;
 	private InventoryPlayer inv;
 
+	/**
+	 * @param inv
+	 * @param te
+	 */
 	public ContainerFabricationTable(InventoryPlayer inv, TileEntityFabricationTable te) {
 		this.te = te;
 		this.inv = inv;
@@ -86,6 +91,21 @@ public class ContainerFabricationTable extends Container {
 		this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
 	}
 	
+	/**
+	 * Clears crafting grid matrix.
+	 */
+	public void clearCraftingGrid() {
+		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+			if (this.craftMatrix.getStackInSlot(i) != null) {
+				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, true)) this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+				else {
+					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
+					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+				}
+			}
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#onContainerClosed(net.minecraft.entity.player.EntityPlayer)
@@ -93,23 +113,36 @@ public class ContainerFabricationTable extends Container {
 	// TODO: Temp fix to spit out items until saving bug is resolved.
 	public void onContainerClosed(EntityPlayer player) {
 		super.onContainerClosed(player);
+		clearCraftingGrid();
 		
-		if (!this.te.getWorldObj().isRemote) {
+		/*if (!this.te.getWorldObj().isRemote) {
 			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 				ItemStack stack = this.craftMatrix.getStackInSlotOnClosing(i);
 				if (stack != null) player.dropPlayerItemWithRandomChoice(stack, false);
 			}
-		}
+		}*/
 	}
 
-	public boolean canInteractWith(EntityPlayer p_75145_1_) {
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
+	 */
+	public boolean canInteractWith(EntityPlayer player) {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
+	 */
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
+	 */
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}

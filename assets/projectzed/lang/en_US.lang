@@ -18,9 +18,15 @@ tile.industrialFurnace.name=Industrial Furnace
 tile.industrialCrusher.name=Industrial Crusher
 tile.industrialLumberMill.name=Industrial Lumber Mill
 tile.industrialMetalPress.name=Industrial Metal Press
+tile.industrialCentrifuge.name=Industrial Centrifuge
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
+tile.energyCellTier0.name=Energy Bank - I
+tile.energyCellTier1.name=Energy Bank - II
+tile.energyCellTier2.name=Energy Bank - II
+tile.energyCellTier3.name=Energy Bank - IV
+
 
 // RF STUFF:
 tile.bridgeMcUToRF.name=McU To RF Bridge

@@ -41,6 +41,12 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		return this.slots.length;
 	}
 
+	/**
+	 * Sets given itemstack to given slot. 
+	 * 
+	 * @param stack = stack to set.
+	 * @param slot = slot to set.
+	 */
 	public void setStackInSlot(ItemStack stack, int slot) {
 		if (slot >= 0 && slot < this.slots.length) this.slots[slot] = stack;
 		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!");
@@ -176,12 +182,12 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	
 	@Override
 	public void updateEntity() {
-		if (this.worldObj.getTotalWorldTime() % 20L == 0) {
+		/*if (this.worldObj.getTotalWorldTime() % 20L == 0) {
 			for (int i = 0; i < 10; i++) {
 				ItemStack stack = this.slots[i];
 				if (stack != null) System.out.println(i + ", " + stack);
 			}
-		}
+		}*/
 	}
 
 	/**

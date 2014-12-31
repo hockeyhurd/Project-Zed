@@ -25,6 +25,10 @@ public class GuiFabricationTable extends GuiContainer {
 	private TileEntityFabricationTable te;
 	private String stringToDraw;
 	
+	/**
+	 * @param inv
+	 * @param te
+	 */
 	public GuiFabricationTable(InventoryPlayer inv, TileEntityFabricationTable te) {
 		super(new ContainerFabricationTable(inv, te));
 		this.te = te;
@@ -55,8 +59,10 @@ public class GuiFabricationTable extends GuiContainer {
 	public void actionPerformed(GuiButton button) {
 		switch (button.id) {
 			case 0:
-				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(this.te));
-				// PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
+				
+				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
+				// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(this.te));
+				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
 				break;
 		}
 	}
