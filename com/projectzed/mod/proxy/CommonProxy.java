@@ -21,6 +21,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.PlayerEventHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
@@ -157,6 +158,7 @@ public class CommonProxy {
 	private void registerEventHandlers() {
 		PacketHandler.init();
 		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
+		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
 	}
 	
 	protected void registerFurnaceRecipes() {
