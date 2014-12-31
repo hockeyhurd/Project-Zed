@@ -61,6 +61,9 @@ public class Reference extends AbstractReference {
 		
 		public static final float RF_TO_MCU = 1f * 10f / 2.5f;
 		
+		private Constants() {
+		}
+		
 		/**
 		 * Function used to quickly convert any amount of energy in McU to RF.
 		 * @param mcu = energy in McU
@@ -83,7 +86,27 @@ public class Reference extends AbstractReference {
 			return retVal;
 		}
 		
-		private Constants() {
+		/**
+		 * Function used to convert values to a more readable string value.
+		 * <br><bold>NOTE:</bold> This function should mostly be used in gui's. 
+		 * 
+		 * @param amount = amount to 'convert'.
+		 * @return formatted string.
+		 */
+		public static String convertToString(int amount) {
+			String ret = "";
+			
+			if (amount >= 1e6 && amount < 1e9) {
+				amount /= 1e6;
+				ret = amount + " mil.";
+			}
+			
+			else if (amount >= 1e9) {
+				amount /= 1e9;
+				ret = amount + " bil.";
+			}
+			
+			return ret;
 		}
 
 	}

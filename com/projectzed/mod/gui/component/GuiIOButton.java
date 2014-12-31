@@ -42,10 +42,6 @@ public class GuiIOButton extends GuiButton {
 		this.height = 16;
 		this.PIXEL = 1f / 64f;
 		
-		calc = (width * (this.stateID + 2)) * this.PIXEL;
-		dif = 16f * this.PIXEL; 
-		calc2 = this.width * (this.stateID + 1) * this.PIXEL;
-		
 		this.stateID = state;
 		this.TESS = Tessellator.instance;
 	}
@@ -65,10 +61,6 @@ public class GuiIOButton extends GuiButton {
 		this.height = 16;
 		this.PIXEL = 1f / 64f;
 		
-		calc = (width * (this.stateID + 2)) * this.PIXEL;
-		dif = 16f * this.PIXEL; 
-		calc2 = this.width * (this.stateID + 1) * this.PIXEL;
-		
 		this.stateID = state;
 		this.TESS = Tessellator.instance;
 	}
@@ -78,12 +70,17 @@ public class GuiIOButton extends GuiButton {
 	 * 
 	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
 	 */
+	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
 			FontRenderer fontrenderer = minecraft.fontRenderer;
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 
+			calc = (width * (this.stateID + 2)) * this.PIXEL;
+			dif = 16f * this.PIXEL; 
+			calc2 = this.width * (this.stateID + 1) * this.PIXEL;
+			
 			this.TESS.startDrawingQuads();
 
 			if (this.stateID == -1) {
@@ -110,10 +107,12 @@ public class GuiIOButton extends GuiButton {
 	 * (non-Javadoc)
 	 * @see net.minecraft.client.gui.GuiButton#mousePressed(net.minecraft.client.Minecraft, int, int)
 	 */
+	@Override
 	public boolean mousePressed(Minecraft minecraft, int x, int y) {
-		this.stateID = shiftButtonMatrix();
+		boolean ret = super.mousePressed(minecraft, x, y); 
+		if (ret) this.stateID = shiftButtonMatrix();
 
-		return super.mousePressed(minecraft, x, y);
+		return ret;
 	}
 
 	/**

@@ -46,6 +46,10 @@ public class GuiEnergyContainer extends GuiContainer {
 	private boolean isEnergyCell;
 	private Waila waila;
 	
+	/**
+	 * @param inv
+	 * @param te
+	 */
 	public GuiEnergyContainer(InventoryPlayer inv, AbstractTileEntityContainer te) {
 		super(new ContainerEnergyContainer(inv, te));
 		this.te = te;
@@ -72,7 +76,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + df.format(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
+		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + Constants.convertToString(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 110,
 				4210752);
 	}

@@ -2,8 +2,6 @@ BUGS:
 =================================
     - Check saving code for fab. table (crafting grid). [TEMP FIXED]
     - Fix clear button for fab. table.
-    - Fix energy cell gui input.   
-    - *Fix energy cell not saving power*  
     - Fix te's not being 'active' when processing.
     - Fix machines not saving output stack on 'server' close.
 
@@ -12,7 +10,6 @@ TODO:
     - Add fuel registry for nuclear stuff.
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
-    - Add saving of IO sides for energy cell(s). (kinda)
     - Recipes for nuclear stuff.
     - Recipe for industrial centrifuge.
     - Add implemented sounds to machines.

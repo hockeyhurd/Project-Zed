@@ -97,6 +97,12 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 
 			if (te instanceof AbstractTileEntityContainer) {
 				((AbstractTileEntityContainer) te).setEnergyStored(message.stored);
+				
+				if (te instanceof TileEntityEnergyBankBase) {
+					for (int i = 0; i < message.openSides.length; i++) {
+						((TileEntityEnergyBankBase) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+					}
+				}
 			}
 		}
 		

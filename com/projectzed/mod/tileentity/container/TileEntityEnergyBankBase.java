@@ -262,7 +262,15 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
+		
+		if (!this.worldObj.isRemote) {
+			if (this.maxStorage != this.tiers[this.tier]) this.maxStorage = this.tiers[this.tier]; 
+			
+			if (!this.powerMode) this.powerMode = true;
+			if (this.lastReceivedDir != ForgeDirection.UNKNOWN) this.lastReceivedDir = ForgeDirection.UNKNOWN;
+			
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
+		}
 	}
 	
 	/*
@@ -289,11 +297,17 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
 		
 		// Make sure the tier from nbt is acceptable.
 		byte tier = comp.getByte("ProjectZedEnergyBankTier");
 		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
+		if (this.maxStorage != this.tiers[this.tier]) this.maxStorage = this.tiers[this.tier];
+		
+		for (int i = 0; i < this.openSides.length; i++) {
+			this.openSides[i] = comp.getByte("ProjectZedEnergyBankSide" + i);
+		}
+		
+		super.readFromNBT(comp);
 	}
 	
 	/*
@@ -302,8 +316,13 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
 		comp.setByte("ProjectZedEnergyBankTier", this.tier);
+		
+		for (int i = 0; i < this.openSides.length; i++) {
+			comp.setByte("ProjectZedEnergyBankSide" + i, this.openSides[i]);
+		}
+		
+		super.writeToNBT(comp);
 	}
 
 }
