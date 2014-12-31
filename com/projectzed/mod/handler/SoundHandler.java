@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.Sound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,6 +32,17 @@ public class SoundHandler {
 	 */
 	public static void playAtEntity(String name, World world, Entity entity, float volume, float pitch) {
 		world.playSoundAtEntity(entity, ProjectZed.assetDir + name, volume, pitch);
+	}
+	
+	/**
+	 * Plays sound at entity.
+	 * 
+	 * @param sound = sound to play.
+	 * @param world = world object as reference.
+	 * @param entity = entity to play at as reference.
+	 */
+	public static void playAtEntity(Sound sound, World world, Entity entity) {
+		world.playSoundAtEntity(entity, sound.NAME, sound.VOLUME, sound.PITCH);
 	}
 
 }
