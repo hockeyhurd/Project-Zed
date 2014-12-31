@@ -22,6 +22,7 @@ import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
@@ -150,6 +151,7 @@ public class CommonProxy {
 		CrusherRecipesRegistry.init();
 		LumberMillRecipesRegistry.init();
 		MetalPressRecipesRegistry.init();
+		CentrifugeRecipeRegistry.init();
 	}
 	
 	private void registerEventHandlers() {
