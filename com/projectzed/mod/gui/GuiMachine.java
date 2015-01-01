@@ -71,7 +71,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 		
-		this.update();
 		if (visibleComp() != null) this.drawHoveringText(visibleComp().getLabel(), mouseX - 125, mouseY - 25, this.fontRendererObj);
 	}
 
@@ -133,9 +132,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	@Override
 	public IInfoLabel visibleComp() {
 		if (getComponents() != null && getComponents().size() > 0) {
-			IInfoLabel<Integer> label = null;
+			IInfoLabel label = null;
 			
-			for (IInfoLabel<Integer> index : getComponents()) {
+			for (IInfoLabel index : getComponents()) {
 				if (index.isVisible(false)) {
 					label = index;
 					break;
@@ -153,7 +152,8 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 * @see com.projectzed.mod.gui.component.IInfoContainer#update()
 	 */
 	@Override
-	public void update() {
+	public void updateScreen() {
+		super.updateScreen();
 		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
 			getComponents().get(0).update(new Vector4Helper<Integer>(this.mouseX, this.mouseY, 0), this.te.getEnergyStored(), this.te.getMaxStorage());
 		}

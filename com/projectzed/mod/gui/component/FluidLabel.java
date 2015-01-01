@@ -7,12 +7,12 @@ import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.mod.util.Reference;
 
 /**
- * Class containing code for custom power info label.
+ * Class containing code for custom fluid info label.
  * 
  * @author hockeyhurd
- * @version Dec 31, 2014
+ * @version Jan 1, 2015
  */
-public class PowerLabel<N> implements IInfoLabel<N> {
+public class FluidLabel<N> implements IInfoLabel<N> {
 
 	private Vector4Helper<Integer> mouseVec, pos, minMax;
 	private N stored, max;
@@ -25,7 +25,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
-	public PowerLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
+	public FluidLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
 		this.pos = pos;
 		this.minMax = minMax;
 		this.stored = stored;
@@ -40,7 +40,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = "Power: " + this.stored + " / " + this.max + " " + Reference.Constants.ENERGY_UNIT;
+		String text0 = "Stored: " + this.stored + " / " + this.max + " " + Reference.Constants.FLUID_UNIT;
 		
 		if (list.size() == 0) list.add(text0);
 		else list.set(0, text0);

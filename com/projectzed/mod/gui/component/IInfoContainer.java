@@ -22,6 +22,6 @@ public interface IInfoContainer {
 	IInfoLabel visibleComp();
 	
 	/** Method to ensure data is being updated. */
-	void update();
+	public void updateScreen();
 	
 }
