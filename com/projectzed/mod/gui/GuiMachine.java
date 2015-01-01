@@ -1,6 +1,8 @@
 package com.projectzed.mod.gui;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -10,8 +12,12 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.gui.component.IInfoContainer;
+import com.projectzed.mod.gui.component.IInfoLabel;
+import com.projectzed.mod.gui.component.PowerLabel;
 import com.projectzed.mod.util.Reference.Constants;
 
 import cpw.mods.fml.relauncher.Side;
@@ -24,7 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Oct 23, 2014
  */
 @SideOnly(Side.CLIENT)
-public class GuiMachine extends GuiContainer {
+public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 	public ResourceLocation texture;
 	private AbstractTileEntityMachine te;
@@ -37,8 +43,9 @@ public class GuiMachine extends GuiContainer {
 	/** y-pos of mouse */
 	protected int mouseY;
 	
+	protected List<IInfoLabel> labelList;
+	
 	/**
-	 * 
 	 * @param inv
 	 * @param te
 	 */
@@ -49,6 +56,8 @@ public class GuiMachine extends GuiContainer {
 		this.te = te;
 		this.xSize = 176;
 		this.ySize = 166;
+		
+		this.labelList = new ArrayList<IInfoLabel>();
 	}
 
 	/*
@@ -61,10 +70,9 @@ public class GuiMachine extends GuiContainer {
 		
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
-
-		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + df.format(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
-		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 116,
-				4210752);
+		
+		this.update();
+		if (visibleComp() != null) this.drawHoveringText(visibleComp().getLabel(), mouseX - 125, mouseY - 25, this.fontRendererObj);
 	}
 
 	/*
@@ -97,6 +105,58 @@ public class GuiMachine extends GuiContainer {
 		this.mouseY = y;
 		
 		super.drawScreen(x, y, f);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#initGui()
+	 */
+	@Override
+	public void initGui() {
+		super.initGui();
+		this.labelList.add(new PowerLabel<Integer>(new Vector4Helper<Integer>(guiLeft + 7, guiTop + 61, 0), new Vector4Helper<Integer>(162, 17, 0), this.te.getEnergyStored(), this.te.getMaxStorage()));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IInfoContainer#getComponents()
+	 */
+	@Override
+	public List<IInfoLabel> getComponents() {
+		return this.labelList;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IInfoContainer#visibleComp()
+	 */
+	@Override
+	public IInfoLabel visibleComp() {
+		if (getComponents() != null && getComponents().size() > 0) {
+			IInfoLabel<Integer> label = null;
+			
+			for (IInfoLabel<Integer> index : getComponents()) {
+				if (index.isVisible(false)) {
+					label = index;
+					break;
+				}
+			}
+			
+			return label;
+		}
+		
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IInfoContainer#update()
+	 */
+	@Override
+	public void update() {
+		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
+			getComponents().get(0).update(new Vector4Helper<Integer>(this.mouseX, this.mouseY, 0), this.te.getEnergyStored(), this.te.getMaxStorage());
+		}
 	}
 
 }
