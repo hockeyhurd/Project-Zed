@@ -18,7 +18,7 @@ public class GuiCentrifuge extends GuiMachine {
 	private int waterStored;
 	private TileEntityIndustrialCentrifuge te2;
 
-	private Vector4Helper<Integer> pos2, minMax2, distOffset2;
+	private Vector4Helper<Integer> pos2, minMax2;
 
 	/**
 	 * @param inv
@@ -67,9 +67,8 @@ public class GuiCentrifuge extends GuiMachine {
 
 		this.pos2 = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 17, 0);
 		this.minMax2 = new Vector4Helper<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
-		this.distOffset2 = new Vector4Helper<Integer>(125, 25, 0);
 
-		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.distOffset2, this.te2.getWaterInTank(), this.te2
+		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getWaterInTank(), this.te2
 				.getMaxWaterStorage()));
 	}
 

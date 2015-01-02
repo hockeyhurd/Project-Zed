@@ -36,7 +36,7 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	private String stringToDraw;
 	private final DecimalFormat df = new DecimalFormat("###,###,###");
 
-	protected Vector4Helper<Integer> mouseVec, pos, minMax, distOffset;
+	protected Vector4Helper<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
 	protected int genRate, stored, maxStorage;
 
@@ -76,11 +76,6 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 		// "Error! Reactor not set correctly!";
 		this.fontRendererObj.drawString(I18n.format(genSize, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(genSize) / 2,
 				this.ySize - 116, 4210752);
-
-		if (visibleComp() != null) {
-			this.drawHoveringText(visibleComp().getLabel(), (Integer) visibleComp().getPos().x, (Integer) visibleComp().getPos().y,
-					this.fontRendererObj);
-		}
 	}
 
 	/*
@@ -105,10 +100,12 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	 */
 	@Override
 	public void drawScreen(int x, int y, float f) {
+		super.drawScreen(x, y, f);
+
 		this.mouseVec.x = x;
 		this.mouseVec.y = y;
-
-		super.drawScreen(x, y, f);
+		
+		if (visibleComp() != null) this.drawHoveringText(visibleComp().getLabel(), x, y, this.fontRendererObj);
 	}
 
 	/*
@@ -148,9 +145,8 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 		this.mouseVec = Vector4Helper.zero;
 		this.pos = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 61, 0);
 		this.minMax = new Vector4Helper<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
-		this.distOffset = new Vector4Helper<Integer>(this.mouseVec.x, 20, 0);
 
-		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.distOffset, this.te.getEnergyStored(), this.te.getMaxStorage()));
+		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage()));
 	}
 
 	/*

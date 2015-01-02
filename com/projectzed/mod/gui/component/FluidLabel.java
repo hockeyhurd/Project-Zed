@@ -14,8 +14,7 @@ import com.projectzed.mod.util.Reference;
  */
 public class FluidLabel<N> implements IInfoLabel<N> {
 
-	private Vector4Helper<Integer> mouseVec, pos, minMax, disOffset;
-	private Vector4Helper<Integer> tempTracker;
+	private Vector4Helper<Integer> mouseVec, pos, minMax;
 	private N stored, max;
 	private List<String> list;
 	private boolean visible;
@@ -26,15 +25,13 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
-	public FluidLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, Vector4Helper<Integer> disOffset, N stored, N max) {
+	public FluidLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
 		this.pos = pos;
 		this.minMax = minMax;
-		this.disOffset = disOffset;
 		this.stored = stored;
 		this.max = max;
 		
 		this.mouseVec = Vector4Helper.zero;
-		this.tempTracker = new Vector4Helper<Integer>(this.mouseVec.x - this.disOffset.x, this.mouseVec.y - this.disOffset.y, 0);
 		this.list = new ArrayList<String>();
 	}
 
@@ -71,15 +68,6 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoLabel#getPos()
-	 */
-	@Override
-	public Vector4Helper<Integer> getPos() {
-		return tempTracker;
-	}
-	
 	/* (non-Javadoc)
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
@@ -88,9 +76,6 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;
-		
-		this.tempTracker.x = mouseVec.x - disOffset.x;
-		this.tempTracker.y = mouseVec.y - disOffset.y;
 		
 		this.stored = stored;
 		this.max = max;
