@@ -68,8 +68,7 @@ public class GuiCentrifuge extends GuiMachine {
 		this.pos2 = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 17, 0);
 		this.minMax2 = new Vector4Helper<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
 
-		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getWaterInTank(), this.te2
-				.getMaxWaterStorage()));
+		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getWaterInTank(), this.te2.getMaxWaterStorage()));
 	}
 
 	/*

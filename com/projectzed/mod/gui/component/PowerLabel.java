@@ -15,21 +15,37 @@ import com.projectzed.mod.util.Reference;
 public class PowerLabel<N> implements IInfoLabel<N> {
 
 	private Vector4Helper<Integer> mouseVec, pos, minMax;
+	private boolean useMCU;
 	private N stored, max;
 	private List<String> list;
 	private boolean visible;
 	
 	/**
+	 * See constructor below for more info.
+	 * @see com.projectzed.mod.gui.component.PowerLabel#PowerLabel(Vector4Helper, Vector4Helper, Object, Object, boolean)
+	 * 
 	 * @param pos = x, y coordinate of label boundary.
 	 * @param minMax = width, height of label boundary.
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
 	public PowerLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
+		this(pos, minMax, stored, max, true);
+	}
+	
+	/**
+	 * @param pos = x, y coordinate of label boundary.
+	 * @param minMax = width, height of label boundary.
+	 * @param stored = amount stored at start.
+	 * @param max = max stored at start.
+	 * @param useMCU = whether to use native energy unit (true), else use RF energy unit (false).
+	 */
+	public PowerLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max, boolean useMCU) {
 		this.pos = pos;
 		this.minMax = minMax;
 		this.stored = stored;
 		this.max = max;
+		this.useMCU = useMCU;
 		
 		this.mouseVec = Vector4Helper.zero;
 		this.list = new ArrayList<String>();
@@ -40,7 +56,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = "Power: " + this.stored + " / " + this.max + " " + Reference.Constants.ENERGY_UNIT;
+		String text0 = "Power: " + this.stored + " / " + this.max + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
 		
 		if (list.size() == 0) list.add(text0);
 		else list.set(0, text0);

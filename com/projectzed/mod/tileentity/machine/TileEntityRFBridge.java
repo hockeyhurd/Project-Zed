@@ -328,6 +328,11 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	}
 
 	// RF STUFF:
+	
+	/*
+	 * (non-Javadoc)
+	 * @see cofh.api.energy.IEnergyStorage#receiveEnergy(int, boolean)
+	 */
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		/*
@@ -340,6 +345,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		return 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see cofh.api.energy.IEnergyStorage#extractEnergy(int, boolean)
+	 */
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
 		int energyExtracted = Math.min(this.storedRF, Math.min(this.exportRateRF, maxExtract));
@@ -348,15 +357,28 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		return energyExtracted;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see cofh.api.energy.IEnergyStorage#getMaxEnergyStored()
+	 */
 	@Override
 	public int getMaxEnergyStored() {
 		return this.maxStorageRF;
 	}
 
+	/**
+	 * Sets amount of rf stored.
+	 * @param amount = amount to be set to.
+	 */
 	public void setRFStored(int amount) {
-		this.storedRF = amount;
+		this.storedRF = amount >= 0 && amount <= getMaxEnergyStored() ? amount : 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
+	 */
+	@Override
 	public void updateEntity() {
 		importContents();
 		convertEnergy();

@@ -116,7 +116,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.pos = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 61, 0);
 		this.minMax = new Vector4Helper<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
 
-		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage()));
+		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 	}
 
 	/*

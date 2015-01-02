@@ -42,6 +42,9 @@ public class Reference extends AbstractReference {
 		/** Unit represented as string. */
 		public static final String ENERGY_UNIT = "McU";
 		
+		/** Supported RF unit represented as string. */
+		public static final String RF_ENERGY_UNIT = "RF";
+		
 		/** Common fluid unit for mc standing for milibucket. */
 		public static final String FLUID_UNIT = "mb";
 		

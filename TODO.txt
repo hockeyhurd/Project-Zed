@@ -5,13 +5,11 @@ BUGS:
 
 TODO:
 =================================
-    - Add fuel registry for nuclear stuff.
+    - Add fuel registry for nuclear stuff. (kinda)
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
-    - Recipes for nuclear stuff.
-    - Recipe for industrial centrifuge.
+    - Recipes for nuclear stuff. (kinda)
     - Add implemented sounds to machines.
-    - Remove all power text in gui and change to tooltip based info (cleaner).
 
 IDEAS:
 =================================    
@@ -19,4 +17,3 @@ IDEAS:
     - Check and adjust crafting recipe weirdness 
     - Make energy pipes more clearly tiered? 
     - Add transfer rate info for all te's
-    - Add 'compact solars'?
