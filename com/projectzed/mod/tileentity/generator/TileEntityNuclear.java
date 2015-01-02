@@ -182,7 +182,7 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			}
 			
 			for (LockMapper b : this.lockMap) {
-				if (b.isMultiBlockStructure()) {
+				if (b != null && b.isMultiBlockStructure()) {
 					flag = true;
 					break;
 				}
@@ -199,6 +199,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			
 			boolean flag, flag2;
 			for (int i = 0; i < this.lockMap.length; i++) {
+				if (this.lockMap[i] == null) continue;
+				
 				flag = this.lockMap[i].isMultiBlockStructure();
 				if (flag) {
 					this.poweredLastUpdate = true;
