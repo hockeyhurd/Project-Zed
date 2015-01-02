@@ -14,7 +14,8 @@ import com.projectzed.mod.util.Reference;
  */
 public class FluidLabel<N> implements IInfoLabel<N> {
 
-	private Vector4Helper<Integer> mouseVec, pos, minMax;
+	private Vector4Helper<Integer> mouseVec, pos, minMax, disOffset;
+	private Vector4Helper<Integer> tempTracker;
 	private N stored, max;
 	private List<String> list;
 	private boolean visible;
@@ -25,13 +26,15 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
-	public FluidLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
+	public FluidLabel(Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, Vector4Helper<Integer> disOffset, N stored, N max) {
 		this.pos = pos;
 		this.minMax = minMax;
+		this.disOffset = disOffset;
 		this.stored = stored;
 		this.max = max;
 		
 		this.mouseVec = Vector4Helper.zero;
+		this.tempTracker = new Vector4Helper<Integer>(this.mouseVec.x - this.disOffset.x, this.mouseVec.y - this.disOffset.y, 0);
 		this.list = new ArrayList<String>();
 	}
 
@@ -63,17 +66,32 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	public boolean isVisible(boolean ignoreMouse) {
 		if (ignoreMouse) return (visible = ignoreMouse);
 		else {
-			if (mouseVec.x >= pos.x && mouseVec.x <= pos.x + minMax.x && mouseVec.y >= pos.y && mouseVec.y <= pos.y + minMax.y) return (visible = true);
+			if (mouseVec.x >= pos.x && mouseVec.x <= minMax.x && mouseVec.y >= pos.y && mouseVec.y <= minMax.y) return (visible = true);
 			else return (visible = false);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IInfoLabel#getPos()
+	 */
+	@Override
+	public Vector4Helper<Integer> getPos() {
+		return tempTracker;
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
 	@Override
-	public void update(Vector4Helper<Integer> mouseVec, N stored, N max) {
+	public void update(Vector4Helper<Integer> mouseVec, Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max) {
 		this.mouseVec = mouseVec;
+		this.pos = pos;
+		this.minMax = minMax;
+		
+		this.tempTracker.x = mouseVec.x - disOffset.x;
+		this.tempTracker.y = mouseVec.y - disOffset.y;
+		
 		this.stored = stored;
 		this.max = max;
 	}

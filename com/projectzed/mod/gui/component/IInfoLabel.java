@@ -21,7 +21,10 @@ public interface IInfoLabel<N> {
 	/** Function to determine if label can be shown */
 	public boolean isVisible(boolean ignoreMouse);
 	
+	/** Function to get where to display on screen */
+	public Vector4Helper<Integer> getPos();
+	
 	/** Handles update appropriate values. */
-	public void update(Vector4Helper<Integer> mouseVec, N stored, N max);
+	public void update(Vector4Helper<Integer> mouseVec, Vector4Helper<Integer> pos, Vector4Helper<Integer> minMax, N stored, N max);
 	
 }
