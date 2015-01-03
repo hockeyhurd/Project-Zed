@@ -192,6 +192,9 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		return flag;
 	}
 	
+	/**
+	 * Method used to re-check multiblock structure.
+	 */
 	public void reCheckLocks() {
 		if (this.worldObj.isRemote) return;
 		
