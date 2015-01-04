@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.util.Sound;
+import com.projectzed.api.util.Sound;
 
 /**
  * 

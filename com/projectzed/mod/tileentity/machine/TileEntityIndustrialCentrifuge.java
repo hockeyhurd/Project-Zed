@@ -4,8 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.Sound;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
-import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing code for industrialCentrifuge.

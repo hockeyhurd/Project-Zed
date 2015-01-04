@@ -3,8 +3,8 @@ package com.projectzed.mod.tileentity.machine;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.Sound;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
-import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing code for te data for industrial crusher.

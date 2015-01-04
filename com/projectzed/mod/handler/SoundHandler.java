@@ -4,8 +4,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import com.hockeyhurd.api.math.Vector4Helper;
+import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing code for playing a given sound.

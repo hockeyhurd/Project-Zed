@@ -12,11 +12,11 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.util.Sound;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.util.Reference;
-import com.projectzed.mod.util.Sound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
