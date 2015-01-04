@@ -41,12 +41,13 @@ public class EnergyNet {
 			boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 			int count = 0;
 			
+			// Check surrounding blocks.
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IEnergyContainer) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					if (colorDep && cont instanceof TileEntityEnergyPipeBase && ((TileEntityEnergyPipeBase)cont).getColor() != ((TileEntityEnergyPipeBase)sourceCont).getColor()) continue;
 					else if (cont instanceof AbstractTileEntityMachine) continue;
-					else if (sideDep && cont instanceof TileEntityEnergyBankBase && ((TileEntityEnergyBankBase) cont).getSideValve(dir) != 1) continue;
+					else if (/*sideDep &&*/ cont instanceof TileEntityEnergyBankBase && ((TileEntityEnergyBankBase) cont).getSideValve(dir.getOpposite()) != 1) continue;
 					else if (cont.getEnergyStored() > 0 && lastDir != dir) {
 						sides[dir.ordinal()] = true;
 						count++;
@@ -54,14 +55,13 @@ public class EnergyNet {
 				}
 			}
 			
+			// Check this block relative to neighbors.
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				if (sourceCont.getEnergyStored() >= sourceCont.getMaxStorage()) break;
 				
 				if (sides[dir.ordinal()] && dir != lastDir) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					
-					// Shouldn't need below code from pre-determination.
-					// if (cont instanceof TileEntityEnergyBankBase && ((TileEntityEnergyBankBase) cont).getSideValve(dir) != 1) continue;
 					if (sideDep && ((TileEntityEnergyBankBase) sourceCont).getSideValve(dir) != -1) continue;
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) / count;
