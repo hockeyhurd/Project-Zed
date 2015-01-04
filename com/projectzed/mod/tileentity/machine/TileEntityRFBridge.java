@@ -31,8 +31,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		super("bridgeRF");
 		this.maxStorage /= 10;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
-		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
-		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
+		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
+		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 
 		this.maxStorageRF = Reference.Constants.getRFFromMcU(this.maxStorage);
 		this.importRateRF = Reference.Constants.getRFFromMcU(this.exportRate);

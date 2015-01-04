@@ -3,11 +3,9 @@ package com.projectzed.mod.handler;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.Sound;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing code for playing a given sound.
@@ -15,7 +13,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Dec 30, 2014
  */
-@SideOnly(Side.CLIENT)
 public class SoundHandler {
 
 	private SoundHandler() {
@@ -42,7 +39,31 @@ public class SoundHandler {
 	 * @param entity = entity to play at as reference.
 	 */
 	public static void playAtEntity(Sound sound, World world, Entity entity) {
-		world.playSoundAtEntity(entity, sound.NAME, sound.VOLUME, sound.PITCH);
+		playAtEntity(sound.NAME, world, entity, sound.VOLUME, sound.PITCH);
+	}
+	
+	/**
+	 * Plays sound effect in world.
+	 * 
+	 * @param name = name of sound.
+	 * @param world = world object as reference.
+	 * @param pos = position in world to play.
+	 * @param volume = volume to play at.
+	 * @param pitch = pitch to play at.
+	 */
+	public static void playEffect(String name, World world, Vector4Helper<Integer> pos, float volume, float pitch) {
+		world.playSoundEffect(pos.x, pos.y, pos.z, name, volume, pitch);
+	}
+	
+	/**
+	 * Plays sound effect in world.
+	 * 
+	 * @param sound = sound object to play.
+	 * @param world = world object as reference.
+	 * @param pos = position in world to play.
+	 */
+	public static void playEffect(Sound sound, World world, Vector4Helper<Integer> pos) {
+		playEffect(sound.NAME, world, pos, sound.VOLUME, sound.PITCH);
 	}
 
 }

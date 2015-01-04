@@ -10,8 +10,6 @@ import com.projectzed.mod.ProjectZed;
  */
 public class Sound {
 	
-	public static Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f);
-	
 	/** Name of file (NOTE: Already includes assetDir) */
 	public final String NAME;
 	
@@ -21,14 +19,21 @@ public class Sound {
 	/** Pitch of sound to play */
 	public final float PITCH;
 	
+	/** Approximate length of sound in whole seconds (best to round up). */
+	public final int LENGTH;
+
+	public static Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f, 2);
+	
 	/**
 	 * @param name = name of sound.
 	 * @param volume = volume of sound.
 	 * @param pitch = pitch of sound.
+	 * @param length = length of sound.
 	 */
-	private Sound(String name, float volume, float pitch) {
+	private Sound(String name, float volume, float pitch, int length) {
 		this.NAME = ProjectZed.assetDir + name;
 		this.VOLUME = volume;
 		this.PITCH = pitch;
+		this.LENGTH = length;
 	}
 }

@@ -24,7 +24,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
-		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE /* * 2*/;
+		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}

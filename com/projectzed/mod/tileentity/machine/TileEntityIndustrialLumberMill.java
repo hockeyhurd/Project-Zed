@@ -1,10 +1,10 @@
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
+import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing te code for industrialLumberMill.
@@ -138,6 +138,14 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
+	 */
+	public Sound getSound() {
+		return null;
 	}
 
 }

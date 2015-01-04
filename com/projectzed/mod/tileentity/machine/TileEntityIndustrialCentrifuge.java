@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
+import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing code for industrialCentrifuge.
@@ -218,6 +219,14 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 			
 			this.waterStored -= 1000;
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
+	 */
+	public Sound getSound() {
+		return null;
 	}
 	
 	/*

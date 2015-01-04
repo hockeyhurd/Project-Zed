@@ -1,10 +1,10 @@
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.util.Sound;
 
 /**
  * 
@@ -136,6 +136,14 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 				this.slots[0] = null;
 			}
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
+	 */
+	public Sound getSound() {
+		return null;
 	}
 
 }

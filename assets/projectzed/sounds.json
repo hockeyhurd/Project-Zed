@@ -1,1 +1,11 @@
-"industrialMetalPressSound": {"catagory": "master","sounds": [{"name": "industrialMetalPressSound","stream": false}]}
+{
+    "industrialMetalPressSound": {
+        "catagory": "master",
+        "sounds": [
+            {
+                "name": "industrialMetalPressSound",
+                "stream": false
+            }
+        ]
+    }
+}

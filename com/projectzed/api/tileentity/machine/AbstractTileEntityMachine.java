@@ -13,8 +13,10 @@ import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.util.Reference;
+import com.projectzed.mod.util.Sound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -181,7 +183,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					this.smeltItem();
 					flag1 = true;
 				}
+				
+				if (getSound() != null && this.worldObj.getTotalWorldTime() % (20L * getSound().LENGTH) == 0) SoundHandler.playEffect(getSound(), this.worldObj, this.worldVec());
 			}
+			
 			else {
 				this.cookTime = 0;
 				this.powerMode = false;
@@ -323,6 +328,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (isPoweredOn() && this.cookTime > 0) this.stored -= this.energyBurnRate;
 		// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 	}
+	
+	/** Abstract function to get sound to play. If not applicable, set to null. */
+	public abstract Sound getSound();
 
 	/*
 	 * (non-Javadoc)

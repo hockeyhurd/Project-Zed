@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
+import com.projectzed.mod.util.Sound;
 
 /**
  * Class containing code for te data for industrial crusher.
@@ -134,6 +135,14 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 				this.slots[0] = null;
 			}
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
+	 */
+	public Sound getSound() {
+		return null;
 	}
 
 }
