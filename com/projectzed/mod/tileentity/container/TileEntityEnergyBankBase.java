@@ -9,7 +9,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.util.Reference;
@@ -21,7 +23,7 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Dec 3, 2014
  */
-public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
+public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implements IModularFrame {
 
 	protected byte tier; 
 	protected int[] tiers = new int[] {
@@ -52,6 +54,14 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	public byte getTier() {
 		return this.tier;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
+	 */
+	public EnumFrameType getType() {
+		return EnumFrameType.POWER;
 	}
 	
 	/**
@@ -85,6 +95,14 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer {
 	 */
 	public byte getSideValve(int dir) {
 		return openSides[dir];
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
+	 */
+	public byte[] getSidedArray() {
+		return openSides;
 	}
 
 	/*

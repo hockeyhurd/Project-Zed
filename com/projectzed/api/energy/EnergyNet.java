@@ -4,8 +4,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 /**
@@ -37,7 +38,7 @@ public class EnergyNet {
 			if (sourceCont.getEnergyStored() == sourceCont.getMaxStorage()) return;
 			
 			boolean colorDep = sourceCont instanceof TileEntityEnergyPipeBase;
-			boolean sideDep = sourceCont instanceof TileEntityEnergyBankBase;
+			boolean sideDep = sourceCont instanceof IModularFrame && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER;
 			boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 			int count = 0;
 			
@@ -47,7 +48,7 @@ public class EnergyNet {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					if (colorDep && cont instanceof TileEntityEnergyPipeBase && ((TileEntityEnergyPipeBase)cont).getColor() != ((TileEntityEnergyPipeBase)sourceCont).getColor()) continue;
 					else if (cont instanceof AbstractTileEntityMachine) continue;
-					else if (/*sideDep &&*/ cont instanceof TileEntityEnergyBankBase && ((TileEntityEnergyBankBase) cont).getSideValve(dir.getOpposite()) != 1) continue;
+					else if (/*sideDep &&*/ cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.POWER && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
 					else if (cont.getEnergyStored() > 0 && lastDir != dir) {
 						sides[dir.ordinal()] = true;
 						count++;
@@ -62,7 +63,7 @@ public class EnergyNet {
 				if (sides[dir.ordinal()] && dir != lastDir) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					
-					if (sideDep && ((TileEntityEnergyBankBase) sourceCont).getSideValve(dir) != -1) continue;
+					if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) / count;
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());

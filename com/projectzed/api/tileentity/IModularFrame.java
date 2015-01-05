@@ -1,5 +1,7 @@
 package com.projectzed.api.tileentity;
 
+import com.projectzed.api.util.EnumFrameType;
+
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -56,6 +58,11 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public interface IModularFrame {
 
+	/**
+	 * @return type of modular frame; power, item, fluid, etc.
+	 */
+	public EnumFrameType getType();
+	
 	/**
 	 * Method used to set value to given side.
 	 * @param dir = direction to change.

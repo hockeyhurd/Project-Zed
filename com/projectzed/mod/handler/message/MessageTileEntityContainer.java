@@ -22,6 +22,8 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public class MessageTileEntityContainer implements IMessage, IMessageHandler<MessageTileEntityContainer, IMessage> {
 
+	// TODO: This class will need to be adjusted when we have other such containers: Fluid, item, tanks, etc.
+	
 	public AbstractTileEntityContainer te;
 	public int x, y, z;
 	public int stored;
