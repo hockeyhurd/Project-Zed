@@ -1,5 +1,6 @@
 package com.projectzed.mod.renderer;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -8,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -48,10 +50,14 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double, double, float)
 	 */
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
+		this.bindTexture(texture);
+		
+		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		this.bindTexture(texture);
-
+		
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
+		
 		int xx = te.xCoord;
 		int yy = te.yCoord;
 		int zz = te.zCoord;
@@ -77,6 +83,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glTranslated(-x, -y, -z);
+		GL11.glPopMatrix();
 	}
 
 	/**
