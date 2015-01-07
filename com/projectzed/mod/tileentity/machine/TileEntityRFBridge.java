@@ -383,7 +383,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 		importContents();
 		convertEnergy();
 		exportContents();
-		PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRFBridge(this));
+		
+		if (!worldObj.isRemote) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRFBridge(this));
 
 		super.updateEntity();
 	}

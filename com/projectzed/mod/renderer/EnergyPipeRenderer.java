@@ -34,7 +34,10 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	private boolean renderInside = false;
 
 	private float calc = 11 * PIXEL / 2;
-	
+	private float calc2 = 9 * PIXEL / 2;
+	private int min = 13;
+	private int max = 16;
+
 	/**
 	 * @param color = color to draw.
 	 */
@@ -47,39 +50,41 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double, double, float)
+	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#
+	 * renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double,
+	 * double, float)
 	 */
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		this.bindTexture(texture);
-		
+
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		
+
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
-		
+
 		int xx = te.xCoord;
 		int yy = te.yCoord;
 		int zz = te.zCoord;
 
-		boolean xLeft = canConnect(te.getWorldObj(), te, xx - 1, yy, zz); 
-		boolean xRight = canConnect(te.getWorldObj(), te, xx + 1, yy, zz);
+		Connection xLeft = canConnect(te.getWorldObj(), te, xx - 1, yy, zz);
+		Connection xRight = canConnect(te.getWorldObj(), te, xx + 1, yy, zz);
 
-		boolean yBottom = canConnect(te.getWorldObj(), te, xx, yy - 1, zz);
-		boolean yTop = canConnect(te.getWorldObj(), te, xx, yy + 1, zz);
+		Connection yBottom = canConnect(te.getWorldObj(), te, xx, yy - 1, zz);
+		Connection yTop = canConnect(te.getWorldObj(), te, xx, yy + 1, zz);
 
-		boolean zLeft = canConnect(te.getWorldObj(), te, xx, yy, zz - 1);
-		boolean zRight = canConnect(te.getWorldObj(), te, xx, yy, zz + 1);
+		Connection zLeft = canConnect(te.getWorldObj(), te, xx, yy, zz - 1);
+		Connection zRight = canConnect(te.getWorldObj(), te, xx, yy, zz + 1);
 
-		drawPipe(te, xLeft, xRight, yBottom, yTop, zLeft, zRight);
+		drawPipe(te, xLeft.isConnected(), xRight.isConnected(), yBottom.isConnected(), yTop.isConnected(), zLeft.isConnected(), zRight.isConnected());
 
-		if (xLeft) drawConnection(ForgeDirection.WEST);
-		if (xRight) drawConnection(ForgeDirection.EAST);
-		if (yTop) drawConnection(ForgeDirection.UP);
-		if (yBottom) drawConnection(ForgeDirection.DOWN);
+		if (xLeft.isConnected()) drawConnection(ForgeDirection.WEST, xLeft.getType());
+		if (xRight.isConnected()) drawConnection(ForgeDirection.EAST, xRight.getType());
+		if (yTop.isConnected()) drawConnection(ForgeDirection.UP, yTop.getType());
+		if (yBottom.isConnected()) drawConnection(ForgeDirection.DOWN, yBottom.getType());
 
-		if (zLeft) drawConnection(ForgeDirection.NORTH);
-		if (zRight) drawConnection(ForgeDirection.SOUTH);
+		if (zLeft.isConnected()) drawConnection(ForgeDirection.NORTH, zLeft.getType());
+		if (zRight.isConnected()) drawConnection(ForgeDirection.SOUTH, zRight.getType());
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glTranslated(-x, -y, -z);
@@ -96,22 +101,92 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	 * @param z = position z.
 	 * @return true if can connect, else returns false.
 	 */
-	private boolean canConnect(World world, TileEntity te, int x, int y, int z) {
+	private Connection canConnect(World world, TileEntity te, int x, int y, int z) {
 		boolean flag = false;
-		
+		int type = 0;
+
 		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
 			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
-			
+
 			if (cont instanceof TileEntityEnergyPipeBase) {
 				TileEntityEnergyPipeBase _te = (TileEntityEnergyPipeBase) cont;
-				if (_te != null && this.color == _te.getColor()) flag = true;
-				return flag;
+				if (_te != null && this.color == _te.getColor()) {
+					flag = true;
+					type = 1;
+				}
+
+				return new Connection(flag, type);
 			}
-			
+
 			flag = true;
+			type = 2;
 		}
-		
-		return flag;
+
+		return new Connection(flag, type);
+	}
+
+	/**
+	 * Method to draw connection from pipe to machine.
+	 * @param tess = Tessellator object.
+	 */
+	private void drawConnector(Tessellator tess) {
+		// -z
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+
+		if (renderInside) {
+			tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
+
+		// +z
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+
+		if (renderInside) {
+			tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1, calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1, calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
+
+		// -x
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+
+		if (renderInside) {
+			tess.addVertexWithUV(calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1, calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
+
+		// +x
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+
+		if (renderInside) {
+			tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1, calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		}
+
+		// -y
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, max * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, max * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, min * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 	}
 
 	/**
@@ -119,13 +194,15 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	 * 
 	 * @param dir = direction to draw to.
 	 */
-	private void drawConnection(ForgeDirection dir) {
+	private void drawConnection(ForgeDirection dir, int type) {
 
 		Tessellator tess = Tessellator.instance;
+
 		tess.startDrawingQuads();
 
 		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
-		if (dir.equals(ForgeDirection.UP)) {}
+		if (dir.equals(ForgeDirection.UP)) {
+		}
 		else if (dir.equals(ForgeDirection.DOWN)) GL11.glRotatef(180, 1, 0, 0);
 		else if (dir.equals(ForgeDirection.SOUTH)) GL11.glRotatef(90, 1, 0, 0);
 		else if (dir.equals(ForgeDirection.NORTH)) GL11.glRotatef(270, 1, 0, 0);
@@ -134,12 +211,15 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
 
+		// If connected to machine, draw connector.
+		if (type == 2) drawConnector(tess);
+
 		// -z
 		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		
+
 		if (renderInside) {
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -152,7 +232,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		
+
 		if (renderInside) {
 			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -165,20 +245,20 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		
+
 		if (renderInside) {
 			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		}
-		
+
 		// +x
 		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		
+
 		if (renderInside) {
 			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -204,7 +284,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 	/**
 	 * Method used to draw pipe generically.
-	 *  
+	 * 
 	 * @param te = te object as reference.
 	 * @param xLeft = flag for x position-left.
 	 * @param xRight = flag for x position-right.
@@ -223,7 +303,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -238,7 +318,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(1 - calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -253,7 +333,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -268,7 +348,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -283,7 +363,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -298,7 +378,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
 			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			
+
 			if (renderInside) {
 				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
 				tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
@@ -308,6 +388,29 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		}
 
 		tess.draw();
+	}
+
+	class Connection {
+
+		private boolean connect;
+		private int type;
+
+		Connection(boolean connect, int type) {
+			this.connect = connect;
+			this.type = type;
+		}
+
+		boolean isConnected() {
+			return connect;
+		}
+
+		/**
+		 * @return connection type, (0: none, 1: energy pipe, 2: Machine/other).
+		 */
+		int getType() {
+			return type;
+		}
+
 	}
 
 }
