@@ -4,7 +4,7 @@ tile.fabricationTable.name=Table de fabrication
 tile.thickenedGlass.name=Verre épaissi
 tile.nuclearChamberWall.name=Mur de chambre de réactif
 tile.nuclearChamberLock.name=Verrou de chambre de réactif
-tile.nuclearReactantCore.name=Cœur de réactif
+tile.nuclearReactantCore.name=Coeur de réactif
 
 // Machines:
 tile.solarArray.name=Panneau solaire
@@ -16,11 +16,17 @@ tile.nuclearControllerFission.name=Contrôleur de fission
 tile.nuclearControllerFusion.name=Contrôleur de fusion
 tile.industrialFurnace.name=Four industriel
 tile.industrialCrusher.name=Broyeur industriel
-tile.industrialLumberMill.name=Scirie industrielle
-tile.industrialMetalPress.name=Presse métalique industrielle
+tile.industrialLumberMill.name=Scierie industrielle
+tile.industrialMetalPress.name=Presse métallique industrielle
+tile.industrialCentrifuge.name=Centrifugeuse industrielle
 tile.energyPipeRed.name=Conduit d'énergie - Rouge
 tile.energyPipeOrange.name=Conduit d'énergie - Orange
-tile.energyPipeClear.name=Conduit d'énergie - Claire
+tile.energyPipeClear.name=Conduit d'énergie - Vide
+tile.energyCellTier0.name=Réserve d'énergie - I
+tile.energyCellTier1.name=Réserve d'énergie - II
+tile.energyCellTier2.name=Réserve d'énergie - III
+tile.energyCellTier3.name=Réserve d'énergie - IV
+
 
 // RF STUFF:
 tile.bridgeMcUToRF.name=Pont McU vers RF
