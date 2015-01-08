@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 import cpw.mods.fml.relauncher.Side;
@@ -68,14 +69,14 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		int yy = te.yCoord;
 		int zz = te.zCoord;
 
-		Connection xLeft = canConnect(te.getWorldObj(), te, xx - 1, yy, zz);
-		Connection xRight = canConnect(te.getWorldObj(), te, xx + 1, yy, zz);
+		Connection xLeft = canConnect(te.getWorldObj(), te, 4, xx - 1, yy, zz); // west
+		Connection xRight = canConnect(te.getWorldObj(), te, 5, xx + 1, yy, zz); // east
 
-		Connection yBottom = canConnect(te.getWorldObj(), te, xx, yy - 1, zz);
-		Connection yTop = canConnect(te.getWorldObj(), te, xx, yy + 1, zz);
+		Connection yBottom = canConnect(te.getWorldObj(), te, 0, xx, yy - 1, zz);
+		Connection yTop = canConnect(te.getWorldObj(), te, 1, xx, yy + 1, zz);
 
-		Connection zLeft = canConnect(te.getWorldObj(), te, xx, yy, zz - 1);
-		Connection zRight = canConnect(te.getWorldObj(), te, xx, yy, zz + 1);
+		Connection zLeft = canConnect(te.getWorldObj(), te, 2, xx, yy, zz - 1); // north
+		Connection zRight = canConnect(te.getWorldObj(), te, 3, xx, yy, zz + 1); // sound
 
 		drawPipe(te, xLeft.isConnected(), xRight.isConnected(), yBottom.isConnected(), yTop.isConnected(), zLeft.isConnected(), zRight.isConnected());
 
@@ -102,14 +103,24 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	 * @param z = position z.
 	 * @return true if can connect, else returns false.
 	 */
-	private Connection canConnect(World world, TileEntity te, int x, int y, int z) {
+	private Connection canConnect(World world, TileEntity te, int index, int x, int y, int z) {
 		boolean flag = false;
 		int type = 0;
 
 		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
 			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
 
-			if (cont instanceof TileEntityEnergyPipeBase) {
+			
+			if (cont instanceof IModularFrame) {
+				if (cont != null && ((IModularFrame) cont).getSideValve(ForgeDirection.getOrientation(index).getOpposite()) != 0) {
+					flag = true;
+					type = 2;
+				}
+
+				return new Connection(flag, type);
+			}
+			
+			else if (cont instanceof TileEntityEnergyPipeBase) {
 				TileEntityEnergyPipeBase _te = (TileEntityEnergyPipeBase) cont;
 				if (_te != null && this.color == _te.getColor()) {
 					flag = true;
@@ -119,8 +130,8 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				return new Connection(flag, type);
 			}
 
-			flag = true;
-			type = 2;
+			// flag = true;
+			// type = 2;
 		}
 
 		return new Connection(flag, type);

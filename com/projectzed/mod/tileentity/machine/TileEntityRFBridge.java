@@ -29,7 +29,7 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
-		this.maxStorage /= 10;
+		this.maxStorage /= 2;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;

@@ -6,6 +6,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
@@ -48,6 +49,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 				if (pipe.getColor() == this.getColor()) connections[0] = ForgeDirection.UP;
 			}
 			
+			else if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+				if (frame.getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[0] = ForgeDirection.UP;
+				else connections[0] = null;
+			}
+			
 			else connections[0] = ForgeDirection.UP;
 		}
 		else connections[0] = null;
@@ -56,6 +63,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 			if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof TileEntityEnergyPipeBase) {
 				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
 				if (pipe.getColor() == this.getColor()) connections[1] = ForgeDirection.DOWN;
+			}
+			
+			else if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+				if (frame.getSideValve(ForgeDirection.DOWN.getOpposite()) != 0) connections[1] = ForgeDirection.DOWN;
+				else connections[1] = null;
 			}
 			
 			else connections[1] = ForgeDirection.DOWN;
@@ -68,6 +81,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 				if (pipe.getColor() == this.getColor()) connections[2] = ForgeDirection.NORTH;
 			}
 			
+			else if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
+				if (frame.getSideValve(ForgeDirection.NORTH.getOpposite()) != 0) connections[2] = ForgeDirection.NORTH;
+				else connections[2] = null;
+			}
+			
 			else connections[2] = ForgeDirection.NORTH;
 		}
 		else connections[2] = null;
@@ -78,7 +97,13 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 				if (pipe.getColor() == this.getColor()) connections[3] = ForgeDirection.EAST;
 			}
 			
-			else connections[3] = ForgeDirection.EAST;
+			else if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
+				if (frame.getSideValve(ForgeDirection.EAST.getOpposite()) != 0) connections[3] = ForgeDirection.EAST;
+				else connections[3] = null;
+			}
+			
+			// else connections[3] = ForgeDirection.EAST;
 		}
 		else connections[3] = null;
 
@@ -86,6 +111,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 			if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof TileEntityEnergyPipeBase) {
 				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
 				if (pipe.getColor() == this.getColor()) connections[4] = ForgeDirection.SOUTH;
+			}
+			
+			else if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
+				if (frame.getSideValve(ForgeDirection.SOUTH.getOpposite()) != 0) connections[4] = ForgeDirection.SOUTH;
+				else connections[4] = null;
 			}
 			
 			else connections[4] = ForgeDirection.SOUTH;
@@ -96,6 +127,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 			if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof TileEntityEnergyPipeBase) {
 				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
 				if (pipe.getColor() == this.getColor()) connections[5] = ForgeDirection.WEST;
+			}
+			
+			else if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof IModularFrame) {
+				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
+				if (frame.getSideValve(ForgeDirection.WEST.getOpposite()) != 0) connections[5] = ForgeDirection.WEST;
+				else connections[5] = null;
 			}
 			
 			else connections[5] = ForgeDirection.WEST;
