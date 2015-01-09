@@ -1,16 +1,20 @@
 package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Class containing code for messaging buttons and other various requests for
@@ -22,25 +26,30 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 public class MessageTileEntityFabricationTable implements IMessage, IMessageHandler<MessageTileEntityFabricationTable, IMessage> {
 
 	private TileEntityFabricationTable te;
-	private ItemStack[] slots;
 	private int x, y, z;
+	private int buttonHit;
 	private int numSlots;
+	private ItemStack[] slots;
 
 	public MessageTileEntityFabricationTable() {
+	}
+	
+	public MessageTileEntityFabricationTable(TileEntityFabricationTable te) {
+		this(te, 0);
 	}
 
 	/**
 	 * @param te = te object as reference.
 	 */
-	public MessageTileEntityFabricationTable(TileEntityFabricationTable te) {
+	public MessageTileEntityFabricationTable(TileEntityFabricationTable te, int buttonHit) {
 		this.te = te;
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
+		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInvenotry() - 1;
-
 		this.slots = new ItemStack[numSlots];
-
+		
 		syncStacks();
 	}
 
@@ -54,6 +63,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		this.x = buf.readInt();
 		this.y = buf.readInt();
 		this.z = buf.readInt();
+		this.buttonHit = buf.readInt();
 		this.numSlots = buf.readInt();
 		
 		this.slots = new ItemStack[this.numSlots];
@@ -72,6 +82,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		buf.writeInt(this.x);
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
+		buf.writeInt(this.buttonHit);
 		buf.writeInt(this.numSlots);
 
 		if (!isArrayValid()) syncStacks();
@@ -106,18 +117,46 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		// FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x,
 		// message.y, message.z);
 
-		World world = ctx.getServerHandler().playerEntity.worldObj;
-		TileEntity te = world.getTileEntity(message.x, message.y, message.z);
-
-		if (world != null && te != null && te instanceof TileEntityFabricationTable) {
-			TileEntityFabricationTable te2 = (TileEntityFabricationTable) te;
-
-			if (message.slots != null && message.slots.length > 0) {
-				for (int i = 0; i < message.slots.length; i++) {
-					te2.setStackInSlot(message.slots[i], i + 1);
+		if (ctx.side == Side.SERVER) {
+			World world = ctx.getServerHandler().playerEntity.worldObj;
+			TileEntity te = world.getTileEntity(message.x, message.y, message.z);
+	
+			if (world != null && te != null && te instanceof TileEntityFabricationTable) {
+				TileEntityFabricationTable te2 = (TileEntityFabricationTable) te;
+	
+				if (message.slots != null && message.slots.length > 0) {
+					
+					if (message.buttonHit == 1) {
+						EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
+						if (player != null && player.openContainer != null && player.openContainer instanceof ContainerFabricationTable) {
+							System.out.println("Should be working!");
+							ContainerFabricationTable cont = (ContainerFabricationTable) player.openContainer;
+							cont.clearCraftingGrid();
+						}
+					}
+					
+					for (int i = 0; i < message.slots.length; i++) {
+						te2.setInventorySlotContents(i + 1, message.slots[i]);
+					}
+					
+					te2.markDirty();
 				}
 			}
 		}
+		
+		else if (ctx.side == Side.CLIENT) {
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+			
+			if (te != null && te instanceof TileEntityFabricationTable) {
+				TileEntityFabricationTable te2 = (TileEntityFabricationTable) te;
+				
+				if (message.slots != null && message.slots.length > 0) {
+					for (int i = 0; i < message.slots.length; i++) {
+						te2.setInventorySlotContents(i + 1, message.slots[i]);
+					}
+				}
+			}
+ 		}
 
 		return null;
 	}

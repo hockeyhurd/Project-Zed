@@ -1,17 +1,14 @@
 package com.projectzed.mod.tileentity;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.world.World;
 
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 
@@ -23,14 +20,11 @@ import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
  */
 public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 
-	private ItemStack[] craftingMatrix;
-
 	public TileEntityFabricationTable() {
 		super();
 		this.customName = "fabricationTable";
 		// this.slots = new ItemStack[10 + 6 * 12 + 4 * 9];
 		this.slots = new ItemStack[10 + 6 * 12];
-		this.craftingMatrix = new ItemStack[3 * 3];
 	}
 
 	/*
@@ -42,13 +36,12 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		return this.slots.length;
 	}
 
-	/**
-	 * Sets given itemstack to given slot. 
-	 * 
-	 * @param stack = stack to set.
-	 * @param slot = slot to set.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setInventorySlotContents(int, net.minecraft.item.ItemStack)
 	 */
-	public void setStackInSlot(ItemStack stack, int slot) {
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
 		if (slot >= 0 && slot < this.slots.length) this.slots[slot] = stack;
 		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!\t" + slot);
 	}
@@ -77,15 +70,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
 	protected void initSlotsArray() {
-		this.craftingMatrix = new ItemStack[9];
-	}
-
-	/**
-	 * Getter for the crafting matix.
-	 * @return crafting matix itemstack array.
-	 */
-	public ItemStack[] getCraftingMatrix() {
-		return this.craftingMatrix;
+		// this.craftingMatrix = new ItemStack[9];
 	}
 
 	/*
@@ -138,6 +123,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		NBTTagList tagList = comp.getTagList("Items", 10);
@@ -158,6 +144,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		NBTTagList tagList = comp.getTagList("Items", 10);
@@ -174,11 +161,6 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		comp.setTag("Items", tagList);
 
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
-	}
-
-	public void clearCraftingGrid(ContainerFabricationTable cont, EntityPlayer player) {
-		// cont.clearCraftingMatrix(player);
-		System.err.println("CLEAR BUTTON HIT!!!");
 	}
 
 	/*

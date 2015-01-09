@@ -62,12 +62,12 @@ public class GuiFabricationTable extends GuiContainer {
 		switch (button.id) {
 			case 0:
 				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
-				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
+				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 1));
 				break;
 				
 			case 1:
 				((ContainerFabricationTable)this.inventorySlots).sortInventory();
-				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
+				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 2));
 				break;
 		}
 	}
@@ -78,10 +78,6 @@ public class GuiFabricationTable extends GuiContainer {
 	 */
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		// String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
-
-		// this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
-		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 	}
 
 	/*

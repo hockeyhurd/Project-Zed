@@ -48,7 +48,7 @@ public class ContainerFabricationTable extends Container {
 		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
 		
-		// this.onCraftMatrixChanged(this.craftMatrix);
+		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/**
@@ -64,9 +64,10 @@ public class ContainerFabricationTable extends Container {
 		// Add crafting matrix
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
-				this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + y * 18, 6 + x * 18));
-				ItemStack stack = te.getStackInSlot((x + y * 3) + 0);
-				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
+				// this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + y * 18, 6 + x * 18));
+				this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + x * 18, 6 + y * 18));
+				// ItemStack stack = te.getStackInSlot((x + y * 3) + 0);
+				// if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
 		}
 
@@ -96,10 +97,10 @@ public class ContainerFabricationTable extends Container {
 	public void onCraftMatrixChanged(IInventory inv) {
 		// Make sure te side is synced with this container's crafting matrix array.
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			this.te.setStackInSlot(inv.getStackInSlot(i), i);
+			this.te.setInventorySlotContents(i + 1, inv.getStackInSlot(i));
 		}
 
-		this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
 	}
 	
 	/**
@@ -121,7 +122,7 @@ public class ContainerFabricationTable extends Container {
 				tempList.add(te.getStackInSlot(i));
 				map.put(id, tempList);
 				
-				te.setStackInSlot((ItemStack) null, i);
+				te.setInventorySlotContents(i,(ItemStack) null);
 			}
 		}
 		
@@ -143,8 +144,7 @@ public class ContainerFabricationTable extends Container {
 			if (i + 10 <= this.te.getSizeInvenotry()) this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
 		}
 		
-		ProjectZed.logHelper.info("Completed sorting in " + timeLapse.getEffectiveTimeSince() + " ns!");
-		
+		ProjectZed.logHelper.info("Completed sorting in " + timeLapse.getEffectiveTimeSince() + " ms!");
 	}
 	
 	/**
@@ -153,34 +153,26 @@ public class ContainerFabricationTable extends Container {
 	public void clearCraftingGrid() {
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
-				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) {
+					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+					this.te.setInventorySlotContents(i + 1, (ItemStack) null);
+				}
 				else {
 					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
 					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
 				}
 			}
 		}
+		
+		this.onCraftMatrixChanged(craftMatrix);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#onContainerClosed(net.minecraft.entity.player.EntityPlayer)
 	 */
-	// TODO: Temp fix to spit out items until saving bug is resolved.
 	public void onContainerClosed(EntityPlayer player) {
-		// super.onContainerClosed(player);
 		clearCraftingGrid();
-		
-		/*for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
-			if (this.craftMatrix.getStackInSlot(i) != null && this.craftMatrix.getStackInSlot(i).stackSize > 0) te.setStackInSlot(this.craftMatrix.getStackInSlot(i), i);
-		}*/
-		
-		/*if (!this.te.getWorldObj().isRemote) {
-			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
-				ItemStack stack = this.craftMatrix.getStackInSlotOnClosing(i);
-				if (stack != null) player.dropPlayerItemWithRandomChoice(stack, false);
-			}
-		}*/
 	}
 
 	/*
