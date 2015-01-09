@@ -28,7 +28,8 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	public TileEntityFabricationTable() {
 		super();
 		this.customName = "fabricationTable";
-		this.slots = new ItemStack[10 + 6 * 12 + 4 * 9];
+		// this.slots = new ItemStack[10 + 6 * 12 + 4 * 9];
+		this.slots = new ItemStack[10 + 6 * 12];
 		this.craftingMatrix = new ItemStack[3 * 3];
 	}
 
@@ -49,7 +50,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 */
 	public void setStackInSlot(ItemStack stack, int slot) {
 		if (slot >= 0 && slot < this.slots.length) this.slots[slot] = stack;
-		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!");
+		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!\t" + slot);
 	}
 
 	/*
@@ -67,7 +68,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
 	 */
 	protected void initContentsArray() {
-		this.slots = new ItemStack[10 + 10 * 9];
+		this.slots = new ItemStack[10 + 6 * 12];
 	}
 
 	/*
@@ -178,54 +179,6 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	public void clearCraftingGrid(ContainerFabricationTable cont, EntityPlayer player) {
 		// cont.clearCraftingMatrix(player);
 		System.err.println("CLEAR BUTTON HIT!!!");
-	}
-	
-	@Override
-	public void updateEntity() {
-		/*if (this.worldObj.getTotalWorldTime() % 20L == 0) {
-			for (int i = 0; i < 10; i++) {
-				ItemStack stack = this.slots[i];
-				if (stack != null) System.out.println(i + ", " + stack);
-			}
-		}*/
-	}
-
-	/**
-	 * Handles moving an itemstack from one slot to another.
-	 * @param stack = stack to move.
-	 * @param currentSlot = current slot of stack to move.
-	 * @param min = min slot index to move to.
-	 * @param max = max slot index to move to.
-	 */
-	private void moveStack(ItemStack stack, int currentSlot, int min, int max) {
-		boolean handled = false;
-
-		// Check to see if we can add this stack to a current stack.
-		for (int i = min; i < max; i++) {
-			ItemStack currentStack = this.slots[i];
-			if (currentStack == stack && currentStack.stackSize + stack.stackSize <= stack.getMaxStackSize()) {
-				currentStack.stackSize += stack.stackSize;
-				this.slots[i] = currentStack;
-				this.slots[currentSlot] = (ItemStack) null;
-				handled = true;
-				break;
-			}
-		}
-
-		// If already handled, no need to continue.
-		if (handled) return;
-
-		// Else, search for an empty slot to move this stack to.
-		else {
-			for (int i = min; i < max; i++) {
-				if (this.slots[i] == null) {
-					this.slots[i] = stack;
-					this.slots[currentSlot] = (ItemStack) null;
-					handled = true;
-					break;
-				}
-			}
-		}
 	}
 
 	/*

@@ -18,6 +18,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockRFBridge;
+import com.projectzed.mod.block.container.BlockTank;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -34,6 +35,7 @@ import com.projectzed.mod.block.ore.BlockTitaniumOre;
 import com.projectzed.mod.block.ore.BlockUraniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
+import com.projectzed.mod.handler.SortingConfigHandler;
 import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemDustGold;
@@ -84,6 +86,7 @@ public class ProjectZed {
 	
 	public static LogHelper logHelper;
 	public static ConfigHandler configHandler;
+	public static SortingConfigHandler sortingConfigHandler;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
 	public static final String modID = Reference.MOD_NAME;
 	
@@ -113,6 +116,7 @@ public class ProjectZed {
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
 	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
+	public static Block tankTier0;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -175,6 +179,11 @@ public class ProjectZed {
 		configHandler = new ConfigHandler(event, Reference.class);
 		configHandler.handleConfiguration();
 		logHelper.info("Config loaded successfully! Patching mod now!"); 
+		
+		logHelper.info("Pre-init started, looking for sorting config info!");
+		sortingConfigHandler = new SortingConfigHandler(event, Reference.class, "sorting.cfg");
+		sortingConfigHandler.handleConfiguration();
+		logHelper.info("Sorting config loaded successfully! Patching mod now!");
 		
 		ModsLoadedHelper.instance().init();
 		ModsLoadedHelper.instance().logFindings(logHelper);
@@ -245,6 +254,7 @@ public class ProjectZed {
 		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
 		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
 		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
+		// tankTier0 = new BlockTank(Material.rock, "tankTier0");
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 

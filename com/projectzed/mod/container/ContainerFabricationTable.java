@@ -1,5 +1,8 @@
 package com.projectzed.mod.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -8,6 +11,7 @@ import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
@@ -39,7 +43,8 @@ public class ContainerFabricationTable extends Container {
 		this.inv = inv;
 		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
-		this.onCraftMatrixChanged(this.craftMatrix);
+		
+		// this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/**
@@ -49,13 +54,15 @@ public class ContainerFabricationTable extends Container {
 	 */
 	private void addSlots(InventoryPlayer inv, TileEntityFabricationTable te) {
 
-		// Add crafing result.
+		// Add crafting result.
 		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 0, 161, 24));
 
-		// Add crafitn matrix
+		// Add crafting matrix
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
-				this.addSlotToContainer(new Slot(this.craftMatrix, y + x * 3, 67 + y * 18, 6 + x * 18));
+				this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + y * 18, 6 + x * 18));
+				ItemStack stack = te.getStackInSlot((x + y * 3) + 0);
+				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
 		}
 
@@ -92,12 +99,51 @@ public class ContainerFabricationTable extends Container {
 	}
 	
 	/**
+	 * Method to sort inventory.
+	 */
+	public void sortInventory() {
+		List<ItemStack> inputList = new ArrayList<ItemStack>();
+		List<ItemStack> outputList = new ArrayList<ItemStack>();
+		
+		for (int i = 10; i < te.getSizeInvenotry(); i++) {
+			if (te.getStackInSlot(i) != null) {
+				inputList.add(te.getStackInSlot(i));
+				te.setStackInSlot((ItemStack) null, i);
+			}
+		}
+		
+		while (!inputList.isEmpty()) {
+			int currentID = 0;
+			int highest = Integer.MAX_VALUE;
+			ItemStack current = null;
+			for (ItemStack stack : inputList) {
+				current = stack;
+				currentID = Item.getIdFromItem(stack.getItem());
+				if (currentID <= highest) {
+					highest = currentID;
+					System.out.println("New lowest: " + highest);
+				}
+			}
+			
+			outputList.add(current);
+			inputList.remove(inputList.indexOf(current));
+		}
+		
+		for (int i = 0; i < outputList.size(); i++) {
+			if (i + 10 <= this.te.getSizeInvenotry()) this.te.setStackInSlot(outputList.get(i), i + 10);
+		}
+		
+		System.out.println("Completed sorting!");
+		
+	}
+	
+	/**
 	 * Clears crafting grid matrix.
 	 */
 	public void clearCraftingGrid() {
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
-				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, true)) this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
 				else {
 					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
 					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
@@ -112,8 +158,12 @@ public class ContainerFabricationTable extends Container {
 	 */
 	// TODO: Temp fix to spit out items until saving bug is resolved.
 	public void onContainerClosed(EntityPlayer player) {
-		super.onContainerClosed(player);
+		// super.onContainerClosed(player);
 		clearCraftingGrid();
+		
+		/*for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+			if (this.craftMatrix.getStackInSlot(i) != null && this.craftMatrix.getStackInSlot(i).stackSize > 0) te.setStackInSlot(this.craftMatrix.getStackInSlot(i), i);
+		}*/
 		
 		/*if (!this.te.getWorldObj().isRemote) {
 			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
@@ -157,19 +207,19 @@ public class ContainerFabricationTable extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-
+			
 			if (index < 10) {
-				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry(), false)) return null;
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 
-			else if (index >= 10 && index < 10 + 6 * 12) {
-				if (!this.mergeItemStack(itemstack1, 10 + 6 * 12, te.getSizeInvenotry(), false)) return null;
+			else if (index >= 10 && index < te.getSizeInvenotry()) {
+				if (!this.mergeItemStack(itemstack1, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
 			}
 
 			else {
-				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry() - 4 * 9, false)) return null;
+				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry(), false)) return null;
 			}
 
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);

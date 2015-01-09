@@ -51,6 +51,7 @@ public class GuiFabricationTable extends GuiContainer {
 		int posY = (this.height - this.ySize) / 2 + 8;
 		
 		this.buttonList.add(new GuiClearButton(0, posX, posY, "x"));
+		this.buttonList.add(new GuiButton(1, posX - 20, posY + 20, 32, 20, "Sort"));
 	}
 	
 	/*
@@ -60,9 +61,12 @@ public class GuiFabricationTable extends GuiContainer {
 	public void actionPerformed(GuiButton button) {
 		switch (button.id) {
 			case 0:
-				
 				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
-				// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(this.te));
+				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
+				break;
+				
+			case 1:
+				((ContainerFabricationTable)this.inventorySlots).sortInventory();
 				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te));
 				break;
 		}

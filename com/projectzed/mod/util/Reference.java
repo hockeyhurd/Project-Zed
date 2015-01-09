@@ -20,7 +20,7 @@ public class Reference extends AbstractReference {
 	public static final String MOD_NAME = "ProjectZed";
 	
 	/** Not required but is available. NOTE: if not using it, set to null! */
-	public static final String MOD_URL = "http://75.68.113.97:8080/downloads/" + MOD_NAME.toLowerCase() + "/versions/Project-Zed-alpha-1.1.";
+	public static final String MOD_URL = "http://73.17.180.186:8080/downloads/" + MOD_NAME.toLowerCase() + "/versions/Project-Zed-alpha-1.1.";
 	// public static final String MOD_URL = "https://dl.dropboxusercontent.com/u/276611945/Minecraft/mods/" + MOD_NAME.toLowerCase() + "/versions/Project-Zed-alpha-1.1.";
 	
 	/**
