@@ -1,6 +1,8 @@
 package com.projectzed.mod.container;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import com.hockeyhurd.api.math.TimeLapse;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.util.WorldUtils;
 
@@ -102,38 +106,44 @@ public class ContainerFabricationTable extends Container {
 	 * Method to sort inventory.
 	 */
 	public void sortInventory() {
-		List<ItemStack> inputList = new ArrayList<ItemStack>();
+		TimeLapse timeLapse = new TimeLapse();
+		HashMap<Integer, List<ItemStack>> map = new HashMap<Integer, List<ItemStack>>();
 		List<ItemStack> outputList = new ArrayList<ItemStack>();
 		
+		int id = 0;
 		for (int i = 10; i < te.getSizeInvenotry(); i++) {
 			if (te.getStackInSlot(i) != null) {
-				inputList.add(te.getStackInSlot(i));
+				id = Item.getIdFromItem(te.getStackInSlot(i).getItem());
+				List<ItemStack> tempList = new ArrayList<ItemStack>();
+				
+				if (map.containsKey(id)) tempList = map.get(id);
+				
+				tempList.add(te.getStackInSlot(i));
+				map.put(id, tempList);
+				
 				te.setStackInSlot((ItemStack) null, i);
 			}
 		}
 		
-		while (!inputList.isEmpty()) {
-			int currentID = 0;
-			int highest = Integer.MAX_VALUE;
-			ItemStack current = null;
-			for (ItemStack stack : inputList) {
-				current = stack;
-				currentID = Item.getIdFromItem(stack.getItem());
-				if (currentID <= highest) {
-					highest = currentID;
-					System.out.println("New lowest: " + highest);
+		List<Integer> keys = new ArrayList<Integer>(map.keySet());
+		Collections.sort(keys);
+		
+		for (int i : keys) {
+			
+			if (map.containsKey(i) && map.get(i) != null && map.get(i).size() > 0) {
+				for (ItemStack stack : map.get(i)) {
+					outputList.add(stack);
+					map.remove(i);
 				}
 			}
 			
-			outputList.add(current);
-			inputList.remove(inputList.indexOf(current));
 		}
 		
 		for (int i = 0; i < outputList.size(); i++) {
-			if (i + 10 <= this.te.getSizeInvenotry()) this.te.setStackInSlot(outputList.get(i), i + 10);
+			if (i + 10 <= this.te.getSizeInvenotry()) this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
 		}
 		
-		System.out.println("Completed sorting!");
+		ProjectZed.logHelper.info("Completed sorting in " + timeLapse.getEffectiveTimeSince() + " ns!");
 		
 	}
 	
