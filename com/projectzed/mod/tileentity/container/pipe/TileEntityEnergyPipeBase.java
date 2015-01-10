@@ -25,7 +25,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
-		this.maxStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
+		this.maxPowerStorage = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
@@ -146,10 +146,10 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
-			if (this.stored - amount >= 0) this.stored -= amount;
+			if (this.storedPower - amount >= 0) this.storedPower -= amount;
 			else {
-				amount = this.stored;
-				this.stored = 0;
+				amount = this.storedPower;
+				this.storedPower = 0;
 			}
 			return amount;
 		}
@@ -163,10 +163,10 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	 */
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
-			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
 			else {
-				amount = this.maxStorage - this.stored;
-				this.stored = this.maxStorage;
+				amount = this.maxPowerStorage - this.storedPower;
+				this.storedPower = this.maxPowerStorage;
 			}
 			
 			return amount;
@@ -212,7 +212,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	protected void importContents() {
 		if (this.getWorldObj().isRemote) return;
 		
-		if (this.stored >= this.maxStorage) this.stored = this.maxStorage;
+		if (this.storedPower >= this.maxPowerStorage) this.storedPower = this.maxPowerStorage;
 
 		int x = this.xCoord;
 		int y = this.yCoord;

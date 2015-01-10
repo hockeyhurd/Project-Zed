@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockContainer;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -29,7 +29,7 @@ public class BlockTank extends AbstractBlockContainer {
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	@Override
-	protected AbstractTileEntityContainer getTileEntity() {
+	protected AbstractTileEntityEnergyContainer getTileEntity() {
 		return null;
 	}
 

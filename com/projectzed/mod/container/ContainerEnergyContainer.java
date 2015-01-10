@@ -6,7 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class ContainerEnergyContainer extends Container {
 
-	private AbstractTileEntityContainer te;
+	private AbstractTileEntityEnergyContainer te;
 	private int stored;
 	private boolean powerMode;
 
@@ -28,7 +28,7 @@ public class ContainerEnergyContainer extends Container {
 	 * @param inv = player's inventory.
 	 * @param te = tileentity object as reference.
 	 */
-	public ContainerEnergyContainer(InventoryPlayer inv, AbstractTileEntityContainer te) {
+	public ContainerEnergyContainer(InventoryPlayer inv, AbstractTileEntityEnergyContainer te) {
 		this.te = te;
 		addSlots(inv, te);
 	}
@@ -38,7 +38,7 @@ public class ContainerEnergyContainer extends Container {
 	 * @param inv = inventory.
 	 * @param te = tile entity object.
 	 */
-	private void addSlots(InventoryPlayer inv, AbstractTileEntityContainer te) {
+	private void addSlots(InventoryPlayer inv, AbstractTileEntityEnergyContainer te) {
 
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
@@ -117,7 +117,7 @@ public class ContainerEnergyContainer extends Container {
 	 * Gets the TE instance.
 	 * @return te object.
 	 */
-	public AbstractTileEntityContainer getTE() {
+	public AbstractTileEntityEnergyContainer getTE() {
 		return this.te;
 	}
 

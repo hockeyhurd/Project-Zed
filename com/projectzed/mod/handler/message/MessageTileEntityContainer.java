@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -24,7 +24,7 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 
 	// TODO: This class will need to be adjusted when we have other such containers: Fluid, item, tanks, etc.
 	
-	public AbstractTileEntityContainer te;
+	public AbstractTileEntityEnergyContainer te;
 	public int x, y, z;
 	public int stored;
 
@@ -38,7 +38,7 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 	/**
 	 * @param te = tileentity to get data from.
 	 */
-	public MessageTileEntityContainer(AbstractTileEntityContainer te) {
+	public MessageTileEntityContainer(AbstractTileEntityEnergyContainer te) {
 		this.te = te;
 		this.x = te.xCoord;
 		this.y = te.yCoord;
@@ -97,8 +97,8 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 		if (ctx.side == Side.CLIENT) {
 			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 
-			if (te instanceof AbstractTileEntityContainer) {
-				((AbstractTileEntityContainer) te).setEnergyStored(message.stored);
+			if (te instanceof AbstractTileEntityEnergyContainer) {
+				((AbstractTileEntityEnergyContainer) te).setEnergyStored(message.stored);
 				
 				if (te instanceof TileEntityEnergyBankBase) {
 					for (int i = 0; i < message.openSides.length; i++) {

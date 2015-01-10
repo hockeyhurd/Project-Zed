@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockContainer;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
@@ -41,7 +41,7 @@ public class BlockRFBridge extends AbstractBlockContainer {
 	 * 
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
-	protected AbstractTileEntityContainer getTileEntity() {
+	protected AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityRFBridge te = new TileEntityRFBridge();
 		te.setFlip(this.flip);
 		return te;

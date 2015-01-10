@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
@@ -23,7 +23,7 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Dec 3, 2014
  */
-public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implements IModularFrame {
+public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer implements IModularFrame {
 
 	protected byte tier; 
 	protected int[] tiers = new int[] {
@@ -35,7 +35,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 	public TileEntityEnergyBankBase() {
 		super("energyBank");
 		this.tier = 0;
-		this.maxStorage = this.tiers[0];
+		this.maxPowerStorage = this.tiers[0];
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 	}
@@ -46,7 +46,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 	 */
 	public void setTier(byte b) {
 		this.tier = b >= 0 && b <= tiers.length ? b : 0;
-		this.maxStorage = tiers[b];
+		this.maxPowerStorage = tiers[b];
 	}
 	
 	/**
@@ -211,10 +211,10 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
-			if (this.stored - amount >= 0) this.stored -= amount;
+			if (this.storedPower - amount >= 0) this.storedPower -= amount;
 			else {
-				amount = this.stored;
-				this.stored = 0;
+				amount = this.storedPower;
+				this.storedPower = 0;
 			}
 			return amount;
 		}
@@ -229,10 +229,10 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 	 */
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
-			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
 			else {
-				amount = this.maxStorage - this.stored;
-				this.stored = this.maxStorage;
+				amount = this.maxPowerStorage - this.storedPower;
+				this.storedPower = this.maxPowerStorage;
 			}
 
 			return amount;
@@ -250,8 +250,8 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 	protected void importContents() {
 		if (this.getWorldObj().isRemote) return;
 
-		if (this.stored >= this.maxStorage) {
-			this.stored = this.maxStorage;
+		if (this.storedPower >= this.maxPowerStorage) {
+			this.storedPower = this.maxPowerStorage;
 			// return; // Should be safe to comment this out.
 		}
 
@@ -282,7 +282,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 		super.updateEntity();
 		
 		if (!this.worldObj.isRemote) {
-			if (this.maxStorage != this.tiers[this.tier]) this.maxStorage = this.tiers[this.tier]; 
+			if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier]; 
 			
 			if (!this.powerMode) this.powerMode = true;
 			if (this.lastReceivedDir != ForgeDirection.UNKNOWN) this.lastReceivedDir = ForgeDirection.UNKNOWN;
@@ -319,7 +319,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityContainer implem
 		// Make sure the tier from nbt is acceptable.
 		byte tier = comp.getByte("ProjectZedEnergyBankTier");
 		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
-		if (this.maxStorage != this.tiers[this.tier]) this.maxStorage = this.tiers[this.tier];
+		if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier];
 		
 		for (int i = 0; i < this.openSides.length; i++) {
 			this.openSides[i] = comp.getByte("ProjectZedEnergyBankSide" + i);

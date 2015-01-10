@@ -19,10 +19,10 @@ import com.projectzed.mod.handler.message.MessageTileEntityContainer;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityContainer extends AbstractTileEntityGeneric implements IEnergyContainer {
+public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityGeneric implements IEnergyContainer {
 
-	protected int maxStorage = 100000;
-	protected int stored;
+	protected int maxPowerStorage = 100000;
+	protected int storedPower;
 	protected boolean powerMode;
 	protected int importRate, exportRate;
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
@@ -31,7 +31,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * Init class object through parameters.
 	 * @param name = name of te (its custom name).
 	 */
-	public AbstractTileEntityContainer(String name) {
+	public AbstractTileEntityEnergyContainer(String name) {
 		super();
 		setCustomName("container." + name);
 	}
@@ -64,6 +64,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
 	 */
+	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
@@ -102,7 +103,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#setMaxStorage(int)
 	 */
 	public void setMaxStorage(int max) {
-		this.maxStorage = max;
+		this.maxPowerStorage = max;
 	}
 
 	/*
@@ -110,7 +111,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxStorage()
 	 */
 	public int getMaxStorage() {
-		return this.maxStorage;
+		return this.maxPowerStorage;
 	}
 
 	/*
@@ -118,7 +119,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#setEnergyStored(int)
 	 */
 	public void setEnergyStored(int amount) {
-		this.stored = amount;
+		this.storedPower = amount;
 	}
 
 	/*
@@ -126,7 +127,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#getEnergyStored()
 	 */
 	public int getEnergyStored() {
-		return this.stored;
+		return this.storedPower;
 	}
 	
 	/*
@@ -157,6 +158,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
+	@Override
 	public void setLastReceivedDirection(ForgeDirection dir) {
 		this.lastReceivedDir = dir;
 	}
@@ -165,6 +167,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
+	@Override
 	public ForgeDirection getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
@@ -197,7 +200,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		importContents();
 		exportContents();
 		
-		this.powerMode = this.stored > 0;
+		this.powerMode = this.storedPower > 0;
 		
 		super.updateEntity();
 	}
@@ -211,7 +214,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 		super.readFromNBT(comp);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
-		this.stored =  size >= 0 && size <= this.maxStorage ? size : 0;
+		this.storedPower =  size >= 0 && size <= this.maxPowerStorage ? size : 0;
 	}
 	
 	/*
@@ -222,7 +225,7 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
-		comp.setInteger("ProjectZedPowerStored", this.stored);
+		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
 	
 	/*

@@ -6,7 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockContainer;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
@@ -77,7 +77,7 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	@Override
-	protected AbstractTileEntityContainer getTileEntity() {
+	protected AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityEnergyBankBase te = new TileEntityEnergyBankBase();
 		
 		if (this.TIER > 0) te.setTier(this.TIER);

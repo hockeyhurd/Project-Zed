@@ -9,7 +9,7 @@ import cofh.api.energy.IEnergyStorage;
 
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
@@ -20,7 +20,7 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Nov 29, 2014
  */
-public class TileEntityRFBridge extends AbstractTileEntityContainer implements IEnergyStorage {
+public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implements IEnergyStorage {
 
 	private int maxStorageRF;
 	public int storedRF;
@@ -29,12 +29,12 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
-		this.maxStorage /= 2;
+		this.maxPowerStorage /= 2;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 
-		this.maxStorageRF = Reference.Constants.getRFFromMcU(this.maxStorage);
+		this.maxStorageRF = Reference.Constants.getRFFromMcU(this.maxPowerStorage);
 		this.importRateRF = Reference.Constants.getRFFromMcU(this.exportRate);
 		this.exportRateRF = Reference.Constants.getRFFromMcU(this.importRate);
 	}
@@ -142,10 +142,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 */
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (flip && cont != null && this.getMaxExportRate() >= amount) {
-			if (this.stored - amount >= 0) this.stored -= amount;
+			if (this.storedPower - amount >= 0) this.storedPower -= amount;
 			else {
-				amount = this.stored;
-				this.stored = 0;
+				amount = this.storedPower;
+				this.storedPower = 0;
 			}
 			return amount;
 		}
@@ -159,10 +159,10 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 	 */
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
-			if (this.stored + amount <= this.maxStorage) this.stored += amount;
+			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
 			else {
-				amount = this.maxStorage - this.stored;
-				this.stored = this.maxStorage;
+				amount = this.maxPowerStorage - this.storedPower;
+				this.storedPower = this.maxPowerStorage;
 			}
 			
 			return amount;
@@ -186,8 +186,8 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 		// *Converting to RF*
 		if (!flip) {
-			if (this.stored >= this.maxStorage) {
-				this.stored = this.maxStorage;
+			if (this.storedPower >= this.maxPowerStorage) {
+				this.storedPower = this.maxPowerStorage;
 				return;
 			}
 			
@@ -242,37 +242,37 @@ public class TileEntityRFBridge extends AbstractTileEntityContainer implements I
 
 		// *Converting to RF*
 		if (!flip) {
-			if (this.stored > 0 && this.storedRF < this.maxStorageRF) {
-				if (this.stored - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF) {
-					this.stored -= this.exportRate;
+			if (this.storedPower > 0 && this.storedRF < this.maxStorageRF) {
+				if (this.storedPower - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF) {
+					this.storedPower -= this.exportRate;
 					this.storedRF += this.importRateRF;
 				}
 
 				else {
-					this.storedRF += Reference.Constants.getRFFromMcU(this.stored);
-					this.stored = 0;
+					this.storedRF += Reference.Constants.getRFFromMcU(this.storedPower);
+					this.storedPower = 0;
 				}
 
-				if (this.stored < 0) this.stored = 0;
+				if (this.storedPower < 0) this.storedPower = 0;
 				if (this.storedRF > this.maxStorageRF) this.storedRF = this.maxStorageRF;
 			}
 		}
 
 		// *Converting to McU*
 		else {
-			if (this.storedRF > 0 && this.stored < this.maxStorage) {
-				if (this.storedRF - this.exportRateRF > 0 && this.stored + this.importRate <= this.maxStorage) {
+			if (this.storedRF > 0 && this.storedPower < this.maxPowerStorage) {
+				if (this.storedRF - this.exportRateRF > 0 && this.storedPower + this.importRate <= this.maxPowerStorage) {
 					this.storedRF -= this.exportRateRF;
-					this.stored += this.importRate;
+					this.storedPower += this.importRate;
 				}
 
 				else {
-					this.stored += Reference.Constants.getMcUFromRF(this.storedRF);
+					this.storedPower += Reference.Constants.getMcUFromRF(this.storedRF);
 					this.storedRF = 0;
 				}
 
 				if (this.storedRF < 0) this.storedRF = 0;
-				if (this.stored > this.maxStorage) this.stored = this.maxStorage;
+				if (this.storedPower > this.maxPowerStorage) this.storedPower = this.maxPowerStorage;
 			}
 		}
 	}

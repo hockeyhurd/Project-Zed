@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.util.Waila;
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.gui.component.GuiIOButton;
@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiEnergyContainer extends GuiContainer {
 
 	public final ResourceLocation texture;
-	private AbstractTileEntityContainer te;
+	private AbstractTileEntityEnergyContainer te;
 	private String stringToDraw;
 	private final DecimalFormat df = new DecimalFormat("###,###,###");
 	
@@ -50,7 +50,7 @@ public class GuiEnergyContainer extends GuiContainer {
 	 * @param inv
 	 * @param te
 	 */
-	public GuiEnergyContainer(InventoryPlayer inv, AbstractTileEntityContainer te) {
+	public GuiEnergyContainer(InventoryPlayer inv, AbstractTileEntityEnergyContainer te) {
 		super(new ContainerEnergyContainer(inv, te));
 		this.te = te;
 		this.xSize = 176;

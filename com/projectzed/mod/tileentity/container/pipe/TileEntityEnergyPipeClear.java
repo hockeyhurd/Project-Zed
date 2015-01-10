@@ -11,7 +11,7 @@ public class TileEntityEnergyPipeClear extends TileEntityEnergyPipeBase {
 
 	public TileEntityEnergyPipeClear() {
 		super();
-		this.maxStorage *= 4;
+		this.maxPowerStorage *= 4;
 		this.importRate *= 4;
 		this.exportRate *= 4;
 	}

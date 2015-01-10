@@ -13,7 +13,7 @@ public class TileEntityEnergyPipeOrange extends TileEntityEnergyPipeBase {
 
 	public TileEntityEnergyPipeOrange() {
 		super();
-		this.maxStorage *= 2;
+		this.maxPowerStorage *= 2;
 		this.importRate *= 2;
 		this.exportRate *= 2;
 	}

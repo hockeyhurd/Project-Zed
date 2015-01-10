@@ -11,7 +11,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer {
+public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyContainer {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
 	public ForgeDirection[] connections;

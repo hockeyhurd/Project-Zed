@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 
 import cpw.mods.fml.relauncher.Side;
@@ -59,7 +59,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * Method used to grab exact tile entity associated with this block.
 	 * <br>Example: return new TileEntityRFBridge().
 	 */
-	protected abstract AbstractTileEntityContainer getTileEntity();
+	protected abstract AbstractTileEntityEnergyContainer getTileEntity();
 	
 	public TileEntity createNewTileEntity(World world, int id) {
 		return getTileEntity();
