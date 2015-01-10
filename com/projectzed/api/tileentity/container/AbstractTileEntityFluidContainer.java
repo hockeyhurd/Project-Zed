@@ -145,7 +145,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.fluid.storage.IFluidContainer#requestFluid(com.projectzed.api.fluid.storage.IFluidContainer, int)
 	 */
-	public abstract int requestFluid(IFluidContainer cont, int amount);
+	public abstract int requestFluid(IFluidContainer cont, Fluid fluid, int amount);
 
 	/*
 	 * (non-Javadoc)

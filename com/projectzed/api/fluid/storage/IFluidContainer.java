@@ -39,14 +39,16 @@ public interface IFluidContainer {
 	/**
 	 * Function used to request fluid from one container to another with given amount
 	 * @param cont = te reference.
+	 * @param fluid = fluid to request.
 	 * @param amount = amount of energy requested.
 	 * @return amount of fluid able to obtain.
 	 */
-	public int requestFluid(IFluidContainer cont, int amount);
+	public int requestFluid(IFluidContainer cont, Fluid fluid, int amount);
 	
 	/**
 	 * Function used to add fluid to this container from another.
 	 * @param cont = container from as reference.
+	 * @param fluid = fluid to add.
 	 * @param amount = amount of fluid able to add.
 	 * @return
 	 */
