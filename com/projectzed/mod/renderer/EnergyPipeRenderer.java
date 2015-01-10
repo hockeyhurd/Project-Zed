@@ -130,8 +130,8 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 				return new Connection(flag, type);
 			}
 
-			// flag = true;
-			// type = 2;
+			flag = true;
+			type = 2;
 		}
 
 		return new Connection(flag, type);
