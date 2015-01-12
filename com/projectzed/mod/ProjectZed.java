@@ -18,7 +18,6 @@ import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockRFBridge;
-import com.projectzed.mod.block.container.BlockTank;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -45,7 +44,6 @@ import com.projectzed.mod.item.ItemFuelRod;
 import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
-import com.projectzed.mod.item.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustNickel;
@@ -56,6 +54,9 @@ import com.projectzed.mod.item.metals.ItemIngotCopper;
 import com.projectzed.mod.item.metals.ItemIngotNickel;
 import com.projectzed.mod.item.metals.ItemIngotTitanium;
 import com.projectzed.mod.item.metals.ItemIngotUranium;
+import com.projectzed.mod.item.metals.ItemMixedAlloy;
+import com.projectzed.mod.item.metals.ItemSheetAluminium;
+import com.projectzed.mod.item.metals.ItemSheetReinforced;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
@@ -134,6 +135,7 @@ public class ProjectZed {
 	public static Item mcuReader;
 	public static Item screw;
 	public static Item sheetAluminium;
+	public static Item sheetReinforced;
 	public static Item gearAluminium;
 	public static Item conductiveCoil;
 	
@@ -152,6 +154,7 @@ public class ProjectZed {
 	public static Item ingotNickel;
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
+	public static Item mixedAlloy;
 	
 	// Fuels
 	public static Item emptyFuelRod;
@@ -275,6 +278,7 @@ public class ProjectZed {
 		mcuReader = new ItemMcUReader();
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
+		sheetReinforced = new ItemSheetReinforced("sheetReinforced", assetDir);
 		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
 		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
 		
@@ -293,6 +297,7 @@ public class ProjectZed {
 		ingotNickel = new ItemIngotNickel("ingotNickel", assetDir);
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
+		mixedAlloy = new ItemMixedAlloy("mixedAlloy", assetDir);
 		
 		// Fuels:
 		emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);

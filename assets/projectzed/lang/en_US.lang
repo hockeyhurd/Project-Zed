@@ -45,6 +45,7 @@ item.forgingHammer.name=Forging Hammer
 item.mcuReader.name=McU Reader
 item.screw.name=Screw
 item.sheetAluminium.name=Sheet of Aluminium
+item.sheetReinforced.name=Sheet of Reinforced Composite
 item.gearAluminium.name=Aluminium Gear
 item.conductiveCoil.name=Conductive Coil
 
@@ -63,6 +64,7 @@ item.ingotCopper.name=Copper Ingot
 item.ingotNickel.name=Nickel Ingot
 item.ingotAluminium.name=Aluminium Ingot
 item.ingotUranium.name=Uranium Ingot
+item.mixedAlloy.name=Mixed Metal Alloy
 
 // Fuels:
 item.emptyFuelRod.name=Empty Fuel Rod

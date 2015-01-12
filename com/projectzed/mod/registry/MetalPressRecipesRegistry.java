@@ -42,6 +42,7 @@ public class MetalPressRecipesRegistry {
 		mapModded.put("ingotTin", "plateTin");
 		mapModded.put("ingotCopper", "plateCopper");
 		mapModded.put("ingotBronze", "plateBronze");
+		mapModded.put("mixedAlloy", "plateReinforced");
 
 		initEntries();
 	}
