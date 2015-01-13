@@ -59,8 +59,13 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * Method used to grab exact tile entity associated with this block.
 	 * <br>Example: return new TileEntityRFBridge().
 	 */
-	protected abstract AbstractTileEntityEnergyContainer getTileEntity();
+	public abstract AbstractTileEntityEnergyContainer getTileEntity();
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	 */
+	@Override
 	public TileEntity createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}

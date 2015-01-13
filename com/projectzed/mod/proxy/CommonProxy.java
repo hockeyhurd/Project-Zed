@@ -20,6 +20,7 @@ import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
+import com.projectzed.mod.handler.ItemHoverEventHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.PlayerEventHandler;
 import com.projectzed.mod.registry.BlockRegistry;
@@ -161,6 +162,7 @@ public class CommonProxy {
 		PacketHandler.init();
 		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
+		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
 	}
 	
 	protected void registerFurnaceRecipes() {

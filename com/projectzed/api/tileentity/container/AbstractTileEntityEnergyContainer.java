@@ -8,8 +8,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 
 /**
  * Class containing generic abstractions for all containers.

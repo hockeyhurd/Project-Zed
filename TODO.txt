@@ -9,6 +9,7 @@ TODO:
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
     - Add NEI support for crafting machine related recipes.
+    - Make sure all data info to user is decimal formatted.
 
 IDEAS:
 =================================    

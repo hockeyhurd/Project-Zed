@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
@@ -38,10 +39,12 @@ public class BlockFurnaceGenerator extends AbstractBlockGenerator {
 		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
 	 */
-	public TileEntity createNewTileEntity(World world, int id) {
+	@Override
+	public AbstractTileEntityGenerator getTileEntity() {
 		return new TileEntityFurnaceGenerator();
 	}
 

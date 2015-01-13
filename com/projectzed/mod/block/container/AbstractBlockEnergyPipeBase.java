@@ -2,12 +2,12 @@ package com.projectzed.mod.block.container;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
@@ -16,11 +16,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
+ * Class containing block code for energy pipes.
  * 
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public class BlockEnergyPipeBase extends AbstractBlockPipe {
+public abstract class AbstractBlockEnergyPipeBase extends AbstractBlockPipe {
 
 	protected EnumColor color;
 	
@@ -28,7 +29,7 @@ public class BlockEnergyPipeBase extends AbstractBlockPipe {
 	 * @param material
 	 * @param name
 	 */
-	public BlockEnergyPipeBase(Material material, String name, EnumColor color) {
+	public AbstractBlockEnergyPipeBase(Material material, String name, EnumColor color) {
 		super(material, name);
 		this.color = color;
 	}
@@ -46,15 +47,6 @@ public class BlockEnergyPipeBase extends AbstractBlockPipe {
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return ClientProxy.energyPipeRed;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockPipe#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntityEnergyPipeBase();
 	}
 
 	/*
@@ -132,4 +124,11 @@ public class BlockEnergyPipeBase extends AbstractBlockPipe {
 		return AxisAlignedBB.getBoundingBox(x + this.minX, y + this.minY, z + this.minZ, x + this.maxX, y + this.maxY, z + this.maxZ);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockPipe#getTileEntity()
+	 */
+	@Override
+	public abstract AbstractTileEntityPipe getTileEntity();
+
 }

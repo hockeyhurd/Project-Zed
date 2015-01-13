@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 
@@ -71,6 +72,20 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	public int getRenderBlockPass() {
 		return 1;
 	}
+	
+	/**
+	 * @return tileentity object associated with this pipe.
+	 */
+	public abstract AbstractTileEntityPipe getTileEntity();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#createTileEntity(net.minecraft.world.World, int)
+	 */
+	@Override
+	public TileEntity createTileEntity(World world, int id) {
+		return getTileEntity();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -81,12 +96,5 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	protected boolean canConnect(World world, double x, double y, double z) {
 		return world.getBlock((int) x, (int) y, (int) z) == this;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	public abstract TileEntity createNewTileEntity(World world, int id);
 
 }

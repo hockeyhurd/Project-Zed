@@ -29,7 +29,7 @@ public class BlockTank extends AbstractBlockContainer {
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	@Override
-	protected AbstractTileEntityEnergyContainer getTileEntity() {
+	public AbstractTileEntityEnergyContainer getTileEntity() {
 		return null;
 	}
 

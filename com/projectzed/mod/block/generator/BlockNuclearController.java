@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
@@ -64,10 +65,10 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
 	 */
-	public TileEntity createNewTileEntity(World world, int id) {
+	@Override
+	public AbstractTileEntityGenerator getTileEntity() {
 		TileEntityNuclear te = new TileEntityNuclear();
 		te.setPlaceDir(placeDir, size, rel);
 		if (this.FUSION_MODE) te.setSource(EnumType.FUSION);

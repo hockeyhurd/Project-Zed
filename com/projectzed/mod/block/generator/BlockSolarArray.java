@@ -13,6 +13,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -42,6 +43,10 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 		this.TIER = tier;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "solar_side");
@@ -50,17 +55,21 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 		this.front = this.blockIcon;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#getIcon(int, int)
+	 */
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int metadata) {
 		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#createNewTileEntity(net.minecraft.world.World, int)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
 	 */
-	public TileEntity createNewTileEntity(World world, int id) {
+	@Override
+	public AbstractTileEntityGenerator getTileEntity() {
 		TileEntitySolarArray te = new TileEntitySolarArray();
 		if (this.TIER > 0) te.setTier(this.TIER);
 		return te;

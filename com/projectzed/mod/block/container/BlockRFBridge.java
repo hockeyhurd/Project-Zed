@@ -41,7 +41,7 @@ public class BlockRFBridge extends AbstractBlockContainer {
 	 * 
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
-	protected AbstractTileEntityEnergyContainer getTileEntity() {
+	public AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityRFBridge te = new TileEntityRFBridge();
 		te.setFlip(this.flip);
 		return te;

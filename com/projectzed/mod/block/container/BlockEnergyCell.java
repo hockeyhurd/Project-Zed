@@ -77,7 +77,7 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	@Override
-	protected AbstractTileEntityEnergyContainer getTileEntity() {
+	public AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityEnergyBankBase te = new TileEntityEnergyBankBase();
 		
 		if (this.TIER > 0) te.setTier(this.TIER);

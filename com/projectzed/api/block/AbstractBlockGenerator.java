@@ -12,6 +12,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 
@@ -64,12 +65,20 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 		if (side == 3 && meta == 0) return this.front;
 		return side == 0 ? this.base : (side == 1 ? this.top: (side != meta ? this.blockIcon : this.front));
 	}
+	
+	/**
+	 * Method used to grab exact tile entity associated with this block.
+	 * <br>Example: return new TileEntityRFBridge().
+	 */
+	public abstract AbstractTileEntityGenerator getTileEntity();
 
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
 	 */
-	public abstract TileEntity createNewTileEntity(World world, int id);
+	public TileEntity createNewTileEntity(World world, int id) {
+		return getTileEntity();
+	}
 
 	/**
 	 * Method used to update block's state
