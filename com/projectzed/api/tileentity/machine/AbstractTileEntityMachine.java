@@ -2,7 +2,6 @@ package com.projectzed.api.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -194,12 +193,14 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 			if (flag != this.stored > 0) {
 				flag1 = true;
-				((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+				// ((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 			}
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
 
+		if (this.blockType != null && this.blockType instanceof AbstractBlockMachine) ((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+		
 		if (flag1) this.markDirty();
 	}
 
@@ -339,16 +340,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
-		NBTTagList tagList = comp.getTagList("Items", 10);
-		this.slots = new ItemStack[this.getSizeInvenotry()];
-
-		for (int i = 0; i < tagList.tagCount(); i++) {
-			NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
-			byte b0 = temp.getByte("Slot");
-
-			if (b0 >= 0 && b0 < this.slotTop.length) this.slots[b0] = ItemStack.loadItemStackFromNBT(temp);
-		}
-
 		this.cookTime = comp.getShort("CookTime");
 		this.stored = comp.getInteger("ProjectZedPowerStored");
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
@@ -366,18 +357,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		comp.setShort("CookTime", (short) this.cookTime);
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
-		NBTTagList tagList = comp.getTagList("Items", 10);
-
-		for (int i = 0; i < this.slots.length; i++) {
-			if (this.slots[i] != null) {
-				NBTTagCompound temp = new NBTTagCompound();
-				temp.setByte("Slot", (byte) i);
-				this.slots[i].writeToNBT(temp);
-				tagList.appendTag(temp);
-			}
-		}
-
-		comp.setTag("Items", tagList);
 
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}

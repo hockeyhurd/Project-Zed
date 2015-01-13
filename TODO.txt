@@ -1,14 +1,12 @@
 BUGS:
 =================================
-    - Fix te's not being 'active' when processing.
-    - Fix machines not saving output stack on 'server' close.
+    - None that I know of, Yay!
 
 TODO:
 =================================
     - Add fuel registry for nuclear stuff. (kinda)
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
-    - Recipes for nuclear stuff. (kinda)
     - Add implemented sounds to machines.
 
 IDEAS:

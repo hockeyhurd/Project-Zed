@@ -36,6 +36,8 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	protected static boolean keepInventory;
 	protected Random random = new Random();
 	
+	protected byte frontDir;
+	
 	@SideOnly(Side.CLIENT)
 	protected IIcon iconFront, iconFrontOn, iconBottom, iconSide;
 	
@@ -66,7 +68,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (meta == 1 && this.active ? this.iconFrontOn : this.iconFront));
+		return side == 0 || side == 1 ? this.iconBottom : (side != meta  && side != this.frontDir ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
 	}
 
 	/*
@@ -90,19 +92,20 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * @param z = z-pos.
 	 */
 	public void updateBlockState(boolean active, World world, int x, int y, int z) {
-		TileEntity tileentity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		keepInventory = true;
 
-		this.active = active;
-		int metaData = this.active ? 1 : 0;
-		world.setBlock(x, y, z, getBlockInstance());
-
-		keepInventory = false;
-		world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
-
-		if (tileentity != null) {
-			tileentity.validate();
-			world.setTileEntity(x, y, z, tileentity);
+		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
+			// this.active = active;
+			this.active = ((AbstractTileEntityMachine) tileEntity).isPoweredOn();
+			int metaData = this.active ? 1 : 0;
+			world.setBlock(x, y, z, getBlockInstance());
+	
+			keepInventory = false;
+			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+	
+			tileEntity.validate();
+			world.setTileEntity(x, y, z, tileEntity);
 		}
 	}
 	
@@ -160,10 +163,25 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		if (l == 0) {
+			frontDir = 2;
+			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		}
+		
+		if (l == 1) {
+			frontDir = 5;
+			world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		}
+		
+		if (l == 2) {
+			frontDir = 3;
+			world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		}
+		
+		if (l == 3) {
+			frontDir = 4;
+			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		}
 
 		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
