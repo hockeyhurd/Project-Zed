@@ -8,6 +8,7 @@ TODO:
     - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
+    - Add NEI support for crafting machine related recipes.
 
 IDEAS:
 =================================    

@@ -51,10 +51,12 @@ public class GuiCentrifuge extends GuiMachine {
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		super.drawGuiContainerBackgroundLayer(f, x, y);
 
-		float progressWater = (float) ((float) this.te2.getWaterInTank() / (float) this.te2.getMaxWaterStorage()) * 41f;
-		progressWater = 41 - progressWater;
+		float progressWater = (float) ((float) this.te2.getWaterInTank() / (float) this.te2.getMaxWaterStorage()) * 39f;
+		progressWater = 39f - progressWater;
 		int v = 0 - (int) progressWater;
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 41);
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 39);
+		
+		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 216, 0, 16, 39);
 	}
 
 	/*

@@ -119,7 +119,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	 */
 	@Override
 	protected boolean canSmelt() {
-		if (this.slots[0] == null || this.slots[2] == null || this.stored - this.energyBurnRate <= 0) return false;
+		if (this.slots[0] == null || this.slots[2] == null || this.stored - this.energyBurnRate <= 0 || !hasWaterInTank()) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
 			ItemStack stack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
@@ -205,7 +205,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public void smeltItem() {
-		if (this.canSmelt() && hasWaterInTank()) {
+		if (this.canSmelt()) {
 			ItemStack itemstack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
 
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
