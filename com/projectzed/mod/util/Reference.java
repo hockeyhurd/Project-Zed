@@ -55,7 +55,7 @@ public class Reference extends AbstractReference {
 		/** Base unit for transfer unit for basic pipe. */
 		// public static final int BASE_PIPE_TRANSFER_RATE = 320;
 		// public static final int BASE_PIPE_TRANSFER_RATE = 20;
-		public static final int BASE_PIPE_TRANSFER_RATE = 320;
+		public static final int BASE_PIPE_TRANSFER_RATE = 320 * 5;
 		
 		/**
 		 * Conversion rate from mcu to rf.
@@ -99,7 +99,7 @@ public class Reference extends AbstractReference {
 		 * @param amount = amount to 'convert'.
 		 * @return formatted string.
 		 */
-		public static String convertToString(int amount) {
+		public static String convertToString(double amount) {
 			String ret = "";
 			
 			if (amount >= 1e6 && amount < 1e9) {

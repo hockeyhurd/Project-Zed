@@ -1,13 +1,12 @@
 package com.projectzed.mod.item;
 
-import java.text.DecimalFormat;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
@@ -22,7 +21,6 @@ import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
  */
 public class ItemMcUReader extends AbstractItemMetalic {
 
-	private final DecimalFormat DF = new DecimalFormat("###,###.##");
 	private final ChatHelper chatHelper;
 	
 	/**
@@ -41,8 +39,8 @@ public class ItemMcUReader extends AbstractItemMetalic {
 			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
 			boolean full = cont.getEnergyStored() == cont.getMaxStorage();
 			
-			player.addChatComponentMessage(chatHelper.comp("Stored: " + DF.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
-			player.addChatComponentMessage(chatHelper.comp("Max Storage: " + DF.format(cont.getMaxStorage()) + "McU"));
+			player.addChatComponentMessage(chatHelper.comp("Stored: " + NumberFormatter.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
+			player.addChatComponentMessage(chatHelper.comp("Max Storage: " + NumberFormatter.format(cont.getMaxStorage()) + "McU"));
 			if (cont instanceof TileEntityEnergyBankBase) player.addChatComponentMessage(chatHelper.comp("Tier: " + (((TileEntityEnergyBankBase) cont).getTier() + 1)));  
 
 		}

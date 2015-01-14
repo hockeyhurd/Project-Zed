@@ -230,7 +230,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
 	public int getMaxImportRate() {
-		return Reference.Constants.BASE_MACH_USAGE * 4;
+		return Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
 
 	/*

@@ -1,7 +1,6 @@
 package com.projectzed.mod.gui;
 
-import java.text.DecimalFormat;
-
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -13,6 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Mathd;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
@@ -39,7 +39,6 @@ public class GuiEnergyContainer extends GuiContainer {
 	public final ResourceLocation texture;
 	private AbstractTileEntityEnergyContainer te;
 	private String stringToDraw;
-	private final DecimalFormat df = new DecimalFormat("###,###,###");
 	
 	// This should only be for Energy cells.
 	private GuiButton[] buttons;
@@ -74,9 +73,10 @@ public class GuiEnergyContainer extends GuiContainer {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
-		// this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 
-		this.stringToDraw = "Power: " + df.format(this.te.getEnergyStored()) + " / " + Constants.convertToString(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
+		String formatStored = this.te.getEnergyStored() < 1e6 ? format(this.te.getEnergyStored()) : "" + format( (double) this.te.getEnergyStored() / 1e6) + " mil.";
+		
+		this.stringToDraw = "Power: " + formatStored + " / " + Constants.convertToString(this.te.getMaxStorage()) + " " + Constants.ENERGY_UNIT;
 		this.fontRendererObj.drawString(I18n.format(this.stringToDraw, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.stringToDraw) / 2, this.ySize - 110,
 				4210752);
 	}

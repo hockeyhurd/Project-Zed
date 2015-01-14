@@ -1,6 +1,7 @@
 BUGS:
 =================================
     - None that I know of, Yay!
+    - Nuclear stuffs not showing generation rate in gui
 
 TODO:
 =================================
@@ -9,7 +10,8 @@ TODO:
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
     - Add NEI support for crafting machine related recipes.
-    - Make sure all data info to user is decimal formatted.
+    - Implement fusion reactor logic.
+    - Make tiered solar arrays have tiered max storages.
 
 IDEAS:
 =================================    

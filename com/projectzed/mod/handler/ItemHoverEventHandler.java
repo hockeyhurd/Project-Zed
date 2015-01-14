@@ -1,7 +1,9 @@
 package com.projectzed.mod.handler;
 
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import com.projectzed.api.block.AbstractBlockContainer;
@@ -13,7 +15,7 @@ import com.projectzed.mod.block.container.BlockEnergyCell;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
- * 
+ * Class containing code for all tooltip info related to blocks.
  * 
  * @author hockeyhurd
  * @version Jan 12, 2015
@@ -49,7 +51,7 @@ public class ItemHoverEventHandler {
 			if (b != null) {
 				if (b instanceof AbstractBlockContainer) {
 					type = 0;
-					if (b instanceof BlockEnergyCell) event.toolTip.add("Capacity: " + ((BlockEnergyCell) b).getTileEntity().getMaxStorage() + " McU");
+					if (b instanceof BlockEnergyCell) event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(((BlockEnergyCell) b).getTileEntity().getMaxStorage()) + " McU");
 					amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
 				}
 				
@@ -74,7 +76,7 @@ public class ItemHoverEventHandler {
 			if (amount > 0) {
 				String prefix = type == 0 ? "Transfer Rate: " : "Generation Rate: ";
 				String suffix = type < 2 ? " McU/t" : "TO_BE_DEFINED";
-				event.toolTip.add(prefix + amount + suffix);
+				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
 			}
 		}
 	}

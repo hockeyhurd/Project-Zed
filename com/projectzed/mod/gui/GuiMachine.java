@@ -1,6 +1,5 @@
 package com.projectzed.mod.gui;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public ResourceLocation texture;
 	private AbstractTileEntityMachine te;
 	private String stringToDraw;
-	private final DecimalFormat df = new DecimalFormat("###,###,###");
 
 	protected Vector4Helper<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;

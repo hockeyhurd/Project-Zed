@@ -1,5 +1,7 @@
 package com.projectzed.mod.gui.component;
 
+import static com.hockeyhurd.api.util.NumberFormatter.format;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = "Power: " + this.stored + " / " + this.max + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
+		String text0 = "Power: " + format((Number) this.stored) + " / " + format((Number) this.max) + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
 		
 		if (list.size() == 0) list.add(text0);
 		else list.set(0, text0);
