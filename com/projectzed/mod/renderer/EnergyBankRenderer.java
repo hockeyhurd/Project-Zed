@@ -1,5 +1,6 @@
 package com.projectzed.mod.renderer;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
-	private final float PIXEL = 1f / 48f;
+	private final float PIXEL = 1f / 144f;
 	private float progressBar = 0.0f;
 
 	/**
@@ -48,29 +49,12 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
 		this.bindTexture(texture);
 
 		int xx = te.xCoord;
 		int yy = te.yCoord;
 		int zz = te.zCoord;
-		this.progressBar = ((TileEntityEnergyBankBase) te).getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage(); 
-
-		// TODO: Testing code (must remove):
-		
-		// -1
-		/*drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, -1);
-		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, -1);
-		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, -1);*/
-
-		// +1
-		/*drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, 1);
-		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, 1);
-		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, 1);*/
-		
-		// 0
-		/*drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, 0, 0);
-		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, 1, 0);
-		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, 2, 0);*/
 
 		drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, (byte) 0);
 		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, (byte) 1);
@@ -106,7 +90,13 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * @param valve = valve, (blue : -1, grey : 0, orange : 1).
 	 */
 	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, byte layer) {
-		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
+		
+		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
+			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
+			this.progressBar = (float) ((TileEntityEnergyBankBase) te).getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage();
+		}
+		
+		int progressIndex = (int) (this.progressBar * 8);
 		
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
@@ -122,22 +112,15 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			if (valve == -1) {
 				if (layer == 0) {
 					max = 16f * this.PIXEL;
-					min = 0f;
-					difU = 0f;
-					difV = 0f;
+					min = 0f * this.PIXEL;
+					difU = 0f * this.PIXEL;
+					difV = 0f * this.PIXEL;
 				}
 				
 				else if (layer == 1) {
 					max = 32f * this.PIXEL;
 					min = 16f * this.PIXEL;
 					difU = 16f * this.PIXEL;
-					difV = 0f;
-				}
-				
-				else if (layer == 2) {
-					max = 48f * this.PIXEL;
-					min = 32f * this.PIXEL;
-					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 			}
@@ -156,13 +139,6 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-				
-				else if (layer == 2) {
-					max = 16f * this.PIXEL;
-					min = 0f * this.PIXEL;
-					difU = 16f * this.PIXEL;
-					difV = 16f * this.PIXEL;
-				}
 			}
 	
 			else {
@@ -179,12 +155,71 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 					difU = 0f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
+			}
+			
+			if (layer == 2) {
 				
-				else if (layer == 2) {
-					max = 32f * this.PIXEL;
-					min = 16f * this.PIXEL;
+				if (progressIndex == 0) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
+					difU = 32f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 1) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
+					difU = 16f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 2) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
 					difU = 0f * this.PIXEL;
-					difV = 32f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 3) {
+					max = 64f * this.PIXEL;
+					min = 48f * this.PIXEL;
+					difU = 48f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 4) {
+					max = 64f * this.PIXEL;
+					min = 48f * this.PIXEL;
+					difU = 32f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 5) {
+					max = 64f * this.PIXEL;
+					min = 48f * this.PIXEL;
+					difU = 16f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+
+				else if (progressIndex == 6) {
+					max = 80f * this.PIXEL;
+					min = 64f * this.PIXEL;
+					difU = 64f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 7) {
+					max = 80f * this.PIXEL;
+					min = 64f * this.PIXEL;
+					difU = 48f * this.PIXEL;
+					difV = 0f * this.PIXEL;
+				}
+				
+				else if (progressIndex == 8) {
+					max = 80f * this.PIXEL;
+					min = 64f * this.PIXEL;
+					difU = 32f * this.PIXEL;
+					difV = 0f * this.PIXEL;
 				}
 			}
 	
