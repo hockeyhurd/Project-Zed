@@ -51,7 +51,7 @@ public class ItemHoverEventHandler {
 			if (b != null) {
 				if (b instanceof AbstractBlockContainer) {
 					type = 0;
-					if (b instanceof BlockEnergyCell) event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(((BlockEnergyCell) b).getTileEntity().getMaxStorage()) + " McU");
+					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(((BlockEnergyCell) b).getTileEntity().getMaxStorage()) + " McU");
 					amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
 				}
 				

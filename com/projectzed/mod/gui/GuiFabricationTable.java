@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.gui.component.GuiClearButton;
+import com.projectzed.mod.gui.component.GuiSortButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
@@ -50,8 +51,12 @@ public class GuiFabricationTable extends GuiContainer {
 		int posX = (this.width - this.xSize) / 2 + 50;
 		int posY = (this.height - this.ySize) / 2 + 8;
 		
-		this.buttonList.add(new GuiClearButton(0, posX, posY, "x"));
-		this.buttonList.add(new GuiButton(1, posX - 20, posY + 20, 32, 20, "Sort"));
+		this.buttonList.add(new GuiClearButton(0, posX, posY, ""));
+		this.buttonList.add(new GuiSortButton(1, posX - 24, posY + 16, "sort123"));
+		this.buttonList.add(new GuiSortButton(2, posX - 4, posY + 16, "sort321"));
+		this.buttonList.add(new GuiSortButton(3, posX - 24, posY + 34, "sortAZ"));
+		this.buttonList.add(new GuiSortButton(4, posX - 4, posY + 34, "sortZA"));
+		// this.buttonList.add(new GuiButton(1, posX - 20, posY + 20, 32, 20, "Sort"));
 	}
 	
 	/*
@@ -59,17 +64,15 @@ public class GuiFabricationTable extends GuiContainer {
 	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
 	 */
 	public void actionPerformed(GuiButton button) {
-		switch (button.id) {
-			case 0:
+			if (button.id == 0) {
 				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
 				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 1));
-				break;
+			}
 				
-			case 1:
-				((ContainerFabricationTable)this.inventorySlots).sortInventory();
+			else if (button.id > 0 && button.id <= 4) {
+				((ContainerFabricationTable)this.inventorySlots).sortInventory(button.id);
 				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 2));
-				break;
-		}
+			}
 	}
 
 	/*

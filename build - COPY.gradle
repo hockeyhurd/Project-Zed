@@ -47,7 +47,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-	// compile files('libs/HCoreLib-deobf-1.1.15.jar')
+	compile files('eclipse/mods/HCoreLib-1.1.17.jar')
+	// compile files('libs/HCoreLib-deobf-1.1.17.jar')
 	// compile files('CoFHCore-[1.7.10]3.0.0B9-71-dev.jar')
 	
 }

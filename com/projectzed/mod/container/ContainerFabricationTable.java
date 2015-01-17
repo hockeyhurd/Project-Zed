@@ -105,39 +105,63 @@ public class ContainerFabricationTable extends Container {
 	
 	/**
 	 * Method to sort inventory.
+	 * @param sortType = sort method (1 for lowest item id to highest, 2 for reverse previous, 3 for a-z by stack name, 4 z-a by stack name).
 	 */
-	public void sortInventory() {
+	public void sortInventory(int sortType) {
 		TimeLapse timeLapse = new TimeLapse();
 		HashMap<Integer, List<ItemStack>> map = new HashMap<Integer, List<ItemStack>>();
+		HashMap<String, List<ItemStack>> map2 = new HashMap<String, List<ItemStack>>();
 		List<ItemStack> outputList = new ArrayList<ItemStack>();
 		
 		int id = 0;
+		String name = "";
 		for (int i = 10; i < te.getSizeInvenotry(); i++) {
 			if (te.getStackInSlot(i) != null) {
 				id = Item.getIdFromItem(te.getStackInSlot(i).getItem());
+				name = te.getStackInSlot(i).getDisplayName();
 				List<ItemStack> tempList = new ArrayList<ItemStack>();
 				
-				if (map.containsKey(id)) tempList = map.get(id);
+				if (sortType <= 2 && map.containsKey(id)) tempList = map.get(id);
+				else if (sortType > 2 && map2.containsKey(name)) tempList = map2.get(name);
 				
 				tempList.add(te.getStackInSlot(i));
-				map.put(id, tempList);
+				if (sortType <= 2) map.put(id, tempList);
+				else if (sortType > 2) map2.put(name, tempList);
 				
 				te.setInventorySlotContents(i,(ItemStack) null);
 			}
 		}
 		
-		List<Integer> keys = new ArrayList<Integer>(map.keySet());
-		Collections.sort(keys);
-		
-		for (int i : keys) {
+		if (sortType <= 2) {
+			List<Integer> keys = new ArrayList<Integer>(map.keySet());
+			Collections.sort(keys);
+			if (sortType == 2) Collections.reverse(keys);
 			
-			if (map.containsKey(i) && map.get(i) != null && map.get(i).size() > 0) {
-				for (ItemStack stack : map.get(i)) {
-					outputList.add(stack);
-					map.remove(i);
+			for (int i : keys) {
+				
+				if (map.containsKey(i) && map.get(i) != null && map.get(i).size() > 0) {
+					for (ItemStack stack : map.get(i)) {
+						outputList.add(stack);
+						map.remove(i);
+					}
+				}
+				
+			}
+		}
+		
+		else if (sortType > 2) {
+			List<String> keys = new ArrayList<String>(map2.keySet());
+			Collections.sort(keys);
+			if (sortType == 4) Collections.reverse(keys);
+			
+			for (String s : keys) {
+				if (map2.containsKey(s) && map2.get(s) != null && map2.get(s).size() > 0) {
+					for (ItemStack stack : map2.get(s)) {
+						outputList.add(stack);
+						map2.remove(s);
+					}
 				}
 			}
-			
 		}
 		
 		for (int i = 0; i < outputList.size(); i++) {
