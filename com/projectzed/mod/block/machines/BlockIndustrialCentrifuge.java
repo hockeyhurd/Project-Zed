@@ -56,7 +56,7 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 		else {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
 			
-			if (te != null) {
+			if (te != null && player != null) {
 				if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.water_bucket && ((TileEntityIndustrialCentrifuge) te).canAddWaterToTank()) {
 					((TileEntityIndustrialCentrifuge) te).addWaterToTank();
 					player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(Items.bucket, 1));

@@ -29,6 +29,9 @@ public interface IFluidContainer {
 	
 	/** Get the fluid associated with this container. */
 	public Fluid getFluidType();
+	
+	/** Get whether we can add a fluid to tank (stored + amount <= maxStored). */
+	public boolean canAddFluid(int amount);
 
 	/** Function used to get the max import rate */
 	public int getMaxImportRate();

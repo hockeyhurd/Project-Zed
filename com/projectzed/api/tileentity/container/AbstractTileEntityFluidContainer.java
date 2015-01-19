@@ -125,6 +125,22 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.storage.IFluidContainer#canAddFluid(int)
+	 */
+	@Override
+	public boolean canAddFluid(int amount) {
+		return getFluidStored() + amount <= getMaxStorage();
+	}
+	
+	/**
+	 * @return whether we can add the default 1000 mb to tank.
+	 */
+	public boolean canAddDefaultFluid() {
+		return canAddFluid(1000);
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.fluid.storage.IFluidContainer#getFluidType()
 	 */
 	public abstract Fluid getFluidType();

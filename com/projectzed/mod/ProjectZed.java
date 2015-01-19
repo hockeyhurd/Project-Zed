@@ -18,6 +18,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockRFBridge;
+import com.projectzed.mod.block.container.BlockTank;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -117,7 +118,7 @@ public class ProjectZed {
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
 	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
-	public static Block tankTier0;
+	public static Block tankTier0, tankTier1, tankTier2, tankTier3;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -257,7 +258,10 @@ public class ProjectZed {
 		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
 		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
 		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
-		// tankTier0 = new BlockTank(Material.rock, "tankTier0");
+		tankTier0 = new BlockTank(Material.rock, "tankTier0", (byte) 0);
+		tankTier1 = new BlockTank(Material.rock, "tankTier1", (byte) 1);
+		tankTier2 = new BlockTank(Material.rock, "tankTier2", (byte) 2);
+		tankTier3 = new BlockTank(Material.rock, "tankTier3", (byte) 3);
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 

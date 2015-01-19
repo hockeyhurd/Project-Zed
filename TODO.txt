@@ -1,21 +1,21 @@
 BUGS:
 =================================
-    - None that I know of, Yay!
     - Nuclear stuffs not showing generation rate in gui
 
 TODO:
 =================================
     - Add fuel registry for nuclear stuff. (kinda)
-    - Implement new rendering code for energy cell.
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
     - Add NEI support for crafting machine related recipes.
     - Implement fusion reactor logic.
     - Make tiered solar arrays have tiered max storages.
+    - For tanks, add proper fluid handler
+    - Add proper custom texture renderer for fluid tanks (see energy cell rendering techniques for more info).
 
 IDEAS:
 =================================    
-    - Increase Titanium ore gen by * 2 atleast. 
-    - Check and adjust crafting recipe weirdness 
+    - Increase Titanium ore gen by * 2 at least. 
     - Make energy pipes more clearly tiered? 
-    - Add transfer rate info for all te's
+    - Add fluid net similar to energy net?
+    - Add fluid and item pipes?

@@ -10,19 +10,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.ProjectZed;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class used to easily create and normalize any block container (energy, fluid, etc.).
+ * Class containing neccessary abstract code for fluid containers (block).
  * 
  * @author hockeyhurd
- * @version Nov 29, 2014
+ * @version Jan 19, 2015
  */
-public abstract class AbstractBlockContainer extends BlockContainer {
+public abstract class AbstractBlockFluidContainer extends BlockContainer {
 
 	/** Name of the block */
 	protected String name;
@@ -33,11 +33,9 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	protected Random random = new Random();
 	
 	/**
-	 * @param material = material of block.
-	 * @param assetDir = asset directory to find icon img.
-	 * @param name = name of block.
+	 * @param material
 	 */
-	public AbstractBlockContainer(Material material, String assetDir, String name) {
+	public AbstractBlockFluidContainer(Material material, String assetDir, String name) {
 		super(material);
 		this.assetDir = assetDir;
 		this.name = name;
@@ -56,13 +54,11 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	}
 	
 	/**
-	 * Method used to grab exact tile entity associated with this block.
-	 * <br>Example: return new TileEntityRFBridge().
+	 * @return tile entity associated with this block container.
 	 */
-	public abstract AbstractTileEntityEnergyContainer getTileEntity();
-	
-	/*
-	 * (non-Javadoc)
+	public abstract AbstractTileEntityFluidContainer getTileEntity();
+
+	/* (non-Javadoc)
 	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
 	 */
 	@Override
@@ -76,7 +72,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 */
 	@Override
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
@@ -86,7 +82,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 		doBreakBlock(world, x, y, z);
 		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
 	}
-
+	
 	/**
 	 * Method allows for control of behavior of block when being destroyed.
 	 * @param world = world object.
@@ -95,5 +91,5 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * @param z = z-position.
 	 */
 	protected abstract void doBreakBlock(World world, int x, int y, int z);
-
+	
 }
