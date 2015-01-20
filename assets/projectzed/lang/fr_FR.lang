@@ -45,6 +45,7 @@ item.forgingHammer.name=Forging Hammer
 item.mcuReader.name=Lecteur McU
 item.screw.name=Tournevis
 item.sheetAluminium.name=Feuille d'aluminium
+item.sheetReinforced.name=Feuille composite renforcé
 item.gearAluminium.name=Mécanisme d'aluminium
 item.conductiveCoil.name=Bobine conductrice
 
@@ -63,6 +64,7 @@ item.ingotCopper.name=Lingot de cuivre
 item.ingotNickel.name=Lingot de nickel
 item.ingotAluminium.name=Lingot d'aluminium 
 item.ingotUranium.name=Lingot d'uranium 
+item.mixedAlloy.name=Alliage métalique mélangé
 
 // Fuels:
 item.emptyFuelRod.name=Barre de carburant vide
