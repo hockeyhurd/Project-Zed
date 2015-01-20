@@ -16,7 +16,6 @@ public class ItemMixedAlloy extends AbstractItemMetalic {
 	 */
 	public ItemMixedAlloy(String name, String assetDir) {
 		super(name, assetDir);
-		// TODO Auto-generated constructor stub
 	}
 
 }

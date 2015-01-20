@@ -38,8 +38,6 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 	}
 
 	/*
-	 * TODO: Change ... instanceof AbstractTileEntityGenerator to ... instanceof AbstractTileEntityContainer once properly changed! (non-Javadoc)
-	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
 	 */
 	protected void updateConnections() {

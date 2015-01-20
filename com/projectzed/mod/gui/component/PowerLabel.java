@@ -5,6 +5,8 @@ import static com.hockeyhurd.api.util.NumberFormatter.format;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.util.EnumChatFormatting;
+
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.mod.util.Reference;
 
@@ -58,10 +60,20 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = "Power: " + format((Number) this.stored) + " / " + format((Number) this.max) + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
+		String text0 = EnumChatFormatting.GREEN + "Power: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
 		
-		if (list.size() == 0) list.add(text0);
-		else list.set(0, text0);
+		float percent = ((Number)(this.stored)).floatValue() / ((Number)(this.max)).floatValue() * 100.0f;
+		String text1 = String.format("%.2f%%", percent);
+		
+		if (list.size() == 0) {
+			list.add(text0);
+			list.add(text1);
+		}
+		
+		else {
+			list.set(0, text0);
+			list.set(1, text1);
+		}
 		return list;
 	}
 	

@@ -184,7 +184,7 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	@Override
 	public Packet getDescriptionPacket() {
-		// TODO Auto-generated method stub
+		// TODO Create decription packet and message handler.
 		return null;
 	}
 

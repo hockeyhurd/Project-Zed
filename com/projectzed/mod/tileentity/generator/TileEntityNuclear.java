@@ -226,7 +226,6 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		}
 	}
 
-	// TODO: This needs to be changed to uranium / w/e this requires for fuel.
 	/**
 	 * Function used to get the item burn time from given itemstack.
 	 * @param stack = stack to (try) to burn.

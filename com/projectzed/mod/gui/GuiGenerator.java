@@ -1,6 +1,7 @@
 package com.projectzed.mod.gui;
 
-import java.text.DecimalFormat;
+import static com.hockeyhurd.api.util.NumberFormatter.format;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,6 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	public final ResourceLocation texture;
 	private AbstractTileEntityGenerator te;
 	private String stringToDraw;
-	private final DecimalFormat df = new DecimalFormat("###,###,###");
 
 	protected Vector4Helper<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
@@ -70,10 +70,7 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 
-		String genSize = "Generation rate: " + df.format(genRate) + " McU/t";
-		// if (this.te instanceof TileEntityNuclear &&
-		// !this.te.canProducePower()) genSize =
-		// "Error! Reactor not set correctly!";
+		String genSize = "Generation rate: " + format(genRate) + " McU/t";
 		this.fontRendererObj.drawString(I18n.format(genSize, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(genSize) / 2,
 				this.ySize - 116, 4210752);
 	}

@@ -98,14 +98,17 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
 			// this.active = active;
 			this.active = ((AbstractTileEntityMachine) tileEntity).isPoweredOn();
-			int metaData = this.active ? 1 : 0;
-			world.setBlock(x, y, z, getBlockInstance());
-	
-			keepInventory = false;
-			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
-	
-			tileEntity.validate();
-			world.setTileEntity(x, y, z, tileEntity);
+			
+			if (this.active) {
+				int metaData = this.active ? 1 : 0;
+				world.setBlock(x, y, z, getBlockInstance());
+		
+				keepInventory = false;
+				world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+		
+				tileEntity.validate();
+				world.setTileEntity(x, y, z, tileEntity);
+			}
 		}
 	}
 	
