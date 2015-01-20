@@ -103,6 +103,7 @@ public class CommonProxy {
 		OreDictionary.registerOre("plateAluminium", ProjectZed.sheetAluminium);
 		OreDictionary.registerOre("plateReinforced", ProjectZed.sheetReinforced);
 		OreDictionary.registerOre("mixedAlloy", ProjectZed.mixedAlloy);
+		OreDictionary.registerOre("dustCoal", ProjectZed.dustCoal);
 	}
 	
 	private void registerWorldgen() {

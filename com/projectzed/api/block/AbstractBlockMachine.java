@@ -68,7 +68,8 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1 ? this.iconBottom : (side != meta  && side != this.frontDir ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
+		// return side == 0 || side == 1 ? this.iconBottom : (side != meta  && side != this.frontDir ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
+		return side == 0 || side == 1 ? this.iconBottom : (side != meta && side != this.frontDir ? this.blockIcon : (side == this.frontDir && this.active ? this.iconFrontOn : this.iconFront));
 	}
 
 	/*
@@ -99,16 +100,13 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 			// this.active = active;
 			this.active = ((AbstractTileEntityMachine) tileEntity).isPoweredOn();
 			
-			if (this.active) {
-				int metaData = this.active ? 1 : 0;
 				world.setBlock(x, y, z, getBlockInstance());
 		
 				keepInventory = false;
-				world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+				world.setBlockMetadataWithNotify(x, y, z, this.frontDir, 2);
 		
 				tileEntity.validate();
 				world.setTileEntity(x, y, z, tileEntity);
-			}
 		}
 	}
 	

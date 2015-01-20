@@ -46,6 +46,7 @@ import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
+import com.projectzed.mod.item.metals.ItemDustCoal;
 import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustNickel;
 import com.projectzed.mod.item.metals.ItemDustTitanium;
@@ -143,6 +144,7 @@ public class ProjectZed {
 	// Metals:
 	public static Item dustGold;
 	public static Item dustIron;
+	public static Item dustCoal;
 	public static Item dustTitanium;
 	public static Item dustCopper;
 	public static Item dustNickel;
@@ -289,6 +291,7 @@ public class ProjectZed {
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);
 		dustIron = new ItemDustIron("dustIron", assetDir);
+		dustCoal = new ItemDustCoal("dustCoal", assetDir);
 		dustTitanium = new ItemDustTitanium("dustTitanium", assetDir);
 		dustCopper = new ItemDustCopper("dustCopper", assetDir);
 		dustNickel = new ItemDustNickel("dustNickel", assetDir);

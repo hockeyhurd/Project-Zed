@@ -26,6 +26,10 @@ tile.energyCellTier0.name=Energy Bank - I
 tile.energyCellTier1.name=Energy Bank - II
 tile.energyCellTier2.name=Energy Bank - III
 tile.energyCellTier3.name=Energy Bank - IV
+tile.tankTier0.name=Fluid Tank - I
+tile.tankTier1.name=Fluid Tank - II
+tile.tankTier2.name=Fluid Tank - II
+tile.tankTier3.name=Fluid Tank - IV
 
 
 // RF STUFF:
@@ -52,6 +56,7 @@ item.conductiveCoil.name=Conductive Coil
 // Metals:
 item.dustGold.name=Gold Dust
 item.dustIron.name=Iron Dust
+item.dustCoal.name=Coal Dust
 item.dustTitanium.name=Titanium Dust
 item.dustCopper.name=Copper Dust
 item.dustNickel.name=Nickel Dust
