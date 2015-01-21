@@ -12,6 +12,7 @@ TODO:
     - Make tiered solar arrays have tiered max storages.
     - For tanks, add proper fluid handler
     - Add proper custom texture renderer for fluid tanks (see energy cell rendering techniques for more info).
+    - Tweak energy bank/cells recipes.
 
 IDEAS:
 =================================    

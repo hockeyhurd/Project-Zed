@@ -36,8 +36,8 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		super("energyBank");
 		this.tier = 0;
 		this.maxPowerStorage = this.tiers[0];
-		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
-		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
+		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 8;
+		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 8;
 	}
 	
 	/**

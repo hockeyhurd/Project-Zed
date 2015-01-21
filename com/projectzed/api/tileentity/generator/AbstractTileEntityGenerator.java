@@ -155,7 +155,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
 	public int getMaxExportRate() {
-		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
+		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * 8;
 	}
 
 	/*

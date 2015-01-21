@@ -1,6 +1,37 @@
 package com.projectzed.mod.registry;
 
-import static com.projectzed.mod.ProjectZed.*;
+import static com.projectzed.mod.ProjectZed.conductiveCoil;
+import static com.projectzed.mod.ProjectZed.emptyFuelRod;
+import static com.projectzed.mod.ProjectZed.energyCellTier0;
+import static com.projectzed.mod.ProjectZed.energyCellTier1;
+import static com.projectzed.mod.ProjectZed.energyCellTier2;
+import static com.projectzed.mod.ProjectZed.energyCellTier3;
+import static com.projectzed.mod.ProjectZed.energyPipeClear;
+import static com.projectzed.mod.ProjectZed.energyPipeOrange;
+import static com.projectzed.mod.ProjectZed.energyPipeRed;
+import static com.projectzed.mod.ProjectZed.fabricationTable;
+import static com.projectzed.mod.ProjectZed.fissionController;
+import static com.projectzed.mod.ProjectZed.forgingHammer;
+import static com.projectzed.mod.ProjectZed.furnaceGen;
+import static com.projectzed.mod.ProjectZed.gearAluminium;
+import static com.projectzed.mod.ProjectZed.industrialCentrifuge;
+import static com.projectzed.mod.ProjectZed.industrialCrusher;
+import static com.projectzed.mod.ProjectZed.industrialFurnace;
+import static com.projectzed.mod.ProjectZed.industrialLumberMill;
+import static com.projectzed.mod.ProjectZed.industrialMetalPress;
+import static com.projectzed.mod.ProjectZed.machineContainer;
+import static com.projectzed.mod.ProjectZed.mcuReader;
+import static com.projectzed.mod.ProjectZed.mixedAlloy;
+import static com.projectzed.mod.ProjectZed.nuclearChamberLock;
+import static com.projectzed.mod.ProjectZed.nuclearChamberWall;
+import static com.projectzed.mod.ProjectZed.nuclearReactantCore;
+import static com.projectzed.mod.ProjectZed.screw;
+import static com.projectzed.mod.ProjectZed.sheetAluminium;
+import static com.projectzed.mod.ProjectZed.solarArray;
+import static com.projectzed.mod.ProjectZed.solarArrayHV;
+import static com.projectzed.mod.ProjectZed.solarArrayLV;
+import static com.projectzed.mod.ProjectZed.solarArrayMV;
+import static com.projectzed.mod.ProjectZed.thickenedGlass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +110,7 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(forgingHammer, 1, "xxx", "xyx", " y ", 'x', "ingotTitanium", 'y', "stickWood"));
 		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, " yx", "yxy", "xy ", 'x', "ingotCopper", 'y', Items.redstone));
 		reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
 		
 		// Blocks:
 		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
@@ -86,9 +118,9 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(nuclearChamberWall, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "stone"));
 		reg.shapedList.add(createShapedRecipe(nuclearChamberLock, 4, "x x", " y ", "x x", 'x', screw, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearReactantCore, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateReinforced", 'z', "blockDiamond"));
-		reg.shapedList.add(createShapedRecipe(energyPipeRed, 8, "xyx", 'x', "ingotTitanium", 'y', Items.redstone));
-		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 8, "xyx", 'x', "ingotTitanium", 'y', "dustCopper"));
-		reg.shapedList.add(createShapedRecipe(energyPipeClear, 4, "xyx", "yzy", "xyx", 'x', "ingotTitanium", 'y', energyPipeOrange, 'z', thickenedGlass));
+		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 3, "xyx", "zzz", "xyx", 'x', "ingotIron", 'y', "dustCopper", 'z', energyPipeRed));
+		reg.shapedList.add(createShapedRecipe(energyPipeClear, 3, "xyx", "zzz", "xyx", 'x', "ingotTitanium", 'y', thickenedGlass, 'z', energyPipeOrange));
 		reg.shapedList.add(createShapedRecipe(energyCellTier0, 1, "xyx", "yzy", "xyx", 'x', "ingotNickel", 'y', "blockRedstone", 'z', machineContainer));
 		reg.shapedList.add(createShapedRecipe(energyCellTier1, 1, "xxx", "x x", "xxx", 'x', energyCellTier0));
 		reg.shapedList.add(createShapedRecipe(energyCellTier2, 1, "xxx", "x x", "xxx", 'x', energyCellTier1));
