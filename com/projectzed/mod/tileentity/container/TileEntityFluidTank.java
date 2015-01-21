@@ -2,9 +2,8 @@ package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
 
-import com.projectzed.api.fluid.storage.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 
 /**
@@ -23,8 +22,7 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 	public TileEntityFluidTank() {
 		super("fluidTank");
 		this.maxFluidStorage = this.TIER_SIZE[this.tier];
-		this.importRate = 1000;
-		this.exportRate = 1000;
+		internalTank = new FluidTank(this.maxFluidStorage);
 	}
 	
 	/**
@@ -110,71 +108,6 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getFluidType()
-	 */
-	@Override
-	public Fluid getFluidType() {
-		return this.isEmpty ? null : this.fluidType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getMaxImportRate()
-	 */
-	@Override
-	public int getMaxImportRate() {
-		return this.importRate;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getMaxExportRate()
-	 */
-	@Override
-	public int getMaxExportRate() {
-		return this.exportRate;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#requestFluid(com.projectzed.api.fluid.storage.IFluidContainer, int)
-	 */
-	@Override
-	public int requestFluid(IFluidContainer cont, Fluid fluid, int amount) {
-		if (cont != null && this.getFluidType() == fluid && this.getMaxExportRate() >= amount) {
-			if (this.storedFluid - amount >= 0) this.storedFluid -= amount;
-			else {
-				amount = this.storedFluid;
-				this.storedFluid = 0;
-			}
-			
-			return amount;
-		}
-		
-		else return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#addFluid(com.projectzed.api.fluid.storage.IFluidContainer, net.minecraftforge.fluids.Fluid, int)
-	 */
-	@Override
-	public int addFluid(IFluidContainer cont, Fluid fluid, int amount) {
-		if (cont != null && this.getFluidType() == fluid && this.getMaxImportRate() >= amount) {
-			if (this.storedFluid + amount <= this.maxFluidStorage) this.storedFluid += amount;
-			else {
-				amount = this.maxFluidStorage - this.storedFluid;
-				this.storedFluid = this.maxFluidStorage;
-			}
-			
-			return amount;
-		}
-		
-		else return 0;
 	}
 
 	// TODO: Create logic for importing contents (via pipe or something).

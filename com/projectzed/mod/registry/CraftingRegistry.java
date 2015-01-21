@@ -36,6 +36,8 @@ import static com.projectzed.mod.ProjectZed.thickenedGlass;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.projectzed.mod.util.ModsLoadedHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

@@ -285,6 +285,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		
 		// If server side and every '1' second, send packet message to all clients.
 		if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+		this.markDirty();
 		super.updateEntity();
 	}
 

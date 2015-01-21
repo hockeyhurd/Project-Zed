@@ -199,6 +199,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		exportContents();
 		
 		this.powerMode = this.storedPower > 0;
+		this.markDirty();
 		
 		super.updateEntity();
 	}
