@@ -136,8 +136,8 @@ public class GuiEnergyContainer extends GuiContainer {
 					new GuiIOButton(0, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)),
 					new GuiIOButton(1, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)),
 					
-					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
-					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
 					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
 					new GuiIOButton(5, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST))
 			};
@@ -162,8 +162,8 @@ public class GuiEnergyContainer extends GuiContainer {
 					
 					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)),
 					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
-					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
-					new GuiIOButton(5, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH))
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
+					new GuiIOButton(5, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH))
 			};
 		}
 		
@@ -174,8 +174,8 @@ public class GuiEnergyContainer extends GuiContainer {
 					
 					new GuiIOButton(2, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)),
 					new GuiIOButton(3, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)),
-					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)),
-					new GuiIOButton(5, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH))
+					new GuiIOButton(4, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)),
+					new GuiIOButton(5, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH))
 			};
 		}
 		

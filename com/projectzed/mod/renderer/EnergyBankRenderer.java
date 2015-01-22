@@ -134,10 +134,10 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 				}
 				
 				else if (layer == 1) {
-					max = 32f * this.PIXEL;
-					min = 16f * this.PIXEL;
-					difU = 32f * this.PIXEL;
-					difV = 0f * this.PIXEL;
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
+					difU = 0f * this.PIXEL;
+					difV = 16f * this.PIXEL;
 				}
 			}
 	
