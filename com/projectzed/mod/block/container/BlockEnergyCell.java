@@ -47,27 +47,47 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		blockIcon = reg.registerIcon(this.assetDir + "energyCellGeneric_icon");
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#renderAsNormalBlock()
+	 */
 	@SideOnly(Side.CLIENT)
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#isOpaqueCube()
+	 */
 	@SideOnly(Side.CLIENT)
 	public boolean isOpaqueCube() {
 		return false;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#canRenderInPass(int)
+	 */
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderInPass(int pass) {
 		ClientProxy.renderPass = pass;
 		return true;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getRenderBlockPass()
+	 */
 	@SideOnly(Side.CLIENT)
 	public int getRenderBlockPass() {
 		return 1;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getRenderType()
+	 */
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return ClientProxy.energyCell;

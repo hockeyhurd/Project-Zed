@@ -15,7 +15,11 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTank;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing code for generic tank container.
@@ -40,6 +44,54 @@ public class BlockTank extends AbstractBlockFluidContainer {
 		this.TIER = tier;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#renderAsNormalBlock()
+	 */
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#isOpaqueCube()
+	 */
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean isOpaqueCube() {
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#canRenderInPass(int)
+	 */
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderInPass(int pass) {
+		ClientProxy.renderPass = pass;
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getRenderBlockPass()
+	 */
+	@SideOnly(Side.CLIENT)
+	public int getRenderBlockPass() {
+		return 1;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getRenderType()
+	 */
+	@SideOnly(Side.CLIENT)
+	public int getRenderType() {
+		return ClientProxy.energyCell;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()

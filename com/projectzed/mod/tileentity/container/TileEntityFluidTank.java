@@ -1,10 +1,14 @@
 package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import com.projectzed.api.util.EnumFrameType;
 
 /**
  * Class containing code for te fluid tank.
@@ -12,19 +16,21 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
  * @author hockeyhurd
  * @version Jan 10, 2015
  */
-public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
+public class TileEntityFluidTank extends AbstractTileEntityFluidContainer implements IModularFrame {
 
 	private byte tier = 0;
 	private final int[] TIER_SIZE = new int[] {
-			(int) 8e3, (int) 8e3 * 4, (int) 8e3 * 4 * 4, (int) 8e3 * 4 * 4 * 4 
+			(int) 8e3, (int) 8e3 * 4, (int) 8e3 * 4 * 4, (int) 8e3 * 4 * 4 * 4
 	};
-	
+
+	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+
 	public TileEntityFluidTank() {
 		super("fluidTank");
 		this.maxFluidStorage = this.TIER_SIZE[this.tier];
 		internalTank = new FluidTank(this.maxFluidStorage);
 	}
-	
+
 	/**
 	 * @param tier = tier to set.
 	 */
@@ -32,7 +38,7 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 		this.tier = tier >= 0 && tier < this.TIER_SIZE.length ? tier : 0;
 		this.maxFluidStorage = this.TIER_SIZE[tier];
 	}
-	
+
 	/**
 	 * @return tier to get.
 	 */
@@ -42,7 +48,69 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getSizeInventory()
+	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
+	 */
+	@Override
+	public EnumFrameType getType() {
+		return EnumFrameType.FLUID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.projectzed.api.tileentity.IModularFrame#setSideValve(net.minecraftforge
+	 * .common.util.ForgeDirection, byte)
+	 */
+	@Override
+	public void setSideValve(ForgeDirection dir, byte value) {
+		openSides[dir.ordinal()] = value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.projectzed.api.tileentity.IModularFrame#setSideValveAndRotate(net
+	 * .minecraftforge.common.util.ForgeDirection)
+	 */
+	@Override
+	public void setSideValveAndRotate(ForgeDirection dir) {
+		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.projectzed.api.tileentity.IModularFrame#getSideValve(net.minecraftforge
+	 * .common.util.ForgeDirection)
+	 */
+	@Override
+	public byte getSideValve(ForgeDirection dir) {
+		return openSides[dir.ordinal()];
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getSideValve(int)
+	 */
+	@Override
+	public byte getSideValve(int dir) {
+		return openSides[dir];
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
+	 */
+	@Override
+	public byte[] getSidedArray() {
+		return openSides;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #getSizeInventory()
 	 */
 	@Override
 	public int getSizeInventory() {
@@ -51,7 +119,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getInventoryStackLimit()
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #getInventoryStackLimit()
 	 */
 	@Override
 	public int getInventoryStackLimit() {
@@ -60,7 +130,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#initContentsArray()
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #initContentsArray()
 	 */
 	@Override
 	protected void initContentsArray() {
@@ -68,7 +140,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#initSlotsArray()
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #initSlotsArray()
 	 */
 	@Override
 	protected void initSlotsArray() {
@@ -76,7 +150,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -85,7 +161,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getAccessibleSlotsFromSide(int)
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #getAccessibleSlotsFromSide(int)
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
@@ -94,7 +172,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
@@ -103,7 +183,9 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
+	 * @see
+	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
+	 * #canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
@@ -119,6 +201,39 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer {
 	public Packet getDescriptionPacket() {
 		// TODO Create decription packet and message handler.
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		// Make sure the tier from nbt is acceptable.
+		byte tier = comp.getByte("ProjectZedFluidTankTier");
+		this.tier = tier >= 0 && tier < this.TIER_SIZE.length ? tier : 0;
+		if (this.maxFluidStorage != this.TIER_SIZE[this.tier]) this.maxFluidStorage = this.TIER_SIZE[this.tier];
+
+		for (int i = 0; i < this.openSides.length; i++) {
+			this.openSides[i] = comp.getByte("ProjectZedFluidTankSide" + i);
+		}
+
+		super.readFromNBT(comp);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		comp.setByte("ProjectZedFluidTankTier", this.tier);
+		
+		for (int i = 0; i < this.openSides.length; i++) {
+			comp.setByte("ProjectZedFluidTankSide" + i, this.openSides[i]);
+		}
+		
+		super.writeToNBT(comp);
 	}
 
 }
