@@ -28,7 +28,7 @@ tile.energyCellTier2.name=Energy Bank - III
 tile.energyCellTier3.name=Energy Bank - IV
 tile.tankTier0.name=Fluid Tank - I
 tile.tankTier1.name=Fluid Tank - II
-tile.tankTier2.name=Fluid Tank - II
+tile.tankTier2.name=Fluid Tank - III
 tile.tankTier3.name=Fluid Tank - IV
 
 

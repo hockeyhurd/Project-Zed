@@ -19,7 +19,7 @@ import com.projectzed.mod.tileentity.container.TileEntityFluidTank;
  */
 public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
-	private ResourceLocation texture;
+	private ResourceLocation[] texture = new ResourceLocation[4];
 	private final float PIXEL = 1f / 48f;
 	private float progressBar = 0.0f;
 	private boolean renderInside = true;
@@ -28,8 +28,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	/**
 	 * @param tier
 	 */
-	public FluidTankRenderer(byte tier) {
-		this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankGeneric.png");
+	public FluidTankRenderer() {
+		// this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankGeneric.png");
+		// this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
+		
+		for (int i = 0; i < texture.length; i++) {
+			this.texture[i] = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + i + ".png");
+		}
 	}
 
 	/*
@@ -40,12 +45,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	 */
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
+		
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
-		this.bindTexture(texture);
+		this.bindTexture(texture[((TileEntityFluidTank) te).getTier()]);
 
 		int xx = te.xCoord;
 		int yy = te.yCoord;
