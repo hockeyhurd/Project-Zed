@@ -6,6 +6,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier2;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
@@ -81,6 +85,18 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityEnergyBankBase.class, "energyBank");
 		reg.idMap.put(TileEntityEnergyBankBase.class, getNextID());
+		
+		reg.map.put(TileEntityFluidTankTier0.class, "fluidTankTier0");
+		reg.idMap.put(TileEntityFluidTankTier0.class, getNextID());
+		
+		reg.map.put(TileEntityFluidTankTier1.class, "fluidTankTier1");
+		reg.idMap.put(TileEntityFluidTankTier1.class, getNextID());
+		
+		reg.map.put(TileEntityFluidTankTier2.class, "fluidTankTier2");
+		reg.idMap.put(TileEntityFluidTankTier2.class, getNextID());
+		
+		reg.map.put(TileEntityFluidTankTier3.class, "fluidTankTier3");
+		reg.idMap.put(TileEntityFluidTankTier3.class, getNextID());
 	}
 	
 	/**

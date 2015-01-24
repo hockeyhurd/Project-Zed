@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.FluidTank;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 
 /**
  * Class containing code for te fluid tank.
@@ -16,16 +18,19 @@ import com.projectzed.api.util.EnumFrameType;
  * @author hockeyhurd
  * @version Jan 10, 2015
  */
-public class TileEntityFluidTank extends AbstractTileEntityFluidContainer implements IModularFrame {
+public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer implements IModularFrame {
 
-	private byte tier = 0;
-	private final int[] TIER_SIZE = new int[] {
+	protected byte tier = 0;
+	protected final int[] TIER_SIZE = new int[] {
 			(int) 8e3, (int) 8e3 * 4, (int) 8e3 * 4 * 4, (int) 8e3 * 4 * 4 * 4
 	};
 
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 
-	public TileEntityFluidTank() {
+	/**
+	 * Sets internal fluid tank and appropriate sizes and other useful data.
+	 */
+	public TileEntityFluidTankBase() {
 		super("fluidTank");
 		this.maxFluidStorage = this.TIER_SIZE[this.tier];
 		internalTank = new FluidTank(this.maxFluidStorage);
@@ -197,10 +202,23 @@ public class TileEntityFluidTank extends AbstractTileEntityFluidContainer implem
 	protected void importContents() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#updateEntity()
+	 */
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFluidTank(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getDescriptionPacket()
+	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		// TODO Create decription packet and message handler.
-		return null;
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFluidTank(this));
 	}
 
 	/*

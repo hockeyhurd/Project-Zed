@@ -30,7 +30,6 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @param name = name of te (its custom name).
 	 */
 	public AbstractTileEntityFluidContainer(String name) {
-		super();
 		setCustomName("container." + name);
 		internalTank = new FluidTank(this.maxFluidStorage);
 	}
@@ -247,6 +246,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	public void updateEntity() {
 		importContents();
 
+		this.markDirty();
 		super.updateEntity();
 	}
 

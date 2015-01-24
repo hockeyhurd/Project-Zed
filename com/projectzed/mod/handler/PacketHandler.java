@@ -2,6 +2,7 @@ package com.projectzed.mod.handler;
 
 import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
+import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
@@ -30,6 +31,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, 4, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 5, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityContainer.class, MessageTileEntityContainer.class, 6, Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, 7, Side.CLIENT);
 	}
 	
 }

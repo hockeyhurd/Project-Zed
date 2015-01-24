@@ -34,7 +34,6 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 *            Example: 'solarArray = container.solarArray'.
 	 */
 	public AbstractTileEntityGenerator(String name) {
-		super();
 		setCustomName("container." + name);
 		defineSource();
 	}

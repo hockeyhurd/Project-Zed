@@ -16,7 +16,7 @@ import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTank;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,21 +27,16 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Jan 7, 2015
  */
-public class BlockTank extends AbstractBlockFluidContainer {
+public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer {
 
 	protected static final ItemStack FILLED_BOTTLE = new ItemStack(Items.potionitem);
 
-	/** Tier of block tank. */
-	private final byte TIER;
-
 	/**
 	 * @param material
-	 * @param assetDir
 	 * @param name
 	 */
-	public BlockTank(Material material, String name, byte tier) {
+	public AbstractBlockTankBase(Material material, String name) {
 		super(material, ProjectZed.assetDir, name);
-		this.TIER = tier;
 	}
 
 	/*
@@ -88,20 +83,14 @@ public class BlockTank extends AbstractBlockFluidContainer {
 	 * @see net.minecraft.block.Block#getRenderType()
 	 */
 	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.energyCell;
-	}
+	public abstract int getRenderType();
 	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
 	 */
 	@Override
-	public AbstractTileEntityFluidContainer getTileEntity() {
-		TileEntityFluidTank te = new TileEntityFluidTank();
-		if (this.TIER > 0) te.setTier(this.TIER);
-		return te;
-	}
+	public abstract AbstractTileEntityFluidContainer getTileEntity();
 
 	/*
 	 * (non-Javadoc)
@@ -128,28 +117,28 @@ public class BlockTank extends AbstractBlockFluidContainer {
 							|| isEmptyComplexContainer(player.getCurrentEquippedItem())
 							|| (player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem && player.isSneaking())) {
 
-						if (((TileEntityFluidTank) te).getTank().getFluid() == null) return true;
+						if (((TileEntityFluidTankBase) te).getTank().getFluid() == null) return true;
 
 						if (player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem) {
 							// handle IFluidContainerItem items
 
 							IFluidContainerItem containerItem = (IFluidContainerItem) player.getCurrentEquippedItem().getItem();
 							int fillFluidAmount = containerItem.fill(player.getCurrentEquippedItem(),
-									((TileEntityFluidTank) te).getTank().getFluid(), true);
-							((TileEntityFluidTank) te).drain(null, fillFluidAmount, true);
+									((TileEntityFluidTankBase) te).getTank().getFluid(), true);
+							((TileEntityFluidTankBase) te).drain(null, fillFluidAmount, true);
 						}
 						else {
 							// handle drain/fill by exchange items
 
-							ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(((TileEntityFluidTank) te).getTank().getFluid(),
+							ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(((TileEntityFluidTankBase) te).getTank().getFluid(),
 									player.getCurrentEquippedItem());
 
 							if (filledContainer != null) {
-								int containerCapacity = FluidContainerRegistry.getContainerCapacity(((TileEntityFluidTank) te).getTank().getFluid(),
+								int containerCapacity = FluidContainerRegistry.getContainerCapacity(((TileEntityFluidTankBase) te).getTank().getFluid(),
 										player.getCurrentEquippedItem());
 
 								if (containerCapacity > 0) {
-									FluidStack drainedFluid = ((TileEntityFluidTank) te).drain(null, containerCapacity, true);
+									FluidStack drainedFluid = ((TileEntityFluidTankBase) te).drain(null, containerCapacity, true);
 									if (drainedFluid != null && drainedFluid.amount == containerCapacity) {
 										if (player.getCurrentEquippedItem().stackSize-- <= 0) {
 											player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
@@ -172,7 +161,7 @@ public class BlockTank extends AbstractBlockFluidContainer {
 							}
 						}
 						
-						System.out.println(((TileEntityFluidTank) te).getTank().getFluidAmount());
+						System.out.println(((TileEntityFluidTankBase) te).getTank().getFluidAmount());
 					}
 
 					// empty item fluid into fluid tank
@@ -180,7 +169,7 @@ public class BlockTank extends AbstractBlockFluidContainer {
 
 						FluidStack containerFluid = getFluidForItem(player.getCurrentEquippedItem());
 
-						if (((TileEntityFluidTank) te).fill(null, containerFluid, true) > 0 && !player.capabilities.isCreativeMode) {
+						if (((TileEntityFluidTankBase) te).fill(null, containerFluid, true) > 0 && !player.capabilities.isCreativeMode) {
 							ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getCurrentEquippedItem());
 
 							if (player.getCurrentEquippedItem().stackSize-- <= 0)
@@ -192,7 +181,7 @@ public class BlockTank extends AbstractBlockFluidContainer {
 							else if (player instanceof EntityPlayerMP) ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
 						}
 
-						System.out.println(((TileEntityFluidTank) te).getTank().getFluidAmount());
+						System.out.println(((TileEntityFluidTankBase) te).getTank().getFluidAmount());
 					}
 				}
 			}
@@ -230,7 +219,7 @@ public class BlockTank extends AbstractBlockFluidContainer {
 	 */
 	@Override
 	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityFluidTank te = (TileEntityFluidTank) world.getTileEntity(x, y, z);
+		TileEntityFluidTankBase te = (TileEntityFluidTankBase) world.getTileEntity(x, y, z);
 		if (te != null) {
 			String fluidName = te.getLocalizedFluidName() == null ? "<empty>" : te.getLocalizedFluidName();
 			ProjectZed.logHelper.info("Destroyed fluid container w/fluid: " + fluidName + ", stored: " + te.getTank().getFluidAmount());

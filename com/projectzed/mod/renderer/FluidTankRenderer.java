@@ -4,37 +4,46 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTank;
+import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * 
+ * Class handling all client side rendering code for fluid tanks.
  * 
  * @author hockeyhurd
  * @version Jan 22, 2015
  */
+@SideOnly(Side.CLIENT)
 public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
-	private ResourceLocation[] texture = new ResourceLocation[4];
+	private ResourceLocation texture;
 	private final float PIXEL = 1f / 48f;
 	private float progressBar = 0.0f;
-	private boolean renderInside = true;
 	private int progressIndex = 0;
+	private byte tier = 0;
+	private boolean renderInside = true;
+	
+	private Vector4Helper<Float> minVec, maxVec;
 
 	/**
 	 * @param tier
 	 */
-	public FluidTankRenderer() {
+	public FluidTankRenderer(byte tier) {
 		// this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankGeneric.png");
-		// this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
+		this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
 		
-		for (int i = 0; i < texture.length; i++) {
-			this.texture[i] = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + i + ".png");
-		}
+		minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
+		maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
 	}
 
 	/*
@@ -51,40 +60,35 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
-		this.bindTexture(texture[((TileEntityFluidTank) te).getTier()]);
-
-		int xx = te.xCoord;
-		int yy = te.yCoord;
-		int zz = te.zCoord;
+		
+		this.bindTexture(texture);
 
 		// drawCuboid((TileEntityFluidTank) te, 0f, 1f, (byte) 0);
 		// drawCuboid((TileEntityFluidTank) te, 1f / 48f, 1f - 1f / 48f, (byte) 1);
 		
-		Vector4Helper<Float> minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
-		Vector4Helper<Float> maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
-		
-		drawCuboid((TileEntityFluidTank) te, minVec, maxVec, (byte) 0);
-		drawCuboid((TileEntityFluidTank) te, minVec, maxVec, (byte) 1);
+		drawCuboid((TileEntityFluidTankBase) te, minVec, maxVec, (byte) 0);
+		drawCuboid((TileEntityFluidTankBase) te, minVec, maxVec, (byte) 1);
+		drawFluid((TileEntityFluidTankBase) te);
 		
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glTranslated(-x, -y, -z);
 	}
 
-	protected void drawCuboid(TileEntityFluidTank te, float min, float max, byte layer) {
+	protected void drawCuboid(TileEntityFluidTankBase te, float min, float max, byte layer) {
 		drawCuboid(te, new Vector4Helper<Float>(min, min, min), new Vector4Helper<Float>(max, max, max), layer);
 	}
 
-	protected void drawCuboid(TileEntityFluidTank te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, byte layer) {
+	protected void drawCuboid(TileEntityFluidTankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, byte layer) {
 
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
-			te = (TileEntityFluidTank) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
-			// this.progressBar = (float) ((TileEntityFluidTank)
-			// te).getEnergyStored() / ((TileEntityFluidTank)
-			// te).getMaxStorage();
+			te = (TileEntityFluidTankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
+			tier = te.getTier();
+			this.progressBar = (float) ((TileEntityFluidTankBase) te).getTank().getFluidAmount() / ((TileEntityFluidTankBase) te).getTank().getCapacity();
 			progressIndex = (int) (this.progressBar * 8);
+			// System.out.println(((TileEntityFluidTank) te).getLocalizedFluidName());
+			// System.out.println(this.tier);
 		}
-
 
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
@@ -233,6 +237,25 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		}
 
 		tess.draw();
+	}
+	
+	protected void drawFluid(TileEntityFluidTankBase te) {
+		if (te == null || te.getTank() == null) {
+			// System.err.println("Error something is null!");
+			return;
+		}
+		
+		FluidStack fluid = te.getTank().getFluid();
+		
+		if (fluid == null || this.progressIndex == 0) {
+			// System.out.println(te.getTank().getFluidAmount());
+			return;
+		}
+
+		// Tessellator tess = Tessellator.instance;
+		IIcon icon = fluid.getFluid().getIcon();
+		TessellatorHelper tessHelp = new TessellatorHelper(icon);
+		tessHelp.drawCuboid(te.xCoord, te.yCoord, te.zCoord, 0.9d, null);
 	}
 	
 	protected void drawZNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {

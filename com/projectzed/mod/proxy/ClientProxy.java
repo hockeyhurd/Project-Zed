@@ -11,7 +11,10 @@ import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
 import com.projectzed.mod.renderer.FluidTankRenderer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTank;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier2;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
@@ -31,7 +34,7 @@ public class ClientProxy extends CommonProxy {
 	public static int renderPass;
 	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
 	public static int energyCell;
-	public static int fluidTank;
+	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	
 	/**
 	 * Default Constructor.
@@ -48,13 +51,19 @@ public class ClientProxy extends CommonProxy {
 		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeClear = RenderingRegistry.getNextAvailableRenderId();
 		energyCell = RenderingRegistry.getNextAvailableRenderId();
-		fluidTank = RenderingRegistry.getNextAvailableRenderId();
+		fluidTankTier0 = RenderingRegistry.getNextAvailableRenderId();
+		fluidTankTier1 = RenderingRegistry.getNextAvailableRenderId();
+		fluidTankTier2 = RenderingRegistry.getNextAvailableRenderId();
+		fluidTankTier3 = RenderingRegistry.getNextAvailableRenderId();
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyBankBase.class, new EnergyBankRenderer((byte) 0));
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTank.class, new FluidTankRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier0.class, new FluidTankRenderer((byte) 0));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier1.class, new FluidTankRenderer((byte) 1));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier2.class, new FluidTankRenderer((byte) 2));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer((byte) 3));
 		
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
