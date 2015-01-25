@@ -1,6 +1,7 @@
 package com.projectzed.mod.block.container;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,6 +31,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer {
 
 	protected static final ItemStack FILLED_BOTTLE = new ItemStack(Items.potionitem);
+	
+	protected byte tier;
+	protected final float PIXEL = 1f / 16f;
+	protected final float CALC = 4f * PIXEL;
 
 	/**
 	 * @param material
@@ -37,6 +42,18 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	 */
 	public AbstractBlockTankBase(Material material, String name) {
 		super(material, ProjectZed.assetDir, name);
+		this.tier = 0;
+		this.setBlockBounds(CALC, 0, CALC, 1f - CALC, 1f, 1f - CALC);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockFluidContainer#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg) {
+		blockIcon = reg.registerIcon(assetDir + this.name + "_item");
 	}
 
 	/*

@@ -9,6 +9,7 @@ import com.projectzed.mod.renderer.EnergyBankItemRenderer;
 import com.projectzed.mod.renderer.EnergyBankRenderer;
 import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
+import com.projectzed.mod.renderer.FluidTankItemRenderer;
 import com.projectzed.mod.renderer.FluidTankRenderer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
@@ -72,6 +73,10 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyCellTier1), new EnergyBankItemRenderer(ProjectZed.energyCellTier1.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyCellTier2), new EnergyBankItemRenderer(ProjectZed.energyCellTier2.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyCellTier3), new EnergyBankItemRenderer(ProjectZed.energyCellTier3.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier0), new FluidTankItemRenderer(ProjectZed.fluidTankTier0.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier1), new FluidTankItemRenderer(ProjectZed.fluidTankTier1.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier2), new FluidTankItemRenderer(ProjectZed.fluidTankTier2.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier3), new FluidTankItemRenderer(ProjectZed.fluidTankTier3.getBlockTextureFromSide(0)));
 	}
 
 }

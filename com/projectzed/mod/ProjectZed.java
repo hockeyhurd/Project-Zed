@@ -122,7 +122,7 @@ public class ProjectZed {
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
 	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
-	public static Block tankTier0, tankTier1, tankTier2, tankTier3;
+	public static Block fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -263,10 +263,10 @@ public class ProjectZed {
 		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
 		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
 		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
-		tankTier0 = new BlockTankTier0(Material.rock);
-		tankTier1 = new BlockTankTier1(Material.rock);
-		tankTier2 = new BlockTankTier2(Material.rock);
-		tankTier3 = new BlockTankTier3(Material.rock);
+		fluidTankTier0 = new BlockTankTier0(Material.rock);
+		fluidTankTier1 = new BlockTankTier1(Material.rock);
+		fluidTankTier2 = new BlockTankTier2(Material.rock);
+		fluidTankTier3 = new BlockTankTier3(Material.rock);
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 

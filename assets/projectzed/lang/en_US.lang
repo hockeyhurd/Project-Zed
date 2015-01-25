@@ -26,10 +26,10 @@ tile.energyCellTier0.name=Energy Bank - I
 tile.energyCellTier1.name=Energy Bank - II
 tile.energyCellTier2.name=Energy Bank - III
 tile.energyCellTier3.name=Energy Bank - IV
-tile.tankTier0.name=Fluid Tank - I
-tile.tankTier1.name=Fluid Tank - II
-tile.tankTier2.name=Fluid Tank - III
-tile.tankTier3.name=Fluid Tank - IV
+tile.fluidTankTier0.name=Fluid Tank - I
+tile.fluidTankTier1.name=Fluid Tank - II
+tile.fluidTankTier2.name=Fluid Tank - III
+tile.fluidTankTier3.name=Fluid Tank - IV
 
 
 // RF STUFF:

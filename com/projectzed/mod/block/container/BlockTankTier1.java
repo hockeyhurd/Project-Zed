@@ -21,7 +21,8 @@ public class BlockTankTier1 extends AbstractBlockTankBase {
 	 * @param material
 	 */
 	public BlockTankTier1(Material material) {
-		super(material, "tankTier1");
+		super(material, "fluidTankTier1");
+		this.tier = (byte) 1;
 	}
 
 	/* (non-Javadoc)
