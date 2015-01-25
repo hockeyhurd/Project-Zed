@@ -2,9 +2,9 @@ package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -22,8 +22,9 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 
 	public TileEntityFluidTankBase te;
 	public int x, y, z;
-	public int stored;
-	// public byte tier;
+	public int fluidAmount;
+	public int fluidNameLength;
+	public String fluidName;
 		
 	public MessageTileEntityFluidTank() {
 	}
@@ -36,8 +37,12 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
-		this.stored = te.getTank().getFluidAmount();
-		// this.tier = te.getTier();
+		this.fluidAmount = te.getTank().getFluidAmount();
+		
+		FluidStack fluidStack = te.getTank().getFluid();
+		this.fluidName = fluidStack != null ? fluidStack.getLocalizedName() : "";
+		
+		this.fluidNameLength = fluidStack != null ? this.fluidName.length() : 0;
 	}
 	
 	/*
@@ -49,8 +54,23 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.x = buf.readInt();
 		this.y = buf.readInt();
 		this.z = buf.readInt();
-		this.stored = buf.readInt();
-		// this.tier = buf.readByte();
+		this.fluidAmount = buf.readInt();
+		this.fluidNameLength = buf.readInt();
+
+		if (this.fluidNameLength > 0) {
+			char[] array = new char[this.fluidNameLength];
+			String name = "";
+			
+			for (int i = 0; i < this.fluidNameLength; i++) {
+				array[i] = buf.readChar();
+				name += array[i];
+			}
+			
+			this.fluidName = name;
+		}
+		
+		else this.fluidName = "";
+		
 	}
 
 	/*
@@ -62,8 +82,16 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		buf.writeInt(this.x);
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
-		buf.writeInt(this.stored);
-		// buf.writeByte(this.tier);
+		buf.writeInt(this.fluidAmount);
+		buf.writeInt(this.fluidNameLength);
+		
+		if (this.fluidNameLength > 0) {
+			char[] array = this.fluidName.toCharArray();
+			
+			for (char c : array) {
+				buf.writeChar(c);
+			}
+		}
 	}
 	
 	/*
@@ -77,10 +105,20 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		if (te != null && te instanceof TileEntityFluidTankBase) {
 			TileEntityFluidTankBase te2 = (TileEntityFluidTankBase) te;
 
-			/*ProjectZed.logHelper.info(te2.getTank().getFluidAmount());
-			if (te2.getTank().getFluid() != null && message.stored > 0) {
-				te2.getTank().setFluid(new FluidStack(te2.getTank().getFluid(), message.stored));
-			}*/
+			if (message.fluidName != null && message.fluidName.length() > 0 && message.fluidAmount > 0) {
+				// ProjectZed.logHelper.info(message.fluidName);
+				Fluid fluid = new Fluid(message.fluidName);
+				FluidStack stack;
+				
+				if (fluid != null) {
+					stack = new FluidStack(fluid, message.fluidAmount);
+					if (stack != null) {
+						te2.getTank().setFluid(stack);
+						// ProjectZed.logHelper.info("Fluid set successfully!");
+					}
+				}
+				
+			}
 		}
 		
 		return null;

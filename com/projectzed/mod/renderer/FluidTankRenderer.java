@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
 import cpw.mods.fml.relauncher.Side;
@@ -34,6 +34,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	private boolean renderInside = true;
 	
 	private Vector4Helper<Float> minVec, maxVec;
+	private Vector4Helper<Float> fluidMinVec, fluidMaxVec;
 
 	/**
 	 * @param tier
@@ -44,6 +45,8 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		
 		minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
 		maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
+		fluidMinVec = new Vector4Helper<Float>(48f / 6f * this.PIXEL, 1f / 48f, 48f / 6f * this.PIXEL);
+		fluidMinVec = new Vector4Helper<Float>(1f - 48f / 6f * this.PIXEL, 1f - 1f / 48f, 1f - 48f / 6f * this.PIXEL);
 	}
 
 	/*
@@ -62,13 +65,14 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
 		
 		this.bindTexture(texture);
+		
+		// if (te instanceof TileEntityFluidTankBase) ProjectZed.logHelper.info(((TileEntityFluidTankBase) te).getTank());
 
 		// drawCuboid((TileEntityFluidTank) te, 0f, 1f, (byte) 0);
 		// drawCuboid((TileEntityFluidTank) te, 1f / 48f, 1f - 1f / 48f, (byte) 1);
 		
 		drawCuboid((TileEntityFluidTankBase) te, minVec, maxVec, (byte) 0);
 		drawCuboid((TileEntityFluidTankBase) te, minVec, maxVec, (byte) 1);
-		drawFluid((TileEntityFluidTankBase) te);
 		
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_BLEND);
@@ -84,10 +88,11 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityFluidTankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
 			tier = te.getTier();
-			this.progressBar = (float) ((TileEntityFluidTankBase) te).getTank().getFluidAmount() / ((TileEntityFluidTankBase) te).getTank().getCapacity();
+			this.progressBar = te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity());
 			progressIndex = (int) (this.progressBar * 8);
-			// System.out.println(((TileEntityFluidTank) te).getLocalizedFluidName());
-			// System.out.println(this.tier);
+			
+			if (this.progressBar > 0 && te.getTank().getFluid() != null) ProjectZed.logHelper.info(te.getTank().getFluid().getLocalizedName()); 
+			else ProjectZed.logHelper.info(this.progressBar);
 		}
 
 		Tessellator tess = Tessellator.instance;
@@ -239,7 +244,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		tess.draw();
 	}
 	
-	protected void drawFluid(TileEntityFluidTankBase te) {
+	protected void drawFluid(TileEntityFluidTankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
 		if (te == null || te.getTank() == null) {
 			// System.err.println("Error something is null!");
 			return;
@@ -252,10 +257,20 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			return;
 		}
 
-		// Tessellator tess = Tessellator.instance;
 		IIcon icon = fluid.getFluid().getIcon();
-		TessellatorHelper tessHelp = new TessellatorHelper(icon);
-		tessHelp.drawCuboid(te.xCoord, te.yCoord, te.zCoord, 0.9d, null);
+		if (icon == null) {
+			System.out.println("null returning!");
+			return;
+		}
+		Tessellator tess = Tessellator.instance;
+		tess.startDrawingQuads();
+		
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMinV());
+		
+		tess.draw();
 	}
 	
 	protected void drawZNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {

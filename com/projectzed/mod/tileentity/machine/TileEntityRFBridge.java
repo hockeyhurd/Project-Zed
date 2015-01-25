@@ -243,14 +243,23 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		// *Converting to RF*
 		if (!flip) {
 			if (this.storedPower > 0 && this.storedRF < this.maxStorageRF) {
-				if (this.storedPower - this.exportRate > 0 && this.storedRF + this.importRateRF <= this.maxStorageRF) {
-					this.storedPower -= this.exportRate;
-					this.storedRF += this.importRateRF;
-				}
 
+				int differenceRF = Math.min(this.importRateRF, this.maxStorageRF - this.storedRF);
+				int difference = Math.min(this.exportRate, Reference.Constants.getMcUFromRF(differenceRF));
+				
+				if (this.storedPower - difference >= 0 && this.storedRF + differenceRF <= this.maxStorageRF) {
+					this.storedPower -= difference;
+					this.storedRF += differenceRF;
+				}
+				
 				else {
-					this.storedRF += Reference.Constants.getRFFromMcU(this.storedPower);
-					this.storedPower = 0;
+					difference = Math.min(difference, this.storedPower);
+					differenceRF = Math.min(differenceRF, Reference.Constants.getRFFromMcU(difference));
+					
+					if (this.storedPower - difference >= 0 && this.storedRF + differenceRF <= this.maxStorageRF) {
+						this.storedPower -= difference;
+						this.storedRF += differenceRF;
+					}
 				}
 
 				if (this.storedPower < 0) this.storedPower = 0;
@@ -261,14 +270,23 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		// *Converting to McU*
 		else {
 			if (this.storedRF > 0 && this.storedPower < this.maxPowerStorage) {
-				if (this.storedRF - this.exportRateRF > 0 && this.storedPower + this.importRate <= this.maxPowerStorage) {
-					this.storedRF -= this.exportRateRF;
-					this.storedPower += this.importRate;
+				
+				int difference = Math.min(this.importRate, this.maxPowerStorage - this.storedPower);
+				int differenceRF = Math.min(this.exportRateRF, Reference.Constants.getRFFromMcU(difference));
+				
+				if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
+					this.storedRF -= differenceRF;
+					this.storedPower += difference;
 				}
-
+				
 				else {
-					this.storedPower += Reference.Constants.getMcUFromRF(this.storedRF);
-					this.storedRF = 0;
+					differenceRF = Math.min(differenceRF, this.storedRF);
+					difference = Math.min(difference, Reference.Constants.getMcUFromRF(differenceRF));
+					
+					if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
+						this.storedRF -= differenceRF;
+						this.storedPower += difference;
+					}
 				}
 
 				if (this.storedRF < 0) this.storedRF = 0;
@@ -293,34 +311,71 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		// *Converting to RF*
 		if (this.storedRF > 0 && !flip) {
 
+			int amount = 0;
 			if (worldObj.getTileEntity(x - 1, y, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x - 1, y, z);
-				hand.receiveEnergy(ForgeDirection.EAST, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.EAST)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.EAST, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.EAST, this.extractEnergy(amount, false), false);
 			}
 
 			if (worldObj.getTileEntity(x + 1, y, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x + 1, y, z);
-				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.WEST)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.WEST, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.WEST, this.extractEnergy(amount, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y - 1, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y - 1, z);
-				hand.receiveEnergy(ForgeDirection.UP, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.UP)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.UP, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.UP, this.extractEnergy(amount, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y + 1, z) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y + 1, z);
-				hand.receiveEnergy(ForgeDirection.DOWN, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.DOWN)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.DOWN, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.DOWN, this.extractEnergy(amount, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y, z - 1) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z - 1);
-				hand.receiveEnergy(ForgeDirection.SOUTH, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.SOUTH)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.SOUTH, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.SOUTH, this.extractEnergy(amount, false), false);
 			}
 
 			if (worldObj.getTileEntity(x, y, z + 1) instanceof IEnergyHandler) {
 				IEnergyHandler hand = (IEnergyHandler) worldObj.getTileEntity(x, y, z + 1);
-				hand.receiveEnergy(ForgeDirection.NORTH, this.extractEnergy(this.exportRateRF, false), false);
+				if (!hand.canConnectEnergy(ForgeDirection.NORTH)) return;
+				
+				amount = hand.receiveEnergy(ForgeDirection.NORTH, this.exportRateRF, true);
+				amount = Math.min(amount, this.extractEnergy(this.exportRateRF, true));
+				if (amount == 0) return;
+				
+				hand.receiveEnergy(ForgeDirection.NORTH, this.extractEnergy(amount, false), false);
 			}
 		}
 
