@@ -48,6 +48,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		GL11.glTranslated(x, y, z);
 		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_BLEND);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
 		this.bindTexture(texture);
 
@@ -60,6 +61,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		drawCuboid((TileEntityEnergyBankBase) te, 2f / 48f, 1f - 2f / 48f, (byte) 2);
 		
 		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glTranslated(-x, -y, -z);
 	}
 
@@ -92,7 +94,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
-			this.progressBar = (float) ((TileEntityEnergyBankBase) te).getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage();
+			this.progressBar = (float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage();
 		}
 		
 		int progressIndex = (int) (this.progressBar * 8);
@@ -223,10 +225,10 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			}
 	
 			// -zz
-			if (counter == 2) drawZNeg(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 3) drawZNeg(tess, minVec, maxVec, min, max, difU, difV);
 	
 			// +zz
-			if (counter == 3) drawZPos(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 2) drawZPos(tess, minVec, maxVec, min, max, difU, difV);
 	
 			// -xx
 			if (counter == 4) drawXNeg(tess, minVec, maxVec, min, max, difU, difV);

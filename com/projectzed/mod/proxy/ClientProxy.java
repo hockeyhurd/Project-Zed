@@ -11,6 +11,8 @@ import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
 import com.projectzed.mod.renderer.FluidTankItemRenderer;
 import com.projectzed.mod.renderer.FluidTankRenderer;
+import com.projectzed.mod.renderer.ThickenedGlassItemRenderer;
+import com.projectzed.mod.renderer.ThickenedGlassRenderer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
@@ -36,6 +38,7 @@ public class ClientProxy extends CommonProxy {
 	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
 	public static int energyCell;
 	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
+	public static int thickenedGlass;
 	
 	/**
 	 * Default Constructor.
@@ -48,6 +51,7 @@ public class ClientProxy extends CommonProxy {
 	 * and to register any special renderer's we may have.
 	 */
 	public void registerRenderInformation() {
+		
 		energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeClear = RenderingRegistry.getNextAvailableRenderId();
@@ -56,6 +60,7 @@ public class ClientProxy extends CommonProxy {
 		fluidTankTier1 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier2 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier3 = RenderingRegistry.getNextAvailableRenderId();
+		thickenedGlass = RenderingRegistry.getNextAvailableRenderId();
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
@@ -77,6 +82,9 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier1), new FluidTankItemRenderer(ProjectZed.fluidTankTier1.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier2), new FluidTankItemRenderer(ProjectZed.fluidTankTier2.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier3), new FluidTankItemRenderer(ProjectZed.fluidTankTier3.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.thickenedGlass), new ThickenedGlassItemRenderer(ProjectZed.thickenedGlass.getBlockTextureFromSide(0)));
+		
+		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
 	}
 
 }

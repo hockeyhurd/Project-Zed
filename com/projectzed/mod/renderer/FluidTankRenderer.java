@@ -91,8 +91,8 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			this.progressBar = te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity());
 			progressIndex = (int) (this.progressBar * 8);
 			
-			if (this.progressBar > 0 && te.getTank().getFluid() != null) ProjectZed.logHelper.info(te.getTank().getFluid().getLocalizedName()); 
-			else ProjectZed.logHelper.info(this.progressBar);
+			// if (this.progressBar > 0 && te.getTank().getFluid() != null) ProjectZed.logHelper.info(te.getTank().getFluid().getLocalizedName()); 
+			// else ProjectZed.logHelper.info(this.progressBar);
 		}
 
 		Tessellator tess = Tessellator.instance;
