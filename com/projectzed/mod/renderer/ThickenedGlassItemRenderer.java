@@ -1,5 +1,6 @@
 package com.projectzed.mod.renderer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -69,6 +70,7 @@ public class ThickenedGlassItemRenderer extends AbstractItemRenderer {
 
 		// xpos face blue
 		IIcon icon = item.getItem().getIconFromDamage(5);
+		
 		tess.setNormal(0.0f, 1.0f, 0.0f);
 		tess.addVertexWithUV(1f - calc, 0.0, calc, (double) icon.getMaxU(), (double) icon.getMaxV());
 		tess.addVertexWithUV(1f - calc, 1.0, calc, (double) icon.getMaxU(), (double) icon.getMinV());
