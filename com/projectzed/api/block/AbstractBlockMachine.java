@@ -36,8 +36,6 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	protected static boolean keepInventory;
 	protected Random random = new Random();
 	
-	protected byte frontDir;
-	
 	@SideOnly(Side.CLIENT)
 	protected IIcon iconFront, iconFrontOn, iconBottom, iconSide;
 	
@@ -68,8 +66,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		if (side == 3 && meta == 0) return this.iconFront;
-		// return side == 0 || side == 1 ? this.iconBottom : (side != meta  && side != this.frontDir ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
-		return side == 0 || side == 1 ? this.iconBottom : (side != meta && side != this.frontDir ? this.blockIcon : (side == this.frontDir && this.active ? this.iconFrontOn : this.iconFront));
+		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
 	}
 
 	/*
@@ -81,7 +78,12 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		return getTileEntity();
 	}
 
-	protected abstract AbstractTileEntityMachine getTileEntity();
+	/**
+	 * Gets tile entity associated with this machine block.
+	 * 
+	 * @return tile entity instance.
+	 */
+	public abstract AbstractTileEntityMachine getTileEntity();
 
 	/**
 	 * Handles updating the blocks state being called from its te class.
@@ -97,16 +99,19 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		keepInventory = true;
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
-			// this.active = active;
-			this.active = ((AbstractTileEntityMachine) tileEntity).isPoweredOn();
+			this.active = active;
+			int metaData = world.getBlockMetadata(x, y, z);
+
+			AbstractBlockMachine thisBlock = (AbstractBlockMachine) world.getBlock(x, y, z);
+			thisBlock.active = active;
 			
-				world.setBlock(x, y, z, getBlockInstance());
-		
-				keepInventory = false;
-				world.setBlockMetadataWithNotify(x, y, z, this.frontDir, 2);
-		
-				tileEntity.validate();
-				world.setTileEntity(x, y, z, tileEntity);
+			world.setBlock(x, y, z, getBlockInstance());
+
+			keepInventory = false;
+			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+
+			tileEntity.validate();
+			world.setTileEntity(x, y, z, tileEntity);
 		}
 	}
 	
@@ -164,25 +169,10 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-		if (l == 0) {
-			frontDir = 2;
-			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		}
-		
-		if (l == 1) {
-			frontDir = 5;
-			world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		}
-		
-		if (l == 2) {
-			frontDir = 3;
-			world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		}
-		
-		if (l == 3) {
-			frontDir = 4;
-			world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		}
+		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
 		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
 	}
@@ -234,6 +224,15 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		}
 
 		// super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#hasComparatorInputOverride()
+	 */
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
 	}
 
 }

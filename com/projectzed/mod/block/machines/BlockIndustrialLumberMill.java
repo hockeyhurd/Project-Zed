@@ -29,7 +29,7 @@ public class BlockIndustrialLumberMill extends AbstractBlockMachine {
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
 	 */
-	protected AbstractTileEntityMachine getTileEntity() {
+	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialLumberMill();
 	}
 

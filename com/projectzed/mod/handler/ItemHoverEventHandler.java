@@ -8,6 +8,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipeBase;
 import com.projectzed.mod.block.container.BlockEnergyCell;
@@ -62,7 +63,7 @@ public class ItemHoverEventHandler {
 					}
 
 					else {
-						type = 2;
+						type = 3;
 						amount = ((AbstractBlockPipe) b).getTileEntity().getMaxExportRate();
 					}
 				}
@@ -71,11 +72,16 @@ public class ItemHoverEventHandler {
 					type = 1;
 					amount = ((AbstractBlockGenerator) b).getTileEntity().getSource().getEffectiveSize();
 				}
+				
+				else if (b instanceof AbstractBlockMachine) {
+					type = 2;
+					amount = ((AbstractBlockMachine) b).getTileEntity().getEnergyBurnRate();
+				}
 			}
 			
 			if (amount > 0) {
-				String prefix = type == 0 ? "Transfer Rate: " : "Generation Rate: ";
-				String suffix = type < 2 ? " McU/t" : "TO_BE_DEFINED";
+				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : "Burn Rate: ");
+				String suffix = type < 3 ? " McU/t" : "TO_BE_DEFINED";
 				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
 			}
 		}

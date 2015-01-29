@@ -58,6 +58,15 @@ public class CentrifugeRecipeRegistry {
 	}
 	
 	/**
+	 * Get the attempted size of recipe list.
+	 * 
+	 * @return size.
+	 */
+	public static int getMapSize() {
+		return mapModdedTry.size();
+	}
+	
+	/**
 	 * Function used to create StackMapper object with type ItemStack<br>
 	 * from said itemstacks.
 	 * 

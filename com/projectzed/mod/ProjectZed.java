@@ -223,7 +223,7 @@ public class ProjectZed {
 			else logHelper.info("Everything is up to date!");
 		}
 		else logHelper.warn("Skipping checking for updates. WARNING: bugs may exist!");
-		
+			
 		logHelper.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
 	

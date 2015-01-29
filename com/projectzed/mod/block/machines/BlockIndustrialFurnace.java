@@ -26,10 +26,20 @@ public class BlockIndustrialFurnace extends AbstractBlockMachine {
 		this.setBlockName(name);
 	}
 
-	protected AbstractTileEntityMachine getTileEntity() {
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
+	 */
+	@Override
+	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialFurnace();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
+	 */
+	@Override
 	protected Block getBlockInstance() {
 		return this;
 	}
@@ -38,6 +48,7 @@ public class BlockIndustrialFurnace extends AbstractBlockMachine {
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 

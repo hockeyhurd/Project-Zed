@@ -28,6 +28,9 @@ public class ModsLoadedHelper {
 	/** Variable for whether IC2 Exists */
 	public boolean ic2Loaded = false;
 	
+	/** Variable for whether NEI Exists */
+	public boolean neiLoaded = false;
+	
 	/** Mapping containing name and flag of existence. */
 	private HashMap<String, Boolean> mapping;
 	
@@ -62,6 +65,7 @@ public class ModsLoadedHelper {
 		if (isModLoaded("ThermalExpansion")) te4Loaded = true;
 		if (isModLoaded("CoFHCore")) cofhCore = true;
 		if (isModLoaded("IC2")) ic2Loaded = true;
+		if (isModLoaded("NotEnoughItems")) neiLoaded = true;
 		
 		initMapping();
 	}
@@ -93,6 +97,7 @@ public class ModsLoadedHelper {
 		mapping.put("Thermal Expansion", te4Loaded);
 		mapping.put("CoFH Core", cofhCore);
 		mapping.put("ic2", ic2Loaded);
+		mapping.put("nei", neiLoaded);
 	}
 	
 	/**

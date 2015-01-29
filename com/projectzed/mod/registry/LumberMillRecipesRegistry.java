@@ -60,6 +60,15 @@ public class LumberMillRecipesRegistry {
 	private static void initEntries() {
 		mapSet = mapModded.entrySet();
 	}
+	
+	/**
+	 * Get the attempted map of recipe list.
+	 * 
+	 * @return map.
+	 */
+	public static HashMap<ItemStack, ItemStack> getMap() {
+		return mapVanilla;
+	}
 
 	/**
 	 * Static function used to get output of said itemstack from internal mappings and contacting to/from ore dictionary.

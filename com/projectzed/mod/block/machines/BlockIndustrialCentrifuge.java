@@ -34,7 +34,7 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
 	 */
 	@Override
-	protected AbstractTileEntityMachine getTileEntity() {
+	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialCentrifuge();
 	}
 

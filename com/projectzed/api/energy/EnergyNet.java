@@ -1,5 +1,6 @@
 package com.projectzed.api.energy;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -93,8 +94,10 @@ public class EnergyNet {
 	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
 		boolean shouldSend = false;
 		
-		IEnergyContainer te = (IEnergyContainer) world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
-		if (sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || te == null) {
+		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
+		IEnergyContainer cont = null;
+		if (te != null && te instanceof IEnergyContainer) cont = (IEnergyContainer) te;
+		if (/*sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || sourceCont.getEnergyStored() == 0 ||*/ cont == null) {
 			shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}

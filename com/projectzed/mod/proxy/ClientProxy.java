@@ -21,6 +21,7 @@ import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
+import com.projectzed.mod.util.ModsLoadedHelper;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -45,11 +46,20 @@ public class ClientProxy extends CommonProxy {
 	 */
 	public ClientProxy() {
 	}
+	
+	@Override
+	protected void registerRegisters() {
+		super.registerRegisters();
+		if (ModsLoadedHelper.instance().neiLoaded) {
+			// new NEIProjectZedConfig();
+		}
+	}
 
 	/**
 	 * Method used to overwrite CommonProxy's method
 	 * and to register any special renderer's we may have.
 	 */
+	@Override
 	public void registerRenderInformation() {
 		
 		energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
