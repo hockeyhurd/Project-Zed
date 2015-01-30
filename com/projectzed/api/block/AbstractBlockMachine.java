@@ -101,9 +101,6 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
 			this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
-
-			AbstractBlockMachine thisBlock = (AbstractBlockMachine) world.getBlock(x, y, z);
-			thisBlock.active = active;
 			
 			world.setBlock(x, y, z, getBlockInstance());
 
@@ -136,26 +133,26 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 */
 	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
 		if (this.active) {
-			int l = world.getBlockMetadata(x, y, z);
+			int metaData = world.getBlockMetadata(x, y, z);
 			float f = (float) x + 0.5F;
 			float f1 = (float) y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
 			float f2 = (float) z + 0.5F;
 			float f3 = 0.52F;
 			float f4 = random.nextFloat() * 0.6F - 0.3F;
 
-			if (l == 4) {
+			if (metaData == 4) {
 				world.spawnParticle("smoke", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 				world.spawnParticle("flame", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
-			else if (l == 5) {
+			else if (metaData == 5) {
 				world.spawnParticle("smoke", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 				world.spawnParticle("flame", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
-			else if (l == 2) {
+			else if (metaData == 2) {
 				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
 				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
 			}
-			else if (l == 3) {
+			else if (metaData == 3) {
 				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
 				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
 			}

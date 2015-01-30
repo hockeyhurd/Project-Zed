@@ -92,6 +92,8 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 				buf.writeChar(c);
 			}
 		}
+		
+		else buf.writeChar(' ');
 	}
 	
 	/*
@@ -108,17 +110,12 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 			if (message.fluidName != null && message.fluidName.length() > 0 && message.fluidAmount > 0) {
 				// ProjectZed.logHelper.info(message.fluidName);
 				Fluid fluid = new Fluid(message.fluidName);
-				FluidStack stack;
+				FluidStack stack = new FluidStack(fluid, message.fluidAmount);
 				
-				if (fluid != null) {
-					stack = new FluidStack(fluid, message.fluidAmount);
-					if (stack != null) {
-						te2.getTank().setFluid(stack);
-						// ProjectZed.logHelper.info("Fluid set successfully!");
-					}
-				}
-				
+				te2.getTank().setFluid(stack);
 			}
+			
+			else te2.getTank().setFluid((FluidStack) null);
 		}
 		
 		return null;

@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
-	private ResourceLocation texture, fluidTexture;
+	private ResourceLocation texture;
 	private final float PIXEL = 1f / 48f;
 	private float progressBar = 0.0f;
 	private int progressIndex = 0;
@@ -40,19 +40,14 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	 * @param tier
 	 */
 	public FluidTankRenderer(byte tier) {
-		// this.texture = new ResourceLocation("projectzed",
-		// "textures/blocks/fluidTankGeneric.png");
 		this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
-		this.fluidTexture = new ResourceLocation("/terrain.png");
 
 		minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
 		maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
 		
-		// fluidMinVec = new Vector4Helper<Float>(48f / 6f * this.PIXEL, 1f / 48f, 48f / 6f * this.PIXEL);
-		// fluidMaxVec = new Vector4Helper<Float>(1f - 48f / 6f * this.PIXEL, 1f - 1f / 48f, 1f - 48f / 6f * this.PIXEL);
+		fluidMinVec = new Vector4Helper<Float>(5f / 16f, 1f / 16f, 5f / 16f);
+		fluidMaxVec = new Vector4Helper<Float>(1f - 5f / 16f, 1f - 1f / 16f, 1f - 5f / 16f);
 		
-		fluidMinVec = new Vector4Helper<Float>(1f / 16f, 1f / 16f, 1f / 16f);
-		fluidMaxVec = new Vector4Helper<Float>(1f - 1f / 16f, 1f - 1f / 16f, 1f - 1f / 16f);
 	}
 
 	/*
@@ -256,7 +251,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 		FluidStack fluid = te.getTank().getFluid();
 
-		if (fluid == null /*|| this.progressIndex == 0*/) {
+		if (fluid == null || this.progressIndex == 0) {
 			// System.out.println(te.getTank().getFluidAmount());
 			return;
 		}
@@ -271,13 +266,22 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
 		
-		/*tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMinV());*/
+		drawZNeg(tess, icon, minVec, maxVec);
+		drawZPos(tess, icon, minVec, maxVec);
+		drawXNeg(tess, icon, minVec, maxVec);
+		drawXPos(tess, icon, minVec, maxVec);
+		drawYNeg(tess, icon, minVec, maxVec);
+		drawYPos(tess, icon, minVec, maxVec);
 		
 		tess.draw();
 		
+	}
+	
+	protected void drawZNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMinU(), icon.getMinV());
 	}
 
 	protected void drawZNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
@@ -293,6 +297,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, min - difU, min - difV);
 		}
 	}
+	
+	protected void drawZPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMinV());
+	}
 
 	protected void drawZPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
 		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
@@ -307,7 +318,14 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
 		}
 	}
-
+	
+	protected void drawXNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
+	}
+	
 	protected void drawXNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
 		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
 		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
@@ -320,6 +338,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
 			tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
 		}
+	}
+	
+	protected void drawXPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
 	}
 
 	protected void drawXPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
@@ -335,6 +360,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
 		}
 	}
+	
+	protected void drawYNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
+	}
 
 	protected void drawYNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
 		tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, minVec.z, max - difU, min - difV);
@@ -348,6 +380,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, maxVec.z, max - difU, max - difV);
 			tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, minVec.z, max - difU, min - difV);
 		}
+	}
+	
+	protected void drawYPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMinU(), icon.getMinV());
 	}
 
 	protected void drawYPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
