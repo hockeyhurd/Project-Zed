@@ -39,7 +39,9 @@ public class BlockTankTier3 extends AbstractBlockTankBase {
 	 */
 	@Override
 	public AbstractTileEntityFluidContainer getTileEntity() {
-		return new TileEntityFluidTankTier3();
+		TileEntityFluidTankTier3 tank = new TileEntityFluidTankTier3();
+		tank.setTier((byte) 2);
+		return tank;
 	}
 
 }

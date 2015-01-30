@@ -30,8 +30,6 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
 	private final float PIXEL = 1f / 48f;
-	private float progressBar = 0.0f;
-	private int progressIndex = 0;
 	private byte tier = 0;
 	private boolean renderInside = true;
 
@@ -90,8 +88,6 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityFluidTankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
 			tier = te.getTier();
-			this.progressBar = te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity());
-			progressIndex = (int) (this.progressBar * 10);
 		}
 
 		Tessellator tess = tessHelp.tess;
@@ -233,10 +229,12 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 		FluidStack fluid = te.getTank().getFluid();
 
-		if (fluid == null || this.progressIndex == 0) {
+		if (fluid == null /*|| this.progressIndex == 0*/) {
 			// System.out.println(te.getTank().getFluidAmount());
 			return;
 		}
+		
+		
 
 		IIcon icon = fluid.getFluid().getStillIcon();
 		if (icon == null) {
@@ -246,9 +244,8 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 		final Vector4Helper<Float> maxVecY = vec1.copy();
 		
-		// vec1.y = (11f + ((64f - 22f) / 10f) * this.progressIndex) / 64f;
-		vec1.y = (3f + this.progressIndex) / 16f;
-		// if (!Minecraft.getMinecraft().isGamePaused()) System.out.println(vec1.y);
+		// vec1.y = (3f + this.progressIndex) / 16f;
+		vec1.y = (3f + ((int) (te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity()) * 10))) / 16f;
 		
 		this.bindTexture(TextureMap.locationBlocksTexture);
 		Tessellator tess = tessHelp.tess;

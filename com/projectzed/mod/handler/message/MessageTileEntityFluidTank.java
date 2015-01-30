@@ -25,6 +25,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	public int x, y, z;
 	public int fluidAmount;
 	public int fluidID;
+	public byte tier;
 	
 	public MessageTileEntityFluidTank() {
 	}
@@ -37,6 +38,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
+		this.tier = te.getTier();
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
@@ -52,6 +54,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.x = buf.readInt();
 		this.y = buf.readInt();
 		this.z = buf.readInt();
+		this.tier = buf.readByte();
 		this.fluidAmount = buf.readInt();
 		this.fluidID = buf.readInt();
 	}
@@ -65,6 +68,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		buf.writeInt(this.x);
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
+		buf.writeByte(this.tier);
 		buf.writeInt(this.fluidAmount);
 		buf.writeInt(this.fluidID);
 	}
@@ -80,6 +84,8 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		if (te != null && te instanceof TileEntityFluidTankBase) {
 			TileEntityFluidTankBase te2 = (TileEntityFluidTankBase) te;
 
+			te2.setTier(message.tier);
+			
 			if (message.fluidID >= 0) {
 				// ProjectZed.logHelper.info(message.fluidID);
 				Fluid fluid = FluidRegistry.getFluid(message.fluidID);

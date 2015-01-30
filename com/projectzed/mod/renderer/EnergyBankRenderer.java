@@ -28,7 +28,6 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
 	private final float PIXEL = 1f / 144f;
-	private float progressBar = 0.0f;
 
 	/**
 	 * @param tier
@@ -95,10 +94,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
-			this.progressBar = (float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage();
 		}
-		
-		int progressIndex = (int) (this.progressBar * 8);
 		
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
@@ -161,63 +157,63 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			
 			if (layer == 2) {
 				
-				if (progressIndex == 0) {
+				if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 0) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 1) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 1) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 2) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 2) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 0f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 3) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 3) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 48f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 4) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 4) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 5) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 5) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 
-				else if (progressIndex == 6) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 6) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 64f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 7) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 7) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 48f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if (progressIndex == 8) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 8) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 32f * this.PIXEL;

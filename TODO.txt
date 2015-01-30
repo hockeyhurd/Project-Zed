@@ -1,6 +1,7 @@
 BUGS:
 =================================
     - Nuclear stuffs not showing generation rate in gui
+    - Fluid tanks not 'tiering' corectly when adding
 
 TODO:
 =================================
