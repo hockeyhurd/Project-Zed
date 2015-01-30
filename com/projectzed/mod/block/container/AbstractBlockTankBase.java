@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer {
 
 	protected static final ItemStack FILLED_BOTTLE = new ItemStack(Items.potionitem);
-	
+
 	protected byte tier;
 	protected final float PIXEL = 1f / 16f;
 	protected final float CALC = 4f * PIXEL;
@@ -45,10 +45,12 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 		this.tier = 0;
 		this.setBlockBounds(CALC, 0, CALC, 1f - CALC, 1f, 1f - CALC);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockFluidContainer#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 * @see
+	 * com.projectzed.api.block.AbstractBlockFluidContainer#registerBlockIcons
+	 * (net.minecraft.client.renderer.texture.IIconRegister)
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -75,7 +77,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	public boolean isOpaqueCube() {
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#canRenderInPass(int)
@@ -85,7 +87,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 		ClientProxy.renderPass = pass;
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#getRenderBlockPass()
@@ -94,14 +96,14 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	public int getRenderBlockPass() {
 		return 1;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#getRenderType()
 	 */
 	@SideOnly(Side.CLIENT)
 	public abstract int getRenderType();
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
@@ -119,15 +121,15 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		// TODO: read through and clean-up this code!
-		
+
 		if (world.isRemote) return true;
-		
+
 		else {
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
 
 			if (te != null && player != null) {
 
-				if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() != null && !te.isFull()) {
+				if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() != null) {
 
 					// fill item from fluid tank.
 					if (FluidContainerRegistry.isEmptyContainer(player.getCurrentEquippedItem())
@@ -140,19 +142,19 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 							// handle IFluidContainerItem items
 
 							IFluidContainerItem containerItem = (IFluidContainerItem) player.getCurrentEquippedItem().getItem();
-							int fillFluidAmount = containerItem.fill(player.getCurrentEquippedItem(),
-									((TileEntityFluidTankBase) te).getTank().getFluid(), true);
+							int fillFluidAmount = containerItem.fill(player.getCurrentEquippedItem(), ((TileEntityFluidTankBase) te).getTank()
+									.getFluid(), true);
 							((TileEntityFluidTankBase) te).drain(null, fillFluidAmount, true);
 						}
 						else {
 							// handle drain/fill by exchange items
 
-							ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(((TileEntityFluidTankBase) te).getTank().getFluid(),
-									player.getCurrentEquippedItem());
+							ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(
+									((TileEntityFluidTankBase) te).getTank().getFluid(), player.getCurrentEquippedItem());
 
 							if (filledContainer != null) {
-								int containerCapacity = FluidContainerRegistry.getContainerCapacity(((TileEntityFluidTankBase) te).getTank().getFluid(),
-										player.getCurrentEquippedItem());
+								int containerCapacity = FluidContainerRegistry.getContainerCapacity(((TileEntityFluidTankBase) te).getTank()
+										.getFluid(), player.getCurrentEquippedItem());
 
 								if (containerCapacity > 0) {
 									FluidStack drainedFluid = ((TileEntityFluidTankBase) te).drain(null, containerCapacity, true);
@@ -177,7 +179,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 								}
 							}
 						}
-						
+
 						System.out.println(((TileEntityFluidTankBase) te).getTank().getFluidAmount());
 					}
 

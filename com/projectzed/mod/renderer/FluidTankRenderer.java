@@ -1,5 +1,6 @@
 package com.projectzed.mod.renderer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -12,6 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.util.TessellatorHelper;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +37,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 	private Vector4Helper<Float> minVec, maxVec;
 	private Vector4Helper<Float> fluidMinVec, fluidMaxVec;
+	private TessellatorHelper tessHelp;
 
 	/**
 	 * @param tier
@@ -45,9 +48,10 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
 		maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
 		
-		fluidMinVec = new Vector4Helper<Float>(5f / 16f, 1f / 16f, 5f / 16f);
-		fluidMaxVec = new Vector4Helper<Float>(1f - 5f / 16f, 1f - 1f / 16f, 1f - 5f / 16f);
+		fluidMinVec = new Vector4Helper<Float>(5f / 16f, 2f / 16f, 5f / 16f);
+		fluidMaxVec = new Vector4Helper<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
 		
+		tessHelp = new TessellatorHelper(null);
 	}
 
 	/*
@@ -87,14 +91,10 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			te = (TileEntityFluidTankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
 			tier = te.getTier();
 			this.progressBar = te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity());
-			progressIndex = (int) (this.progressBar * 8);
-
-			// if (this.progressBar > 0 && te.getTank().getFluid() != null)
-			// ProjectZed.logHelper.info(te.getTank().getFluid().getLocalizedName());
-			// else ProjectZed.logHelper.info(this.progressBar);
+			progressIndex = (int) (this.progressBar * 10);
 		}
 
-		Tessellator tess = Tessellator.instance;
+		Tessellator tess = tessHelp.tess;
 		tess.startDrawingQuads();
 
 		byte counter = 0;
@@ -153,89 +153,71 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 				}
 			}
 
-			if (layer == 2) {
+			// -zz
+			if (counter == 2) tessHelp.drawZNeg(minVec, maxVec, min, max, difU, difV, true);
 
-				if (progressIndex == 0) {
+			// +zz
+			if (counter == 3) tessHelp.drawZPos(minVec, maxVec, min, max, difU, difV, true);
+
+			// -xx
+			if (counter == 4) tessHelp.drawXNeg(minVec, maxVec, min, max, difU, difV, true);
+
+			// +xx
+			if (counter == 5) tessHelp.drawXPos(minVec, maxVec, min, max, difU, difV, true);
+
+			// +yy
+			if (counter == 1 && layer == 0) {
+				
+				if (valve == -1) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-
-				else if (progressIndex == 1) {
+				
+				else if (valve == 0) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-
-				else if (progressIndex == 2) {
+				
+				else if (valve == 1) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 0f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
+				
+				tessHelp.drawYPos(minVec, maxVec, min, max, difU, difV, true);
+			}
 
-				else if (progressIndex == 3) {
-					max = 64f * this.PIXEL;
-					min = 48f * this.PIXEL;
-					difU = 48f * this.PIXEL;
-					difV = 0f * this.PIXEL;
-				}
-
-				else if (progressIndex == 4) {
-					max = 64f * this.PIXEL;
-					min = 48f * this.PIXEL;
+			// -yy
+			if (counter == 0 && layer == 0) {
+				
+				if (valve == -1) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-
-				else if (progressIndex == 5) {
-					max = 64f * this.PIXEL;
-					min = 48f * this.PIXEL;
+				
+				else if (valve == 0) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-
-				else if (progressIndex == 6) {
-					max = 80f * this.PIXEL;
-					min = 64f * this.PIXEL;
-					difU = 64f * this.PIXEL;
+				
+				else if (valve == 1) {
+					max = 48f * this.PIXEL;
+					min = 32f * this.PIXEL;
+					difU = 0f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
-
-				else if (progressIndex == 7) {
-					max = 80f * this.PIXEL;
-					min = 64f * this.PIXEL;
-					difU = 48f * this.PIXEL;
-					difV = 0f * this.PIXEL;
-				}
-
-				else if (progressIndex == 8) {
-					max = 80f * this.PIXEL;
-					min = 64f * this.PIXEL;
-					difU = 32f * this.PIXEL;
-					difV = 0f * this.PIXEL;
-				}
+				
+				tessHelp.drawYNeg(minVec, maxVec, min, max, difU, difV, true);
 			}
-
-			// -zz
-			if (counter == 2) drawZNeg(tess, minVec, maxVec, min, max, difU, difV);
-
-			// +zz
-			if (counter == 3) drawZPos(tess, minVec, maxVec, min, max, difU, difV);
-
-			// -xx
-			if (counter == 4) drawXNeg(tess, minVec, maxVec, min, max, difU, difV);
-
-			// +xx
-			if (counter == 5) drawXPos(tess, minVec, maxVec, min, max, difU, difV);
-
-			// +yy
-			if (counter == 1) drawYPos(tess, minVec, maxVec, min, max, difU, difV);
-
-			// -yy
-			if (counter == 0) drawYNeg(tess, minVec, maxVec, min, max, difU, difV);
 
 			counter++;
 		}
@@ -243,7 +225,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		tess.draw();
 	}
 
-	protected void drawFluid(TileEntityFluidTankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
+	protected void drawFluid(TileEntityFluidTankBase te, Vector4Helper<Float> vec0, Vector4Helper<Float> vec1) {
 		if (te == null || te.getTank() == null) {
 			// System.err.println("Error something is null!");
 			return;
@@ -262,145 +244,26 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			return;
 		}
 
+		final Vector4Helper<Float> maxVecY = vec1.copy();
+		
+		// vec1.y = (11f + ((64f - 22f) / 10f) * this.progressIndex) / 64f;
+		vec1.y = (3f + this.progressIndex) / 16f;
+		// if (!Minecraft.getMinecraft().isGamePaused()) System.out.println(vec1.y);
+		
 		this.bindTexture(TextureMap.locationBlocksTexture);
-		Tessellator tess = Tessellator.instance;
+		Tessellator tess = tessHelp.tess;
 		tess.startDrawingQuads();
 		
-		drawZNeg(tess, icon, minVec, maxVec);
-		drawZPos(tess, icon, minVec, maxVec);
-		drawXNeg(tess, icon, minVec, maxVec);
-		drawXPos(tess, icon, minVec, maxVec);
-		drawYNeg(tess, icon, minVec, maxVec);
-		drawYPos(tess, icon, minVec, maxVec);
+		tessHelp.drawZNeg(icon, vec0, vec1, false);
+		tessHelp.drawZPos(icon, vec0, vec1, false);
+		tessHelp.drawXNeg(icon, vec0, vec1, false);
+		tessHelp.drawXPos(icon, vec0, vec1, false);
+		
+		tessHelp.drawYNeg(icon, vec0, maxVecY, false);
+		tessHelp.drawYPos(icon, vec0, maxVecY, false);
 		
 		tess.draw();
 		
-	}
-	
-	protected void drawZNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMinU(), icon.getMinV());
-	}
-
-	protected void drawZNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, min - difU, min - difV);
-		}
-	}
-	
-	protected void drawZPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMinV());
-	}
-
-	protected void drawZPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, max - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, max - difU, min - difV);
-			tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		}
-	}
-	
-	protected void drawXNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
-	}
-	
-	protected void drawXNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-			tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		}
-	}
-	
-	protected void drawXPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
-	}
-
-	protected void drawXPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-		}
-	}
-	
-	protected void drawYNeg(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
-	}
-
-	protected void drawYNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, minVec.z, max - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, minVec.z, min - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, minVec.z, min - difU, min - difV);
-			tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, minVec.z, max - difU, min - difV);
-		}
-	}
-	
-	protected void drawYPos(Tessellator tess, IIcon icon, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, icon.getMaxU(), icon.getMinV());
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, icon.getMinU(), icon.getMinV());
-	}
-
-	protected void drawYPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, minVec.z, max - difU, min - difV);
-
-		if (renderInside) {
-			tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, minVec.z, max - difU, min - difV);
-			tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-			tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, minVec.z, min - difU, min - difV);
-		}
 	}
 
 }

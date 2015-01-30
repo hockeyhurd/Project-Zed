@@ -3,6 +3,7 @@ package com.projectzed.mod.handler.message;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
@@ -23,9 +24,8 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	public TileEntityFluidTankBase te;
 	public int x, y, z;
 	public int fluidAmount;
-	public int fluidNameLength;
-	public String fluidName;
-		
+	public int fluidID;
+	
 	public MessageTileEntityFluidTank() {
 	}
 	
@@ -40,9 +40,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
-		this.fluidName = fluidStack != null ? fluidStack.getLocalizedName() : "";
-		
-		this.fluidNameLength = fluidStack != null ? this.fluidName.length() : 0;
+		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.fluidID : -1;
 	}
 	
 	/*
@@ -55,22 +53,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.fluidAmount = buf.readInt();
-		this.fluidNameLength = buf.readInt();
-
-		if (this.fluidNameLength > 0) {
-			char[] array = new char[this.fluidNameLength];
-			String name = "";
-			
-			for (int i = 0; i < this.fluidNameLength; i++) {
-				array[i] = buf.readChar();
-				name += array[i];
-			}
-			
-			this.fluidName = name;
-		}
-		
-		else this.fluidName = "";
-		
+		this.fluidID = buf.readInt();
 	}
 
 	/*
@@ -83,17 +66,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
 		buf.writeInt(this.fluidAmount);
-		buf.writeInt(this.fluidNameLength);
-		
-		if (this.fluidNameLength > 0) {
-			char[] array = this.fluidName.toCharArray();
-			
-			for (char c : array) {
-				buf.writeChar(c);
-			}
-		}
-		
-		else buf.writeChar(' ');
+		buf.writeInt(this.fluidID);
 	}
 	
 	/*
@@ -107,10 +80,11 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		if (te != null && te instanceof TileEntityFluidTankBase) {
 			TileEntityFluidTankBase te2 = (TileEntityFluidTankBase) te;
 
-			if (message.fluidName != null && message.fluidName.length() > 0 && message.fluidAmount > 0) {
-				// ProjectZed.logHelper.info(message.fluidName);
-				Fluid fluid = new Fluid(message.fluidName);
+			if (message.fluidID >= 0) {
+				// ProjectZed.logHelper.info(message.fluidID);
+				Fluid fluid = FluidRegistry.getFluid(message.fluidID);
 				FluidStack stack = new FluidStack(fluid, message.fluidAmount);
+				// ProjectZed.logHelper.info(te2.getLocalizedFluidName());
 				
 				te2.getTank().setFluid(stack);
 			}

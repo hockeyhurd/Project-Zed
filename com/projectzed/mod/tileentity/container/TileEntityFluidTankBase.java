@@ -22,7 +22,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 
 	protected byte tier = 0;
 	protected final int[] TIER_SIZE = new int[] {
-			(int) 8e3, (int) 8e3 * 4, (int) 8e3 * 4 * 4, (int) 8e3 * 4 * 4 * 4
+			(int) 10e3, (int) 10e3 * 4, (int) 10e3 * 4 * 4, (int) 10e3 * 4 * 4 * 4
 	};
 
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
