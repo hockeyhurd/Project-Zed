@@ -42,6 +42,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	public void setTier(byte tier) {
 		this.tier = tier >= 0 && tier < this.TIER_SIZE.length ? tier : 0;
 		this.maxFluidStorage = this.TIER_SIZE[tier];
+		this.internalTank.setCapacity(this.maxFluidStorage);
 	}
 
 	/**

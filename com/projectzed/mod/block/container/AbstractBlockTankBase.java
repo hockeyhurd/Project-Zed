@@ -180,7 +180,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 							}
 						}
 
-						System.out.println(((TileEntityFluidTankBase) te).getTank().getFluidAmount());
+						ProjectZed.logHelper.info("Stored: " + ((TileEntityFluidTankBase) te).getTank().getFluidAmount());
 					}
 
 					// empty item fluid into fluid tank
@@ -200,9 +200,10 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 							else if (player instanceof EntityPlayerMP) ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
 						}
 
-						System.out.println(((TileEntityFluidTankBase) te).getTank().getFluidAmount());
+						ProjectZed.logHelper.info("Stored: " + ((TileEntityFluidTankBase) te).getTank().getFluidAmount());
 					}
 				}
+				
 			}
 		}
 

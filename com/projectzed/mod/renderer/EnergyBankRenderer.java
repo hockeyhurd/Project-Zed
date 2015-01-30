@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.util.TessellatorHelper;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
 import cpw.mods.fml.relauncher.Side;
@@ -28,6 +29,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
 	private final float PIXEL = 1f / 144f;
+	private TessellatorHelper tessHelp;
 
 	/**
 	 * @param tier
@@ -35,6 +37,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	public EnergyBankRenderer(byte tier) {
 		// this.texture = new ResourceLocation("projectzed", "textures/blocks/energyCellTier" + tier + ".png");
 		this.texture = new ResourceLocation("projectzed", "textures/blocks/energyCellGeneric.png");
+		tessHelp = new TessellatorHelper(null);
 	}
 
 	/*
@@ -51,10 +54,6 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
 		this.bindTexture(texture);
-
-		int xx = te.xCoord;
-		int yy = te.yCoord;
-		int zz = te.zCoord;
 
 		drawCuboid((TileEntityEnergyBankBase) te, 0f, 1f, (byte) 0);
 		drawCuboid((TileEntityEnergyBankBase) te, 1f / 48f, 1f - 1f / 48f, (byte) 1);
@@ -96,7 +95,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
 		}
 		
-		Tessellator tess = Tessellator.instance;
+		Tessellator tess = tessHelp.tess;
 		tess.startDrawingQuads();
 
 		byte counter = 0;
@@ -157,63 +156,63 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			
 			if (layer == 2) {
 				
-				if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 0) {
+				if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 0) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 1) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 1) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 2) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 2) {
 					max = 48f * this.PIXEL;
 					min = 32f * this.PIXEL;
 					difU = 0f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 3) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 3) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 48f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 4) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 4) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 32f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 5) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 5) {
 					max = 64f * this.PIXEL;
 					min = 48f * this.PIXEL;
 					difU = 16f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 6) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 6) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 64f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 7) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 7) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 48f * this.PIXEL;
 					difV = 0f * this.PIXEL;
 				}
 				
-				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage()) == 8) {
+				else if ((int)((float) te.getEnergyStored() / ((TileEntityEnergyBankBase) te).getMaxStorage() * 8f) == 8) {
 					max = 80f * this.PIXEL;
 					min = 64f * this.PIXEL;
 					difU = 32f * this.PIXEL;
@@ -222,69 +221,27 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 			}
 	
 			// -zz
-			if (counter == 3) drawZNeg(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 3) tessHelp.drawZNeg(minVec, maxVec, min, max, difU, difV, false);
 	
 			// +zz
-			if (counter == 2) drawZPos(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 2) tessHelp.drawZPos(minVec, maxVec, min, max, difU, difV, false);
 	
 			// -xx
-			if (counter == 4) drawXNeg(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 4) tessHelp.drawXNeg(minVec, maxVec, min, max, difU, difV, false);
 	
 			// +xx
-			if (counter == 5) drawXPos(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 5) tessHelp.drawXPos(minVec, maxVec, min, max, difU, difV, false);
 	
 			// +yy
-			if (counter == 1) drawYPos(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 1) tessHelp.drawYPos(minVec, maxVec, min, max, difU, difV, false);
 	
 			// -yy
-			if (counter == 0) drawYNeg(tess, minVec, maxVec, min, max, difU, difV);
+			if (counter == 0) tessHelp.drawYNeg(minVec, maxVec, min, max, difU, difV, false);
 			
 			counter++;
 		}
 
 		tess.draw();
-	}
-	
-	protected void drawZNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-	}
-	
-	protected void drawZPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, max - difU, min - difV);
-	}
-	
-	protected void drawXNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-	}
-	
-	protected void drawXPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, maxVec.y, maxVec.z, max - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y, minVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y, minVec.z, min - difU, min - difV);
-	}
-	
-	protected void drawYNeg(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, minVec.z, max - difU, min - difV);
-		tess.addVertexWithUV(maxVec.x, minVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(minVec.x, minVec.y - 0.01d, minVec.z, min - difU, min - difV);
-	}
-	
-	protected void drawYPos(Tessellator tess, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, float min, float max, float difU, float difV) {
-		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, minVec.z, min - difU, min - difV);
-		tess.addVertexWithUV(minVec.x, maxVec.y - 0.01d, maxVec.z, min - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, maxVec.z, max - difU, max - difV);
-		tess.addVertexWithUV(maxVec.x, maxVec.y - 0.01d, minVec.z, max - difU, min - difV);
 	}
 
 }
