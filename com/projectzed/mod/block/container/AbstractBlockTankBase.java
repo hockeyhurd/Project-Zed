@@ -230,7 +230,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 
 		return false;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -240,7 +240,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	@Override
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityFluidTankBase te = (TileEntityFluidTankBase) world.getTileEntity(x, y, z);
-		if (te != null) {
+		if (te != null && !world.isRemote) {
 			String fluidName = te.getLocalizedFluidName() == null ? "<empty>" : te.getLocalizedFluidName();
 			ProjectZed.logHelper.info("Destroyed fluid container w/fluid: " + fluidName + ", stored: " + te.getTank().getFluidAmount());
 		}

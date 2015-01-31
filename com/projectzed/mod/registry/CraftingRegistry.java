@@ -1,42 +1,9 @@
 package com.projectzed.mod.registry;
 
-import static com.projectzed.mod.ProjectZed.conductiveCoil;
-import static com.projectzed.mod.ProjectZed.emptyFuelRod;
-import static com.projectzed.mod.ProjectZed.energyCellTier0;
-import static com.projectzed.mod.ProjectZed.energyCellTier1;
-import static com.projectzed.mod.ProjectZed.energyCellTier2;
-import static com.projectzed.mod.ProjectZed.energyCellTier3;
-import static com.projectzed.mod.ProjectZed.energyPipeClear;
-import static com.projectzed.mod.ProjectZed.energyPipeOrange;
-import static com.projectzed.mod.ProjectZed.energyPipeRed;
-import static com.projectzed.mod.ProjectZed.fabricationTable;
-import static com.projectzed.mod.ProjectZed.fissionController;
-import static com.projectzed.mod.ProjectZed.forgingHammer;
-import static com.projectzed.mod.ProjectZed.furnaceGen;
-import static com.projectzed.mod.ProjectZed.gearAluminium;
-import static com.projectzed.mod.ProjectZed.industrialCentrifuge;
-import static com.projectzed.mod.ProjectZed.industrialCrusher;
-import static com.projectzed.mod.ProjectZed.industrialFurnace;
-import static com.projectzed.mod.ProjectZed.industrialLumberMill;
-import static com.projectzed.mod.ProjectZed.industrialMetalPress;
-import static com.projectzed.mod.ProjectZed.machineContainer;
-import static com.projectzed.mod.ProjectZed.mcuReader;
-import static com.projectzed.mod.ProjectZed.mixedAlloy;
-import static com.projectzed.mod.ProjectZed.nuclearChamberLock;
-import static com.projectzed.mod.ProjectZed.nuclearChamberWall;
-import static com.projectzed.mod.ProjectZed.nuclearReactantCore;
-import static com.projectzed.mod.ProjectZed.screw;
-import static com.projectzed.mod.ProjectZed.sheetAluminium;
-import static com.projectzed.mod.ProjectZed.solarArray;
-import static com.projectzed.mod.ProjectZed.solarArrayHV;
-import static com.projectzed.mod.ProjectZed.solarArrayLV;
-import static com.projectzed.mod.ProjectZed.solarArrayMV;
-import static com.projectzed.mod.ProjectZed.thickenedGlass;
+import static com.projectzed.mod.ProjectZed.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.projectzed.mod.util.ModsLoadedHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -127,6 +94,10 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(energyCellTier1, 1, "xxx", "x x", "xxx", 'x', energyCellTier0));
 		reg.shapedList.add(createShapedRecipe(energyCellTier2, 1, "xxx", "x x", "xxx", 'x', energyCellTier1));
 		reg.shapedList.add(createShapedRecipe(energyCellTier3, 1, "xxx", "x x", "xxx", 'x', energyCellTier2));
+		reg.shapedList.add(createShapedRecipe(fluidTankTier0, 1, "xyx", "y y", "xyx", 'x', "ingotCopper", 'y', "paneGlassColorless"));
+		reg.shapedList.add(createShapedRecipe(fluidTankTier1, 1, "xxx", "xyx", "xxx", 'x', "ingotIron", 'y', fluidTankTier0));
+		reg.shapedList.add(createShapedRecipe(fluidTankTier2, 1, "xxx", "xyx", "xxx", 'x', "ingotGold", 'y', fluidTankTier1));
+		reg.shapedList.add(createShapedRecipe(fluidTankTier3, 1, "xxx", "xyx", "xxx", 'x', "ingotTitanium", 'y', fluidTankTier2));
 		
 		// Machine stuff:
 		reg.shapedList.add(createShapedRecipe(solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', screw, 'd', machineContainer, 'e', conductiveCoil));

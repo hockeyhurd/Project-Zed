@@ -7,9 +7,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import com.projectzed.api.block.AbstractBlockContainer;
+import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipeBase;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 
@@ -77,11 +79,22 @@ public class ItemHoverEventHandler {
 					type = 2;
 					amount = ((AbstractBlockMachine) b).getTileEntity().getEnergyBurnRate();
 				}
+				
+				else if (b instanceof AbstractBlockFluidContainer) {
+					type = 4;
+					AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity(); 
+					if (te.getTank().getFluidAmount() > 0 && te.getTank().getFluid() != null) {
+						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(te.getTank().getFluidAmount()) + " mb");
+						event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + te.getTank().getFluid().getLocalizedName() + " mb");
+					}
+					
+					amount = te.getTank().getCapacity();
+				}
 			}
 			
 			if (amount > 0) {
-				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : "Burn Rate: ");
-				String suffix = type < 3 ? " McU/t" : "TO_BE_DEFINED";
+				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Stored: " : "Burn Rate: "));
+				String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
 				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
 			}
 		}
