@@ -66,8 +66,11 @@ public class EnergyNet {
 					
 					if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
 					
-					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate()) / count;
+					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate());
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());
+					
+					if (count > 1) amount /= count;
+					
 					if (amount > 0 && cont.getEnergyStored() > 0) {
 						if (colorDep && cont instanceof TileEntityEnergyPipeBase && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 
@@ -97,7 +100,13 @@ public class EnergyNet {
 		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
 		IEnergyContainer cont = null;
 		if (te != null && te instanceof IEnergyContainer) cont = (IEnergyContainer) te;
-		if (/*sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || sourceCont.getEnergyStored() == 0 ||*/ cont == null) {
+		// if (/*sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || */ sourceCont.getEnergyStored() == 0 || cont == null) {
+		if (cont == null || sourceCont.getEnergyStored() == 0) {
+			shouldSend = true;
+			clearDirectionalTraffic(sourceCont);
+		}
+		
+		else if (cont != null && lastDir == cont.getLastReceivedDirection().getOpposite() && sourceCont.getEnergyStored() >= cont.getEnergyStored()) {
 			shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}

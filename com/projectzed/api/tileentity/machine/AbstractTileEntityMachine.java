@@ -40,6 +40,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public static int defaultCookTime = 200;
 	public static int scaledTime = (defaultCookTime / 10) * 5;
 
+	/**
+	 * @param name name of machine.
+	 */
 	public AbstractTileEntityMachine(String name) {
 		super();
 		setCustomName("container." + name);
