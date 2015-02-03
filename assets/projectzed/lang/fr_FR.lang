@@ -26,6 +26,10 @@ tile.energyCellTier0.name=Réserve d'énergie - I
 tile.energyCellTier1.name=Réserve d'énergie - II
 tile.energyCellTier2.name=Réserve d'énergie - III
 tile.energyCellTier3.name=Réserve d'énergie - IV
+tile.fluidTankTier0.name=Réservoir à fluide - I
+tile.fluidTankTier1.name=Réservoir à fluide - II
+tile.fluidTankTier2.name=Réservoir à fluide - III
+tile.fluidTankTier3.name=Réservoir à fluide - IV
 
 
 // RF STUFF:
@@ -52,6 +56,7 @@ item.conductiveCoil.name=Bobine conductrice
 // Metals:
 item.dustGold.name=Poussière d'or
 item.dustIron.name=Poussière de fer
+item.dustCoal.name=Poussière de charbon
 item.dustTitanium.name=Poussière de titane
 item.dustCopper.name=Poussière de cuivre
 item.dustNickel.name=Poussière de nickel
