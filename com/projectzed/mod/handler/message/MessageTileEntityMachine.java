@@ -2,6 +2,8 @@ package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
@@ -37,7 +39,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.isPoweredOn();
 		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
-		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getWaterInTank();
+		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount();
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -67,7 +69,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 			((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
 			((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
 			
-			if (message.containsFluid) ((TileEntityIndustrialCentrifuge) te).setWaterInTank(message.fluidStored);
+			if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
 		}
 		
 		return null;

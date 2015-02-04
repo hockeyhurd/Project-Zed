@@ -2,6 +2,13 @@ package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
@@ -13,14 +20,15 @@ import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
  * @author hockeyhurd
  * @version Dec 21, 2014
  */
-public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
+public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine implements IFluidHandler {
 
 	private final int MAX_WATER_STORAGE = 10000;
-	private int waterStored;
+	private FluidTank internalTank;
 	
 	public TileEntityIndustrialCentrifuge() {
 		super("industrialCentrifuge");
 		this.slots = new ItemStack[3];
+		this.internalTank = new FluidTank(this.MAX_WATER_STORAGE);
 	}
 
 	/*
@@ -137,65 +145,21 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	}
 	
 	/**
-	 * Function to get the amount of water in tank.
-	 * @return amount of water in mb.
-	 */
-	public int getWaterInTank() {
-		return this.waterStored;
-	}
-	
-	/**
-	 * Function to get the max amount of water the tank can hold.
-	 * @return max amount of water in mb.
-	 */
-	public int getMaxWaterStorage() {
-		return this.MAX_WATER_STORAGE;
-	}
-	
-	/**
 	 * Function to get whether there is water in tank.
+	 * 
 	 * @return true if has water, else returns false.
 	 */
 	public boolean hasWaterInTank() {
-		return this.waterStored > 0;
+		return this.internalTank.getFluidAmount() > 0;
 	}
 	
 	/**
-	 * Sets the amount of water the tank should now contain.
-	 * @param amount = amount to try and set.
+	 * Gets the fluid tank associated with this tileentity.
+	 * 
+	 * @return fluid tank object.
 	 */
-	public void setWaterInTank(int amount) {
-		this.waterStored = amount >= 0 && amount <= this.MAX_WATER_STORAGE ? amount : 0;
-	}
-	
-	/**
-	 * Adds default amount of water to tank (1000 mb).
-	 */
-	public void addWaterToTank() {
-		addWaterToTank(1000);
-	}
-	
-	/**
-	 * Adds given amount of water to tank.
-	 * @param amount = amount of water to add in mb.
-	 */
-	public void addWaterToTank(int amount) {
-		this.waterStored += canAddWaterToTank(1000) ? amount : 0; 
-	}
-	
-	/**
-	 * @return true if can add 1000 mb, else returns false.
-	 */
-	public boolean canAddWaterToTank() {
-		return canAddWaterToTank(1000);
-	}
-	
-	/**
-	 * @param amount = amount to try and add.
-	 * @return result of trying to add said amount.
-	 */
-	public boolean canAddWaterToTank(int amount) {
-		return amount > 0 && this.waterStored + amount <= this.MAX_WATER_STORAGE;
+	public FluidTank getTank() {
+		return this.internalTank;
 	}
 
 	/*
@@ -217,7 +181,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 			this.slots[2].stackSize--;
 			if (this.slots[2].stackSize <= 0) this.slots[2] = null;
 			
-			this.waterStored -= 1000;
+			this.internalTank.drain(1000, true);
 		}
 	}
 	
@@ -235,21 +199,143 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
-		int amount = comp.getInteger("ProjectZedWaterTank");
-		this.waterStored = amount >= 0 && amount <= this.MAX_WATER_STORAGE ? amount : 0;
-		
+		this.internalTank.readFromNBT(comp);
 		super.readFromNBT(comp);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		this.internalTank.writeToNBT(comp);
+		super.writeToNBT(comp);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#writeToNBT(net.minecraft.nbt.NBTTagCompound) 
+	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		comp.setInteger("ProjectZedWaterTank", this.waterStored);
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+		if (!worldObj.isRemote) {
+
+			int fillAmount = internalTank.fill(resource, doFill);
+
+			if (doFill) {
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				this.markDirty();
+				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+			}
+
+			return fillAmount;
+		}
+
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 */
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+		return drain(from, resource, -1, doDrain);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
+	 */
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		return drain(from, null, maxDrain, doDrain);
+	}
+
+	/**
+	 * Drains fluid from this block to another.
+	 * 
+	 * @param from = direction drained from.
+	 * @param drainFluid = the fluid drained.
+	 * @param drainAmount = amount of fluid drained.
+	 * @param doDrain = whether draining should be simulated or not.
+	 * @return type and amount of fluid drained.
+	 */
+	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+		if (!worldObj.isRemote) {
+			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
+					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
+					
+			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
+				this.markDirty();
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+			}
+			
+			return drainedFluid;
+		}
+
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 */
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) {
+		if (fluid != null && !isFull()) {
+			FluidStack tankFluid = this.internalTank.getFluid();
+			
+			return tankFluid == null || tankFluid.isFluidEqual(new FluidStack(fluid, 0));
+		}
 		
-		super.writeToNBT(comp);
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 */
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
+			FluidStack tankFluid = this.internalTank.getFluid();
+			
+			return tankFluid != null && tankFluid.isFluidEqual(new FluidStack(fluid, 0));
+		}
+		
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+		return new FluidTankInfo[] { this.internalTank.getInfo() };
+	}
+	
+	/**
+	 * Gets whether tank is full or not.
+	 * 
+	 * @return true if full, else returns false.
+	 */
+	public boolean isFull() {
+		return this.internalTank.getFluidAmount() == this.internalTank.getCapacity();
+	}
+	
+	/**
+	 * Gets the localized name of the fluid in the tank.
+	 * 
+	 * @return localized name of fluid in the tank.
+	 */
+	public String getLocalizedFluidName() {
+		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ? this.internalTank.getFluid().getFluid().getLocalizedName() : null; 
 	}
 	
 }

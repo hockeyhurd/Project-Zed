@@ -51,7 +51,7 @@ public class GuiCentrifuge extends GuiMachine {
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		super.drawGuiContainerBackgroundLayer(f, x, y);
 
-		float progressWater = (float) ((float) this.te2.getWaterInTank() / (float) this.te2.getMaxWaterStorage()) * 39f;
+		float progressWater = (float) ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
 		progressWater = 39f - progressWater;
 		int v = 0 - (int) progressWater;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 39);
@@ -70,7 +70,7 @@ public class GuiCentrifuge extends GuiMachine {
 		this.pos2 = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 17, 0);
 		this.minMax2 = new Vector4Helper<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
 
-		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getWaterInTank(), this.te2.getMaxWaterStorage()));
+		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity()));
 	}
 
 	/*
@@ -88,7 +88,7 @@ public class GuiCentrifuge extends GuiMachine {
 		this.minMax2.y = guiTop + 17 + 41;
 
 		if (getComponents() != null && getComponents().size() > 1) {
-			getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, this.te2.getWaterInTank(), this.te2.getMaxWaterStorage());
+			getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity());
 		}
 	}
 

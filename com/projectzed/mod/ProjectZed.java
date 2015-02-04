@@ -41,16 +41,17 @@ import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.handler.SortingConfigHandler;
 import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
-import com.projectzed.mod.item.ItemDustGold;
-import com.projectzed.mod.item.ItemDustIron;
 import com.projectzed.mod.item.ItemForgingHammer;
 import com.projectzed.mod.item.ItemFuelRod;
 import com.projectzed.mod.item.ItemGearAluminium;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
+import com.projectzed.mod.item.ItemWrench;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCoal;
 import com.projectzed.mod.item.metals.ItemDustCopper;
+import com.projectzed.mod.item.metals.ItemDustGold;
+import com.projectzed.mod.item.metals.ItemDustIron;
 import com.projectzed.mod.item.metals.ItemDustNickel;
 import com.projectzed.mod.item.metals.ItemDustTitanium;
 import com.projectzed.mod.item.metals.ItemDustUranium;
@@ -143,6 +144,7 @@ public class ProjectZed {
 	public static Item sheetReinforced;
 	public static Item gearAluminium;
 	public static Item conductiveCoil;
+	public static Item wrench;
 	
 	// Metals:
 	public static Item dustGold;
@@ -290,6 +292,7 @@ public class ProjectZed {
 		sheetReinforced = new ItemSheetReinforced("sheetReinforced", assetDir);
 		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
 		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
+		wrench = new ItemWrench("wrench");
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);

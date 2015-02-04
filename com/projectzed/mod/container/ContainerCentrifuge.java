@@ -33,7 +33,7 @@ public class ContainerCentrifuge extends ContainerMachine {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		this.waterStored = ((TileEntityIndustrialCentrifuge) this.te).getWaterInTank();
+		this.waterStored = ((TileEntityIndustrialCentrifuge) this.te).getTank().getFluidAmount();
 	}
 
 }
