@@ -10,12 +10,9 @@ TODO:
     - Add NEI support for crafting machine related recipes.
     - Implement fusion reactor logic.
     - Make tiered solar arrays have tiered max storages.
-    - For tanks, add proper fluid handler
-    - Add proper custom texture renderer for fluid tanks (see energy cell rendering techniques for more info).
     - Tweak energy bank/cells recipes.
 
 IDEAS:
 =================================    
     - Increase Titanium ore gen by * 2 at least. 
-    - Make energy pipes more clearly tiered? 
     - Add fluid and item pipes?

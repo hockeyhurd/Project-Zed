@@ -6,7 +6,6 @@
 */
 package com.projectzed.mod.nei;
 
-import codechicken.nei.OffsetPositioner;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 
@@ -42,17 +41,20 @@ public class NEIProjectZedConfig implements IConfigureNEI {
 	 */
 	@Override
 	public void loadConfig() {
-		API.registerRecipeHandler(new NEIIndustrialCrusherRecipeManager());
-		API.registerUsageHandler(new NEIIndustrialCrusherRecipeManager());
-		API.registerGuiOverlay(GuiMachine.class, "industrialcrusher");
+		// API.registerRecipeHandler(new NEIIndustrialCrusherRecipeManager());
+		// API.registerUsageHandler(new NEIIndustrialCrusherRecipeManager());
+		// API.registerGuiOverlay(GuiMachine.class, "industrialcrusher");
 		
-		/*API.registerRecipeHandler(new NEIIndustrialFurnaceRecipeManager());
+		API.registerRecipeHandler(new NEIIndustrialFurnaceRecipeManager());
 		API.registerUsageHandler(new NEIIndustrialFurnaceRecipeManager());
-		API.registerGuiOverlay(GuiMachine.class, "industrialfurnace");*/
+		API.registerGuiOverlay(GuiMachine.class, "industrialfurnace");
+		API.setGuiOffset(GuiMachine.class, 0, 0);
 		
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 66, 5);
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 5 + 237, 11);
-		API.registerGuiOverlay(GuiFabricationTable.class, "crafting", new OffsetPositioner(67, 18));
+		API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 67, 18);
+		API.setGuiOffset(GuiFabricationTable.class, 67, 18);
+		// API.registerGuiOverlayHandler(GuiFabricationTable.class, new FabricationTableOverlayHandler(), "crafting");
 	}
 
 }
