@@ -100,10 +100,10 @@ public class ModsLoadedHelper {
 	private void initMapping() {
 		mapping = new HashMap<String, Boolean>();
 		
-		mapping.put("Thermal Expansion", te4Loaded);
-		mapping.put("CoFH Core", cofhCore);
-		mapping.put("ic2", ic2Loaded);
-		mapping.put("nei", neiLoaded);
+		mapping.put("ThermalExpansion", te4Loaded);
+		mapping.put("CoFHCore", cofhCore);
+		mapping.put("IC2", ic2Loaded);
+		mapping.put("NotEnoughItems", neiLoaded);
 	}
 	
 	/**

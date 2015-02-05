@@ -72,8 +72,8 @@ public class ContainerFabricationTable extends Container {
 			for (int x = 0; x < 3; x++) {
 				// this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + y * 18, 6 + x * 18));
 				this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 67 + x * 18, 6 + y * 18));
-				// ItemStack stack = te.getStackInSlot((x + y * 3) + 0);
-				// if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
+				ItemStack stack = te.getStackInSlot((x + y * 3));
+				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
 		}
 
@@ -101,12 +101,8 @@ public class ContainerFabricationTable extends Container {
 	 * Callback for when the crafting matrix is changed.
 	 */
 	public void onCraftMatrixChanged(IInventory inv) {
-		// Make sure te side is synced with this container's crafting matrix array.
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			this.te.setInventorySlotContents(i + 1, inv.getStackInSlot(i));
-		}
-
 		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		super.onCraftMatrixChanged(inv);
 	}
 	
 	/**
@@ -185,7 +181,7 @@ public class ContainerFabricationTable extends Container {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
 				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) {
 					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
-					this.te.setInventorySlotContents(i + 1, (ItemStack) null);
+					this.te.setInventorySlotContents(i, (ItemStack) null);
 				}
 				else {
 					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
@@ -202,7 +198,11 @@ public class ContainerFabricationTable extends Container {
 	 * @see net.minecraft.inventory.Container#onContainerClosed(net.minecraft.entity.player.EntityPlayer)
 	 */
 	public void onContainerClosed(EntityPlayer player) {
-		clearCraftingGrid();
+		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+			this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
+		}
+		
+		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/*

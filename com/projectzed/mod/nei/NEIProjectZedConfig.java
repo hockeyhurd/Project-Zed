@@ -52,7 +52,7 @@ public class NEIProjectZedConfig implements IConfigureNEI {
 		
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 66, 5);
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 5 + 237, 11);
-		API.registerGuiOverlay(GuiFabricationTable.class, "crafting", new OffsetPositioner(5 + 237, 5));
+		API.registerGuiOverlay(GuiFabricationTable.class, "crafting", new OffsetPositioner(67, 18));
 	}
 
 }

@@ -6,13 +6,20 @@
 */
 package com.projectzed.mod.gui;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
+
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
 
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.gui.component.GuiClearButton;
@@ -21,13 +28,16 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 
+import cpw.mods.fml.common.Optional;
+
 /**
  * Class containing gui code for fabrication table.
  * 
  * @author hockeyhurd
  * @version Nov 22, 2014
  */
-public class GuiFabricationTable extends GuiContainer {
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public class GuiFabricationTable extends GuiContainer implements INEIGuiHandler {
 
 	public final ResourceLocation texture;
 	private TileEntityFabricationTable te;
@@ -97,6 +107,33 @@ public class GuiFabricationTable extends GuiContainer {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+	}
+
+	@Override
+    @Optional.Method(modid = "NotEnoughItems")
+	public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+		return currentVisibility;
+	}
+
+	@Override
+	public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+		return null;
+	}
+
+	@Override
+	@Optional.Method(modid = "NotEnoughItems")
+	public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+		return null;
+	}
+
+	@Override
+	public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+		return false;
 	}
 
 }

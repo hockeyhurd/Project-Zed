@@ -53,7 +53,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.buttonHit = buttonHit;
-		this.numSlots = this.te.getSizeInvenotry() - 1;
+		this.numSlots = this.te.getSizeInvenotry();
 		this.slots = new ItemStack[numSlots];
 		
 		syncStacks();
@@ -102,7 +102,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 			if (this.slots == null) this.slots = new ItemStack[numSlots];
 			
 			for (int i = 0; i < this.slots.length; i++) {
-				this.slots[i] = this.te.getStackInSlot(i + 1);
+				this.slots[i] = this.te.getStackInSlot(i);
 			}
 		}
 	}
@@ -142,7 +142,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 					}
 					
 					for (int i = 0; i < message.slots.length; i++) {
-						te2.setInventorySlotContents(i + 1, message.slots[i]);
+						te2.setInventorySlotContents(i, message.slots[i]);
 					}
 					
 					te2.markDirty();
@@ -158,7 +158,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 				
 				if (message.slots != null && message.slots.length > 0) {
 					for (int i = 0; i < message.slots.length; i++) {
-						te2.setInventorySlotContents(i + 1, message.slots[i]);
+						te2.setInventorySlotContents(i, message.slots[i]);
 					}
 				}
 			}
