@@ -15,6 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.projectzed.mod.ProjectZed;
+
 /**
  * Class containing code for initializing the metal press's smelting recipe list. <br>
  * NOTE: This class was closely followed to PulverizerRecipes.java by author hockeyhurd. <br>
@@ -40,15 +42,15 @@ public class MetalPressRecipesRegistry {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping.
-
+		mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.sheetAluminium, 1));
+		mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.sheetReinforced, 1));
+		
 		// Fall back/modded mapping.
-		mapModded.put("ingotAluminium", "plateAluminium");
 		mapModded.put("ingotIron", "plateIron");
 		mapModded.put("ingotGold", "plateGold");
 		mapModded.put("ingotTin", "plateTin");
 		mapModded.put("ingotCopper", "plateCopper");
 		mapModded.put("ingotBronze", "plateBronze");
-		mapModded.put("mixedAlloy", "plateReinforced");
 
 		initEntries();
 	}
@@ -77,6 +79,7 @@ public class MetalPressRecipesRegistry {
 	 */
 	public static ItemStack pressList(ItemStack stack) {
 		boolean flag = false;
+		boolean flag2 = false;
 		ItemStack temp = null;
 
 		/*
@@ -99,20 +102,23 @@ public class MetalPressRecipesRegistry {
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
 			int currentID = OreDictionary.getOreID(stack);
+			int id, id2; 
 			String current = "", current2 = "";
+			
 			for (int i = 0; i < OreDictionary.getOreNames().length; i++) {
 				for (Entry<String, String> s : mapSet) {
 					current = s.getKey();
 					current2 = s.getValue();
-					int id = OreDictionary.getOreID(current);
+					id = OreDictionary.getOreID(current);
+					id2 = OreDictionary.getOreID(current2);
 
-					if (current.equals(OreDictionary.getOreNames()[i]) && currentID == id) {
-						flag = true;
-						break;
-					}
+					if (current.equals(OreDictionary.getOreNames()[i]) && currentID == id) flag = true;
+					if (current2.equals(OreDictionary.getOreNames()[i]) && currentID == id2) flag2 = true;
+					
+					if (flag && flag2) break;
 				}
 
-				if (flag) {
+				if (flag && flag2) {
 					Block block = null;
 					Item item = null;
 

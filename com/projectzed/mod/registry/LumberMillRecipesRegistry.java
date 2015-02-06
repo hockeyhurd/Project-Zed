@@ -84,17 +84,20 @@ public class LumberMillRecipesRegistry {
 	 */
 	public static ItemStack millingList(ItemStack stack) {
 		boolean flag = false;
+		boolean flag2 = false;
 		ItemStack temp = null;
 
 		/*
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
 		 */
-		for (ItemStack currentStack : mapVanilla.keySet()) {
-			if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
-				temp = mapVanilla.get(currentStack);
-				flag = true;
-				break;
+		if (mapVanilla.size() > 0) {
+			for (ItemStack currentStack : mapVanilla.keySet()) {
+				if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
+					temp = mapVanilla.get(currentStack);
+					flag = true;
+					break;
+				}
 			}
 		}
 
@@ -104,20 +107,23 @@ public class LumberMillRecipesRegistry {
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
 			int currentID = OreDictionary.getOreID(stack);
+			int id, id2; 
 			String current = "", current2 = "";
+			
 			for (int i = 0; i < OreDictionary.getOreNames().length; i++) {
 				for (Entry<String, String> s : mapSet) {
 					current = s.getKey();
 					current2 = s.getValue();
-					int id = OreDictionary.getOreID(current);
+					id = OreDictionary.getOreID(current);
+					id2 = OreDictionary.getOreID(current2);
 
-					if (current.equals(OreDictionary.getOreNames()[i]) && currentID == id) {
-						flag = true;
-						break;
-					}
+					if (current.equals(OreDictionary.getOreNames()[i]) && currentID == id) flag = true;
+					if (current2.equals(OreDictionary.getOreNames()[i]) && currentID == id2) flag2 = true;
+					
+					if (flag && flag2) break;
 				}
 
-				if (flag) {
+				if (flag && flag2) {
 					Block block = null;
 					Item item = null;
 

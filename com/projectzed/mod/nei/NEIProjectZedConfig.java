@@ -52,6 +52,16 @@ public class NEIProjectZedConfig implements IConfigureNEI {
 		API.registerGuiOverlay(GuiMachine.class, "industrialcrusher");
 		API.setGuiOffset(GuiMachine.class, 0, 0);
 		
+		API.registerRecipeHandler(new NEIIndustrialLumberMillRecipeManager());
+		API.registerUsageHandler(new NEIIndustrialLumberMillRecipeManager());
+		API.registerGuiOverlay(GuiMachine.class, "industriallumbermill");
+		API.setGuiOffset(GuiMachine.class, 0, 0);
+		
+		API.registerRecipeHandler(new NEIIndustrialMetalPressRecipeManager());
+		API.registerUsageHandler(new NEIIndustrialMetalPressRecipeManager());
+		API.registerGuiOverlay(GuiMachine.class, "industrialmetalpress");
+		API.setGuiOffset(GuiMachine.class, 0, 0);
+		
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 66, 5);
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 5 + 237, 11);
 		API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 67, 18);
