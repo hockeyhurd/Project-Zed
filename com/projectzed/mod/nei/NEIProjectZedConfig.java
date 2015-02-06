@@ -41,13 +41,15 @@ public class NEIProjectZedConfig implements IConfigureNEI {
 	 */
 	@Override
 	public void loadConfig() {
-		// API.registerRecipeHandler(new NEIIndustrialCrusherRecipeManager());
-		// API.registerUsageHandler(new NEIIndustrialCrusherRecipeManager());
-		// API.registerGuiOverlay(GuiMachine.class, "industrialcrusher");
 		
 		API.registerRecipeHandler(new NEIIndustrialFurnaceRecipeManager());
 		API.registerUsageHandler(new NEIIndustrialFurnaceRecipeManager());
 		API.registerGuiOverlay(GuiMachine.class, "industrialfurnace");
+		API.setGuiOffset(GuiMachine.class, 0, 0);
+		
+		API.registerRecipeHandler(new NEIIndustrialCrusherRecipeManager());
+		API.registerUsageHandler(new NEIIndustrialCrusherRecipeManager());
+		API.registerGuiOverlay(GuiMachine.class, "industrialcrusher");
 		API.setGuiOffset(GuiMachine.class, 0, 0);
 		
 		// API.registerGuiOverlay(GuiFabricationTable.class, "crafting", 66, 5);

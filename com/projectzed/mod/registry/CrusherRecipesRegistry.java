@@ -46,6 +46,7 @@ public class CrusherRecipesRegistry {
 		// Normal mapping
 		mapVanilla.put(new ItemStack(Blocks.iron_ore, 1), new ItemStack(ProjectZed.dustIron, 2));
 		mapVanilla.put(new ItemStack(Blocks.gold_ore, 1), new ItemStack(ProjectZed.dustGold, 2));
+		mapVanilla.put(new ItemStack(Blocks.redstone_ore, 1), new ItemStack(Items.redstone, 6));
 		mapVanilla.put(new ItemStack(Items.coal, 1), new ItemStack(ProjectZed.dustCoal, 1));
 		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(ProjectZed.dustIron, 1));
 		mapVanilla.put(new ItemStack(Items.gold_ingot, 1), new ItemStack(ProjectZed.dustGold, 1));

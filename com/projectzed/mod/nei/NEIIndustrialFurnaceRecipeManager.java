@@ -51,7 +51,7 @@ public class NEIIndustrialFurnaceRecipeManager extends TemplateRecipeHandler {
 		transferRects.add(new RecipeTransferRect(new Rectangle(74, 23, 24, 18), "smelting"));
 	}
 
-	public class SmeltingPair extends CachedRecipe {
+	protected class SmeltingPair extends CachedRecipe {
 		public SmeltingPair(ItemStack ingred, ItemStack result) {
 			ingred.stackSize = 1;
 			this.ingred = new PositionedStack(ingred, 36, 10);
@@ -74,14 +74,14 @@ public class NEIIndustrialFurnaceRecipeManager extends TemplateRecipeHandler {
 		PositionedStack result;
 	}
 
-	public static class FuelPair {
-		public FuelPair(ItemStack ingred, int burnTime) {
+	private static class FuelPair {
+		FuelPair(ItemStack ingred, int burnTime) {
 			this.stack = new PositionedStack(ingred, 51, 42, false);
 			this.burnTime = burnTime;
 		}
 
-		public PositionedStack stack;
-		public int burnTime;
+		PositionedStack stack;
+		int burnTime;
 	}
 
 	@Override

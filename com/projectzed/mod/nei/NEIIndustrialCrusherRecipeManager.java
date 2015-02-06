@@ -6,17 +6,15 @@
 */
 package com.projectzed.mod.nei;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import codechicken.nei.recipe.ShapedRecipeHandler;
+import codechicken.nei.NEIServerUtils;
 
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.gui.GuiMachine;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
+
 
 /**
  * Class containing nei compatibly recipe manager.
@@ -24,12 +22,7 @@ import com.projectzed.mod.registry.CrusherRecipesRegistry;
  * @author hockeyhurd
  * @version Jan 27, 2015
  */
-public class NEIIndustrialCrusherRecipeManager extends ShapedRecipeHandler {
-
-	@Override
-	public Class<? extends GuiContainer> getGuiClass() {
-		return GuiMachine.class;
-	}
+public class NEIIndustrialCrusherRecipeManager extends NEIIndustrialFurnaceRecipeManager {
 	
 	@Override
 	public String getRecipeName() {
@@ -37,30 +30,47 @@ public class NEIIndustrialCrusherRecipeManager extends ShapedRecipeHandler {
 	}
 	
 	@Override
-	public String getGuiTexture() {
-		return ProjectZed.assetDir + "textures/gui/GuiMachine_generic.png";
-	}
-	
-	@Override
-	public void loadCraftingRecipes(ItemStack result) {
-		Set<ItemStack> keys = getStackKeyFromValue(result);
-		if (CrusherRecipesRegistry.crusherList(result) != null && CrusherRecipesRegistry.getMap().containsValue(result) && keys != null && keys.size() > 0) {
-			for (ItemStack stack : keys) {
-				Object[] o = new Object[] { stack };
-				this.arecipes.add(new CachedShapedRecipe(41, 21, o, result));
-				System.out.println("Added: " + o + ", " + result);
+	public void loadCraftingRecipes(String outputId, Object... results) {
+		if (outputId.equals("smelting") && getClass() == NEIIndustrialCrusherRecipeManager.class) {
+			Map<ItemStack, ItemStack> recipes = CrusherRecipesRegistry.getMap();
+			for (Entry<ItemStack, ItemStack> recipe : recipes.entrySet()) {
+				arecipes.add(new SmeltingPair(recipe.getKey(), recipe.getValue()));
 			}
 		}
 		
+		else super.loadCraftingRecipes(outputId, results);
 	}
-	
-	private Set<ItemStack> getStackKeyFromValue(ItemStack value) {
-		Set<ItemStack> keys = new HashSet<ItemStack>();
-		for (Entry<ItemStack, ItemStack> e : CrusherRecipesRegistry.getMap().entrySet()) {
-			if (value == e.getValue()) keys.add(e.getKey());
+
+	@Override
+	public void loadCraftingRecipes(ItemStack result) {
+		Map<ItemStack, ItemStack> recipes = CrusherRecipesRegistry.getMap();
+		for (Entry<ItemStack, ItemStack> recipe : recipes.entrySet()) {
+			if (NEIServerUtils.areStacksSameType(recipe.getValue(), result)) arecipes.add(new SmeltingPair(recipe.getKey(), recipe.getValue()));
 		}
+	}
+
+	@Override
+	public void loadUsageRecipes(String inputId, Object... ingredients) {
+		if (inputId.equals("fuel") && getClass() == NEIIndustrialCrusherRecipeManager.class) 
+		loadCraftingRecipes("smelting");
+		else super.loadUsageRecipes(inputId, ingredients);
+	}
+
+	@Override
+	public void loadUsageRecipes(ItemStack ingredient) {
 		
-		return keys;
+		// Try adding said ingrediant to crusher registry.
+		ItemStack stack = CrusherRecipesRegistry.crusherList(ingredient);
+		if (stack == null) return;
+		
+		Map<ItemStack, ItemStack> recipes = CrusherRecipesRegistry.getMap();
+		for (Entry<ItemStack, ItemStack> recipe : recipes.entrySet()) {
+			if (NEIServerUtils.areStacksSameTypeCrafting(recipe.getKey(), ingredient)) {
+				SmeltingPair arecipe = new SmeltingPair(recipe.getKey(), recipe.getValue());
+				arecipe.setIngredientPermutation(Arrays.asList(arecipe.ingred), ingredient);
+				arecipes.add(arecipe);
+			}
+		}
 	}
 	
 }
