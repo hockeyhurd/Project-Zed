@@ -71,27 +71,27 @@ public interface IModularFrame {
 	
 	/**
 	 * Method used to set value to given side.
-	 * @param dir = direction to change.
-	 * @param value = value to set.
+	 * @param dir direction to change.
+	 * @param value value to set.
 	 */
 	public void setSideValve(ForgeDirection dir, byte value);
 	
 	/**
 	 * Method used to change the value of given sides value to next available value.
-	 * @param dir = direction to set.
+	 * @param dir direction to set.
 	 */
 	public void setSideValveAndRotate(ForgeDirection dir);
 	
 	/**
 	 * Function used to get value of said direction.
-	 * @param dir = direction to get value from.
+	 * @param dir direction to get value from.
 	 * @return value of side.
 	 */
 	public byte getSideValve(ForgeDirection dir);
 	
 	/**
 	 * Function used to get value of said direction.
-	 * @param dir = direction represented by an ordinal of a ForgeDirection, direction. (0, 1, 2, 3, 4, 5).
+	 * @param dir direction represented by an ordinal of a ForgeDirection, direction. (0, 1, 2, 3, 4, 5).
 	 * @return value of side.
 	 */
 	public byte getSideValve(int dir);
@@ -103,8 +103,8 @@ public interface IModularFrame {
 	
 	/**
 	 * Method used in TE's and is to make sure it is implemented so we can receive data from client (gui's primarily).
-	 * @param manager
-	 * @param packet
+	 * @param manager network manager reference.
+	 * @param packet packet receiving.
 	 */
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet);
 	

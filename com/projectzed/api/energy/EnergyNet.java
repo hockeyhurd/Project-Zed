@@ -10,11 +10,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 
 /**
  * Class containing code for how energy is to transfer from 
@@ -25,18 +25,18 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
  */
 public class EnergyNet {
 
+	// Mostly static class, no need to instantiate outside of this class!
 	private EnergyNet() {
 	}
 	
-	// TODO: Make this class not need 'TileEntityEnergyPipeBase' class (not in the API).
 	/**
 	 * Main static method used to move energy from one container to another
 	 * from one place (here).
 	 * @param sourceCont = container requesting power.
-	 * @param world = world object as reference.
-	 * @param x = x-pos as reference.
-	 * @param y = y-pos as reference.
-	 * @param z = z-pos as reference.
+	 * @param world world object as reference.
+	 * @param x x-pos as reference.
+	 * @param y y-pos as reference.
+	 * @param z z-pos as reference.
 	 * @param lastDir = last direction received from (prevent continuous looping).
 	 */
 	public static void importEnergyFromNeighbors(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
@@ -44,7 +44,7 @@ public class EnergyNet {
 		else {
 			if (sourceCont.getEnergyStored() == sourceCont.getMaxStorage()) return;
 			
-			boolean colorDep = sourceCont instanceof TileEntityEnergyPipeBase;
+			boolean colorDep = sourceCont instanceof IColorComponent;
 			boolean sideDep = sourceCont instanceof IModularFrame && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER;
 			boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 			int count = 0;
@@ -53,7 +53,7 @@ public class EnergyNet {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IEnergyContainer) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-					if (colorDep && cont instanceof TileEntityEnergyPipeBase && ((TileEntityEnergyPipeBase)cont).getColor() != ((TileEntityEnergyPipeBase)sourceCont).getColor()) continue;
+					if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
 					else if (cont instanceof AbstractTileEntityMachine) continue;
 					else if (/*sideDep &&*/ cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.POWER && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
 					else if (cont.getEnergyStored() > 0 && lastDir != dir) {
@@ -78,7 +78,7 @@ public class EnergyNet {
 					if (count > 1) amount /= count;
 					
 					if (amount > 0 && cont.getEnergyStored() > 0) {
-						if (colorDep && cont instanceof TileEntityEnergyPipeBase && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
+						if (colorDep && cont instanceof IColorComponent && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
 						cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
@@ -93,12 +93,12 @@ public class EnergyNet {
 	/**
 	 * Method once called will attempt to resolve the 'last received direction' if applicable.
 	 * 
-	 * @param sourceCont = container requesting power.
+	 * @param sourceCont container requesting power.
 	 * @param world = world object as reference.
-	 * @param x = x-pos as reference.
-	 * @param y = y-pos as reference.
-	 * @param z = z-pos as reference.
-	 * @param lastDir = last direction received from (prevent continuous looping).
+	 * @param x x-pos as reference.
+	 * @param y y-pos as reference.
+	 * @param z z-pos as reference.
+	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
 	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
 		boolean shouldSend = false;
@@ -122,7 +122,7 @@ public class EnergyNet {
 	 * Method when called will forcibly clear 'last received direction' regardless 
 	 * of current process state.
 	 * 
-	 * @param sourceCont = container to send data to.
+	 * @param sourceCont container to send data to.
 	 */
 	public static void clearDirectionalTraffic(IEnergyContainer sourceCont) {
 		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);

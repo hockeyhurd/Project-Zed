@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
@@ -19,12 +20,12 @@ import com.projectzed.mod.handler.message.MessageTileEntityContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
- * Class containing coe for energy pipe;
+ * Class containing code for energy pipe;
  * 
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
+public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements IColorComponent {
 
 	public boolean flag;
 	protected int containerSize = 0;
@@ -36,11 +37,19 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe {
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
 	
-	/**
-	 * @return color of the energy pipe if has a color, else returns null.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.source.IColorComponent#getColor()
 	 */
 	public EnumColor getColor() {
 		return null;
+	}
+	
+	/**
+	 * Method is nullified on this implementation as their currently is no use for this
+	 * <br>since energy pipes are independent of each other.
+	 */
+	public void setColor(EnumColor color) {
 	}
 
 	/*
