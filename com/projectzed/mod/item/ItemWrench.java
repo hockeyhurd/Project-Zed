@@ -6,12 +6,15 @@
 */
 package com.projectzed.mod.item;
 
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -19,6 +22,7 @@ import com.hockeyhurd.api.math.Vector4Helper;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.WorldUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -64,17 +68,54 @@ public class ItemWrench extends Item {
 		if (!world.isRemote) {
 			if (bh == null) bh = new BlockHelper(world, player);
 			
-			Vector4Helper<Integer> vecClick = new Vector4Helper<Integer>((int) clickX, (int) clickY, (int) clickZ);
+			Vector4Helper<Integer> vecClick = new Vector4Helper<Integer>(x, y, z);
 			Block b = bh.getBlock(vecClick.x, vecClick.y, vecClick.z); 
 			TileEntity te = world.getTileEntity(vecClick.x, vecClick.y, vecClick.z);
 			
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrench = (IWrenchable) te;
+
+				if (wrench.canRotateTE() && !player.isSneaking()) {
+					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
+					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(), meta), 2);
+				}
+				
+				else if (player.isSneaking() && wrench.canSaveDataOnPickup() && wrench.dataToSave() != null && wrench.dataToSave().size() > 0) {
+					
+					ItemStack itemToDrop = new ItemStack(b, 1);
+					NBTTagCompound comp = itemToDrop.stackTagCompound;
+					if (comp == null) comp = new NBTTagCompound();
+					
+					float buffer = 0.0f;
+					for (Entry<String, Number> e : wrench.dataToSave().entrySet()) {
+						buffer = e.getValue().floatValue();
+						comp.setFloat(e.getKey(), buffer);
+					}
+					
+					itemToDrop.stackTagCompound = comp;
+					bh.destroyBlock(vecClick, false);
+					WorldUtils.addItemDrop(itemToDrop, world, vecClick.x, vecClick.y, vecClick.z);
+				}
 			}
 			
 		}
 		
 		return used;
+	}
+	
+	private byte rotateBlock(byte[] rotMatrix, int meta) {
+		byte newMeta = 0;
+		
+		for (int i = 0; i < rotMatrix.length; i++) {
+			if (meta == rotMatrix[i]) {
+				if (i + 1 < rotMatrix.length) newMeta = rotMatrix[i + 1];
+				else newMeta = rotMatrix[0];
+				
+				break;
+			}
+		}
+		
+		return newMeta;
 	}
 
 }

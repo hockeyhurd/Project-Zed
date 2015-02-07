@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.tileentity.container;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -14,6 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Class containing generic abstractions for all containers.
@@ -23,7 +26,7 @@ import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityGeneric implements IEnergyContainer {
+public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityGeneric implements IEnergyContainer, IWrenchable {
 
 	protected int maxPowerStorage = 100000;
 	protected int storedPower;
@@ -239,5 +242,46 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 */
 	@Override
 	public abstract Packet getDescriptionPacket();
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return new byte[] { 2, 5, 3, 4 };
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
+	 */
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
+	 */
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		data.put("ProjectZedPowerStored", this.storedPower);
+
+		// TODO: Implement saving of items!
+		
+		return data;
+	}
 
 }

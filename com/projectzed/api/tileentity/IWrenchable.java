@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.tileentity;
 
-import net.minecraft.item.ItemStack;
+import java.util.HashMap;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 
@@ -18,14 +18,6 @@ import com.hockeyhurd.api.math.Vector4Helper;
  * @version Feb 3, 2015
  */
 public interface IWrenchable {
-
-	/**
-	 * Method to handle how the requesting wrench action should be handled.
-	 * 
-	 * @param stack stack reference to item in hand, usually the wrench itself.
-	 * @param requestType reference to request being made (generally meaning: 0 - rotate, 1 - pickup, 2 - other if specified).
-	 */
-	void handleWrenchAction(ItemStack stack, byte requestType);
 	
 	/**
 	 * Helper function to get how the tileentity as a block should be rotated.
@@ -48,6 +40,13 @@ public interface IWrenchable {
 	 * @return true if can be saved else returns false (voids stored data).
 	 */
 	boolean canSaveDataOnPickup();
+	
+	/**
+	 * Function to get name(s) and value(s) to save from te.
+	 * 
+	 * @return mapping to save.
+	 */
+	HashMap<String, Number> dataToSave();
 	
 	/**
 	 * Function to get world coordinates of wrenchable tileentity.

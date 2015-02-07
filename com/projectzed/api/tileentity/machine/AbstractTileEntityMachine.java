@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.tileentity.machine;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -17,6 +19,7 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
@@ -32,7 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 22, 2014
  */
-public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine {
+public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotRight;
 
@@ -347,6 +350,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		this.cookTime = comp.getShort("CookTime");
@@ -361,6 +365,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setShort("CookTime", (short) this.cookTime);
@@ -370,9 +375,54 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return new byte[] { 2, 5, 3, 4 };
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
+	 */
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
+	 */
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		data.put("ProjectZedPowerStored", this.stored);
+
+		// TODO: Implement saving of items!
+		
+		return data;
 	}
 
 }

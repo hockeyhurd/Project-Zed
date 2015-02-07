@@ -12,7 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -82,6 +85,20 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 */
 	@Override
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+			
+			AbstractTileEntityEnergyContainer te = (AbstractTileEntityEnergyContainer) world.getTileEntity(x, y, z);
+			te.setEnergyStored((int) comp.getFloat("ProjectZedPowerStored"));
+		}
+	}
 	
 	/*
 	 * (non-Javadoc)

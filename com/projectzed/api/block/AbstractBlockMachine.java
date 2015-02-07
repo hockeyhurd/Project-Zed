@@ -169,6 +169,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
@@ -178,6 +179,13 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
 		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+			
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			te.setEnergyStored((int) comp.getFloat("ProjectZedPowerStored"));
+		}
 	}
 	
 	/*
