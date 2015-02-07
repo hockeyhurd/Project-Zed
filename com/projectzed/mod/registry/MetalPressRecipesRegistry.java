@@ -79,21 +79,15 @@ public class MetalPressRecipesRegistry {
 	 */
 	public static ItemStack pressList(ItemStack stack) {
 		boolean flag = false;
-		boolean flag2 = false;
 		ItemStack temp = null;
 
 		/*
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
 		 */
-		if (mapVanilla.size() > 0) {
-			for (ItemStack currentStack : mapVanilla.keySet()) {
-				if (stack.getItem() == currentStack.getItem() && stack.getItemDamage() == currentStack.getItemDamage()) {
-					temp = mapVanilla.get(currentStack);
-					flag = true;
-					break;
-				}
-			}
+		if (mapVanilla.size() > 0 && mapVanilla.containsKey(stack) && mapVanilla.get(stack).getItemDamage() == stack.getItemDamage()) {
+			flag = true;
+			temp = mapVanilla.get(stack);
 		}
 
 		// If found data in vanilla mapping, return now, no need to continue.
@@ -101,40 +95,31 @@ public class MetalPressRecipesRegistry {
 
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
+
 			int currentID = OreDictionary.getOreID(stack);
-			int id, id2; 
-			String current = "", current2 = "";
+			if (currentID == -1) return (ItemStack) null;
 			
-			for (int i = 0; i < OreDictionary.getOreNames().length; i++) {
-				for (Entry<String, String> s : mapSet) {
-					current = s.getKey();
-					current2 = s.getValue();
-					id = OreDictionary.getOreID(current);
-					id2 = OreDictionary.getOreID(current2);
-
-					if (current.equals(OreDictionary.getOreNames()[i]) && currentID == id) flag = true;
-					if (current2.equals(OreDictionary.getOreNames()[i]) && currentID == id2) flag2 = true;
+			String inputName = OreDictionary.getOreName(currentID);
+			if (!mapModded.containsKey(inputName)) return (ItemStack) null;
+			
+			String ouputName = mapModded.get(inputName);
+			temp = OreDictionary.getOres(ouputName).get(0);
+			
+			if (temp == null) return (ItemStack) null;
+			
+			flag = true;
+			Block block = null;
+			Item item = null;
 					
-					if (flag && flag2) break;
-				}
+			/*
+			* Checks if the stack is instance of Block or instance of Item. In theory, only one of the two objects should be null at a given
+			* instance; hence returning the correct stack size below.
+			*/
+			if (inputName.contains("ore")) block = Block.getBlockById(OreDictionary.getOreID(inputName));
+			else if (inputName.contains("ingot")) item = Item.getItemById(OreDictionary.getOreID(inputName));
 
-				if (flag && flag2) {
-					Block block = null;
-					Item item = null;
-
-					/*
-					 * Checks if the stack is instance of Block or instance of Item. In theory, only one of the two objects should be null at a given
-					 * instance; hence returning the correct stack size below.
-					 */
-					if (current.contains("ore")) block = Block.getBlockById(OreDictionary.getOreID(current));
-					else if (current.contains("ingot")) item = Item.getItemById(OreDictionary.getOreID(current));
-					temp = OreDictionary.getOres(current2).get(0);
-
-					// Somewhat overly complicated but makes more sense writing like this imo.
-					temp.stackSize = block != null && item == null ? 2 : (block == null && item != null ? 1 : 1);
-					break;
-				}
-			}
+			// Somewhat overly complicated but makes more sense writing like this imo.
+			temp.stackSize = block != null && item == null ? 2 : (block == null && item != null ? 1 : 1);
 		}
 
 		// If found and stored in variable temp while != null, return data.

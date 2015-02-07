@@ -135,7 +135,6 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 					if (message.buttonHit == 1) {
 						EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
 						if (player != null && player.openContainer != null && player.openContainer instanceof ContainerFabricationTable) {
-							System.out.println("Should be working!");
 							ContainerFabricationTable cont = (ContainerFabricationTable) player.openContainer;
 							cont.clearCraftingGrid();
 						}

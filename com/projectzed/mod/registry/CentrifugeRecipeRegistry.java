@@ -109,43 +109,18 @@ public class CentrifugeRecipeRegistry {
 		// If found data in vanilla mapping, return now, no need to continue.
 		if (flag && temp != null) return temp;
 
-		// Else not found, prepare data for collection from the Ore Dictionary.
-		StackMapper<String> current = null;
-		String current2 = "";
-		boolean check1 = false;
-		boolean check2 = false;
-		for (int i = 0; i < OreDictionary.getOreNames().length; i++) {
-			
-			for (Entry<StackMapper<String>, String> s : mapSet) {
-				current = s.getKey();
-				current2 = s.getValue();
-				
-				if (current.contains(OreDictionary.getOreNames()[i])) {
-					if (!check1) check1 = true;
-					else {
-						check2 = true;
-						flag = check1 && check2;
-						break;
-					}
-				}
-			}
+		StackMapper<String> current;
+		String current2;	
+		for (Entry<StackMapper<String>, String> s : mapSet) {
+			current = s.getKey();
+			current2 = s.getValue();
 
-			if (flag) {
-				Block block = null;
-				Item item = null;
-				
-				/* Checks if the stack is instance of Block or instance of Item.
-				 * In theory, only one of the two objects should be null at a given instance;
-				 * hence returning the correct stack size below.
-				 */
-				// if (current.contains("ore")) block = Block.getBlockById(OreDictionary.getOreID(current));
-				// else if (current.contains("ingot")) item = Item.getItemById(OreDictionary.getOreID(current));
+			if (current.contains(OreDictionary.getOreName(OreDictionary.getOreID(stack))) && current.contains(OreDictionary.getOreName(OreDictionary.getOreID(stack2)))) {
+				flag = true;
 				temp = OreDictionary.getOres(current2).get(0);
-				
-				// Somewhat overly complicated but makes more sense writing like this imo.
-				temp.stackSize = block != null && item == null ? 2 : (block == null && item != null ? 1 : 1);
 				break;
 			}
+
 		}
 
 		// If found and stored in variable temp while != null, return data.
