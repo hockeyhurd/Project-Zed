@@ -45,6 +45,7 @@ public class ItemWrench extends Item {
 		this.NAME = name;
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
+		this.setMaxStackSize(1);
 	}
 	
 	/*
@@ -75,13 +76,15 @@ public class ItemWrench extends Item {
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrench = (IWrenchable) te;
 				
-				System.out.println(wrench.dataToSave().size() > 0);
 				if (wrench.canRotateTE() && !player.isSneaking()) {
+					used = true;
 					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
 					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(), meta), 2);
 				}
 
 				else if (player.isSneaking() && wrench.canSaveDataOnPickup() && wrench.dataToSave() != null && wrench.dataToSave().size() > 0) {
+					used = true;
+					
 					ItemStack itemToDrop = new ItemStack(b, 1);
 					NBTTagCompound comp = itemToDrop.stackTagCompound;
 					if (comp == null) comp = new NBTTagCompound();
@@ -96,10 +99,11 @@ public class ItemWrench extends Item {
 					bh.destroyBlock(vecClick, false);
 					WorldUtils.addItemDrop(itemToDrop, world, vecClick.x, vecClick.y, vecClick.z);
 				}
+				
 			}
-			
 		}
 		
+		player.swingItem();
 		return used;
 	}
 	

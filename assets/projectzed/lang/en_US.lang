@@ -52,6 +52,7 @@ item.sheetAluminium.name=Sheet of Aluminium
 item.sheetReinforced.name=Sheet of Reinforced Composite
 item.gearAluminium.name=Aluminium Gear
 item.conductiveCoil.name=Conductive Coil
+item.wrench.name=Crescent Wrench
 
 // Metals:
 item.dustGold.name=Gold Dust

@@ -11,6 +11,9 @@ TODO:
     - Implement fusion reactor logic.
     - Make tiered solar arrays have tiered max storages.
     - Tweak energy bank/cells recipes.
+    - When wrenching things:
+        - Save items
+        - Add cross compatibility for hybrid te's (industrial centrifuge).
 
 IDEAS:
 =================================    
