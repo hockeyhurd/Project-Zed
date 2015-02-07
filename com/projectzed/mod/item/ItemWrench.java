@@ -74,14 +74,14 @@ public class ItemWrench extends Item {
 			
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrench = (IWrenchable) te;
-
+				
+				System.out.println(wrench.dataToSave().size() > 0);
 				if (wrench.canRotateTE() && !player.isSneaking()) {
 					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
 					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(), meta), 2);
 				}
-				
+
 				else if (player.isSneaking() && wrench.canSaveDataOnPickup() && wrench.dataToSave() != null && wrench.dataToSave().size() > 0) {
-					
 					ItemStack itemToDrop = new ItemStack(b, 1);
 					NBTTagCompound comp = itemToDrop.stackTagCompound;
 					if (comp == null) comp = new NBTTagCompound();

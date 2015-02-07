@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.tileentity.container;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -17,7 +19,9 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Class containing generalized abstraction code for any te container that uses
@@ -26,7 +30,7 @@ import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
  * @author hockeyhurd
  * @version Jan 9, 2015
  */
-public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityGeneric implements IFluidHandler {
+public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityGeneric implements IFluidHandler, IWrenchable {
 
 	protected int maxFluidStorage = 10000;
 
@@ -286,5 +290,53 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 */
 	@Override
 	public abstract Packet getDescriptionPacket();
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return new byte[] { 2, 5, 3, 4 };
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
+	 */
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
+	 */
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		data.put("Fluid Amount", this.internalTank.getFluidAmount());
+		data.put("Fluid ID", this.internalTank.getFluid().fluidID);
+		return data;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#worldVec()
+	 */
+	@Override
+	public Vector4Helper<Integer> worldVec() {
+		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
 
 }

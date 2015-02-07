@@ -12,9 +12,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.ProjectZed;
@@ -79,6 +84,20 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 	@Override
 	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack ){
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+			
+			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
+			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid((int) comp.getFloat("Fluid ID")), (int) comp.getFloat("Fluid Amount")));
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)

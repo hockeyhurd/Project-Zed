@@ -260,5 +260,14 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		
 		super.writeToNBT(comp);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return false;
+	}
 
 }
