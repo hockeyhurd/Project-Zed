@@ -102,18 +102,6 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
-	public abstract int requestPower(IEnergyContainer cont, int amount);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
-	public abstract int addPower(IEnergyContainer cont, int amount);
-
 	/**
 	 * Method used to update connections.
 	 */

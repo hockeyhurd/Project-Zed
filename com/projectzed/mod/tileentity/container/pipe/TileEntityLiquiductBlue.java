@@ -9,25 +9,24 @@ package com.projectzed.mod.tileentity.container.pipe;
 import com.projectzed.api.energy.source.EnumColor;
 
 /**
- * Class used to create more specific instance of base class
- * in which this class inherits from.
+ * Class containing te code for liquiductBlue.
  * 
  * @author hockeyhurd
- * @version Nov 13, 2014
+ * @version Feb 13, 2015
  */
-public class TileEntityEnergyPipeRed extends TileEntityEnergyPipeBase {
+public class TileEntityLiquiductBlue extends TileEntityLiquiductBase {
 
-	public TileEntityEnergyPipeRed() {
-		super();
+	public TileEntityLiquiductBlue() {
+		super("liquiductBlue");
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase#getColor()
+	 * @see com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase#getColor()
 	 */
 	@Override
 	public EnumColor getColor() {
-		return EnumColor.RED;
+		return EnumColor.BLUE;
 	}
 
 }

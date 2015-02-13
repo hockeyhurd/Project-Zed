@@ -19,7 +19,7 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
  * @author hockeyhurd
  * @version Nov 15, 2014
  */
-public class BlockEnergyPipeClear extends AbstractBlockEnergyPipeBase {
+public class BlockEnergyPipeClear extends AbstractBlockEnergyPipe {
 
 	/**
 	 * @param material

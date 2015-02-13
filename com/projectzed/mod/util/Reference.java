@@ -73,6 +73,9 @@ public class Reference extends AbstractReference {
 		
 		public static final float RF_TO_MCU = 1f * 10f / 2.5f;
 		
+		/** Base unit for transfer rate of all things fluid. */
+		public static final int BASE_FLUID_TRANSFER_RATE = 250;
+		
 		private Constants() {
 		}
 		

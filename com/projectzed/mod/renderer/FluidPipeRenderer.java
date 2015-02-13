@@ -13,26 +13,27 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 import com.projectzed.mod.util.Connection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class handling rendering information for generic energy pipe.
+ * Class containing rendering code for fluid pipes.
  * 
  * @author hockeyhurd
- * @version Oct 25, 2014
+ * @version Feb 13, 2015
  */
 @SideOnly(Side.CLIENT)
-public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
+public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
 	private EnumColor color;
@@ -46,23 +47,21 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	private int maxU = minU + 3;
 	private int minV = 0;
 	private int maxV = minV + 5;
-
+	
 	/**
 	 * @param color = color to draw.
 	 */
-	public EnergyPipeRenderer(EnumColor color) {
+	public FluidPipeRenderer(EnumColor color) {
 		super();
 		this.color = color;
-		this.renderInside = this.color == EnumColor.CLEAR;
-		texture = new ResourceLocation("projectzed", "textures/blocks/pipe_energy_" + color.getColorAsString() + ".png");
+		this.renderInside = color == EnumColor.CLEAR;
+		texture = new ResourceLocation("projectzed", "textures/blocks/pipe_fluid_" + color.getColorAsString() + ".png");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#
-	 * renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double,
-	 * double, float)
+	/* (non-Javadoc)	
+	 * @see net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer#renderTileEntityAt(net.minecraft.tileentity.TileEntity, double, double, double, float)
 	 */
+	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		this.bindTexture(texture);
 
@@ -85,6 +84,8 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		Connection zLeft = canConnect(te.getWorldObj(), te, 2, xx, yy, zz - 1); // north
 		Connection zRight = canConnect(te.getWorldObj(), te, 3, xx, yy, zz + 1); // sound
 
+		// ProjectZed.logHelper.info(xLeft.isConnected());
+		
 		drawPipe(te, xLeft.isConnected(), xRight.isConnected(), yBottom.isConnected(), yTop.isConnected(), zLeft.isConnected(), zRight.isConnected());
 
 		if (xLeft.isConnected()) drawConnection(ForgeDirection.WEST, xLeft.getType());
@@ -99,7 +100,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslated(-x, -y, -z);
 		GL11.glPopMatrix();
 	}
-
+	
 	/**
 	 * Determines whether the given pipe can connect to neighboring te.
 	 * 
@@ -113,36 +114,36 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	private Connection canConnect(World world, TileEntity te, int index, int x, int y, int z) {
 		boolean flag = false;
 		int type = 0;
-
-		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
-			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
+		
+		if (world.getTileEntity(x, y, z) instanceof IFluidHandler) {
+			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x, y, z);
 			
-			if (cont instanceof IModularFrame) {
-				if (cont != null && ((IModularFrame) cont).getSideValve(ForgeDirection.getOrientation(index).getOpposite()) != 0) {
+			if (cont != null && cont instanceof IModularFrame) {
+				if (((IModularFrame) cont).getSideValve(ForgeDirection.getOrientation(index).getOpposite()) != 0) {
 					flag = true;
 					type = 2;
 				}
-
+				
 				return new Connection(flag, type);
 			}
 			
-			else if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase _te = (TileEntityEnergyPipeBase) cont;
-				if (_te != null && this.color == _te.getColor()) {
+			else if (cont != null && cont instanceof TileEntityLiquiductBase) {
+				
+				if (((TileEntityLiquiductBase) cont).getColor() == this.color) {
 					flag = true;
 					type = 1;
 				}
-
+				
 				return new Connection(flag, type);
 			}
-
+			
 			flag = true;
 			type = 2;
 		}
-
+		
 		return new Connection(flag, type);
 	}
-
+	
 	/**
 	 * Method to draw connection from pipe to machine.
 	 * 

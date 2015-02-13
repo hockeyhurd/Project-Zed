@@ -4,30 +4,40 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.tileentity.container.pipe;
-
-import com.projectzed.api.energy.source.EnumColor;
+package com.projectzed.mod.util;
 
 /**
- * Class used to create more specific instance of base class
- * in which this class inherits from.
+ * Utility class used primarily when trying to figure out whether to render something.
  * 
  * @author hockeyhurd
- * @version Nov 13, 2014
+ * @version Feb 13, 2015
  */
-public class TileEntityEnergyPipeRed extends TileEntityEnergyPipeBase {
+public class Connection {
 
-	public TileEntityEnergyPipeRed() {
-		super();
+	private boolean connect;
+	private int type;
+	
+	/**
+	 * @param connect is connected.
+	 * @param type type of connection.
+	 */
+	public Connection(boolean connect, int type) {
+		this.connect = connect;
+		this.type = type;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase#getColor()
+	/**
+	 * @return whether is connected or not.
 	 */
-	@Override
-	public EnumColor getColor() {
-		return EnumColor.RED;
+	public boolean isConnected() {
+		return connect;
+	}
+	
+	/**
+	 * @return connection type, (0: none, 1: fluid pipe, 2: Machine/other).
+	 */
+	public int getType() {
+		return type;
 	}
 
 }

@@ -8,6 +8,7 @@ package com.projectzed.mod.tileentity.container.pipe;
 
 import java.util.HashMap;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -61,8 +62,10 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	}
 
 	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
 	 */
+	@Override
 	protected void updateConnections() {
 		if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IEnergyContainer) {
 			if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof TileEntityEnergyPipeBase) {
@@ -336,6 +339,29 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		HashMap<String, Number> data = new HashMap<String, Number>();
 		data.put("ProjectZedPowerStored", this.storedPower);
 		return data;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
+		int size = comp.getInteger("ProjectZedPowerStored");
+		this.storedPower = size >= 0 && size <= this.maxPowerStorage ? size : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
 
 }
