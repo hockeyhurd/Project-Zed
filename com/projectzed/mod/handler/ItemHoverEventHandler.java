@@ -17,6 +17,7 @@ import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipeBase;
 import com.projectzed.mod.block.container.BlockEnergyCell;
@@ -65,14 +66,17 @@ public class ItemHoverEventHandler {
 				}
 				
 				else if (b instanceof AbstractBlockPipe) {
-					if (b instanceof AbstractBlockEnergyPipeBase) {
+					IEnergyContainer cont = null;
+					if (b instanceof AbstractBlockEnergyPipeBase && ((AbstractBlockEnergyPipeBase) b).getTileEntity() instanceof IEnergyContainer) {
 						type = 0;
-						amount = ((AbstractBlockEnergyPipeBase) b).getTileEntity().getMaxExportRate();
+						cont = (IEnergyContainer) ((AbstractBlockEnergyPipeBase) b).getTileEntity();
+						amount = cont.getMaxExportRate();
 					}
 
 					else {
 						type = 3;
-						amount = ((AbstractBlockPipe) b).getTileEntity().getMaxExportRate();
+						cont = (IEnergyContainer) ((AbstractBlockEnergyPipeBase) b).getTileEntity();
+						amount = cont.getMaxExportRate();
 					}
 				}
 				

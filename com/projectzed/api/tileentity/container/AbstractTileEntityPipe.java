@@ -6,10 +6,13 @@
 */
 package com.projectzed.api.tileentity.container;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Generic class used for creating new te pipes for transport.
@@ -17,7 +20,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer {
+public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer implements IWrenchable {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
 	public ForgeDirection[] connections;
@@ -125,5 +128,39 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		updateConnections();
 		super.updateEntity();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
+	 */
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
+	 */
+	@Override
+	public abstract HashMap<String, Number> dataToSave();
 
 }

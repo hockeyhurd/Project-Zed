@@ -6,6 +6,8 @@
 */
 package com.projectzed.mod.tileentity.container.pipe;
 
+import java.util.HashMap;
+
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -323,6 +325,17 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	@Override
 	public Vector4Helper<Integer> worldVec() {
 		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#dataToSave()
+	 */
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		data.put("ProjectZedPowerStored", this.storedPower);
+		return data;
 	}
 
 }
