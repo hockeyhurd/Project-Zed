@@ -44,6 +44,7 @@ public class ClientProxy extends CommonProxy {
 	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
 	public static int energyCell;
 	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
+	public static int liquiductBlue;
 	public static int thickenedGlass;
 	
 	/**
@@ -67,6 +68,7 @@ public class ClientProxy extends CommonProxy {
 		fluidTankTier1 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier2 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier3 = RenderingRegistry.getNextAvailableRenderId();
+		liquiductBlue = RenderingRegistry.getNextAvailableRenderId();
 		thickenedGlass = RenderingRegistry.getNextAvailableRenderId();
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));

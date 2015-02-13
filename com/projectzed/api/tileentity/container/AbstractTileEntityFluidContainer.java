@@ -20,7 +20,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IWrenchable;
 
 /**
@@ -30,7 +29,7 @@ import com.projectzed.api.tileentity.IWrenchable;
  * @author hockeyhurd
  * @version Jan 9, 2015
  */
-public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityGeneric implements IFluidHandler, IWrenchable {
+public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityContainer implements IFluidHandler, IWrenchable {
 
 	protected int maxFluidStorage = 10000;
 
@@ -40,7 +39,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @param name = name of te (its custom name).
 	 */
 	public AbstractTileEntityFluidContainer(String name) {
-		setCustomName("container." + name);
+		super(name);
 		internalTank = new FluidTank(this.maxFluidStorage);
 	}
 	

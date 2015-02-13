@@ -128,6 +128,7 @@ public class ProjectZed {
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
+	public static Block liquiductBlue;
 	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
 	public static Block fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	

@@ -17,10 +17,12 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyContainer {
+public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
 	public ForgeDirection[] connections;
+	
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	public AbstractTileEntityPipe(String name) {
 		super(name);
@@ -121,8 +123,6 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyCon
 	 */
 	public void updateEntity() {
 		updateConnections();
-		importContents();
-		exportContents();
 		super.updateEntity();
 	}
 

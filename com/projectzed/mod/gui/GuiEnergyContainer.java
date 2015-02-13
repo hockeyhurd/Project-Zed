@@ -25,7 +25,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.gui.component.GuiIOButton;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.util.Reference.Constants;
 
@@ -264,7 +264,7 @@ public class GuiEnergyContainer extends GuiContainer {
 			te.setSideValveAndRotate(dirToSet);
 			ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 			
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityContainer(te));
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityEnergyContainer(te));
 		}
 	}
 
