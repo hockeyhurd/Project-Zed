@@ -117,6 +117,24 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		super.updateEntity();
 	}
 	
+	/**
+	 * Getter function to get the last received direction if applicable.
+	 * 
+	 * @return last received direction.
+	 */
+	public ForgeDirection getLastReceivedDirection() {
+		return lastReceivedDir;
+	}
+	
+	/**
+	 * Method to set last received direction.
+	 * 
+	 * @param dir direction to set to.
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()

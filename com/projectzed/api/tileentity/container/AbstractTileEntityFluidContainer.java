@@ -324,8 +324,12 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	@Override
 	public HashMap<String, Number> dataToSave() {
 		HashMap<String, Number> data = new HashMap<String, Number>();
+		
+		int id = -1;
+		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().fluidID;
+		
 		data.put("Fluid Amount", this.internalTank.getFluidAmount());
-		data.put("Fluid ID", this.internalTank.getFluid().fluidID);
+		data.put("Fluid ID", id);
 		return data;
 	}
 

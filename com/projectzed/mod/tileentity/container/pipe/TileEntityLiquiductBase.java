@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
+import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.util.Reference;
@@ -108,6 +109,17 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 	
 	protected void importContents() {
+		
+		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		
+		if (this.internalTank.getFluidAmount() > this.maxFluidStorage) {
+			FluidStack copy = this.internalTank.getFluid();
+			copy.amount = this.maxFluidStorage;
+			this.internalTank.setFluid(copy);
+		}
+		
+		FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 
 	@Deprecated
@@ -257,8 +269,11 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	@Override
 	public HashMap<String, Number> dataToSave() {
 		HashMap<String, Number> data = new HashMap<String, Number>();
+
+		int id = -1;
+		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().fluidID;
 		data.put("Fluid Amount", this.internalTank.getFluidAmount());
-		data.put("Fluid ID", this.internalTank.getFluid().fluidID);
+		data.put("Fluid ID", id);
 		return data;
 	}
 	
