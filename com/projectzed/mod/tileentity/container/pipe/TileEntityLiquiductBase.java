@@ -23,6 +23,7 @@ import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.FluidNet;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.util.Reference;
@@ -34,7 +35,7 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Feb 12, 2015
  */
-public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidHandler, IColorComponent {
+public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidContainer, IColorComponent {
 
 	protected int maxFluidStorage = 10000;
 	protected int importRate, exportRate;
@@ -59,22 +60,22 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		return internalTank;
 	}
 	
-	/**
-	 * Shortened function to get the name of the fluid in this pipe currently.
-	 * 
-	 * @return localized name if has fluid else should be empty.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getLocalizedFluidName()
 	 */
+	@Override
 	public String getLocalizedFluidName() {
 		return getTank().getFluid().getLocalizedName();
 	}
 	
-	/**
-	 * Shortened function to get the ID of the fluid currently in the pipe.
-	 * 
-	 * @return fluid ID of fluid in pipe, else if empty should return '-1'.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getFluidID()
 	 */
+	@Override
 	public int getFluidID() {
-		return getTank().getFluid().fluidID;
+		return getTank().getFluid() != null ? getTank().getFluid().fluidID : -1;
 	}
 	
 	/*
@@ -86,26 +87,39 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.source.IColorComponent#setColor(com.projectzed.api.energy.source.EnumColor)
+	 */
 	@Override
 	public void setColor(EnumColor color) {
 	}
 	
-	/**
-	 * Gets the max allowed import rate.
-	 * 
-	 * @return max import rate.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidImportRate()
 	 */
-	public int getMaxImportRate() {
+	@Override
+	public int getMaxFluidImportRate() {
 		return this.importRate;
 	}
 	
-	/**
-	 * Gets the max allowed export rate.
-	 * 
-	 * @return max export rate.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidExportRate()
 	 */
-	public int getMaxExportRate() {
+	@Override
+	public int getMaxFluidExportRate() {
 		return this.exportRate;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#isPipe()
+	 */
+	@Override
+	public boolean isPipe() {
+		return true;
 	}
 	
 	protected void importContents() {
@@ -122,8 +136,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 
-	@Deprecated
 	protected void exportContents() {
+		FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	/*
@@ -135,6 +149,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		super.updateEntity();
 		importContents();
 		exportContents();
+		
+		// if (!this.getWorldObj().isRemote) System.out.println(getTank().getFluidAmount());
 	}
 
 	/* (non-Javadoc)
@@ -306,7 +322,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		if (!worldObj.isRemote) {
 			
 			FluidStack altStack = resource.copy();
-			altStack.amount = this.getMaxImportRate();
+			altStack.amount = this.getMaxFluidImportRate();
 			
 			boolean useAlt = resource.amount > altStack.amount;
 			int fillAmount = 0;
@@ -363,7 +379,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
 			
 			FluidStack altStack = drainedFluid.copy();
-			altStack.amount = this.getMaxExportRate();
+			altStack.amount = this.getMaxFluidExportRate();
 			boolean useAlt = drainAmount > altStack.amount;
 			
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {

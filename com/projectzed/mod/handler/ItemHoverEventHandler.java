@@ -80,7 +80,7 @@ public class ItemHoverEventHandler {
 					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidHandler) {
 						type = 4;
 						contF = (IFluidHandler) ((AbstractBlockLiquiduct) b).getTileEntity();
-						amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxExportRate();
+						amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
 					}
 					
 					else {

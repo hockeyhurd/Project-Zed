@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.fluid;
 
+import java.util.HashMap;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -13,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.energy.source.IColorComponent;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
@@ -30,6 +33,8 @@ public class FluidNet {
 	private FluidNet() {
 	}
 
+	// TODO: Make this class fully safe in the API (make sure only API things are in here).
+	
 	/**
 	 * Main static method used to move fluid from one container to another
 	 * from one place (here).
@@ -48,7 +53,7 @@ public class FluidNet {
 		boolean sideDep = sourceCont instanceof IModularFrame;
 		boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 		int counter = 0;
-		int maxTransfer = sourceCont instanceof TileEntityLiquiductBase ? ((TileEntityLiquiductBase) sourceCont).getMaxExportRate() : 1000; 
+		int maxTransfer = sourceCont instanceof TileEntityLiquiductBase ? ((TileEntityLiquiductBase) sourceCont).getMaxFluidImportRate() : 1000; 
 		
 		// Check surrounding blocks.
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -97,6 +102,80 @@ public class FluidNet {
 			
 		}
 		
+	}
+	
+	/**
+	 * Method used to transfer fluid to all fluid tanks that aren't of my own. (tanks, liquiducts, etc) 
+	 * 
+	 * @param sourceCont container requesting fluid.
+	 * @param world world object as reference.
+	 * @param x x-pos as reference.
+	 * @param y y-pos as reference.
+	 * @param z z-pos as reference.
+	 */
+	public static void exportFluidToNeighbors(IFluidContainer sourceCont, World world, int x, int y, int z) {
+		if (world == null || world.isRemote || sourceCont == null || sourceCont.getTank().getFluid() == null) return;
+
+		boolean colorDep = sourceCont instanceof IColorComponent;
+		boolean sideDep = sourceCont instanceof IModularFrame;
+		boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+		int counter = 0;
+		int maxTransfer = sourceCont instanceof IFluidContainer ? ((IFluidContainer) sourceCont).getMaxFluidExportRate() : 1000;
+		
+		HashMap<ForgeDirection, Integer> map = new HashMap<ForgeDirection, Integer>();
+		
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+			if (cont == null) continue;
+			if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
+			if (cont.getTankInfo(dir) != null) {
+				for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
+					if (cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.isFluidEqual(sourceCont.getTank().getFluid())) {
+						map.put(dir, i);
+						sides[dir.ordinal()] = true;
+						counter++;
+						break;
+					}
+				}
+				
+				if (!sides[dir.ordinal()]) {
+					map.put(dir, -1);
+					sides[dir.ordinal()] = true;
+					counter++;
+				}
+			}
+		}
+		
+		if (!map.isEmpty()) {
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				if (sides[dir.ordinal()] && map.containsKey(dir)) {
+					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+					FluidStack contStack = null;
+					
+					if (map.get(dir) > 0) contStack = cont.getTankInfo(dir)[map.get(dir)].fluid;
+					else contStack = sourceCont.getTank().getFluid().copy();
+					
+					int amount = Math.min(maxTransfer, contStack.amount);
+					
+					FluidStack temp = contStack.copy();
+					temp.amount = amount;
+					
+					amount = Math.min(amount, cont.fill(dir, temp, false));
+					
+					if (counter > 1) amount /= counter;
+					
+					temp.amount = amount;
+					
+					if (sourceCont.canDrain(dir.getOpposite(), temp.getFluid()) && cont.canFill(dir, temp.getFluid())) {
+						sourceCont.drain(dir.getOpposite(), amount, true);
+						cont.fill(dir, temp, true);
+					}
+					
+					System.out.println("Filled:\t" + amount);
+					
+				}
+			}
+		}
 	}
 	
 	/**

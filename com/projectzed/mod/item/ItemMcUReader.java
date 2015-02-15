@@ -6,9 +6,9 @@
 */
 package com.projectzed.mod.item;
 
+import static net.minecraft.util.EnumChatFormatting.AQUA;
 import static net.minecraft.util.EnumChatFormatting.GOLD;
 import static net.minecraft.util.EnumChatFormatting.WHITE;
-import static net.minecraft.util.EnumChatFormatting.AQUA;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,10 +17,10 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 /**
  * Class containing code for item mcu reader
@@ -55,7 +55,6 @@ public class ItemMcUReader extends AbstractItemMetalic {
 				player.addChatComponentMessage(chatHelper.comp(GOLD + "Max Storage: " + WHITE + NumberFormatter.format(cont.getMaxStorage()) + "McU"));
 				if (cont instanceof TileEntityEnergyBankBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Tier: " + WHITE + (((TileEntityEnergyBankBase) cont).getTier() + 1)));
 				else if (cont instanceof TileEntityEnergyPipeBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Last Received Direction: " + WHITE + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection()));
-				else if (cont instanceof TileEntityLiquiductBase) player.addChatComponentMessage(chatHelper.comp(AQUA + "Stored: " + ((TileEntityLiquiductBase) cont).getTank().getFluidAmount()));
 			}
 			
 			else {
@@ -65,6 +64,13 @@ public class ItemMcUReader extends AbstractItemMetalic {
 				else if (cont instanceof TileEntityEnergyPipeBase) ProjectZed.logHelper.info("Last Received Direction: " + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection());
 			}
 
+		}
+		
+		else if (world.getTileEntity(x, y, z) instanceof IFluidContainer) {
+			IFluidContainer cont = (IFluidContainer) world.getTileEntity(x, y, z);
+			if (world.isRemote) {
+				player.addChatComponentMessage(chatHelper.comp(AQUA + "Stored: " + cont.getTank().getFluidAmount()));
+			}
 		}
 		
 		return true;
