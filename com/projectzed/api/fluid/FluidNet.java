@@ -55,6 +55,8 @@ public class FluidNet {
 		int counter = 0;
 		int maxTransfer = sourceCont instanceof TileEntityLiquiductBase ? ((TileEntityLiquiductBase) sourceCont).getMaxFluidImportRate() : 1000; 
 		
+		HashMap<ForgeDirection, Integer> map = new HashMap<ForgeDirection, Integer>();
+		
 		// Check surrounding blocks.
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IFluidHandler && dir != lastDir) {
@@ -62,47 +64,70 @@ public class FluidNet {
 				if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
 				if (cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.FLUID && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
 				if (!(cont instanceof IFluidContainer) && sourceCont.isPipe()) continue;
-				if (cont.getTankInfo(dir)[0] != null && cont.getTankInfo(dir)[0].fluid != null && cont.getTankInfo(dir)[0].fluid.amount > 0) {
+				/*if (cont.getTankInfo(dir)[0] != null && cont.getTankInfo(dir)[0].fluid != null && cont.getTankInfo(dir)[0].fluid.amount > 0) {
 					sides[dir.ordinal()] = true;
 					counter++;
+				}*/
+				
+				if (cont.getTankInfo(dir) != null && cont.getTankInfo(dir).length > 0) {
+					
+					for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
+						if (cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.isFluidEqual(sourceCont.getTank().getFluid())) {
+							map.put(dir, i);
+							sides[dir.ordinal()] = true;
+							counter++;
+							break;
+						}
+					}
+					
+					if (!sides[dir.ordinal()]) {
+						map.put(dir, -1);
+						sides[dir.ordinal()] = true;
+						counter++;
+					}
+					
 				}
 			}
 		}
 		
 		// Check this block relative to neighbors.
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (sourceCont.getTankInfo(dir.getOpposite())[0] != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid.amount == sourceCont.getTankInfo(dir.getOpposite())[0].capacity) break;
-
-			if (sides[dir.ordinal()] && dir != lastDir) {
-				IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-				
-				if (cont.getTankInfo(dir)[0] == null || cont.getTankInfo(dir)[0].fluid.getFluid() == null || cont.getTankInfo(dir)[0].fluid.amount == 0) continue;
-				if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
-				
-				FluidStack stackSrc = sourceCont.getTankInfo(dir.getOpposite())[0].fluid;
-				FluidStack stackCont = cont.getTankInfo(dir)[0].fluid;
-				
-				if (!FluidStack.areFluidStackTagsEqual(stackSrc, stackCont)) continue;
-				
-				int amount = Math.min(maxTransfer, 1000);
-				amount = Math.min(amount, stackSrc.amount);
-				amount = Math.min(amount, stackCont.amount);
-				
-				if (counter > 1) amount /= counter;
-				
-				if (amount > 0) {
-					if (colorDep && cont instanceof IColorComponent && cont.getTankInfo(dir)[0].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[0].fluid.amount) continue;
+		if (!map.isEmpty()) {
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				// if (sourceCont.getTankInfo(dir.getOpposite())[0] != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid.amount == sourceCont.getTankInfo(dir.getOpposite())[0].capacity) break;
 	
-					FluidStack temp = stackSrc.copy();
-					temp.amount = amount;
+				if (sides[dir.ordinal()] && dir != lastDir && map.containsKey(dir)) {
+					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					
-					sourceCont.fill(dir.getOpposite(), temp, true);
-					cont.drain(dir, temp, true);
+					int value = map.get(dir);
 					
-					sourceCont.setLastReceivedDirection(dir);
+					if (value == -1 || cont.getTankInfo(dir)[value] == null || cont.getTankInfo(dir)[value].fluid.getFluid() == null || cont.getTankInfo(dir)[value].fluid.amount == 0) continue;
+					if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
+					
+					FluidStack stackSrc = sourceCont.getTankInfo(dir.getOpposite())[0].fluid;
+					FluidStack stackCont = cont.getTankInfo(dir)[value].fluid;
+					
+					if (!FluidStack.areFluidStackTagsEqual(stackSrc, stackCont)) continue;
+					
+					int amount = Math.min(maxTransfer, 1000);
+					amount = Math.min(amount, stackSrc.amount);
+					amount = Math.min(amount, stackCont.amount);
+					
+					if (counter > 1) amount /= counter;
+					
+					if (amount > 0) {
+						if (colorDep && cont instanceof IColorComponent && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
+		
+						FluidStack temp = stackSrc.copy();
+						temp.amount = amount;
+						
+						sourceCont.fill(dir.getOpposite(), temp, true);
+						cont.drain(dir, temp, true);
+						
+						sourceCont.setLastReceivedDirection(dir);
+					}
 				}
+				
 			}
-			
 		}
 		
 	}
@@ -132,7 +157,7 @@ public class FluidNet {
 			if (cont == null) continue;
 			// if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
 			if (cont instanceof IFluidContainer && !sourceCont.isPipe() && !((IFluidContainer) cont).isPipe()) continue;
-			if (cont.getTankInfo(dir) != null) {
+			if (cont.getTankInfo(dir) != null && cont.getTankInfo(dir).length > 0) {
 				
 				for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
 					if (cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.isFluidEqual(sourceCont.getTank().getFluid())) {
@@ -158,7 +183,8 @@ public class FluidNet {
 					FluidStack contStack = null;
 					
 					if (map.get(dir) > 0) contStack = cont.getTankInfo(dir)[map.get(dir)].fluid;
-					else contStack = sourceCont.getTank().getFluid().copy();
+					else if (isContainerValid(sourceCont, world)) contStack = sourceCont.getTank().getFluid().copy();
+					else break;
 					
 					int amount = Math.min(maxTransfer, contStack.amount);
 					
@@ -216,6 +242,34 @@ public class FluidNet {
 	 */
 	public static void clearDirectionalTraffic(IFluidContainer sourceCont) {
 		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);
+	}
+	
+	/**
+	 * Simple function to determine whether a fluid container is valid (has something) or invalid (has nothing).
+	 * 
+	 * @param cont container to reference.
+	 * @param world world as reference of existance.
+	 * @return true if has something relavent, else returns false.
+	 */
+	public static boolean isContainerValid(IFluidHandler cont, World world) {
+		boolean flag = false;
+		
+		if (cont != null) {
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				if (cont.getTankInfo(dir) != null && cont.getTankInfo(dir).length > 0) {
+					for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
+						if (cont.getTankInfo(dir)[i] != null && cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.amount > 0) {
+							flag = true;
+							break;
+						}
+					}
+					
+					if (flag) break;
+				}
+			}
+		}
+		
+		return flag;
 	}
 	
 }

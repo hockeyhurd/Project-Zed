@@ -82,7 +82,7 @@ public class EnergyNet {
 						if (colorDep && cont instanceof IColorComponent && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
-						cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
+						cont.setLastReceivedDirection(dir.getOpposite());
 					}
 					
 				}

@@ -44,6 +44,10 @@ public class ItemMcUReader extends AbstractItemMetalic {
 		chatHelper = new ChatHelper();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.item.Item#onItemUseFirst(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)
+	 */
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
@@ -71,6 +75,8 @@ public class ItemMcUReader extends AbstractItemMetalic {
 			if (world.isRemote) {
 				player.addChatComponentMessage(chatHelper.comp(AQUA + "Stored: " + cont.getTank().getFluidAmount()));
 			}
+			
+			else ProjectZed.logHelper.info("Stored: " + cont.getTank().getFluidAmount());
 		}
 		
 		return true;

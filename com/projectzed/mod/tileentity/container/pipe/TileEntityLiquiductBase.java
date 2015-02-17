@@ -37,7 +37,7 @@ import com.projectzed.mod.util.Reference;
  */
 public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidContainer, IColorComponent {
 
-	protected int maxFluidStorage = 10000;
+	protected int maxFluidStorage = 2000;
 	protected int importRate, exportRate;
 	protected FluidTank internalTank; 
 	
@@ -154,6 +154,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		exportContents();
 		
 		// if (!this.getWorldObj().isRemote) System.out.println(getTank().getFluidAmount());
+		// if (!this.getWorldObj().isRemote && getTank().getFluidAmount() > 0) System.out.println(getTank().getFluidAmount());
 	}
 
 	/* (non-Javadoc)
