@@ -46,7 +46,7 @@ public class FluidNet {
 	 * @param z z-pos as reference.
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
-	public static void importFluidFromNeighbors(IFluidHandler sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+	public static void importFluidFromNeighbors(IFluidContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
 		if (sourceCont == null || world == null || world.isRemote) return;
 		
 		boolean colorDep = sourceCont instanceof IColorComponent;
@@ -61,6 +61,7 @@ public class FluidNet {
 				IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 				if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
 				if (cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.FLUID && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
+				if (!(cont instanceof IFluidContainer) && sourceCont.isPipe()) continue;
 				if (cont.getTankInfo(dir)[0] != null && cont.getTankInfo(dir)[0].fluid != null && cont.getTankInfo(dir)[0].fluid.amount > 0) {
 					sides[dir.ordinal()] = true;
 					counter++;
@@ -97,6 +98,8 @@ public class FluidNet {
 					
 					sourceCont.fill(dir.getOpposite(), temp, true);
 					cont.drain(dir, temp, true);
+					
+					sourceCont.setLastReceivedDirection(dir);
 				}
 			}
 			
@@ -127,8 +130,10 @@ public class FluidNet {
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 			if (cont == null) continue;
-			if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
+			// if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
+			if (cont instanceof IFluidContainer && !sourceCont.isPipe() && !((IFluidContainer) cont).isPipe()) continue;
 			if (cont.getTankInfo(dir) != null) {
+				
 				for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
 					if (cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.isFluidEqual(sourceCont.getTank().getFluid())) {
 						map.put(dir, i);
@@ -167,11 +172,9 @@ public class FluidNet {
 					temp.amount = amount;
 					
 					if (sourceCont.canDrain(dir.getOpposite(), temp.getFluid()) && cont.canFill(dir, temp.getFluid())) {
-						sourceCont.drain(dir.getOpposite(), amount, true);
-						cont.fill(dir, temp, true);
+						temp.amount = cont.fill(dir, temp, true);
+						sourceCont.drain(dir.getOpposite(), temp, true);
 					}
-					
-					System.out.println("Filled:\t" + amount);
 					
 				}
 			}
@@ -193,15 +196,15 @@ public class FluidNet {
 		
 		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
 		IFluidHandler cont = null;
-		if (te != null && te instanceof IFluidHandler) cont = (IFluidHandler) te;
+		if (te != null && te instanceof IFluidContainer) cont = (IFluidContainer) te;
 		if (cont == null || sourceCont.getTankInfo(lastDir)[0] == null || sourceCont.getTankInfo(lastDir)[0].fluid == null || sourceCont.getTankInfo(lastDir)[0].fluid.amount == 0) {
 			shouldSend = true;
-			clearDirectionalTraffic((TileEntityLiquiductBase) sourceCont);
+			clearDirectionalTraffic((IFluidContainer) sourceCont);
 		}
 		
 		else if (cont instanceof TileEntityLiquiductBase && ((TileEntityLiquiductBase) cont).getLastReceivedDirection().getOpposite() == lastDir) {
 			shouldSend = true;
-			clearDirectionalTraffic((TileEntityLiquiductBase) sourceCont);
+			clearDirectionalTraffic((IFluidContainer) sourceCont);
 		}
 	}
 	
@@ -211,7 +214,7 @@ public class FluidNet {
 	 * 
 	 * @param sourceCont container to send data to.
 	 */
-	public static void clearDirectionalTraffic(TileEntityLiquiductBase sourceCont) {
+	public static void clearDirectionalTraffic(IFluidContainer sourceCont) {
 		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);
 	}
 	

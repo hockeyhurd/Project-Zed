@@ -6,6 +6,7 @@
 */
 package com.projectzed.api.fluid.container;
 
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -60,6 +61,20 @@ public interface IFluidContainer extends IFluidHandler {
 	 * @return true if a pipe, else returns false.
 	 */
 	boolean isPipe();
+	
+	/**
+	 * Method to set last received direction.
+	 * 
+	 * @param dir direction to set.
+	 */
+	void setLastReceivedDirection(ForgeDirection dir);
+	
+	/**
+	 * Getter function to get last received direction.
+	 * 
+	 * @return last received direction.
+	 */
+	ForgeDirection getLastReceivedDirection();
 	
 	/**
 	 * Function to get world coordinate of te.

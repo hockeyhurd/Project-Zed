@@ -123,13 +123,13 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 	
 	protected void importContents() {
-		
 		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
 		
 		if (this.internalTank.getFluidAmount() > this.maxFluidStorage) {
 			FluidStack copy = this.internalTank.getFluid();
 			copy.amount = this.maxFluidStorage;
 			this.internalTank.setFluid(copy);
+			return;
 		}
 		
 		FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
@@ -137,6 +137,9 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 
 	protected void exportContents() {
+		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		if (this.internalTank.getFluidAmount() == 0) return;
+		
 		FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
 	}
 	

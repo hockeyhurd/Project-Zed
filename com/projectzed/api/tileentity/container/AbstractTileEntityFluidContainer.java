@@ -34,6 +34,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	protected int maxFluidStorage = 10000;
 
 	protected FluidTank internalTank;
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	/**
 	 * @param name = name of te (its custom name).
@@ -88,6 +89,24 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	@Override
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getLastReceivedDirection()
+	 */
+	@Override
+	public ForgeDirection getLastReceivedDirection() {
+		return this.lastReceivedDir;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
