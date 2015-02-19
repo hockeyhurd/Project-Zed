@@ -81,7 +81,8 @@ public class Reference extends AbstractReference {
 		
 		/**
 		 * Function used to quickly convert any amount of energy in McU to RF.
-		 * @param mcu = energy in McU
+		 * 
+		 * @param mcu energy in McU
 		 * @return energy value in RF.
 		 */
 		public static int getRFFromMcU(int mcu) {
@@ -91,12 +92,43 @@ public class Reference extends AbstractReference {
 		}
 		
 		/**
+		 * Function used to quickly convert any amount of energy in McU to RF.
+		 * 
+		 * @param mcu energy
+		 * @param percent penalty percent.
+		 * @return energy value in RF.
+		 */
+		public static int getRFFromMcU(int mcu, int percent) {
+			float val = mcu * MCU_TO_RF;
+			
+			if (percent > 0 && percent < 100) val *= 1f - percent / 100f;
+			
+			int retVal = (int) Math.floor(val);
+			return retVal;
+		}
+		
+		/**
 		 * Function used to quickly convert any amount of energy in RF to McU.
-		 * @param rf = energy in RF.
+		 * 
+		 * @param rf energy in RF.
 		 * @return energy value in McU
 		 */
 		public static int getMcUFromRF(int rf) {
+			return getMcUFromRF(rf, 0);
+		}
+		
+		/**
+		 * Function used to qucikly convert any amount of energy in RF to McU.
+		 * 
+		 * @param rf rf energy.
+		 * @param percent penalty percent.
+		 * @return energy value in McU.
+		 */
+		public static int getMcUFromRF(int rf, int percent) {
 			float val = rf * RF_TO_MCU;
+			
+			if (percent > 0 && percent < 100) val *= 1f - percent / 100f;
+			
 			int retVal = (int) Math.floor(val);
 			return retVal;
 		}
@@ -105,7 +137,7 @@ public class Reference extends AbstractReference {
 		 * Function used to convert values to a more readable string value.
 		 * <br><bold>NOTE:</bold> This function should mostly be used in gui's. 
 		 * 
-		 * @param amount = amount to 'convert'.
+		 * @param amount amount to 'convert'.
 		 * @return formatted string.
 		 */
 		public static String convertToString(double amount) {
