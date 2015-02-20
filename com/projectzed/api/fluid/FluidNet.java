@@ -80,11 +80,11 @@ public class FluidNet {
 						}
 					}
 					
-					if (!sides[dir.ordinal()]) {
+					/*if (!sides[dir.ordinal()]) {
 						map.put(dir, -1);
 						sides[dir.ordinal()] = true;
 						counter++;
-					}
+					}*/
 					
 				}
 			}
@@ -103,7 +103,7 @@ public class FluidNet {
 					if (value == -1 || cont.getTankInfo(dir)[value] == null || cont.getTankInfo(dir)[value].fluid.getFluid() == null || cont.getTankInfo(dir)[value].fluid.amount == 0) continue;
 					if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
 					
-					FluidStack stackSrc = sourceCont.getTankInfo(dir.getOpposite())[0].fluid;
+					FluidStack stackSrc = sourceCont.getTankInfo(dir.getOpposite())[value].fluid;
 					FluidStack stackCont = cont.getTankInfo(dir)[value].fluid;
 					
 					if (!FluidStack.areFluidStackTagsEqual(stackSrc, stackCont)) continue;
@@ -156,7 +156,7 @@ public class FluidNet {
 			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 			if (cont == null) continue;
 			// if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
-			if (cont instanceof IFluidContainer && !sourceCont.isPipe() && !((IFluidContainer) cont).isPipe()) continue;
+			if (cont instanceof IFluidContainer && sourceCont.isPipe() && ((IFluidContainer) cont).isPipe()) continue;
 			if (cont.getTankInfo(dir) != null && cont.getTankInfo(dir).length > 0) {
 				
 				for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
@@ -189,15 +189,21 @@ public class FluidNet {
 					int amount = Math.min(maxTransfer, contStack.amount);
 					
 					FluidStack temp = contStack.copy();
-					temp.amount = amount;
 					
+					if (!sourceCont.canDrain(dir.getOpposite(), temp.getFluid()) || !cont.canFill(dir, temp.getFluid())) {
+						System.out.println(dir);
+						if (counter > 1) counter--;
+						continue;
+					}
+					
+					temp.amount = amount;
 					amount = Math.min(amount, cont.fill(dir, temp, false));
 					
-					if (counter > 1) amount /= counter;
+					if (counter > 1 && amount % 2 == 0) amount /= counter;
 					
 					temp.amount = amount;
 					
-					if (sourceCont.canDrain(dir.getOpposite(), temp.getFluid()) && cont.canFill(dir, temp.getFluid())) {
+					if (amount > 0) {
 						temp.amount = cont.fill(dir, temp, true);
 						sourceCont.drain(dir.getOpposite(), temp, true);
 					}
