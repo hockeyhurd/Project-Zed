@@ -10,7 +10,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -18,7 +18,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.server.FMLServerHandler;
 
 /**
  * Class containing creation of message to be sent from either side.
@@ -26,9 +25,9 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author hockeyhurd
  * @version Dec 4, 2014
  */
-public class MessageTileEntityContainer implements IMessage, IMessageHandler<MessageTileEntityContainer, IMessage> {
+public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandler<MessageTileEntityEnergyContainer, IMessage> {
 
-	public AbstractTileEntityEnergyContainer te;
+	public IEnergyContainer te;
 	public int x, y, z;
 	public int stored;
 
@@ -36,22 +35,22 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 	public boolean isEnergyCell;
 	public byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 
-	public MessageTileEntityContainer() {
+	public MessageTileEntityEnergyContainer() {
 	}
 
 	/**
-	 * @param te = tileentity to get data from.
+	 * @param cont = container to get data from.
 	 */
-	public MessageTileEntityContainer(AbstractTileEntityEnergyContainer te) {
-		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
-		this.stored = te.getEnergyStored();
+	public MessageTileEntityEnergyContainer(IEnergyContainer cont) {
+		this.te = cont;
+		this.x = cont.worldVec().x;
+		this.y = cont.worldVec().y;
+		this.z = cont.worldVec().z;
+		this.stored = cont.getEnergyStored();
 
-		if (te instanceof TileEntityEnergyBankBase) {
+		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;
-			TileEntityEnergyBankBase temp = (TileEntityEnergyBankBase) te;
+			TileEntityEnergyBankBase temp = (TileEntityEnergyBankBase) cont;
 
 			for (int i = 0; i < openSides.length; i++) {
 				this.openSides[i] = temp.getSideValve(i);
@@ -96,13 +95,13 @@ public class MessageTileEntityContainer implements IMessage, IMessageHandler<Mes
 	}
 	
 	@Override
-	public IMessage onMessage(MessageTileEntityContainer message, MessageContext ctx) {
+	public IMessage onMessage(MessageTileEntityEnergyContainer message, MessageContext ctx) {
 		
 		if (ctx.side == Side.CLIENT) {
 			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 
-			if (te instanceof AbstractTileEntityEnergyContainer) {
-				((AbstractTileEntityEnergyContainer) te).setEnergyStored(message.stored);
+			if (te instanceof IEnergyContainer) {
+				((IEnergyContainer) te).setEnergyStored(message.stored);
 				
 				if (te instanceof TileEntityEnergyBankBase) {
 					for (int i = 0; i < message.openSides.length; i++) {

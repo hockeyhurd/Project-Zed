@@ -17,7 +17,7 @@ import com.projectzed.mod.registry.ItemRegistry;
 /**
  * Goal of this class is to provide a simplistic
  * localized registry through the api to get items
- * and blocks through a controlled and intuative manner.
+ * and blocks through a controlled and intuitive manner.
  * 
  * @author hockeyhurd
  * @version Oct 20, 2014
@@ -58,7 +58,7 @@ public class ProjectZedRegistry {
 	 * <br>NOTE: use of this function for finding items of ingot,
 	 * use ingot<Item>. Ex. To find Iron ingot, use ingotIron.
 	 * 
-	 * @param name = name of item.
+	 * @param name name of item.
 	 * @return item if found in registry, else return null.
 	 */
 	public static Item getItemByName(String name) {

@@ -17,10 +17,9 @@ import net.minecraftforge.fluids.FluidEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IWrenchable;
 
 /**
@@ -30,29 +29,84 @@ import com.projectzed.api.tileentity.IWrenchable;
  * @author hockeyhurd
  * @version Jan 9, 2015
  */
-public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityGeneric implements IFluidHandler, IWrenchable {
+public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityContainer implements IFluidContainer, IWrenchable {
 
 	protected int maxFluidStorage = 10000;
 
 	protected FluidTank internalTank;
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	/**
 	 * @param name = name of te (its custom name).
 	 */
 	public AbstractTileEntityFluidContainer(String name) {
-		setCustomName("container." + name);
+		super(name);
 		internalTank = new FluidTank(this.maxFluidStorage);
 	}
-	
-	/**
-	 * Gets the fluid tank associated with this tileentity.
-	 * 
-	 * @return fluid tank object.
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getTank()
 	 */
+	@Override
 	public FluidTank getTank() {
 		return this.internalTank;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getFluidID()
+	 */
+	@Override
+	public int getFluidID() {
+		return getTank().getFluid() != null ? getTank().getFluid().fluidID : -1;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidImportRate()
+	 */
+	@Override
+	public int getMaxFluidImportRate() {
+		return 1000;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidExportRate()
+	 */
+	@Override
+	public int getMaxFluidExportRate() {
+		return 1000;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#isPipe()
+	 */
+	@Override
+	public boolean isPipe() {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	@Override
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getLastReceivedDirection()
+	 */
+	@Override
+	public ForgeDirection getLastReceivedDirection() {
+		return this.lastReceivedDir;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
@@ -160,10 +214,10 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	/**
 	 * Drains fluid from this block to another.
 	 * 
-	 * @param from = direction drained from.
-	 * @param drainFluid = the fluid drained.
-	 * @param drainAmount = amount of fluid drained.
-	 * @param doDrain = whether draining should be simulated or not.
+	 * @param from direction drained from.
+	 * @param drainFluid the fluid drained.
+	 * @param drainAmount amount of fluid drained.
+	 * @param doDrain whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
 	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
@@ -325,8 +379,12 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	@Override
 	public HashMap<String, Number> dataToSave() {
 		HashMap<String, Number> data = new HashMap<String, Number>();
+		
+		int id = -1;
+		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().fluidID;
+		
 		data.put("Fluid Amount", this.internalTank.getFluidAmount());
-		data.put("Fluid ID", this.internalTank.getFluid().fluidID);
+		data.put("Fluid ID", id);
 		return data;
 	}
 

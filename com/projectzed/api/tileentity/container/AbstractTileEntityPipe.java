@@ -6,10 +6,13 @@
 */
 package com.projectzed.api.tileentity.container;
 
+import java.util.HashMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Generic class used for creating new te pipes for transport.
@@ -17,10 +20,12 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyContainer {
+public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer implements IWrenchable {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
 	public ForgeDirection[] connections;
+	
+	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	public AbstractTileEntityPipe(String name) {
 		super(name);
@@ -97,18 +102,6 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyCon
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
-	public abstract int requestPower(IEnergyContainer cont, int amount);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
-	public abstract int addPower(IEnergyContainer cont, int amount);
-
 	/**
 	 * Method used to update connections.
 	 */
@@ -121,9 +114,59 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityEnergyCon
 	 */
 	public void updateEntity() {
 		updateConnections();
-		importContents();
-		exportContents();
 		super.updateEntity();
 	}
+	
+	/**
+	 * Getter function to get the last received direction if applicable.
+	 * 
+	 * @return last received direction.
+	 */
+	public ForgeDirection getLastReceivedDirection() {
+		return lastReceivedDir;
+	}
+	
+	/**
+	 * Method to set last received direction.
+	 * 
+	 * @param dir direction to set to.
+	 */
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
+	 */
+	@Override
+	public boolean canRotateTE() {
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
+	 */
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
+	 */
+	@Override
+	public abstract HashMap<String, Number> dataToSave();
 
 }

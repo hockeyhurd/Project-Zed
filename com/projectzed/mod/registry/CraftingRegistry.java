@@ -22,6 +22,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * Registry for all crafting recipes. 
+ * 
  * @author hockeyhurd
  * @version Nov 9, 2014
  */
@@ -105,6 +106,7 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(fluidTankTier1, 1, "xxx", "xyx", "xxx", 'x', "ingotIron", 'y', fluidTankTier0));
 		reg.shapedList.add(createShapedRecipe(fluidTankTier2, 1, "xxx", "xyx", "xxx", 'x', "ingotGold", 'y', fluidTankTier1));
 		reg.shapedList.add(createShapedRecipe(fluidTankTier3, 1, "xxx", "xyx", "xxx", 'x', "ingotTitanium", 'y', fluidTankTier2));
+		reg.shapedList.add(createShapedRecipe(liquiductBlue, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "gemLapis"));
 		
 		// Machine stuff:
 		reg.shapedList.add(createShapedRecipe(solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', screw, 'd', machineContainer, 'e', conductiveCoil));

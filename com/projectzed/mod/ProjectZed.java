@@ -23,6 +23,8 @@ import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
+import com.projectzed.mod.block.container.BlockLiquidNode;
+import com.projectzed.mod.block.container.BlockLiquiductBlue;
 import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.container.BlockTankTier0;
 import com.projectzed.mod.block.container.BlockTankTier1;
@@ -129,6 +131,8 @@ public class ProjectZed {
 	public static Block energyPipeOrange;
 	public static Block energyPipeClear;
 	public static Block energyCellTier0, energyCellTier1, energyCellTier2, energyCellTier3;
+	public static Block liquidNode;
+	public static Block liquiductBlue;
 	public static Block fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	
 	// RF STUFF:
@@ -271,6 +275,8 @@ public class ProjectZed {
 		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
 		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
 		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
+		liquidNode = new BlockLiquidNode(Material.rock);
+		liquiductBlue = new BlockLiquiductBlue(Material.rock);
 		fluidTankTier0 = new BlockTankTier0(Material.rock);
 		fluidTankTier1 = new BlockTankTier1(Material.rock);
 		fluidTankTier2 = new BlockTankTier2(Material.rock);

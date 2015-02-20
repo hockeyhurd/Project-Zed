@@ -15,7 +15,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IWrenchable;
 
 /**
@@ -26,7 +25,7 @@ import com.projectzed.api.tileentity.IWrenchable;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityGeneric implements IEnergyContainer, IWrenchable {
+public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityContainer implements IEnergyContainer, IWrenchable {
 
 	protected int maxPowerStorage = 100000;
 	protected int storedPower;
@@ -39,8 +38,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @param name = name of te (its custom name).
 	 */
 	public AbstractTileEntityEnergyContainer(String name) {
-		super();
-		setCustomName("container." + name);
+		super(name);
 	}
 
 	/*
@@ -66,15 +64,6 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
 	protected abstract void initSlotsArray();
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
-	@Override
-	public void setCustomName(String name) {
-		this.customName = name;
-	}
 
 	/*
 	 * (non-Javadoc)

@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.item;
 
+import static net.minecraft.util.EnumChatFormatting.AQUA;
 import static net.minecraft.util.EnumChatFormatting.GOLD;
 import static net.minecraft.util.EnumChatFormatting.WHITE;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
@@ -42,6 +44,10 @@ public class ItemMcUReader extends AbstractItemMetalic {
 		chatHelper = new ChatHelper();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.item.Item#onItemUseFirst(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)
+	 */
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
@@ -62,6 +68,15 @@ public class ItemMcUReader extends AbstractItemMetalic {
 				else if (cont instanceof TileEntityEnergyPipeBase) ProjectZed.logHelper.info("Last Received Direction: " + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection());
 			}
 
+		}
+		
+		else if (world.getTileEntity(x, y, z) instanceof IFluidContainer) {
+			IFluidContainer cont = (IFluidContainer) world.getTileEntity(x, y, z);
+			if (world.isRemote) {
+				player.addChatComponentMessage(chatHelper.comp(AQUA + "Stored: " + cont.getTank().getFluidAmount()));
+			}
+			
+			else ProjectZed.logHelper.info("Stored: " + cont.getTank().getFluidAmount());
 		}
 		
 		return true;

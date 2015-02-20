@@ -21,7 +21,7 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
  * @author hockeyhurd
  * @version Nov 13, 2014
  */
-public class BlockEnergyPipeOrange extends AbstractBlockEnergyPipeBase {
+public class BlockEnergyPipeOrange extends AbstractBlockEnergyPipe {
 
 	/**
 	 * @param material

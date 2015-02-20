@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractBlockEnergyPipeBase extends AbstractBlockPipe {
+public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 
 	protected EnumColor color;
 	
@@ -35,11 +35,16 @@ public abstract class AbstractBlockEnergyPipeBase extends AbstractBlockPipe {
 	 * @param material
 	 * @param name
 	 */
-	public AbstractBlockEnergyPipeBase(Material material, String name, EnumColor color) {
+	public AbstractBlockEnergyPipe(Material material, String name, EnumColor color) {
 		super(material, name);
 		this.color = color;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockPipe#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_energy_item_" + this.color.getColorAsString());
@@ -50,6 +55,7 @@ public abstract class AbstractBlockEnergyPipeBase extends AbstractBlockPipe {
 	 * 
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return ClientProxy.energyPipeRed;

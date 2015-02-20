@@ -19,7 +19,7 @@ import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -293,7 +293,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 			if (!this.powerMode) this.powerMode = true;
 			if (this.lastReceivedDir != ForgeDirection.UNKNOWN) this.lastReceivedDir = ForgeDirection.UNKNOWN;
 			
-			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 		}
 	}
 	
@@ -303,7 +303,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 	
 	/*
@@ -312,7 +312,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 */
 	@Override
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 	
 	/*

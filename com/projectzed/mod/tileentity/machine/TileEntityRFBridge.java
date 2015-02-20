@@ -278,7 +278,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 			if (this.storedRF > 0 && this.storedPower < this.maxPowerStorage) {
 				
 				int difference = Math.min(this.importRate, this.maxPowerStorage - this.storedPower);
-				int differenceRF = Math.min(this.exportRateRF, Reference.Constants.getRFFromMcU(difference));
+				int differenceRF = Math.min(this.exportRateRF, Reference.Constants.getRFFromMcU(difference, 15));
 				
 				if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
 					this.storedRF -= differenceRF;
@@ -287,7 +287,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 				
 				else {
 					differenceRF = Math.min(differenceRF, this.storedRF);
-					difference = Math.min(difference, Reference.Constants.getMcUFromRF(differenceRF));
+					difference = Math.min(difference, Reference.Constants.getMcUFromRF(differenceRF, 15));
 					
 					if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
 						this.storedRF -= differenceRF;

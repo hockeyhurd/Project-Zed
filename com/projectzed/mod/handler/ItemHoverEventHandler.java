@@ -11,15 +11,19 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.mod.block.container.AbstractBlockEnergyPipeBase;
+import com.projectzed.mod.block.container.AbstractBlockEnergyPipe;
+import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -65,14 +69,24 @@ public class ItemHoverEventHandler {
 				}
 				
 				else if (b instanceof AbstractBlockPipe) {
-					if (b instanceof AbstractBlockEnergyPipeBase) {
+					IEnergyContainer contE = null;
+					IFluidHandler contF = null;
+					if (b instanceof AbstractBlockEnergyPipe && ((AbstractBlockEnergyPipe) b).getTileEntity() instanceof IEnergyContainer) {
 						type = 0;
-						amount = ((AbstractBlockEnergyPipeBase) b).getTileEntity().getMaxExportRate();
+						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
+						amount = contE.getMaxExportRate();
 					}
 
+					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidHandler) {
+						type = 4;
+						contF = (IFluidHandler) ((AbstractBlockLiquiduct) b).getTileEntity();
+						amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+					}
+					
 					else {
 						type = 3;
-						amount = ((AbstractBlockPipe) b).getTileEntity().getMaxExportRate();
+						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
+						amount = contE.getMaxExportRate();
 					}
 				}
 				
@@ -99,6 +113,7 @@ public class ItemHoverEventHandler {
 			}
 			
 			if (amount > 0) {
+				// TODO: make this applicable for fluid pipes!
 				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Stored: " : "Burn Rate: "));
 				String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
 				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);

@@ -32,12 +32,13 @@ public class EnergyNet {
 	/**
 	 * Main static method used to move energy from one container to another
 	 * from one place (here).
-	 * @param sourceCont = container requesting power.
+	 * 
+	 * @param sourceCont container requesting power.
 	 * @param world world object as reference.
 	 * @param x x-pos as reference.
 	 * @param y y-pos as reference.
 	 * @param z z-pos as reference.
-	 * @param lastDir = last direction received from (prevent continuous looping).
+	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
 	public static void importEnergyFromNeighbors(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
 		if (world == null || world.isRemote) return;
@@ -81,7 +82,7 @@ public class EnergyNet {
 						if (colorDep && cont instanceof IColorComponent && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
-						cont.setLastReceivedDirection(ForgeDirection.VALID_DIRECTIONS[ForgeDirection.OPPOSITES[dir.ordinal()]]);
+						cont.setLastReceivedDirection(dir.getOpposite());
 					}
 					
 				}
@@ -94,7 +95,7 @@ public class EnergyNet {
 	 * Method once called will attempt to resolve the 'last received direction' if applicable.
 	 * 
 	 * @param sourceCont container requesting power.
-	 * @param world = world object as reference.
+	 * @param world world object as reference.
 	 * @param x x-pos as reference.
 	 * @param y y-pos as reference.
 	 * @param z z-pos as reference.

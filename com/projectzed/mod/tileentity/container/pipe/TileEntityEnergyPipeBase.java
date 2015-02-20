@@ -6,9 +6,13 @@
 */
 package com.projectzed.mod.tileentity.container.pipe;
 
+import java.util.HashMap;
+
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
@@ -16,7 +20,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityContainer;
+import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -25,10 +29,14 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements IColorComponent {
+public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements IEnergyContainer, IColorComponent {
 
 	public boolean flag;
 	protected int containerSize = 0;
+	protected int maxPowerStorage = 100000;
+	protected int storedPower;
+	protected boolean powerMode;
+	protected int importRate, exportRate;
 	
 	public TileEntityEnergyPipeBase() {
 		super("energyPipe");
@@ -41,6 +49,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.source.IColorComponent#getColor()
 	 */
+	@Override
 	public EnumColor getColor() {
 		return null;
 	}
@@ -53,8 +62,10 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	}
 
 	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
 	 */
+	@Override
 	protected void updateConnections() {
 		if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IEnergyContainer) {
 			if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof TileEntityEnergyPipeBase) {
@@ -195,7 +206,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		// if (!this.getWorldObj().isRemote && this.stored < this.maxStorage) System.out.println(this.stored);
+		importContents();
+		exportContents();
 	}
 
 	/*
@@ -235,7 +247,7 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
 		
 		// We don't need to send to client every tick! Once/sec. or so should suffice. (no gui)
-		if (this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityContainer(this));
+		if (this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 	}
 
 	/*
@@ -246,9 +258,110 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	protected void exportContents() {
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityContainer(this));
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setMaxStorage(int)
+	 */
+	@Override
+	public void setMaxStorage(int max) {
+		this.maxPowerStorage = max;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getMaxStorage()
+	 */
+	@Override
+	public int getMaxStorage() {
+		return this.maxPowerStorage;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setEnergyStored(int)
+	 */
+	@Override
+	public void setEnergyStored(int amount) {
+		this.storedPower = amount;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getEnergyStored()
+	 */
+	@Override
+	public int getEnergyStored() {
+		return this.storedPower;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 */
+	@Override
+	public void setLastReceivedDirection(ForgeDirection dir) {
+		this.lastReceivedDir = dir;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
+	 */
+	@Override
+	public ForgeDirection getLastReceivedDirection() {
+		return this.lastReceivedDir;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#worldVec()
+	 */
+	@Override
+	public Vector4Helper<Integer> worldVec() {
+		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#dataToSave()
+	 */
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		data.put("ProjectZedPowerStored", this.storedPower);
+		return data;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
+		int size = comp.getInteger("ProjectZedPowerStored");
+		this.storedPower = size >= 0 && size <= this.maxPowerStorage ? size : 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
 
 }

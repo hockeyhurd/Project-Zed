@@ -6,11 +6,12 @@
 */
 package com.projectzed.mod.renderer;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 import com.hockeyhurd.api.item.AbstractItemRenderer;
 
@@ -18,37 +19,37 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class containing rendering code for special renderer.
+ * Class containing rendering code for fluid pipes.
  * 
  * @author hockeyhurd
- * @version Oct 25, 2014
+ * @version Feb 13, 2015
  */
 @SideOnly(Side.CLIENT)
-public class EnergyPipeItemRenderer extends AbstractItemRenderer {
+public class FluidPipeItemRenderer extends AbstractItemRenderer {
 
 	protected Tessellator tess;
 	protected final float PIXEL = 1f / 16f;
 	protected final float TEXTURE_PIXEL = 1f / 32f;
 	protected float calc = 11 * PIXEL / 2;
 	protected boolean renderInside = false;
-
+	
 	/**
-	 * @param icon icon to draw from.
+	 * @param icon icon to draw.
 	 */
-	public EnergyPipeItemRenderer(IIcon icon) {
+	public FluidPipeItemRenderer(IIcon icon) {
 		this(icon, false);
 	}
 	
 	/**
-	 * @param icon icon to draw from.
+	 * @param icon icon to draw.
 	 * @param renderInside flag, should we draw the insides.
 	 */
-	public EnergyPipeItemRenderer(IIcon icon, boolean renderInside) {
+	public FluidPipeItemRenderer(IIcon icon, boolean renderInside) {
 		super(icon);
 		this.tess = Tessellator.instance;
 		this.renderInside = renderInside;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.hockeyhurd.api.item.AbstractItemRenderer#renderItem(net.minecraftforge.client.IItemRenderer.ItemRenderType, net.minecraft.item.ItemStack, java.lang.Object[])
