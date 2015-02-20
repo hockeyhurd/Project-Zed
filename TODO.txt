@@ -1,6 +1,8 @@
 BUGS:
 =================================
-    - Nuclear stuffs not showing generation rate in gui
+    - Nuclear stuffs not showing generation rate in GUI.
+    - Fix weirdness of fluid pipes when emptying.
+    - Fluid pipes breaking TE4 (fluid) machines?
 
 TODO:
 =================================
