@@ -6,6 +6,8 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
+import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
@@ -28,7 +31,7 @@ import com.projectzed.mod.util.LockMapper;
  * @author hockeyhurd
  * @version Nov 24, 2014
  */
-public class TileEntityNuclear extends AbstractTileEntityGenerator {
+public class TileEntityNuclear extends AbstractTileEntityGenerator implements IMultiBlockable<AbstractTileEntityGenerator> {
 
 	/** Variable tracking whether to use fusion or fission. */
 	private boolean fusionMode;
@@ -37,6 +40,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	
 	private byte placeDir, size, rel;
 	private LockMapper[] lockMap;
+	private boolean isMaster, hasMaster;
+	private Vector4Helper<Integer> masterVec;
 	
 	public TileEntityNuclear() {
 		super("nuclearController");
@@ -48,8 +53,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 	/**
 	 * Sets direction of placed nuclear controller.
 	 * 
-	 * @param dir = direction.
-	 * @param size = expected size of chamber.
+	 * @param dir direction.
+	 * @param size expected size of chamber.
 	 */
 	public void setPlaceDir(byte dir, byte size, byte rel) {
 		this.placeDir = dir;
@@ -163,9 +168,10 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 			// TODO: Varify offsets such that it works past 3x3x3 reaction chamber.
 			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 			
-			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
-			int yp = this.yCoord + ((size - 1) / 2);
-			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
+			int offset = (this.size) - 1 / 2;
+			int xp = this.xCoord - (placeDir == 1 ? 2 * offset : (placeDir == 3 ? 0 : 1 * offset));
+			int yp = this.yCoord + offset;
+			int zp = this.zCoord - (placeDir == 3 ? 1 * offset : (placeDir == 2 ? 2 * offset : (placeDir == 1 ? 1 * offset : 0)));
 			int counter = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
@@ -234,7 +240,8 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 
 	/**
 	 * Function used to get the item burn time from given itemstack.
-	 * @param stack = stack to (try) to burn.
+	 * 
+	 * @param stack stack to (try) to burn.
 	 * @return length or burn time of stack if burnable, else returns false.
 	 */
 	protected static int getItemBurnTime(ItemStack stack) {
@@ -339,6 +346,105 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator {
 		comp.setByte("ProjectZedNuclearDir", this.placeDir);
 		comp.setByte("ProjectZedNuclearRel", this.rel);
 		comp.setByte("ProjectZedNuclearSize", this.size);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getInstance()
+	 */
+	@Override
+	public AbstractTileEntityGenerator getInstance() {
+		return this;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#isUnique()
+	 */
+	@Override
+	public boolean isUnique() {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#isSubstituable()
+	 */
+	@Override
+	public boolean isSubstituable() {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getSubList()
+	 */
+	@Override
+	public List<IMultiBlockable> getSubList() {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getAmountFromSize(int, int, int)
+	 */
+	@Override
+	public int getAmountFromSize(int width, int height, int depth) {
+		return 1;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#isMaster()
+	 */
+	@Override
+	public boolean isMaster() {
+		return isMaster;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setIsMaster(boolean)
+	 */
+	@Override
+	public void setIsMaster(boolean master) {
+		this.isMaster = master;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#hasMaster()
+	 */
+	@Override
+	public boolean hasMaster() {
+		return hasMaster;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setHasMaster(boolean)
+	 */
+	@Override
+	public void setHasMaster(boolean master) {
+		this.hasMaster = master;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4Helper)
+	 */
+	@Override
+	public void setMasterVec(Vector4Helper<Integer> vec) {
+		this.masterVec = vec;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
+	 */
+	@Override
+	public Vector4Helper<Integer> getMasterVec() {
+		return masterVec;
 	}
 	
 }

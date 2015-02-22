@@ -49,6 +49,9 @@ public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 	/** Set whether this object is to be the MASTER TE object. */
 	void setIsMaster(boolean master);
 	
+	/** Gets whether this object has a MASTER TE object. */
+	boolean hasMaster();
+	
 	/** Sets whether this object has a MASTER TE object in its multiblock structure. */
 	void setHasMaster(boolean master);
 	
