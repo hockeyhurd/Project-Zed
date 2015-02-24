@@ -174,7 +174,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			int yp = this.yCoord + ((size - 1) / 2);
 			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
-			int counter = 0;
+			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
 			HashMap<Block, Integer> mbMap = new HashMap<Block, Integer>();
@@ -195,13 +195,21 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							b = te.getBlockType();
 							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
 							else mbMap.put(b, mbMap.get(b) + 1);
+							
+							if (!((IMultiBlockable) te).isMaster() && !((IMultiBlockable) te).hasMaster()) {
+								((IMultiBlockable) te).setHasMaster(true);
+								((IMultiBlockable) te).setMasterVec(worldVec());
+							}
+							
+							else if (((IMultiBlockable) te).isMaster()) counterMaster++;
 						}
 					}
 				}
 			}
 			
-			flag = isMappingValid(mbMap);
+			flag = isMappingValid(mbMap) && counterMaster == 1;
 
+			// ProjectZed.logHelper.info(counterMaster);
 			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
 		}	
 		
@@ -313,6 +321,15 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		byte size = comp.getByte("ProjectZedNuclearSize");
 		this.size = size > 0 && size <= 7 ? size : 0;
+		
+		// multiblock stuffs:
+		isMaster = comp.getBoolean("ProjectZedIsMaster");
+		hasMaster = comp.getBoolean("ProjectZedHasMaster");
+		
+		if (masterVec == null) masterVec = Vector4Helper.zero.getVector4i();
+		masterVec.x = comp.getInteger("ProjectZedMasterX");
+		masterVec.y = comp.getInteger("ProjectZedMasterY");
+		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 	
 	/*
@@ -325,6 +342,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		comp.setByte("ProjectZedNuclearDir", this.placeDir);
 		comp.setByte("ProjectZedNuclearRel", this.rel);
 		comp.setByte("ProjectZedNuclearSize", this.size);
+		
+		// multiblock stuffs:
+		comp.setBoolean("ProjectZedIsMaster", isMaster);
+		comp.setBoolean("ProjectZedHasMaster", hasMaster);
+		comp.setInteger("ProjectZedMasterX", masterVec.x);
+		comp.setInteger("ProjectZedMasterY", masterVec.y);
+		comp.setInteger("ProjectZedMasterZ", masterVec.z);
 	}
 
 	/*
@@ -334,41 +358,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public AbstractTileEntityGenerator getInstance() {
 		return this;
-	}
-
-	private HashMap<IMultiBlockable<?>, Integer> getMBMapping(int size) {
-		if (map == null) {
-			map = new HashMap<IMultiBlockable<?>, Integer>();
-			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 16);
-			map.put(createFakeTE(ProjectZed.thickenedGlass), 16);
-			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
-			map.put(this, 1);
-			
-			return map;
-		}
-		
-		if (size == 3) {
-			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 16);
-			map.put(createFakeTE(ProjectZed.thickenedGlass), 16);
-			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
-			map.put(this, 1);
-		}
-		
-		else if (size == 5) {
-			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
-			map.put(createFakeTE(ProjectZed.thickenedGlass), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
-			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
-			map.put(this, 1);
-		}
-		
-		else if (size == 7) {
-			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
-			map.put(createFakeTE(ProjectZed.thickenedGlass), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
-			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
-			map.put(this, 1);
-		}
-		
-		return map;
 	}
 	
 	private IMultiBlockable<?> createFakeTE(Block block) {
@@ -381,22 +370,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		}
 		
 		return mb;
-	}
-	
-	@Deprecated
-	private boolean areMappingsEqual(HashMap<IMultiBlockable<?>, Integer> ref) {
-		if (this.map == null || this.map.size() == 0 || ref == null || ref.size() == 0) return false;
-		
-		boolean flag = true;
-		
-		for (IMultiBlockable<?> block : ref.keySet()) {
-			if (!this.map.containsKey(block) || this.map.get(block) != ref.get(block)) {
-				flag = false;
-				break;
-			}
-		}
-		
-		return flag;
 	}
 	
 	private boolean isMappingValid(HashMap<Block, Integer> ref) {

@@ -16,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
@@ -106,13 +107,20 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+		TileEntityNuclearController cont = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+		if (cont == null) return;
+		
+		cont.setHasMaster(true);
+		cont.setIsMaster(true);
+		cont.setMasterVec(new Vector4Helper<Integer>(x, y, z));
+		
 		int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		
 		this.placeDir = (byte) dir;
 		this.size = getSizeFromDir(world, x, y, z, dir);
 		if (size > 7 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
-		System.out.println("Placed Dir: " + this.placeDir);
-		System.out.println("Size: " + this.size + "x" + this.size);
+		// System.out.println("Placed Dir: " + this.placeDir);
+		// System.out.println("Size: " + this.size + "x" + this.size);
 		
 		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
