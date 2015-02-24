@@ -31,7 +31,7 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 		this.name = "industrialCrusher";
 		this.setBlockName(name);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

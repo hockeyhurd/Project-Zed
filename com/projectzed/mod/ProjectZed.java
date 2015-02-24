@@ -256,8 +256,8 @@ public class ProjectZed {
 		solarArrayMV = new BlockSolarArray(Material.rock, (byte) 2);
 		solarArrayHV = new BlockSolarArray(Material.rock, (byte) 3);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
-		fusionController = new BlockNuclearController(Material.rock, true);
-		fissionController = new BlockNuclearController(Material.rock, false);
+		fusionController = new BlockNuclearController(Material.iron, true);
+		fissionController = new BlockNuclearController(Material.iron, false);
 		
 		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);

@@ -6,8 +6,6 @@
 */
 package com.projectzed.mod.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +14,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.hockeyhurd.api.util.BlockHelper;
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,15 +28,12 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Dec 12, 2014
  */
-public class BlockNuclearChamberWall extends Block {
+public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 
 	private IIcon vert, horiz;
 	
 	public BlockNuclearChamberWall() {
-		super(Material.rock);
-		this.setBlockName("nuclearChamberWall");
-		this.setHardness(1.0f);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super("nuclearChamberWall");
 	}
 	
 	/*
@@ -46,7 +44,6 @@ public class BlockNuclearChamberWall extends Block {
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = vert = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_vert");
 		horiz = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_horiz");
-		
 	}
 	
 	@SideOnly(Side.CLIENT) 
@@ -77,6 +74,15 @@ public class BlockNuclearChamberWall extends Block {
 		}
 		
 		return ret;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
+	 */
+	@Override
+	public AbstractTileEntityNuclearComponent getTileEntity() {
+		return new TileEntityNuclearChamberWall();
 	}
 	
 }

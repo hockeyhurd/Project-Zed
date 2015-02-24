@@ -6,23 +6,26 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 import com.hockeyhurd.api.math.Vector4Helper;
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.IMultiBlockable;
+import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-import com.projectzed.mod.util.LockMapper;
 
 /**
  * Class used to calculate and generate power through
@@ -31,7 +34,7 @@ import com.projectzed.mod.util.LockMapper;
  * @author hockeyhurd
  * @version Nov 24, 2014
  */
-public class TileEntityNuclear extends AbstractTileEntityGenerator implements IMultiBlockable<AbstractTileEntityGenerator> {
+public class TileEntityNuclearController extends AbstractTileEntityGenerator implements IMultiBlockableController<AbstractTileEntityGenerator> {
 
 	/** Variable tracking whether to use fusion or fission. */
 	private boolean fusionMode;
@@ -39,15 +42,13 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator implements IM
 	private int burnTime = 0;
 	
 	private byte placeDir, size, rel;
-	private LockMapper[] lockMap;
 	private boolean isMaster, hasMaster;
-	private Vector4Helper<Integer> masterVec;
+	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
+	private HashMap<IMultiBlockable<?>, Integer> map;
 	
-	public TileEntityNuclear() {
+	public TileEntityNuclearController() {
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
-		
-		this.lockMap = new LockMapper[8];
 	}
 	
 	/**
@@ -162,20 +163,24 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator implements IM
 	@Override
 	public boolean canProducePower() {
 		boolean flag = false;
-		if (lockMap == null || lockMap.length == 0 /*|| worldObj.getTotalWorldTime() % 20L != 0*/ || worldObj.isRemote) return false;
+		if (/*worldObj.getTotalWorldTime() % 20L != 0 ||*/ worldObj.isRemote) return false;
 		
 		else {
-			// TODO: Varify offsets such that it works past 3x3x3 reaction chamber.
+			// TODO: Verify offsets such that it works past 3x3x3 reaction chamber.
 			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 			
-			int offset = (this.size) - 1 / 2;
-			int xp = this.xCoord - (placeDir == 1 ? 2 * offset : (placeDir == 3 ? 0 : 1 * offset));
-			int yp = this.yCoord + offset;
-			int zp = this.zCoord - (placeDir == 3 ? 1 * offset : (placeDir == 2 ? 2 * offset : (placeDir == 1 ? 1 * offset : 0)));
+			if (!isSizeValid()) return false;
+			
+			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
+			int yp = this.yCoord + ((size - 1) / 2);
+			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
 			int counter = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
-
+			HashMap<Block, Integer> mbMap = new HashMap<Block, Integer>();
+			TileEntity te;
+			Block b;
+			
 			if (show) {
 				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
 				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
@@ -184,58 +189,32 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator implements IM
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
-						if (counter > lockMap.length) break;
-						
-						Block b = worldObj.getBlock(xp + x, yp - y, zp + z);
 						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
-						if (b == ProjectZed.nuclearChamberLock) lockMap[counter++] = new LockMapper(currentVec, ((BlockNuclearChamberLock)b).isMultiBlockStructure());
+						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
+							b = te.getBlockType();
+							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
+							else mbMap.put(b, mbMap.get(b) + 1);
+						}
 					}
 				}
 			}
 			
-			for (LockMapper b : this.lockMap) {
-				if (b != null && b.isMultiBlockStructure()) {
-					flag = true;
-					break;
-				}
-			}
-		}
+			flag = isMappingValid(mbMap);
+
+			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
+		}	
 		
 		return flag;
 	}
 	
 	/**
-	 * Method used to re-check multiblock structure.
+	 * Function to check if size of multiblock structure is valid.
+	 * 
+	 * @return true if valid, else returns false.
 	 */
-	public void reCheckLocks() {
-		if (this.worldObj.isRemote) return;
-		
-		if (this.lockMap != null && this.lockMap.length > 0) {
-			
-			boolean flag, flag2;
-			for (int i = 0; i < this.lockMap.length; i++) {
-				if (this.lockMap[i] == null) continue;
-				
-				flag = this.lockMap[i].isMultiBlockStructure();
-				if (flag) {
-					this.poweredLastUpdate = true;
-					break;
-				}
-				
-				else {
-					Vector4Helper<Integer> currentVec = this.lockMap[i].getVec();
-					BlockNuclearChamberLock lock = this.lockMap[i].getInstance(this.worldObj);
-					lock.updateMultiBlock(this.worldObj, currentVec.x, currentVec.y, currentVec.z);;
-					flag2 = lock != null && lock.isMultiBlockStructure();
-					
-					if (flag2) {
-						this.poweredLastUpdate = true;
-						break;
-					}
-				}
-				
-			}
-		}
+	private boolean isSizeValid() {
+		return this.size >= 3 && this.size <= 7;
 	}
 
 	/**
@@ -357,6 +336,89 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator implements IM
 		return this;
 	}
 
+	private HashMap<IMultiBlockable<?>, Integer> getMBMapping(int size) {
+		if (map == null) {
+			map = new HashMap<IMultiBlockable<?>, Integer>();
+			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 16);
+			map.put(createFakeTE(ProjectZed.thickenedGlass), 16);
+			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
+			map.put(this, 1);
+			
+			return map;
+		}
+		
+		if (size == 3) {
+			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 16);
+			map.put(createFakeTE(ProjectZed.thickenedGlass), 16);
+			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
+			map.put(this, 1);
+		}
+		
+		else if (size == 5) {
+			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
+			map.put(createFakeTE(ProjectZed.thickenedGlass), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
+			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
+			map.put(this, 1);
+		}
+		
+		else if (size == 7) {
+			map.put(createFakeTE(ProjectZed.nuclearChamberWall), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
+			map.put(createFakeTE(ProjectZed.thickenedGlass), 12 * (size - 2) + 6 * (size - 2) * 2 - 1);
+			map.put(createFakeTE(ProjectZed.nuclearReactantCore), 1);
+			map.put(this, 1);
+		}
+		
+		return map;
+	}
+	
+	private IMultiBlockable<?> createFakeTE(Block block) {
+		IMultiBlockable<?> mb = null;
+		
+		if (block != null && block != Blocks.air && block instanceof AbstractBlockNuclearComponent) {
+			if (((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
+				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();
+			}
+		}
+		
+		return mb;
+	}
+	
+	@Deprecated
+	private boolean areMappingsEqual(HashMap<IMultiBlockable<?>, Integer> ref) {
+		if (this.map == null || this.map.size() == 0 || ref == null || ref.size() == 0) return false;
+		
+		boolean flag = true;
+		
+		for (IMultiBlockable<?> block : ref.keySet()) {
+			if (!this.map.containsKey(block) || this.map.get(block) != ref.get(block)) {
+				flag = false;
+				break;
+			}
+		}
+		
+		return flag;
+	}
+	
+	private boolean isMappingValid(HashMap<Block, Integer> ref) {
+		if (ref == null || ref.size() == 0 || this.size < 3) return false;
+		
+		boolean flag = true;
+		
+		int counter = 0;
+		IMultiBlockable tile;
+		for (Block b : ref.keySet()) {
+			tile = createFakeTE(b);
+			if (tile != null && ref.containsKey(b)) {
+				if (/*!tile.getMasterVec().equals(worldVec()) || !tile.hasMaster() ||*/ tile.getAmountFromSize(size, size, size) != ref.get(b)) {
+					flag = false;
+					break;
+				}
+			}
+		}
+		
+		return flag;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#isUnique()
@@ -445,6 +507,30 @@ public class TileEntityNuclear extends AbstractTileEntityGenerator implements IM
 	@Override
 	public Vector4Helper<Integer> getMasterVec() {
 		return masterVec;
+	}
+
+	@Override
+	public boolean checkMultiBlockForm() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean checkForMaster() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void resetStructure() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
