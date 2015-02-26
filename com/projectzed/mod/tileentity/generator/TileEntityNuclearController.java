@@ -194,6 +194,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
 						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
+						
 						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
 						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
 							b = te.getBlockType();
@@ -311,6 +312,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 					consumeFuel();
 				}
 			}
+			
+			else if (!poweredLastUpdate && this.burnTime > 0) this.burnTime = 0;
 
 			this.powerMode = this.burnTime > 0;
 			if (this.powerMode) this.burnTime--;
