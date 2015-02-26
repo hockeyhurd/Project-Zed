@@ -96,7 +96,7 @@ public class ItemWrench extends Item {
 					}
 					
 					itemToDrop.stackTagCompound = comp;
-					bh.destroyBlock(vecClick, false);
+					bh.setBlockToAir(vecClick);
 					WorldUtils.addItemDrop(itemToDrop, world, vecClick.x, vecClick.y, vecClick.z);
 				}
 				

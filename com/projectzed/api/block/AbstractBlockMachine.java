@@ -79,7 +79,6 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
-		System.out.println(te.isPoweredOn());
 		
 		if (side == 3 && meta == 0) return this.iconFront;
 		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (te.isPoweredOn() ? this.iconFrontOn : this.iconFront));
@@ -129,6 +128,8 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		keepInventory = true;
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
+			
+			world.markBlockForUpdate(x, y, z);
 			/*this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
 

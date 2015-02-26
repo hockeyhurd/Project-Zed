@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -178,6 +179,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
 			HashMap<Block, Integer> mbMap = new HashMap<Block, Integer>();
+			HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
 			TileEntity te;
 			Block b;
 			
@@ -185,6 +187,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
 				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
 			}
+			
+			List<Vector4Helper<Integer>> list;
 			
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
@@ -196,7 +200,19 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
 							else mbMap.put(b, mbMap.get(b) + 1);
 							
-							if (!((IMultiBlockable) te).isMaster() && !((IMultiBlockable) te).hasMaster()) {
+							if (!mbMapVec.containsKey(b)) {
+								list = new ArrayList<Vector4Helper<Integer>>();
+								list.add(currentVec);
+								mbMapVec.put(b, list);
+							}
+							
+							else {
+								list = mbMapVec.get(b);
+								list.add(currentVec);
+								mbMapVec.put(b, list);
+							}
+							
+							if (/*!((IMultiBlockable) te).isMaster() && */!((IMultiBlockable) te).hasMaster()) {
 								((IMultiBlockable) te).setHasMaster(true);
 								((IMultiBlockable) te).setMasterVec(worldVec());
 							}
@@ -207,7 +223,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				}
 			}
 			
-			flag = isMappingValid(mbMap) && counterMaster == 1;
+			flag = isMappingValid(mbMap, mbMapVec) && counterMaster == 1;
 
 			// ProjectZed.logHelper.info(counterMaster);
 			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
@@ -372,21 +388,27 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return mb;
 	}
 	
-	private boolean isMappingValid(HashMap<Block, Integer> ref) {
-		if (ref == null || ref.size() == 0 || this.size < 3) return false;
+	private boolean isMappingValid(HashMap<Block, Integer> ref, HashMap<Block, List<Vector4Helper<Integer>>> refVec) {
+		if (ref == null || ref.size() == 0 || this.size < 3 || refVec == null || refVec.size() == 0) return false;
 		
 		boolean flag = true;
 		
 		int counter = 0;
 		IMultiBlockable tile;
 		for (Block b : ref.keySet()) {
-			tile = createFakeTE(b);
-			if (tile != null && ref.containsKey(b)) {
-				if (/*!tile.getMasterVec().equals(worldVec()) || !tile.hasMaster() ||*/ tile.getAmountFromSize(size, size, size) != ref.get(b)) {
-					flag = false;
-					break;
+			if (ref.containsKey(b) && refVec.containsKey(b)) {
+				for (Vector4Helper<Integer> vec : refVec.get(b)) { 
+					tile = (IMultiBlockable) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					if (tile != null) {
+						if (!tile.getMasterVec().x.equals(worldVec().x) || !tile.getMasterVec().y.equals(worldVec().y) || !tile.getMasterVec().z.equals(worldVec().z) || !tile.hasMaster() || tile.getAmountFromSize(size, size, size) != ref.get(b)) {
+							flag = false;
+							break;
+						}
+					}
 				}
 			}
+			
+			if (!flag) break;
 		}
 		
 		return flag;
