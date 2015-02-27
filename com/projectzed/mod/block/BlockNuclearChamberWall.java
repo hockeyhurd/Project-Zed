@@ -6,19 +6,27 @@
  */
 package com.projectzed.mod.block;
 
+import static net.minecraftforge.common.util.ForgeDirection.DOWN;
+import static net.minecraftforge.common.util.ForgeDirection.EAST;
+import static net.minecraftforge.common.util.ForgeDirection.NORTH;
+import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
+import static net.minecraftforge.common.util.ForgeDirection.UP;
+import static net.minecraftforge.common.util.ForgeDirection.WEST;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
+import com.projectzed.mod.util.MultiblockHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,6 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 
 	private IIcon vert, horiz, both;
+	private Block[] blockWhitelist;
 
 	public BlockNuclearChamberWall() {
 		super("nuclearChamberWall");
@@ -44,75 +53,142 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 	 * .texture.IIconRegister)
 	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = vert = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_vert");
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_normal"); 
+		vert = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_vert");
 		horiz = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_horiz");
 		both = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_both");
 	}
 
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		if (side == 0 && meta == 0) return vert;
-		return meta == 0 || meta == 1 ? vert : (meta == 2 ? horiz : both);
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World,
-	 * int, int, int, net.minecraft.entity.EntityLivingBase,
-	 * net.minecraft.item.ItemStack)
+	 * @see net.minecraft.block.Block#getIcon(int, int)
 	 */
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		BlockHelper bh = new BlockHelper(world, (EntityPlayer) player);
-
-		int[] ret = isBlockAdjacent(bh, x, y, z);
-		int interpret = ret[1] >= 4 ? 3 : ret[0] == 1 ? 1 : 2;
-		ProjectZed.logHelper.info(ret[0] >= 3);
+	public IIcon getIcon(int side, int meta) {
+		if (side == 0 && meta == 0) return blockIcon;
+		return meta == 0 ? blockIcon : (meta == 1 ? vert : (meta == 2 ? horiz : both));
+	}
+	
+	/**
+	 * Method used to update texture through metadata.
+	 * 
+	 * @param world world object as reference.
+	 * @param vec world vector coordinate.
+	 */
+	public void updateStructure(boolean isConnected, World world, Vector4Helper<Integer> vec) {
+		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
-		world.setBlockMetadataWithNotify(x, y, z, interpret, 2);
-		// if (!yCheck) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		// else world.setBlockMetadataWithNotify(x, y, z, 1, 2);
+		if (te != null && te instanceof TileEntityNuclearChamberWall) {
+			BlockHelper bh = new BlockHelper(world, null);
+			
+			int ret = isConnected ? isBlockAdjacent(bh, world, vec.x, vec.y, vec.z) : 0; 
+			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, ret, 2);
+			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+		}
 	}
 
-	private int[] isBlockAdjacent(BlockHelper bh, int x, int y, int z) {
+	/**
+	 * Function to check and get the approrpriate metadata for this block.
+	 * 
+	 * @param bh block helper object.
+	 * @param world world object as reference.
+	 * @param x x-pos
+	 * @param y y-pos
+	 * @param z z-pos
+	 * @return metadata for given block.
+	 */
+	private int isBlockAdjacent(BlockHelper bh, World world, int x, int y, int z) {
+		if (blockWhitelist == null) blockWhitelist = new Block[] {
+				this, ProjectZed.nuclearChamberLock, ProjectZed.fissionController, ProjectZed.fusionController	
+			};
+		
+		MultiblockHelper mb = new MultiblockHelper(world, new Vector4Helper<Integer>(x, y, z), blockWhitelist);
+		mb.calculateConnections();
+
+		int counter = mb.getCounter();
+		// ProjectZed.logHelper.info("Counter:\t", counter);
 		int ret = 0;
-		int counter = 0;
-		if (bh.blockExists(x, y - 1, z) || bh.blockExists(x, y + 1, z)) {
-			if ((bh.getBlock(x, y - 1, z) instanceof BlockNuclearChamberWall || (bh.getBlock(x, y - 1, z) instanceof BlockNuclearChamberLock))
-					&& (bh.getBlock(x, y + 1, z) instanceof BlockNuclearChamberWall || (bh.getBlock(x, y + 1, z) instanceof BlockNuclearChamberLock)))
-				ret = 1;
-		}
-
-		for (int xx = -1; xx <= 1; xx++) {
-			for (int zz = -1; zz <= 1; zz++) {
-				if (xx == 0 && zz == 0) continue;
-
-				if (bh.blockExists(x + xx, y, z + zz)) {
-					if (bh.getBlock(x + xx, y, z + zz) instanceof BlockNuclearChamberWall
-							|| bh.getBlock(x + xx, y, z + zz) instanceof BlockNuclearChamberLock) {
-						if (ret == 1) {
-							ret = 3;
-							break;
-						}
-						else ret = 2;
-					}
-				}
-			}
-
-			if (ret >= 3) break;
+		boolean[] connections = new boolean[mb.getConnections().length];
+		
+		for (int i = 0; i < connections.length; i++) {
+			connections[i] = mb.getConnections()[i];
 		}
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (bh.blockExists(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ)) {
-				if (bh.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof BlockNuclearChamberWall
-						|| bh.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof BlockNuclearChamberLock) {
-					counter++;
-				}
-			}
+		/* ProjectZed.logHelper.info(connections[DOWN.ordinal()], connections[UP.ordinal()], connections[WEST.ordinal()], connections[EAST.ordinal()],
+				connections[NORTH.ordinal()], connections[SOUTH.ordinal()]);*/
+		
+		if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && !connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 1");
 		}
-
-		return new int[] { ret, counter };
+		
+		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && !connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 2");
+		}
+		
+		else if (connections[DOWN.ordinal()] && connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& !connections[NORTH.ordinal()] && !connections[SOUTH.ordinal()]) {
+			ret = 3;
+			// ProjectZed.logHelper.info("case 3");
+		}
+		
+		else if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && connections[WEST.ordinal()] && !connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 4");
+		}
+		
+		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && connections[WEST.ordinal()] && !connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 5");
+		}
+		
+		else if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& !connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 6");
+		}
+		
+		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& !connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 7");
+		}
+		
+		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && !connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 8");
+		}
+		
+		else if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && !connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 2;
+			// ProjectZed.logHelper.info("case 9");
+		}
+		
+		else if (!connections[DOWN.ordinal()] && !connections[UP.ordinal()] && connections[WEST.ordinal()] && connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 3;
+			// ProjectZed.logHelper.info("case 10");
+		}
+		
+		else if (connections[DOWN.ordinal()] && connections[UP.ordinal()] && !connections[WEST.ordinal()] && !connections[EAST.ordinal()]
+				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
+			ret = 3;
+			// ProjectZed.logHelper.info("case 11");
+		}
+		
+		else ret = 1;
+		
+		return ret;
 	}
 
 	/*

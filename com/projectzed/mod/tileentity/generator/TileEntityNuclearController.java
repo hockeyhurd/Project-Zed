@@ -25,8 +25,10 @@ import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 
 /**
  * Class used to calculate and generate power through
@@ -40,12 +42,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	/** Variable tracking whether to use fusion or fission. */
 	private boolean fusionMode;
 	private boolean poweredLastUpdate = false;
+	private boolean poweredThisUpdate = false;
 	private int burnTime = 0;
 	
 	private byte placeDir, size, rel;
 	private boolean isMaster, hasMaster;
 	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
-	private HashMap<IMultiBlockable<?>, Integer> map;
+	private HashMap<Block, Integer> mbMap;
+	private HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec;
 	
 	public TileEntityNuclearController() {
 		super("nuclearController");
@@ -178,8 +182,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
-			HashMap<Block, Integer> mbMap = new HashMap<Block, Integer>();
-			HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
+			mbMap = new HashMap<Block, Integer>();
+			mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
 			TileEntity te;
 			Block b;
 			
@@ -216,6 +220,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							if (/*!((IMultiBlockable) te).isMaster() && */!((IMultiBlockable) te).hasMaster()) {
 								((IMultiBlockable) te).setHasMaster(true);
 								((IMultiBlockable) te).setMasterVec(worldVec());
+								
+								/*if (te instanceof TileEntityNuclearChamberWall) {
+									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(true, worldObj, currentVec);
+								}*/
 							}
 							
 							else if (((IMultiBlockable) te).isMaster()) counterMaster++;
@@ -240,6 +248,24 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 */
 	private boolean isSizeValid() {
 		return this.size >= 3 && this.size <= 7;
+	}
+	
+	/**
+	 * Get the counter map of all blocks.
+	 * 
+	 * @return mapping.
+	 */
+	public HashMap<Block, Integer> getMap() {
+		return mbMap;
+	}
+	
+	/**
+	 * Get the vector map of all blocks.
+	 * 
+	 * @return mapping.
+	 */
+	public HashMap<Block, List<Vector4Helper<Integer>>> getMapVec() {
+		return mbMapVec;
 	}
 
 	/**
@@ -314,12 +340,27 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			}
 			
 			else if (!poweredLastUpdate && this.burnTime > 0) this.burnTime = 0;
+			
+			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) {
+				if (mbMapVec != null && mbMapVec.size() > 0) {
+					for (Block b : mbMapVec.keySet()) {
+						
+						for (Vector4Helper<Integer> vec : mbMapVec.get(b)) {
+							if (b instanceof BlockNuclearChamberWall) {
+								((BlockNuclearChamberWall) worldObj.getBlock(vec.x, vec.y, vec.z)).updateStructure(poweredLastUpdate, worldObj, vec);
+							}
+						}
+					}
+				}
+			}
 
+			poweredThisUpdate = poweredLastUpdate;
 			this.powerMode = this.burnTime > 0;
 			if (this.powerMode) this.burnTime--;
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
+		
 		super.updateEntity();
 	}
 	
