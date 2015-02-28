@@ -329,11 +329,11 @@ public class ProjectZed {
 		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
 		
 		// Worldgen:
-		worldgenTitanium = new OreWorldgen(oreTitanium, 6, 3, 6, 8, 24);
+		worldgenTitanium = new OreWorldgen(oreTitanium, 7, 4, 8, 8, 24);
 		worldgenNickel = new OreWorldgen(oreNickel, 6, 4, 6, 10, 30);
-		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 3, 7, 10, 64);
+		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 4, 8, 10, 64);
 		worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
-		worldgenUranium = new OreWorldgen(oreUranium, 4, 2, 4, 4, 16);
+		worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
 	}
 
 }
