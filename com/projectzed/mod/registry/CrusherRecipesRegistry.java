@@ -46,6 +46,7 @@ public class CrusherRecipesRegistry {
 		// Normal mapping
 		mapVanilla.put(new ItemStack(Blocks.iron_ore, 1), new ItemStack(ProjectZed.dustIron, 2));
 		mapVanilla.put(new ItemStack(Blocks.gold_ore, 1), new ItemStack(ProjectZed.dustGold, 2));
+		mapVanilla.put(new ItemStack(Blocks.diamond_ore, 1),  new ItemStack(Items.diamond, 2));
 		mapVanilla.put(new ItemStack(Blocks.redstone_ore, 1), new ItemStack(Items.redstone, 6));
 		mapVanilla.put(new ItemStack(Items.coal, 1), new ItemStack(ProjectZed.dustCoal, 1));
 		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(ProjectZed.dustIron, 1));
@@ -87,6 +88,14 @@ public class CrusherRecipesRegistry {
 		mapModded.put("crystalCertusQuartz", "dustCertusQuartz");
 		mapModded.put("crystalFluix", "dustFluix");
 		mapModded.put("coal", "dustCoal");
+		mapModded.put("denseoreCoal", "oreCoal");
+		mapModded.put("denseoreLapis", "oreLapis");
+		mapModded.put("denseoreIron", "oreIron");
+		mapModded.put("denseoreGold", "oreGold");
+		mapModded.put("denseoreRedstone", "oreRedstone");
+		mapModded.put("denseoreDiamond", "oreDiamond");
+		mapModded.put("denseoreEmerald", "oreEmerald");
+		mapModded.put("denseoreQuartz", "oreQuartz");
 
 		initEntries();
 	}
@@ -147,16 +156,20 @@ public class CrusherRecipesRegistry {
 			flag = true;
 			Block block = null;
 			Item item = null;
+			boolean isDense = false;;
 					
 			/*
 			* Checks if the stack is instance of Block or instance of Item. In theory, only one of the two objects should be null at a given
 			* instance; hence returning the correct stack size below.
 			*/
-			if (inputName.contains("ore")) block = Block.getBlockById(OreDictionary.getOreID(inputName));
+			if (inputName.contains("ore")) {
+				block = Block.getBlockById(OreDictionary.getOreID(inputName));
+				if (inputName.contains("dense")) isDense = true;
+			}
 			else if (inputName.contains("ingot")) item = Item.getItemById(OreDictionary.getOreID(inputName));
 
 			// Somewhat overly complicated but makes more sense writing like this imo.
-			temp.stackSize = block != null && item == null ? 2 : (block == null && item != null ? 1 : 1);
+			temp.stackSize = block != null && item == null ? (!isDense ? 2 : 4) : (block == null && item != null ? 1 : 1);
 		}
 
 		// If found and stored in variable temp while != null, return data.
