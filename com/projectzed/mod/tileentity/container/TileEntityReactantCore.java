@@ -8,6 +8,7 @@ package com.projectzed.mod.tileentity.container;
 
 import java.util.List;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 
@@ -56,6 +57,17 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 1;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
+	 */
+	@Override
+	public void reset() {
+		this.isMaster = false;
+		this.hasMaster = false;
+		this.masterVec = Vector4Helper.zero.getVector4i();
 	}
 
 }

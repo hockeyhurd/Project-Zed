@@ -61,4 +61,9 @@ public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 	/** Gets the coordinates of the MASTER TE object in structure. */
 	Vector4Helper<Integer> getMasterVec();
 	
+	/**
+	 * Method to handle to reset internal data of multiblock structure.
+	 */
+	void reset();
+	
 }

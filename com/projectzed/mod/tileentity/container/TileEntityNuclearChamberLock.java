@@ -63,5 +63,16 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
+	 */
+	@Override
+	public void reset() {
+		this.isMaster = false;
+		this.hasMaster = false;
+		this.masterVec = Vector4Helper.zero.getVector4i();
+	}
 
 }

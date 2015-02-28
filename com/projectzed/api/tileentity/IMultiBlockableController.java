@@ -34,9 +34,4 @@ public interface IMultiBlockableController<T extends AbstractTileEntityGeneric> 
 	 */
 	void resetStructure();
 	
-	/**
-	 * Method to handle to reset internal data of multiblock structure.
-	 */
-	void reset();
-	
 }

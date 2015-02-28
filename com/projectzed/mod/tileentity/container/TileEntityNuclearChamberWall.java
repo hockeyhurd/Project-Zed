@@ -9,8 +9,10 @@ package com.projectzed.mod.tileentity.container;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.block.BlockNuclearChamberWall;
 
 /**
  * TE class for nuclearChamberWall.
@@ -66,6 +68,19 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		}
 		
 		return this.subList;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
+	 */
+	@Override
+	public void reset() {
+		this.isMaster = false;
+		this.hasMaster = false;
+		this.masterVec = Vector4Helper.zero.getVector4i();
+		
+		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateStructure(false, worldObj, worldVec());
 	}
 
 }

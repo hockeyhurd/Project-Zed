@@ -146,7 +146,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	
 	/**
 	 * Handles setting the proper source of this te.
-	 * @param type = type of source.
+	 * @param type type of source.
 	 */
 	public void setSource(EnumType type) {
 		setSource(type, 1.0f);
@@ -154,8 +154,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	
 	/**
 	 * Handles setting the proper source of this te.
-	 * @param type = type of source.
-	 * @param modifier = modifier amount to offset energy output.
+	 * @param type type of source.
+	 * @param modifier modifier amount to offset energy output.
 	 */
 	public void setSource(EnumType type, float modifier) {
 		this.source = new Source(type, modifier);
@@ -168,75 +168,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public boolean canProducePower() {
 		boolean flag = false;
-		if (/*worldObj.getTotalWorldTime() % 20L != 0 ||*/ worldObj.isRemote) return false;
-		
-		else {
-			// TODO: Verify offsets such that it works past 3x3x3 reaction chamber.
-			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
-			
-			if (!isSizeValid()) return false;
-			
-			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
-			int yp = this.yCoord + ((size - 1) / 2);
-			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
-			int counterMaster = 0;
-			Vector4Helper<Integer> currentVec;
-			boolean show = false;
-			mbMap = new HashMap<Block, Integer>();
-			mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
-			TileEntity te;
-			Block b;
-			
-			if (show) {
-				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
-				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
-			}
-			
-			List<Vector4Helper<Integer>> list;
-			
-			for (int y = 0; y < size; y++) {
-				for (int x = 0; x < size; x++) {
-					for (int z = 0; z < size; z++) {
-						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
-						
-						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
-						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
-							b = te.getBlockType();
-							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
-							else mbMap.put(b, mbMap.get(b) + 1);
-							
-							if (!mbMapVec.containsKey(b)) {
-								list = new ArrayList<Vector4Helper<Integer>>();
-								list.add(currentVec);
-								mbMapVec.put(b, list);
-							}
-							
-							else {
-								list = mbMapVec.get(b);
-								list.add(currentVec);
-								mbMapVec.put(b, list);
-							}
-							
-							if (/*!((IMultiBlockable) te).isMaster() && */!((IMultiBlockable) te).hasMaster()) {
-								((IMultiBlockable) te).setHasMaster(true);
-								((IMultiBlockable) te).setMasterVec(worldVec());
-								
-								/*if (te instanceof TileEntityNuclearChamberWall) {
-									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(true, worldObj, currentVec);
-								}*/
-							}
-							
-							else if (((IMultiBlockable) te).isMaster()) counterMaster++;
-						}
-					}
-				}
-			}
-			
-			flag = isMappingValid(mbMap, mbMapVec) && counterMaster == 1;
-
-			// ProjectZed.logHelper.info(counterMaster);
-			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
-		}	
+		if (worldObj.isRemote) return false;
+		else flag = checkMultiBlockForm();
 		
 		return flag;
 	}
@@ -341,18 +274,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			
 			else if (!poweredLastUpdate && this.burnTime > 0) this.burnTime = 0;
 			
-			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) {
-				if (mbMapVec != null && mbMapVec.size() > 0) {
-					for (Block b : mbMapVec.keySet()) {
-						
-						for (Vector4Helper<Integer> vec : mbMapVec.get(b)) {
-							if (b instanceof BlockNuclearChamberWall) {
-								((BlockNuclearChamberWall) worldObj.getBlock(vec.x, vec.y, vec.z)).updateStructure(poweredLastUpdate, worldObj, vec);
-							}
-						}
-					}
-				}
-			}
+			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) resetStructure();
 
 			poweredThisUpdate = poweredLastUpdate;
 			this.powerMode = this.burnTime > 0;
@@ -548,28 +470,126 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return masterVec;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockableController#checkMultiBlockForm()
+	 */
 	@Override
 	public boolean checkMultiBlockForm() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean flag = false;
+		
+		if (!worldObj.isRemote) {
+			// TODO: Verify offsets such that it works past 3x3x3 reaction chamber.
+			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
+						
+			if (!isSizeValid()) return false;
+	
+			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
+			int yp = this.yCoord + ((size - 1) / 2);
+			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
+			int counterMaster = 0;
+			Vector4Helper<Integer> currentVec;
+			boolean show = false;
+			mbMap = new HashMap<Block, Integer>();
+			mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
+			TileEntity te;
+			Block b;
+	
+			if (show) {
+				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
+				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
+			}
+	
+			List<Vector4Helper<Integer>> list;
+	
+			for (int y = 0; y < size; y++) {
+				for (int x = 0; x < size; x++) {
+					for (int z = 0; z < size; z++) {
+						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
+	
+						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
+							b = te.getBlockType();
+							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
+							else mbMap.put(b, mbMap.get(b) + 1);
+	
+							if (!mbMapVec.containsKey(b)) {
+								list = new ArrayList<Vector4Helper<Integer>>();
+								list.add(currentVec);
+								mbMapVec.put(b, list);
+							}
+	
+							else {
+								list = mbMapVec.get(b);
+								list.add(currentVec);
+								mbMapVec.put(b, list);
+							}
+	
+							if (/* !((IMultiBlockable) te).isMaster() && */!((IMultiBlockable) te).hasMaster()) {
+								((IMultiBlockable) te).setHasMaster(true);
+								((IMultiBlockable) te).setMasterVec(worldVec());
+								
+								if (te instanceof TileEntityNuclearChamberWall) {
+									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(true,
+											worldObj, currentVec);
+								}
+							}
+	
+							else if (((IMultiBlockable) te).isMaster()) counterMaster++;
+						}
+					}
+				}
+			}
+						
+			flag = isMappingValid(mbMap, mbMapVec) && counterMaster == 1;
+			
+			// ProjectZed.logHelper.info(counterMaster);
+			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
+		
+		}
+		return flag;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockableController#checkForMaster()
+	 */
 	@Override
 	public boolean checkForMaster() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.isMaster;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockableController#resetStructure()
+	 */
 	@Override
 	public void resetStructure() {
-		// TODO Auto-generated method stub
-		
+		if (mbMapVec != null && mbMapVec.size() > 0) {
+			TileEntity te;
+			for (Block b : mbMapVec.keySet()) {
+				
+				for (Vector4Helper<Integer> vec : mbMapVec.get(b)) {
+					/*if (b instanceof BlockNuclearChamberWall) {
+						((BlockNuclearChamberWall) worldObj.getBlock(vec.x, vec.y, vec.z)).updateStructure(poweredLastUpdate, worldObj, vec);
+					}*/
+					
+					te = worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					if (te != null && te instanceof IMultiBlockable) ((IMultiBlockable) te).reset();
+				}
+			}
+		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
+	 */
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		
+		this.isMaster = false;
+		this.hasMaster = false;
+		this.masterVec = Vector4Helper.zero.getVector4i();
 	}
 	
 }
