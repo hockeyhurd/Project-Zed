@@ -279,7 +279,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			poweredThisUpdate = poweredLastUpdate;
 			this.powerMode = this.burnTime > 0;
 			if (this.powerMode) this.burnTime--;
-
+			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 		
@@ -290,6 +290,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		int time = comp.getInteger("ProjectZedBurnTime");
@@ -318,6 +319,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedBurnTime", this.burnTime);
@@ -570,12 +572,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			for (Block b : mbMapVec.keySet()) {
 				
 				for (Vector4Helper<Integer> vec : mbMapVec.get(b)) {
-					/*if (b instanceof BlockNuclearChamberWall) {
-						((BlockNuclearChamberWall) worldObj.getBlock(vec.x, vec.y, vec.z)).updateStructure(poweredLastUpdate, worldObj, vec);
-					}*/
-					
 					te = worldObj.getTileEntity(vec.x, vec.y, vec.z);
-					if (te != null && te instanceof IMultiBlockable) ((IMultiBlockable) te).reset();
+					if (te != null && te instanceof IMultiBlockable && !(te instanceof TileEntityNuclearController)) ((IMultiBlockable) te).reset();
 				}
 			}
 		}
