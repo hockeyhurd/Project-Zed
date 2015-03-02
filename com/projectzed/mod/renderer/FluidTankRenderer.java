@@ -6,6 +6,11 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -14,15 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.hockeyhurd.api.util.TessellatorHelper;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class handling all client side rendering code for fluid tanks.
@@ -226,6 +223,13 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 		tess.draw();
 	}
 
+	/**
+	 * Method to handler rendering of fluids inside of the tank.
+	 *
+	 * @param te tilentity object to reference.
+	 * @param vec0 min vector.
+	 * @param vec1 max vector.
+	 */
 	protected void drawFluid(TileEntityFluidTankBase te, Vector4Helper<Float> vec0, Vector4Helper<Float> vec1) {
 		if (te == null || te.getTank() == null) {
 			// System.err.println("Error something is null!");
@@ -243,7 +247,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 
 		IIcon icon = fluid.getFluid().getStillIcon();
 		if (icon == null) {
-			System.out.println("null returning!");
+			// System.out.println("null returning!");
 			return;
 		}
 
