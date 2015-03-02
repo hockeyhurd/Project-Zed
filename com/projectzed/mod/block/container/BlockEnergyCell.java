@@ -6,21 +6,23 @@
 */
 package com.projectzed.mod.block.container;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing block code for energy bank cell.
@@ -34,7 +36,6 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	
 	/**
 	 * @param material
-	 * @param assetDir
 	 * @param name
 	 */
 	public BlockEnergyCell(Material material, String name) {
@@ -121,6 +122,24 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, x, y, z);
 			return true;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, x, y, z, e, stack);
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+
+			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
+
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				te.setSideValve(dir, comp.getByte(dir.name()));
+			}
 		}
 	}
 

@@ -8,10 +8,12 @@ package com.projectzed.mod.handler;
 
 import com.projectzed.api.block.*;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipe;
 import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
@@ -20,7 +22,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.IFluidHandler;
 
 import static com.hockeyhurd.api.util.NumberFormatter.format;
 
@@ -61,23 +62,30 @@ public class ItemHoverEventHandler {
 			if (b != null) {
 				if (b instanceof AbstractBlockContainer) {
 					type = 0;
-					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(((BlockEnergyCell) b).getTileEntity().getMaxStorage()) + " McU");
+					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) {
+						TileEntityEnergyBankBase bank = (TileEntityEnergyBankBase) ((BlockEnergyCell) b).getTileEntity();
+						if (stack.hasTagCompound() && stack.stackTagCompound.getInteger("ProjectZedPowerStored") > 0) {
+							event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(stack.stackTagCompound.getInteger("ProjectZedPowerStored")) + " McU");
+						}
+						event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
+					}
 					amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
 				}
 				
 				else if (b instanceof AbstractBlockPipe) {
 					IEnergyContainer contE = null;
-					IFluidHandler contF = null;
+					IFluidContainer contF = null;
 					if (b instanceof AbstractBlockEnergyPipe && ((AbstractBlockEnergyPipe) b).getTileEntity() instanceof IEnergyContainer) {
 						type = 0;
 						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
 						amount = contE.getMaxExportRate();
 					}
 
-					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidHandler) {
+					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidContainer) {
 						type = 4;
-						contF = (IFluidHandler) ((AbstractBlockLiquiduct) b).getTileEntity();
-						amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+						contF = (TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity();
+						// amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+						amount = contF.getMaxFluidExportRate();
 					}
 					
 					else {
