@@ -6,12 +6,10 @@
 */
 package com.projectzed.mod.handler;
 
-import net.minecraft.item.ItemStack;
-
 import com.projectzed.mod.ProjectZed;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.item.ItemStack;
 
 /**
  * Class containing code for recipes that return more than one item.

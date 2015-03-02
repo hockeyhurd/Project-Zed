@@ -6,12 +6,11 @@
 */
 package com.projectzed.mod.handler;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 
 /**
  * Class containing code for playing a given sound.

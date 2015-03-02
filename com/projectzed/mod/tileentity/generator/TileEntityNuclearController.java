@@ -343,7 +343,12 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public AbstractTileEntityGenerator getInstance() {
 		return this;
 	}
-	
+
+	/**
+	 * Function to create a fake instance of IMultiBlockable TE.
+	 * @param block block to reference.
+	 * @return object if valid, else returns false.
+	 */
 	private IMultiBlockable<?> createFakeTE(Block block) {
 		IMultiBlockable<?> mb = null;
 		
@@ -355,7 +360,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		return mb;
 	}
-	
+
+	/**
+	 * Function to check if reference mappings match expected mappings.
+	 *
+	 * @param ref reference map with number of TE's.
+	 * @param refVec reference map with coordinate of each TE.
+	 * @return true if mapping is valid, else returns false.
+	 */
 	private boolean isMappingValid(HashMap<Block, Integer> ref, HashMap<Block, List<Vector4Helper<Integer>>> refVec) {
 		if (ref == null || ref.size() == 0 || this.size < 3 || refVec == null || refVec.size() == 0) return false;
 		

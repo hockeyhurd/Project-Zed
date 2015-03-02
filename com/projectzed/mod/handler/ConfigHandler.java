@@ -8,7 +8,6 @@ package com.projectzed.mod.handler;
 
 import com.hockeyhurd.api.handler.AbstractConfigHandler;
 import com.hockeyhurd.api.util.AbstractReference;
-
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 /**
