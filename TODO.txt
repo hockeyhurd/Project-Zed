@@ -9,7 +9,6 @@ TODO:
     - Add fuel registry for nuclear stuff. (kinda)
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
-    - Add NEI support for crafting machine related recipes.
     - Implement fusion reactor logic.
     - Make tiered solar arrays have tiered max storages.
     - Tweak energy bank/cells recipes.
@@ -19,5 +18,4 @@ TODO:
 
 IDEAS:
 =================================    
-    - Increase Titanium ore gen by * 2 at least. 
-    - Add fluid and item pipes?
+    - Add item pipes?

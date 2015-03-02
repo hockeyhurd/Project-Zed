@@ -6,20 +6,17 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.hockeyhurd.api.util.TessellatorHelper;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing rendering code for energy cell bank. <br>

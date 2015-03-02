@@ -6,9 +6,10 @@
 */
 package com.projectzed.mod.renderer;
 
-import net.minecraft.util.IIcon;
-
 import com.hockeyhurd.api.item.AbstractItemRenderer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.IIcon;
 
 /**
  * Simple class extending AbstractItemRenderer.
@@ -17,6 +18,7 @@ import com.hockeyhurd.api.item.AbstractItemRenderer;
  * @author hockeyhurd
  * @version Dec 7, 2014
  */
+@SideOnly(Side.CLIENT)
 public class EnergyBankItemRenderer extends AbstractItemRenderer {
 	
 	/**
