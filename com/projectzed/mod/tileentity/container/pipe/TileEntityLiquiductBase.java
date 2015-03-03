@@ -7,18 +7,6 @@
 
 package com.projectzed.mod.tileentity.container.pipe;
 
-import java.util.HashMap;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
@@ -27,6 +15,12 @@ import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
+
+import java.util.HashMap;
 
 /**
  * Class containing te code for liquiducts.
@@ -154,7 +148,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		exportContents();
 		
 		// if (!this.getWorldObj().isRemote) System.out.println(getTank().getFluidAmount());
-		// if (!this.getWorldObj().isRemote && getTank().getFluidAmount() > 0) System.out.println(getTank().getFluidAmount());
+		// if (!this.getWorldObj().isRemote && getTank().getFluidAmount() > 0) ProjectZed.logHelper.info(getTank().getFluidAmount(), lastReceivedDir.name(), worldVec().toString());
 	}
 
 	/* (non-Javadoc)
