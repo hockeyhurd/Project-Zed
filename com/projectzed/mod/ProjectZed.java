@@ -6,76 +6,25 @@
 */
 package com.projectzed.mod;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.mod.block.BlockFabricationTable;
-import com.projectzed.mod.block.BlockNuclearChamberLock;
-import com.projectzed.mod.block.BlockNuclearChamberWall;
-import com.projectzed.mod.block.BlockNuclearReactantCore;
-import com.projectzed.mod.block.BlockThickenedGlass;
-import com.projectzed.mod.block.container.BlockEnergyCell;
-import com.projectzed.mod.block.container.BlockEnergyPipeClear;
-import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
-import com.projectzed.mod.block.container.BlockEnergyPipeRed;
-import com.projectzed.mod.block.container.BlockLiquidNode;
-import com.projectzed.mod.block.container.BlockLiquiductBlue;
-import com.projectzed.mod.block.container.BlockRFBridge;
-import com.projectzed.mod.block.container.BlockTankTier0;
-import com.projectzed.mod.block.container.BlockTankTier1;
-import com.projectzed.mod.block.container.BlockTankTier2;
-import com.projectzed.mod.block.container.BlockTankTier3;
+import com.projectzed.mod.block.*;
+import com.projectzed.mod.block.container.*;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
-import com.projectzed.mod.block.machines.BlockIndustrialCentrifuge;
-import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
-import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
-import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
-import com.projectzed.mod.block.machines.BlockIndustrialMetalPress;
-import com.projectzed.mod.block.machines.BlockMachineContainer;
-import com.projectzed.mod.block.ore.BlockAluminiumOre;
-import com.projectzed.mod.block.ore.BlockCopperOre;
-import com.projectzed.mod.block.ore.BlockNickelOre;
-import com.projectzed.mod.block.ore.BlockTitaniumOre;
-import com.projectzed.mod.block.ore.BlockUraniumOre;
+import com.projectzed.mod.block.machines.*;
+import com.projectzed.mod.block.ore.*;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.handler.SortingConfigHandler;
-import com.projectzed.mod.item.ItemConductiveCoil;
-import com.projectzed.mod.item.ItemDongle;
-import com.projectzed.mod.item.ItemForgingHammer;
-import com.projectzed.mod.item.ItemFuelRod;
-import com.projectzed.mod.item.ItemGearAluminium;
-import com.projectzed.mod.item.ItemMcUReader;
-import com.projectzed.mod.item.ItemScrew;
-import com.projectzed.mod.item.ItemWrench;
-import com.projectzed.mod.item.metals.ItemDustAluminium;
-import com.projectzed.mod.item.metals.ItemDustCoal;
-import com.projectzed.mod.item.metals.ItemDustCopper;
-import com.projectzed.mod.item.metals.ItemDustGold;
-import com.projectzed.mod.item.metals.ItemDustIron;
-import com.projectzed.mod.item.metals.ItemDustNickel;
-import com.projectzed.mod.item.metals.ItemDustTitanium;
-import com.projectzed.mod.item.metals.ItemDustUranium;
-import com.projectzed.mod.item.metals.ItemIngotAluminium;
-import com.projectzed.mod.item.metals.ItemIngotCopper;
-import com.projectzed.mod.item.metals.ItemIngotNickel;
-import com.projectzed.mod.item.metals.ItemIngotTitanium;
-import com.projectzed.mod.item.metals.ItemIngotUranium;
-import com.projectzed.mod.item.metals.ItemMixedAlloy;
-import com.projectzed.mod.item.metals.ItemSheetAluminium;
-import com.projectzed.mod.item.metals.ItemSheetReinforced;
+import com.projectzed.mod.item.*;
+import com.projectzed.mod.item.metals.*;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.worldgen.OreWorldgen;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -83,6 +32,10 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 /**
  * Project-Zed's main class covering all initializations.
@@ -173,6 +126,12 @@ public class ProjectZed {
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
 	public static Item mixedAlloy;
+
+	public static Block blockTitanium;
+	public static Block blockCopper;
+	public static Block blockNickel;
+	public static Block blockAluminium;
+	public static Block blockUranium;
 	
 	// Fuels
 	public static Item emptyFuelRod;
@@ -323,7 +282,13 @@ public class ProjectZed {
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
 		mixedAlloy = new ItemMixedAlloy("mixedAlloy", assetDir);
-		
+
+		blockTitanium = new BlockTitanium(Material.iron, "blockTitanium");
+		blockCopper = new BlockCopper(Material.iron, "blockCopper");
+		blockNickel = new BlockNickel(Material.iron, "blockNickel");
+		blockAluminium = new BlockAluminium(Material.iron, "blockAluminium");
+		blockUranium = new BlockUranium(Material.iron, "blockUranium");
+
 		// Fuels:
 		emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);
 		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
