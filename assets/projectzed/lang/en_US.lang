@@ -73,6 +73,12 @@ item.ingotAluminium.name=Aluminium Ingot
 item.ingotUranium.name=Uranium Ingot
 item.mixedAlloy.name=Mixed Metal Alloy
 
+tile.blockTitanium.name=Block of Titanium
+tile.blockCopper.name=Block of Copper
+tile.blockNickel.name=Block of Nickel
+tile.blockAluminium.name=Block of Aluminium
+tile.blockUranium.name=Block of Uranium
+
 // Fuels:
 item.emptyFuelRod.name=Empty Fuel Rod
 item.fuelRod.name=Uranium Fuel Rod

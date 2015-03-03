@@ -43,7 +43,7 @@ public class BlockRegistry {
 					Block block = (Block) f.get(mainClass); // cast object to a block.
 					if (block != null) {
 						reg.blocks.add(block); // add block to list if not null.
-						if (block.getUnlocalizedName().toLowerCase().contains("ore")) reg.blockOres.add(block);
+						if (block.getUnlocalizedName().toLowerCase().contains("ore") || block.getUnlocalizedName().toLowerCase().contains("block")) reg.blockOres.add(block);
 					}
 				}
 			}

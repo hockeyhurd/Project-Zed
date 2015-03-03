@@ -73,6 +73,11 @@ public class CraftingRegistry {
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShapeless() {
+		reg.shapelessList.add(createShapelessRecipe(ingotTitanium, 9, "blockTitanium"));
+		reg.shapelessList.add(createShapelessRecipe(ingotCopper, 9, "blockCopper"));
+		reg.shapelessList.add(createShapelessRecipe(ingotNickel, 9, "blockNickel"));
+		reg.shapelessList.add(createShapelessRecipe(ingotAluminium, 9, "blockAluminium"));
+		reg.shapelessList.add(createShapelessRecipe(ingotUranium, 9, "blockUranium"));
 		reg.shapelessList.add(createShapelessRecipe(screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 		reg.shapelessList.add(createShapelessRecipe(sheetAluminium, 1, "ingotAluminium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 		reg.shapelessList.add(createShapelessRecipe(mixedAlloy, 2, "ingotIron", "ingotCopper", "ingotTitanium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
@@ -90,6 +95,11 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
 		
 		// Blocks:
+		reg.shapedList.add(createShapedRecipe(blockTitanium, 1, "xxx", "xxx", "xxx", 'x', "ingotTitanium"));
+		reg.shapedList.add(createShapedRecipe(blockCopper, 1, "xxx", "xxx", "xxx", 'x', "ingotCopper"));
+		reg.shapedList.add(createShapedRecipe(blockNickel, 1, "xxx", "xxx", "xxx", 'x', "ingotNickel"));
+		reg.shapedList.add(createShapedRecipe(blockAluminium, 1, "xxx", "xxx", "xxx", 'x', "ingotAluminium"));
+		reg.shapedList.add(createShapedRecipe(blockUranium, 1, "xxx", "xxx", "xxx", 'x', "ingotUranium"));
 		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
 		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(nuclearChamberWall, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "stone"));

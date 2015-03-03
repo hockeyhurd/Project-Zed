@@ -19,7 +19,7 @@ public class ProjectZedBlock extends Block {
 		super(mat);
 		this.NAME = name;
 		this.setBlockName(name);
-		this.setHardness(0.75f);
+		this.setHardness(2.0f);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
 
