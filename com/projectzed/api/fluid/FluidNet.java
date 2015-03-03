@@ -198,7 +198,7 @@ public class FluidNet {
 					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					FluidStack contStack = null;
 
-					if (map.get(dir) > 0) contStack = cont.getTankInfo(dir)[map.get(dir)].fluid;
+					if (map.get(dir) > 0) contStack = cont.getTankInfo(dir.getOpposite())[map.get(dir)].fluid;
 					else if (isContainerValid(sourceCont, world)) contStack = sourceCont.getTank().getFluid().copy();
 					else break;
 
@@ -206,13 +206,13 @@ public class FluidNet {
 
 					FluidStack temp = contStack.copy();
 
-					if (!sourceCont.canDrain(dir.getOpposite(), temp.getFluid()) || !cont.canFill(dir, temp.getFluid())) {
+					if (!sourceCont.canDrain(dir, temp.getFluid()) || !cont.canFill(dir.getOpposite(), temp.getFluid())) {
 						if (counter > 1) counter--;
 						continue;
 					}
 
 					temp.amount = amount;
-					amount = Math.min(amount, cont.fill(dir, temp, false));
+					amount = Math.min(amount, cont.fill(dir.getOpposite(), temp, false));
 
 					if (counter > 1 && amount > 1) {
 						if (amount / counter > 0) amount /= counter;
@@ -221,8 +221,8 @@ public class FluidNet {
 					temp.amount = amount;
 
 					if (amount > 0) {
-						temp.amount = cont.fill(dir, temp, true);
-						sourceCont.drain(dir.getOpposite(), temp, true);
+						temp.amount = cont.fill(dir.getOpposite(), temp, true);
+						sourceCont.drain(dir, temp, true);
 					}
 
 				}
