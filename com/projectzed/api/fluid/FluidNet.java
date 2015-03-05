@@ -120,9 +120,9 @@ public class FluidNet {
 					}
 
 					int amount = Math.min(maxTransfer, 1000);
-					// amount = Math.min(amount, stackSrc.amount);
-					// amount = Math.min(amount, stackCont.amount);
-					amount = Math.min(amount, sourceCont.getTank().getCapacity() - sourceCont.getTank().getFluidAmount());
+					if (stackSrc.amount > 0) amount = Math.min(amount, stackSrc.amount);
+					if (stackCont.amount > 0) amount = Math.min(amount, stackCont.amount);
+					if (sourceCont.getTank().getCapacity() - sourceCont.getTank().getFluidAmount() > 0) amount = Math.min(amount, sourceCont.getTank().getCapacity() - sourceCont.getTank().getFluidAmount());
 
 					if (counter > 1 && amount > 1) {
 						if (amount / counter > 0) amount /= counter;
@@ -198,11 +198,16 @@ public class FluidNet {
 					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					FluidStack contStack = null;
 
-					if (map.get(dir) > 0) contStack = cont.getTankInfo(dir.getOpposite())[map.get(dir)].fluid;
+					if (map.get(dir) > 0) {
+						contStack = cont.getTankInfo(dir.getOpposite())[map.get(dir)].fluid;
+						if (!contStack.isFluidEqual(sourceCont.getTank().getFluid().copy())) break;
+					}
+					
 					else if (isContainerValid(sourceCont, world)) contStack = sourceCont.getTank().getFluid().copy();
 					else break;
 
 					int amount = Math.min(maxTransfer, contStack.amount);
+					amount = Math.min(amount, 1000);
 
 					FluidStack temp = contStack.copy();
 

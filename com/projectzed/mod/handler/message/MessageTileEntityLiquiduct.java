@@ -6,49 +6,50 @@
 */
 package com.projectzed.mod.handler.message;
 
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 /**
- * TileEntity message handler for packets.
+ * TileEntity message handler for fluid container packets.
  * 
  * @author hockeyhurd
- * @version Jan 23, 2015
+ * @version Mar 5, 2015
  */
-public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<MessageTileEntityFluidTank, IMessage> {
+public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<MessageTileEntityLiquiduct, IMessage> {
 
-	public TileEntityFluidTankBase te;
+	public TileEntityLiquiductBase te;
 	public int x, y, z;
 	public int fluidAmount;
 	public int fluidID;
-	public byte tier;
 	
-	public MessageTileEntityFluidTank() {
+	public MessageTileEntityLiquiduct() {
 	}
 	
 	/**
-	 * @param te = te object as reference.
+	 * @param te tileentity to reference.
 	 */
-	public MessageTileEntityFluidTank(TileEntityFluidTankBase te) {
+	public MessageTileEntityLiquiduct(TileEntityLiquiductBase te) {
 		this.te = te;
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
-		this.tier = te.getTier();
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
 		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.fluidID : -1;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see cpw.mods.fml.common.network.simpleimpl.IMessage#fromBytes(io.netty.buffer.ByteBuf)
@@ -58,7 +59,6 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.x = buf.readInt();
 		this.y = buf.readInt();
 		this.z = buf.readInt();
-		this.tier = buf.readByte();
 		this.fluidAmount = buf.readInt();
 		this.fluidID = buf.readInt();
 	}
@@ -72,23 +72,16 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		buf.writeInt(this.x);
 		buf.writeInt(this.y);
 		buf.writeInt(this.z);
-		buf.writeByte(this.tier);
 		buf.writeInt(this.fluidAmount);
 		buf.writeInt(this.fluidID);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see cpw.mods.fml.common.network.simpleimpl.IMessageHandler#onMessage(cpw.mods.fml.common.network.simpleimpl.IMessage, cpw.mods.fml.common.network.simpleimpl.MessageContext)
-	 */
 	@Override
-	public IMessage onMessage(MessageTileEntityFluidTank message, MessageContext ctx) {
+	public IMessage onMessage(MessageTileEntityLiquiduct message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
 		if (te != null && te instanceof TileEntityFluidTankBase) {
-			TileEntityFluidTankBase te2 = (TileEntityFluidTankBase) te;
-
-			te2.setTier(message.tier);
+			TileEntityLiquiductBase te2 = (TileEntityLiquiductBase) te;
 			
 			if (message.fluidID >= 0) {
 				// ProjectZed.logHelper.info(message.fluidID);
