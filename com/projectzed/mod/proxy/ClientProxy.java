@@ -19,6 +19,7 @@ import com.projectzed.mod.renderer.FluidPipeItemRenderer;
 import com.projectzed.mod.renderer.FluidPipeRenderer;
 import com.projectzed.mod.renderer.FluidTankItemRenderer;
 import com.projectzed.mod.renderer.FluidTankRenderer;
+import com.projectzed.mod.renderer.ReactorGlassItemRenderer;
 import com.projectzed.mod.renderer.ReactorGlassRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassItemRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassRenderer;
@@ -101,6 +102,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier2), new FluidTankItemRenderer(ProjectZed.fluidTankTier2.getBlockTextureFromSide(0), (byte) 2));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.fluidTankTier3), new FluidTankItemRenderer(ProjectZed.fluidTankTier3.getBlockTextureFromSide(0), (byte) 3));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.liquiductBlue), new FluidPipeItemRenderer(ProjectZed.liquiductBlue.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.nuclearReactorGlass), new ReactorGlassItemRenderer(ProjectZed.nuclearReactorGlass.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.thickenedGlass), new ThickenedGlassItemRenderer(ProjectZed.thickenedGlass.getBlockTextureFromSide(0)));
 		
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());

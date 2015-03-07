@@ -109,19 +109,210 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 		// tessHelp.drawXNeg(minVec, maxVec, min, max, difU, difV, false);
 		// tessHelp.drawXPos(minVec, maxVec, min, max, difU, difV, false);
 		
+		drawYNeg();
+		drawYPos();
+		
 		drawZNeg();
 		drawZPos();
 		
-		// drawXNeg();
-		// drawXPos();
+		drawXNeg();
+		drawXPos();
 		
 		tessHelp.tess.draw();
 	}
+	
+	private void drawYNeg() {
+		float difU = 0f * this.pixel;
+		float difV = 32f * this.pixel;
+		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
+		
+		if (connections[ForgeDirection.DOWN.ordinal()].isConnected()) return;
+		
+		if (!connections[ForgeDirection.EAST.ordinal()].isConnected() && connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 80f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+		}
+		
+		else if (!connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.EAST.ordinal()].isConnected() && connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 16f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 80f * this.pixel;
+				difV = 32f * this.pixel;
+			}
+		}
+		
+		tessHelp.drawYNeg(minVec, maxVec, min, max, difU, difV, false);
+	}
 
+	private void drawYPos() {
+		float difU = 0f * this.pixel;
+		float difV = 32f * this.pixel;
+		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
+		
+		if (connections[ForgeDirection.UP.ordinal()].isConnected()) return;
+		
+		if (!connections[ForgeDirection.EAST.ordinal()].isConnected() && connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 80f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+		}
+		
+		else if (!connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+			
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.EAST.ordinal()].isConnected() && connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.SOUTH.ordinal()].isConnected()) {
+				difU = 16f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+			
+			else {
+				difU = 80f * this.pixel;
+				difV = 32f * this.pixel;
+			}
+		}
+		
+		tessHelp.drawYPos(minVec, maxVec, min, max, difU, difV, false);
+	}
+	
 	private void drawZNeg() {
 		float difU = 0f * this.pixel;
 		float difV = 32f * this.pixel;
 		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
+		
+		if (connections[ForgeDirection.SOUTH.ordinal()].isConnected()) return;
 		
 		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
 			if (connections[ForgeDirection.WEST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected()) {
@@ -154,6 +345,11 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 			else if (connections[ForgeDirection.WEST.ordinal()].isConnected() && connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected()) {
 				difU = 64f * this.pixel;
 				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
 			}
 		}
 		
@@ -195,9 +391,14 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 				difV = 32f * this.pixel; 
 			}
 			
-			else {
+			/*else {
 				difU = 64f * this.pixel;
 				difV = 96f * this.pixel;
+			}*/
+			
+			else {
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
 			}
 		}
 		
@@ -209,6 +410,8 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 		float difV = 32f * this.pixel;
 		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
 		
+		if (connections[ForgeDirection.NORTH.ordinal()].isConnected()) return;
+		
 		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
 			if (connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.EAST.getOpposite().ordinal()].isConnected()) {
 				difU = 0f * this.pixel;
@@ -240,6 +443,11 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 			else if (connections[ForgeDirection.EAST.ordinal()].isConnected() && connections[ForgeDirection.EAST.getOpposite().ordinal()].isConnected()) {
 				difU = 64f * this.pixel;
 				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
 			}
 		}
 		
@@ -282,8 +490,8 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 			}
 			
 			else {
-				difU = 64f * this.pixel;
-				difV = 96f * this.pixel;
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
 			}
 		}
 		
@@ -291,34 +499,186 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 	}
 	
 	private void drawXNeg() {
-		float difU;
-		float difV;
+		float difU = 0f * this.pixel;
+		float difV = 32f * this.pixel;
 		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
-		if (connections[ForgeDirection.WEST.ordinal()].isConnected() && !connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected()) {
-			// ProjectZed.logHelper.info(true);
-			difU = 0f * this.pixel;
-			difV = 0f * this.pixel;
+		
+		if (connections[ForgeDirection.WEST.ordinal()].isConnected()) return;
+		
+		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 16f * this.pixel;
+				difV = 80f * this.pixel;
+			}
 		}
 		
-		else {
-			difU = 0f * this.pixel;
-			difV = 16f * this.pixel;
+		else if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 64f * this.pixel;
+				difV = 96f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.DOWN.ordinal()].isConnected() && connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 32f * this.pixel; 
+			}
+			
+			else {
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
+			}
 		}
 		
 		tessHelp.drawXNeg(minVec, maxVec, min, max, difU, difV, false);
 	}
 	
 	private void drawXPos() {
-		float difU;
-		float difV;
-		if (connections[ForgeDirection.EAST.ordinal()].isConnected() && !connections[ForgeDirection.EAST.getOpposite().ordinal()].isConnected()) {
-			difU = 48f * this.pixel;
-			difV = 0f * this.pixel;
+		float difU = 0f * this.pixel;
+		float difV = 32f * this.pixel;
+		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
+		
+		if (connections[ForgeDirection.EAST.ordinal()].isConnected()) return;
+		
+		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 16f * this.pixel;
+				difV = 80f * this.pixel;
+			}
 		}
 		
-		else {
-			difU = 0f * this.pixel;
-			difV = 16f * this.pixel;
+		else if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 64f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 48f * this.pixel;
+				difV = 0f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 80f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 0f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+			
+			else {
+				difU = 64f * this.pixel;
+				difV = 96f * this.pixel;
+			}
+		}
+		
+		else if (connections[ForgeDirection.DOWN.ordinal()].isConnected() && connections[ForgeDirection.UP.ordinal()].isConnected()) {
+			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+	
+			else if (!connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 48f * this.pixel;
+				difV = 48f * this.pixel;
+			}
+	
+			else if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {
+				difU = 80f * this.pixel;
+				difV = 32f * this.pixel; 
+			}
+			
+			else {
+				difU = 32f * this.pixel;
+				difV = 80f * this.pixel;
+			}
 		}
 		
 		tessHelp.drawXPos(minVec, maxVec, min, max, difU, difV, false);
