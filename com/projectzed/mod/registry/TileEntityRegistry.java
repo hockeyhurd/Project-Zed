@@ -20,6 +20,7 @@ import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 import com.projectzed.mod.tileentity.container.TileEntityReactantCore;
+import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
@@ -114,6 +115,9 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityLiquidNode.class, "liquiductNode");
 		reg.idMap.put(TileEntityLiquidNode.class, getNextID());
+		
+		reg.map.put(TileEntityReactorGlass.class, "nuclearReactorGlass");
+		reg.idMap.put(TileEntityReactorGlass.class, getNextID());
 		
 		reg.map.put(TileEntityNuclearChamberWall.class, "nuclearChamberWall");
 		reg.idMap.put(TileEntityNuclearChamberWall.class, getNextID());

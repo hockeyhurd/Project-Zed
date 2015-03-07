@@ -25,6 +25,7 @@ import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.worldgen.OreWorldgen;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -64,6 +65,7 @@ public class ProjectZed {
 	// Blocks:
 	public static Block machineContainer;
 	public static Block thickenedGlass;
+	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
 	public static Block nuclearReactantCore;
@@ -205,6 +207,7 @@ public class ProjectZed {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
+		nuclearReactorGlass = new BlockNuclearReactorGlass();
 		nuclearChamberWall = new BlockNuclearChamberWall();
 		nuclearChamberLock = new BlockNuclearChamberLock();
 		nuclearReactantCore = new BlockNuclearReactantCore();

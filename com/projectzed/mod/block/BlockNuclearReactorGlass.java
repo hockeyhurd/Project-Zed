@@ -6,44 +6,55 @@
 */
 package com.projectzed.mod.block;
 
-import java.util.Random;
-
-import net.minecraft.block.BlockGlass;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 
-import com.projectzed.mod.ProjectZed;
+import com.hockeyhurd.api.util.BlockHelper;
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.proxy.ClientProxy;
+import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class containing block code for thickenedGlass.
+ * Class containing block code for nuclearReactorGlass.
  * 
  * @author hockeyhurd
- * @version Nov 20, 2014
+ * @version Mar 6, 2015
  */
-public class BlockThickenedGlass extends BlockGlass {
+public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 
-	public BlockThickenedGlass() {
-		super(Material.glass, false);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setBlockName("thickenedGlass");
-		this.setHardness(0.75f);
-		this.setResistance(2000.0f);
-		this.setStepSound(soundTypeGlass);
-		this.setLightOpacity(0);
+	private BlockHelper bh;
+	private Block[] blockWhitelist;
+	
+	@SideOnly(Side.CLIENT)
+	private IIcon[] icons;
+	
+	public BlockNuclearReactorGlass() {
+		super("nuclearReactorGlass");
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockBreakable#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "thickenedGlass");
+		blockIcon = reg.registerIcon(this.assetDir + this.name + "_normal"); 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getIcon(int, int)
+	 */
+	@SideOnly(Side.CLIENT)
+	@Override
+	public IIcon getIcon(int side, int meta) {
+		return blockIcon;
 	}
 	
 	/*
@@ -73,7 +84,7 @@ public class BlockThickenedGlass extends BlockGlass {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
-		return ClientProxy.thickenedGlass;
+		return ClientProxy.reactorGlass;
 	}
 	
 	/*
@@ -96,14 +107,13 @@ public class BlockThickenedGlass extends BlockGlass {
 	public int getRenderBlockPass() {
 		return 1;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#quantityDropped(java.util.Random)
+
+	/* (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
 	 */
 	@Override
-	public int quantityDropped(Random random) {
-		return 1;
+	public AbstractTileEntityNuclearComponent getTileEntity() {
+		return new TileEntityReactorGlass();
 	}
 
 }

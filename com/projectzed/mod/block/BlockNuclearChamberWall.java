@@ -39,8 +39,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 
-	private IIcon vert, horiz, both;
+	private BlockHelper bh;
 	private Block[] blockWhitelist;
+	
+	@SideOnly(Side.CLIENT)
+	private IIcon vert, horiz, both;
 
 	public BlockNuclearChamberWall() {
 		super("nuclearChamberWall");
@@ -82,7 +85,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
-			BlockHelper bh = new BlockHelper(world, null);
+			if (bh == null) bh = new BlockHelper(world, null);
 			
 			int ret = isConnected ? isBlockAdjacent(bh, world, vec.x, vec.y, vec.z) : 0; 
 			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, ret, 2);
