@@ -343,6 +343,15 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public AbstractTileEntityGenerator getInstance() {
 		return this;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return !this.fusionMode ? ProjectZed.fissionController : ProjectZed.fusionController;
+	}
 
 	/**
 	 * Function to create a fake instance of IMultiBlockable TE.
@@ -380,9 +389,41 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				for (Vector4Helper<Integer> vec : refVec.get(b)) { 
 					tile = (IMultiBlockable) worldObj.getTileEntity(vec.x, vec.y, vec.z);
 					if (tile != null) {
-						if (!tile.getMasterVec().x.equals(worldVec().x) || !tile.getMasterVec().y.equals(worldVec().y) || !tile.getMasterVec().z.equals(worldVec().z) || !tile.hasMaster() || tile.getAmountFromSize(size, size, size) != ref.get(b)) {
+						if (!tile.getMasterVec().x.equals(worldVec().x) || !tile.getMasterVec().y.equals(worldVec().y) || !tile.getMasterVec().z.equals(worldVec().z) || !tile.hasMaster()) {
 							flag = false;
 							break;
+						}
+						
+						if (tile.isSubstituable()) {
+							boolean subListContained = false;
+							int amount = 0;
+							IMultiBlockable instance = null;
+							
+							for (int i = 0; i < tile.getSubList().size(); i++) {
+								instance = (IMultiBlockable) tile.getSubList().get(i);
+								if (instance != null && instance.getBlock() != null && ref.containsKey(instance.getBlock())) {
+									subListContained = true;
+									amount = ref.get(instance.getBlock());
+									break;
+								}
+							}
+
+							if (instance != null && tile.getAmountFromSize(size, size, size) != instance.getAmountFromSize(size, size, size)) {
+								flag = false;
+								break;
+							}
+							
+							if (ref.get(b) + amount != tile.getAmountFromSize(size, size, size)) {
+								flag = false;
+								break;
+							}
+						}
+						
+						else {
+							if (tile.getAmountFromSize(size, size, size) != ref.get(b)) {
+								flag = false;
+								break;
+							}
 						}
 					}
 				}
@@ -544,7 +585,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 								((IMultiBlockable) te).setMasterVec(worldVec());
 								
 								if (te instanceof TileEntityNuclearChamberWall) {
-									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(true,
+									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(poweredLastUpdate,
 											worldObj, currentVec);
 								}
 							}

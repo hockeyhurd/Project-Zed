@@ -8,11 +8,13 @@ package com.projectzed.mod.tileentity.container;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * TE class object for nuclearReactantCore.
@@ -27,6 +29,15 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 	 */
 	public TileEntityReactantCore() {
 		super("nuclearReactantCore");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return ProjectZed.nuclearReactantCore;
 	}
 
 	/* (non-Javadoc)

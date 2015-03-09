@@ -6,16 +6,9 @@
  */
 package com.projectzed.mod.block;
 
-import static net.minecraftforge.common.util.ForgeDirection.DOWN;
-import static net.minecraftforge.common.util.ForgeDirection.EAST;
-import static net.minecraftforge.common.util.ForgeDirection.NORTH;
-import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.util.ForgeDirection.UP;
-import static net.minecraftforge.common.util.ForgeDirection.WEST;
+import static net.minecraftforge.common.util.ForgeDirection.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -105,8 +98,8 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 	 */
 	private int isBlockAdjacent(BlockHelper bh, World world, int x, int y, int z) {
 		if (blockWhitelist == null) blockWhitelist = new Block[] {
-				this, ProjectZed.nuclearChamberLock, ProjectZed.fissionController, ProjectZed.fusionController	
-			};
+				this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.fissionController, ProjectZed.fusionController
+		};
 		
 		MultiblockHelper mb = new MultiblockHelper(world, new Vector4Helper<Integer>(x, y, z), blockWhitelist);
 		mb.calculateConnections();
@@ -189,6 +182,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 			// ProjectZed.logHelper.info("case 11");
 		}
 		
+		// else if (counter > 3) ret = 1;
 		else ret = 1;
 		
 		return ret;

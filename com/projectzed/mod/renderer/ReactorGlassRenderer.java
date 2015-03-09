@@ -58,20 +58,22 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
 		if (te instanceof TileEntityReactorGlass) {
-			GL11.glPushMatrix();
-			GL11.glTranslated(x, y, z);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_BLEND);
-
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
-			this.bindTexture(texture);
 			
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				connections[dir.ordinal()] = getConnection((TileEntityReactorGlass) te, te.xCoord + dir.offsetX, te.yCoord + dir.offsetY, te.zCoord + dir.offsetZ);
 				// if (connections[dir.ordinal()].isConnected()) ProjectZed.logHelper.info(dir.name());
 			}
 			
-			renderCube((TileEntityReactorGlass) te, x, y, z);
+			this.bindTexture(texture);
+			
+			GL11.glPushMatrix();
+			GL11.glTranslated(x, y, z);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_BLEND);
+
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
+			
+			renderCube((TileEntityReactorGlass) te);
 			
 			GL11.glDisable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_LIGHTING);
@@ -93,7 +95,7 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 		return con;
 	}
 
-	private void renderCube(TileEntityReactorGlass te, double x, double y, double z) {
+	private void renderCube(TileEntityReactorGlass te) {
 		if (te == null || te.getWorldObj() == null) return;
 
 		float difU = 0f * this.pixel;
@@ -503,7 +505,10 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 		float difV = 32f * this.pixel;
 		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
 		
-		if (connections[ForgeDirection.WEST.ordinal()].isConnected()) return;
+		if (connections[ForgeDirection.WEST.ordinal()].isConnected()) {
+			ProjectZed.logHelper.info(true);
+			return;
+		}
 		
 		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
 			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {

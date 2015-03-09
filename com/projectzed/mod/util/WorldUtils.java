@@ -8,11 +8,15 @@ package com.projectzed.mod.util;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -137,6 +141,23 @@ public class WorldUtils {
 			
 			addItemDrop(drops, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, random);
 		}
+	}
+	
+	/**
+	 * Function to create a fake instance of IMultiBlockable TE.
+	 * @param block block to reference.
+	 * @return object if valid, else returns false.
+	 */
+	public static IMultiBlockable<?> createFakeTE(Block block) {
+		IMultiBlockable<?> mb = null;
+		
+		if (block != null && block != Blocks.air && block instanceof AbstractBlockNuclearComponent) {
+			if (((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
+				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();
+			}
+		}
+		
+		return mb;
 	}
 
 }

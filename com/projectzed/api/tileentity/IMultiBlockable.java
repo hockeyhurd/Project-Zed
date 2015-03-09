@@ -8,6 +8,8 @@ package com.projectzed.api.tileentity;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
+
 import com.hockeyhurd.api.math.Vector4Helper;
 
 /**
@@ -18,9 +20,12 @@ import com.hockeyhurd.api.math.Vector4Helper;
  */
 public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 
-	/** Get the block's object. */
+	/** Get the tile's object. */
 	T getInstance();
 
+	/** Get the block associated with this object. */
+	Block getBlock();
+	
 	/** Get the location in world of TE. */
 	Vector4Helper<Integer> worldVec();
 	

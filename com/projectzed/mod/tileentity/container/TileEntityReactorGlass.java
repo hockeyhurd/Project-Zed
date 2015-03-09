@@ -6,10 +6,16 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
+
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.WorldUtils;
 
 /**
  * Class containing tileentity code for nuclearReactorGlass.
@@ -19,17 +25,29 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponen
  */
 public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 
+	public List<IMultiBlockable> subList;
+	
 	public TileEntityReactorGlass() {
 		super("nuclearReactorGlass");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return ProjectZed.nuclearReactorGlass;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
 	 */
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-
+		this.isMaster = false;
+		this.hasMaster = false;
+		this.masterVec = Vector4Helper.zero.getVector4i();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +55,6 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public boolean isUnique() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -46,8 +63,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public boolean isSubstituable() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -55,8 +71,12 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
-		// TODO Auto-generated method stub
-		return null;
+		if (subList == null) {
+			subList = new ArrayList<IMultiBlockable>();
+			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearChamberWall));
+		}
+		
+		return subList;
 	}
 
 	/* (non-Javadoc)
@@ -64,8 +84,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
-		// TODO Auto-generated method stub
-		return 0;
+		return width * height * depth - 10;
 	}
 
 }

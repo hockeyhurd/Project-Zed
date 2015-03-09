@@ -9,12 +9,15 @@ package com.projectzed.mod.tileentity.container;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
+import com.projectzed.mod.util.WorldUtils;
 
 /**
  * TE class for nuclearChamberWall.
@@ -31,6 +34,15 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	 */
 	public TileEntityNuclearChamberWall() {
 		super("nuclearChamberWall");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return ProjectZed.nuclearChamberWall;
 	}
 
 	/* (non-Javadoc)
@@ -63,10 +75,9 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
-		
 		if (subList == null) {
 			subList = new ArrayList<IMultiBlockable>();
-			// subList.add(ProjectZed.thickenedGlass.getTileEntity());
+			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearReactorGlass));
 		}
 		
 		return this.subList;

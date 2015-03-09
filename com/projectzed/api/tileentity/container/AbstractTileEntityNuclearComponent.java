@@ -8,6 +8,7 @@ package com.projectzed.api.tileentity.container;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import com.hockeyhurd.api.math.Vector4Helper;
@@ -201,6 +202,13 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	public AbstractTileEntityGeneric getInstance() {
 		return this;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#getBlock()
+	 */
+	@Override
+	public abstract Block getBlock();
 
 	/*
 	 * (non-Javadoc)

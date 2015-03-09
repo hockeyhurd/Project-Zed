@@ -8,12 +8,13 @@ package com.projectzed.mod.tileentity.container;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing code for nuclear chamber lock TE.
@@ -30,6 +31,15 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		super("nuclearChamberLock");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return ProjectZed.nuclearChamberLock;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
