@@ -38,16 +38,22 @@ public abstract class AbstractBlockNuclearComponent extends BlockContainer {
 	
 	/**
 	 * @param material
-	 * @param assetDir
 	 * @param name
 	 */
-	public AbstractBlockNuclearComponent(String name) {
-		super(Material.iron);
+	public AbstractBlockNuclearComponent(Material material, String name) {
+		super(material);
 		this.assetDir = ProjectZed.assetDir;
 		this.name = name;
 		this.setBlockName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
+	}
+	
+	/**
+	 * @param name
+	 */
+	public AbstractBlockNuclearComponent(String name) {
+		this(Material.iron, name);
 	}
 
 	/*
