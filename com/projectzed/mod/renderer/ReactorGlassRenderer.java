@@ -505,10 +505,7 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 		float difV = 32f * this.pixel;
 		// ProjectZed.logHelper.info(connections[ForgeDirection.WEST.getOpposite().ordinal()].isConnected());
 		
-		if (connections[ForgeDirection.WEST.ordinal()].isConnected()) {
-			ProjectZed.logHelper.info(true);
-			return;
-		}
+		if (connections[ForgeDirection.WEST.ordinal()].isConnected()) return;
 		
 		if (!connections[ForgeDirection.DOWN.ordinal()].isConnected() && !connections[ForgeDirection.UP.ordinal()].isConnected()) {
 			if (connections[ForgeDirection.NORTH.ordinal()].isConnected() && !connections[ForgeDirection.NORTH.getOpposite().ordinal()].isConnected()) {

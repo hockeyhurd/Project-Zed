@@ -23,7 +23,6 @@ import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -220,15 +219,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
 
-		if (te.getMapVec() != null && te.getMapVec().size() > 0) {
-			for (Block b : te.getMapVec().keySet()) {
-				for (Vector4Helper<Integer> vec : te.getMapVec().get(b)) {
-					if (b instanceof BlockNuclearChamberWall) {
-						((BlockNuclearChamberWall) world.getBlock(vec.x, vec.y, vec.z)).updateStructure(false, world, vec);
-					}
-				}
-			}
-		}
+		if (te.getMapVec() != null && te.getMapVec().size() > 0) te.resetStructure();
 		
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 		

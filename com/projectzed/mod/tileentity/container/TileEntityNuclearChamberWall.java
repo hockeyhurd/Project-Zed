@@ -66,7 +66,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
-		return width * height * depth - 10;
+		return width * height * depth - 9 - ((width - 2) * (height - 2) * (depth - 2));
 	}
 
 	/*

@@ -539,9 +539,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						
 			if (!isSizeValid()) return false;
 	
-			int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
+			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
+			int xp = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
 			int yp = this.yCoord + ((size - 1) / 2);
-			int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
+			// int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
+			int zp = this.zCoord - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
 			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
@@ -551,8 +553,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			Block b;
 	
 			if (show) {
-				System.out.println("1: (" + (xp) + ", " + (zp) + ")");
-				System.out.println("2: (" + (xp + size - 1) + ", " + (zp + size - 1) + ")");
+				// System.out.println(size / 2 - 1);
+				System.out.println(placeDir);
+				System.out.println("1: (" + (xp) + ", " + (yp) + ", " + (zp) + ")");
+				System.out.println("2: (" + (xp + size - 1) + ", " + (yp - size + 1) + ", " + (zp + size - 1) + ")");
 			}
 	
 			List<Vector4Helper<Integer>> list;
