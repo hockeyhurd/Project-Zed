@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.renderer;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer;
 
 import com.hockeyhurd.api.item.AbstractItemRenderer;
 
@@ -17,13 +17,18 @@ import com.hockeyhurd.api.item.AbstractItemRenderer;
  * @author hockeyhurd
  * @version Mar 7, 2015
  */
-public class ReactorGlassItemRenderer extends AbstractItemRenderer implements IItemRenderer {
+public class ReactorGlassItemRenderer extends AbstractItemRenderer {
 
 	/**
 	 * @param icon
 	 */
 	public ReactorGlassItemRenderer(IIcon icon) {
 		super(icon);
+	}
+	
+	@Override
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
+		super.renderItem(type, item, data);
 	}
 
 }

@@ -25,9 +25,11 @@ import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 
 /**
@@ -547,6 +549,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
 			boolean show = false;
+			int counter = 0;
 			mbMap = new HashMap<Block, Integer>();
 			mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
 			TileEntity te;
@@ -568,6 +571,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	
 						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
 						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
+							counter++;
 							b = te.getBlockType();
 							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
 							else mbMap.put(b, mbMap.get(b) + 1);
@@ -589,8 +593,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 								((IMultiBlockable) te).setMasterVec(worldVec());
 								
 								if (te instanceof TileEntityNuclearChamberWall) {
-									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(poweredLastUpdate,
-											worldObj, currentVec);
+									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(
+											poweredLastUpdate, worldObj, currentVec);
+								}
+								
+								else if (te instanceof TileEntityNuclearChamberLock) {
+									((BlockNuclearChamberLock) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(
+											poweredLastUpdate, worldObj, currentVec);
 								}
 							}
 	
@@ -600,7 +609,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				}
 			}
 						
-			flag = isMappingValid(mbMap, mbMapVec) && counterMaster == 1;
+			// ProjectZed.logHelper.info(counter, (size * size * size) - ((size - 2) * (size - 2) * (size - 2)) + 1);
+			flag = isMappingValid(mbMap, mbMapVec) && counterMaster == 1 && counter == (size * size * size) - ((size - 2) * (size - 2) * (size - 2)) + 1;
 			
 			// ProjectZed.logHelper.info(counterMaster);
 			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");

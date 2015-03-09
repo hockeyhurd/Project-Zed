@@ -15,6 +15,7 @@ import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.BlockNuclearChamberLock;
 
 /**
  * Class containing code for nuclear chamber lock TE.
@@ -24,9 +25,6 @@ import com.projectzed.mod.ProjectZed;
  */
 public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearComponent {
 
-	/**
-	 * @param name
-	 */
 	public TileEntityNuclearChamberLock() {
 		super("nuclearChamberLock");
 	}
@@ -85,6 +83,8 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		this.isMaster = false;
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
+		
+		((BlockNuclearChamberLock) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateStructure(false, worldObj, worldVec());
 	}
 	
 	/*

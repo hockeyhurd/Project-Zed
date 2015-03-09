@@ -5,6 +5,7 @@ tile.thickenedGlass.name=Thickened Glass
 tile.nuclearChamberWall.name=Reactant Chamber Wall
 tile.nuclearChamberLock.name=Reactant Chamber Lock
 tile.nuclearReactantCore.name=Reactant Core
+tile.nuclearReactorGlass.name=Reactant Glass
 
 // Machines:
 tile.solarArray.name=Solar Array
