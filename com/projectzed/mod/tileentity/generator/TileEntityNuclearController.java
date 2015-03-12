@@ -19,18 +19,15 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.BlockNuclearChamberLock;
-import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 
 /**
  * Class used to calculate and generate power through
@@ -548,6 +545,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			int zp = this.zCoord - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
 			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
+			Block currentBlock;
 			boolean show = false;
 			int counter = 0;
 			mbMap = new HashMap<Block, Integer>();
@@ -568,6 +566,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
 						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
+						currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
 	
 						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
 						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
@@ -592,15 +591,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 								((IMultiBlockable) te).setHasMaster(true);
 								((IMultiBlockable) te).setMasterVec(worldVec());
 								
-								if (te instanceof TileEntityNuclearChamberWall) {
-									((BlockNuclearChamberWall) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(
-											poweredLastUpdate, worldObj, currentVec);
-								}
 								
-								else if (te instanceof TileEntityNuclearChamberLock) {
-									((BlockNuclearChamberLock) worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z)).updateStructure(
-											poweredLastUpdate, worldObj, currentVec);
-								}
+								if (currentBlock != null && currentBlock instanceof IMetaUpdate)
+									((IMetaUpdate) currentBlock).updateMeta(poweredLastUpdate, worldObj, currentVec);
 							}
 	
 							else if (((IMultiBlockable) te).isMaster()) counterMaster++;

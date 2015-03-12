@@ -69,6 +69,7 @@ public class ProjectZed {
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
 	public static Block nuclearReactantCore;
+	public static Block nuclearPowerPort;
 	
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -211,6 +212,7 @@ public class ProjectZed {
 		nuclearChamberWall = new BlockNuclearChamberWall();
 		nuclearChamberLock = new BlockNuclearChamberLock();
 		nuclearReactantCore = new BlockNuclearReactantCore();
+		nuclearPowerPort = new BlockNuclearPowerPort();
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);

@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
 
@@ -25,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Dec 14, 2014
  */
-public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent {
+public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent implements IMetaUpdate {
 	
 	@SideOnly(Side.CLIENT)
 	private IIcon locked;
@@ -63,21 +64,26 @@ public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent {
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearChamberLock();
 	}
-	
-	/**
-	 * Method to update structure metadata and icon.
-	 * 
-	 * @param isConnected flag whether is connected/active or not.
-	 * @param world world object as reference.
-	 * @param vec coordinate vector.
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
 	 */
-	public void updateStructure(boolean isConnected, World world, Vector4Helper<Integer> vec) {
+	@Override
+	public void updateMeta(boolean isConnected, World world, Vector4Helper<Integer> vec) {
+		updateMeta(isConnected ? 1 : 0, world, vec);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 */
+	@Override
+	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberLock) {
-			
-			int ret = isConnected ? 1 : 0;
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, ret, 2);
+			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
 			world.markBlockForUpdate(vec.x, vec.y, vec.z);
 		}
 	}

@@ -6,16 +6,18 @@
 */
 package com.projectzed.mod.handler.message;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing creation of message to be sent from either side.
@@ -28,6 +30,8 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 	public IEnergyContainer te;
 	public int x, y, z;
 	public int stored;
+	public int maxStorage;
+	public int maxImportRate, maxExportRate;
 
 	// Energy cell specific.
 	public boolean isEnergyCell;
@@ -45,6 +49,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.y = cont.worldVec().y;
 		this.z = cont.worldVec().z;
 		this.stored = cont.getEnergyStored();
+		this.maxStorage = cont.getMaxStorage();
+		this.maxImportRate = cont.getMaxImportRate();
+		this.maxExportRate = cont.getMaxExportRate();
 
 		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;
@@ -65,6 +72,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.maxStorage = buf.readInt();
+		this.maxImportRate = buf.readInt();
+		this.maxExportRate = buf.readInt();
 		this.isEnergyCell = buf.readBoolean();
 
 		if (isEnergyCell) {
@@ -83,6 +93,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeInt(maxStorage);
+		buf.writeInt(maxImportRate);
+		buf.writeInt(maxExportRate);
 		buf.writeBoolean(isEnergyCell);
 
 		if (isEnergyCell) {
@@ -100,6 +113,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 
 			if (te instanceof IEnergyContainer) {
 				((IEnergyContainer) te).setEnergyStored(message.stored);
+				((IEnergyContainer) te).setMaxStorage(message.maxStorage);
 				
 				if (te instanceof TileEntityEnergyBankBase) {
 					for (int i = 0; i < message.openSides.length; i++) {

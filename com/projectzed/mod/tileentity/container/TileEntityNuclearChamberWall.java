@@ -66,7 +66,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
-		return width * height * depth - 9 - ((width - 2) * (height - 2) * (depth - 2));
+		return width * height * depth - 10 - ((width - 2) * (height - 2) * (depth - 2));
 	}
 
 	/*
@@ -93,7 +93,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
 		
-		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateStructure(false, worldObj, worldVec());
+		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 	
 	/*

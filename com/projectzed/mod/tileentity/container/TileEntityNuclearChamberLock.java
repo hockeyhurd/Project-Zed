@@ -84,7 +84,7 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
 		
-		((BlockNuclearChamberLock) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateStructure(false, worldObj, worldVec());
+		((BlockNuclearChamberLock) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 	
 	/*

@@ -6,6 +6,7 @@ tile.nuclearChamberWall.name=Reactant Chamber Wall
 tile.nuclearChamberLock.name=Reactant Chamber Lock
 tile.nuclearReactantCore.name=Reactant Core
 tile.nuclearReactorGlass.name=Reactant Glass
+tile.nuclearPowerPort.name=Nuclear Power Port
 
 // Machines:
 tile.solarArray.name=Solar Array

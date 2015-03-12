@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
@@ -30,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Dec 12, 2014
  */
-public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
+public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent implements IMetaUpdate {
 
 	private BlockHelper bh;
 	private Block[] blockWhitelist;
@@ -67,21 +68,32 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 		if (side == 0 && meta == 0) return blockIcon;
 		return meta == 0 ? blockIcon : (meta == 1 ? vert : (meta == 2 ? horiz : both));
 	}
-	
-	/**
-	 * Method used to update texture through metadata.
-	 * 
-	 * @param world world object as reference.
-	 * @param vec world vector coordinate.
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
 	 */
-	public void updateStructure(boolean isConnected, World world, Vector4Helper<Integer> vec) {
+	@Override
+	public void updateMeta(boolean isActive, World world, Vector4Helper<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
 			if (bh == null) bh = new BlockHelper(world, null);
-			
-			int ret = isConnected ? isBlockAdjacent(bh, world, vec.x, vec.y, vec.z) : 0; 
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, ret, 2);
+			int ret = isActive ? isBlockAdjacent(bh, world, vec.x, vec.y, vec.z) : 0; 
+			updateMeta(ret, world, vec);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 */
+	@Override
+	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
+		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		
+		if (te != null && te instanceof TileEntityNuclearChamberWall) {
+			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
 			world.markBlockForUpdate(vec.x, vec.y, vec.z);
 		}
 	}
@@ -98,7 +110,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent {
 	 */
 	private int isBlockAdjacent(BlockHelper bh, World world, int x, int y, int z) {
 		if (blockWhitelist == null) blockWhitelist = new Block[] {
-				this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.fissionController, ProjectZed.fusionController
+				this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.nuclearPowerPort, ProjectZed.fissionController, ProjectZed.fusionController
 		};
 		
 		MultiblockHelper mb = new MultiblockHelper(world, new Vector4Helper<Integer>(x, y, z), blockWhitelist);
