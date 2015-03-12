@@ -19,6 +19,7 @@ import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.container.BlockNuclearPowerPort;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 
@@ -292,6 +293,8 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	public void reset() {
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
+		
+		((BlockNuclearPowerPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 
 }

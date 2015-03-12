@@ -75,7 +75,10 @@ public class BlockNuclearPowerPort extends AbstractBlockContainer implements IMe
 	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
 		TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(vec.x, vec.y, vec.z);
 		
-		if (te != null) world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+		if (te != null) {
+			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -78,6 +78,8 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		if (subList == null) {
 			subList = new ArrayList<IMultiBlockable>();
 			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearReactorGlass));
+			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearPowerPort));
+			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearControlPort));
 		}
 		
 		return this.subList;

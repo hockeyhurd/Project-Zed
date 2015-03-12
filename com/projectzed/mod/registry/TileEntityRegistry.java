@@ -11,6 +11,7 @@ import java.util.HashMap;
 import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
@@ -131,6 +132,9 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityNuclearPowerPort.class, "nuclearPowerPort");
 		reg.idMap.put(TileEntityNuclearPowerPort.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearControlPort.class, "nuclearControlPort");
+		reg.idMap.put(TileEntityNuclearControlPort.class, getNextID());
 	}
 	
 	/**

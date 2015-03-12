@@ -396,23 +396,20 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						if (tile.isSubstituable()) {
 							boolean subListContained = false;
 							int amount = 0;
+							int maxTarget = Integer.MIN_VALUE;
 							IMultiBlockable instance = null;
 							
 							for (int i = 0; i < tile.getSubList().size(); i++) {
 								instance = (IMultiBlockable) tile.getSubList().get(i);
 								if (instance != null && instance.getBlock() != null && ref.containsKey(instance.getBlock())) {
 									subListContained = true;
-									amount = ref.get(instance.getBlock());
-									break;
+									maxTarget = Math.max(maxTarget, instance.getAmountFromSize(size, size, size));
 								}
 							}
 
-							if (instance != null && tile.getAmountFromSize(size, size, size) != instance.getAmountFromSize(size, size, size)) {
-								flag = false;
-								break;
-							}
-							
-							if (ref.get(b) + amount != tile.getAmountFromSize(size, size, size)) {
+							amount += tile.getAmountFromSize(size, size, size);
+									
+							if (!subListContained || amount != maxTarget) {
 								flag = false;
 								break;
 							}

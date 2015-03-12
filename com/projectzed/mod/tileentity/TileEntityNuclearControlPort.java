@@ -4,9 +4,8 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.tileentity.container;
+package com.projectzed.mod.tileentity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -15,39 +14,52 @@ import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.WorldUtils;
+import com.projectzed.mod.block.BlockNuclearControlPort;
 
 /**
- * Class containing tileentity code for nuclearReactorGlass.
+ * TileEntity code for 
  * 
  * @author hockeyhurd
- * @version Mar 6, 2015
+ * @version Mar 12, 2015
  */
-public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
+public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearComponent {
 
-	public List<IMultiBlockable> subList;
+	private boolean isActive;
+	private boolean hasMaster;
+	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
 	
-	public TileEntityReactorGlass() {
-		super("nuclearReactorGlass");
+	public TileEntityNuclearControlPort() {
+		super("nuclearControlPort");
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	
+	/**
+	 * Sets whether is receiving a redstone signal or not.
+	 * 
+	 * @param active set to true if receiving a redstone signal, else set to false.
 	 */
-	@Override
-	public Block getBlock() {
-		return ProjectZed.nuclearReactorGlass;
+	public void setRedstoneSignal(boolean active) {
+		this.isActive = active;
 	}
 	
+	/**
+	 * Gets whether is receiving a redstone signal or not.
+	 * 
+	 * @return true if has a redstone signal, else returns false.
+	 */
+	public boolean hasRedstoneSignal() {
+		return isActive;
+	}
+
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
 	 */
 	@Override
 	public void reset() {
-		this.isMaster = false;
+		this.isActive = false;
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
+		
+		((BlockNuclearControlPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +67,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public boolean isUnique() {
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +75,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public boolean isSubstituable() {
-		return true;
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -71,14 +83,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
-		if (subList == null) {
-			subList = new ArrayList<IMultiBlockable>();
-			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearChamberWall));
-			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearPowerPort));
-			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearControlPort));
-		}
-		
-		return subList;
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -86,7 +91,15 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
-		return width * height * depth - 10 - ((width - 2) * (height - 2) * (depth - 2));
+		return 1;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
+	 */
+	@Override
+	public Block getBlock() {
+		return ProjectZed.nuclearControlPort;
 	}
 
 }
