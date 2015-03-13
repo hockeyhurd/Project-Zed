@@ -293,6 +293,7 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	public void reset() {
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.storedPower = 0;
 		
 		((BlockNuclearPowerPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}

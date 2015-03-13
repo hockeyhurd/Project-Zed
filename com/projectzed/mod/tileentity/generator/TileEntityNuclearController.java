@@ -28,6 +28,7 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 
 /**
  * Class used to calculate and generate power through
@@ -264,7 +265,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			// Small, yet significant optimization to call checking of multiblock structure 1/sec instead of 20/sec.
 			if (this.worldObj.getTotalWorldTime() % 20L == 0) poweredLastUpdate = canProducePower();
 			
-			if (this.slots[0] != null && isFuel() && poweredLastUpdate) {
+			boolean controlPort = checkControlPort();
+			
+			if (this.slots[0] != null && isFuel() && poweredLastUpdate && controlPort) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
 					consumeFuel();
@@ -277,12 +280,16 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 			poweredThisUpdate = poweredLastUpdate;
 			this.powerMode = this.burnTime > 0;
-			if (this.powerMode) this.burnTime--;
+			if (this.powerMode && controlPort) {
+				generatePower();
+				this.burnTime--;
+			}
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+			this.markDirty();
 		}
 		
-		super.updateEntity();
+		// super.updateEntity();
 	}
 	
 	/*
@@ -334,6 +341,24 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		comp.setInteger("ProjectZedMasterZ", masterVec.z);
 	}
 
+	/**
+	 * Simple getter function to check whether the control rod permits energy generation.
+	 * 
+	 * @return true if permittable, else returns false.
+	 */
+	private boolean checkControlPort() {
+		boolean flag = true;
+		
+		if (mbMapVec.containsKey(ProjectZed.nuclearControlPort)) {
+			Vector4Helper<Integer> vec = mbMapVec.get(ProjectZed.nuclearControlPort).get(0);
+			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+			
+			if (te != null && te.hasRedstoneSignal()) flag = false;
+		}
+		
+		return flag;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#getInstance()
@@ -354,6 +379,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 	/**
 	 * Function to create a fake instance of IMultiBlockable TE.
+	 * 
 	 * @param block block to reference.
 	 * @return object if valid, else returns false.
 	 */
