@@ -349,7 +349,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private boolean checkControlPort() {
 		boolean flag = true;
 		
-		if (mbMapVec.containsKey(ProjectZed.nuclearControlPort)) {
+		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearControlPort)) {
 			Vector4Helper<Integer> vec = mbMapVec.get(ProjectZed.nuclearControlPort).get(0);
 			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
 			
