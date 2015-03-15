@@ -6,17 +6,13 @@
 */
 package com.projectzed.mod.renderer;
 
-import org.lwjgl.opengl.GL11;
-
+import com.hockeyhurd.api.item.AbstractItemRenderer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import com.hockeyhurd.api.item.AbstractItemRenderer;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Class containing rendering code for fluid pipes.

@@ -6,14 +6,12 @@
 */
 package com.projectzed.mod.handler;
 
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-
-import com.projectzed.mod.ProjectZed;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Class containing event code for when user is doing something i should know about.

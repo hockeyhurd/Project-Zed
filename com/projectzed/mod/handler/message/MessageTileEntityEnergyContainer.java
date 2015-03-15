@@ -30,6 +30,8 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 	public IEnergyContainer te;
 	public int x, y, z;
 	public int stored;
+	public int maxStorage;
+	public int maxImportRate, maxExportRate;
 
 	// Energy cell specific.
 	public boolean isEnergyCell;
@@ -47,6 +49,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.y = cont.worldVec().y;
 		this.z = cont.worldVec().z;
 		this.stored = cont.getEnergyStored();
+		this.maxStorage = cont.getMaxStorage();
+		this.maxImportRate = cont.getMaxImportRate();
+		this.maxExportRate = cont.getMaxExportRate();
 
 		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;
@@ -67,6 +72,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.maxStorage = buf.readInt();
+		this.maxImportRate = buf.readInt();
+		this.maxExportRate = buf.readInt();
 		this.isEnergyCell = buf.readBoolean();
 
 		if (isEnergyCell) {
@@ -85,6 +93,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeInt(maxStorage);
+		buf.writeInt(maxImportRate);
+		buf.writeInt(maxExportRate);
 		buf.writeBoolean(isEnergyCell);
 
 		if (isEnergyCell) {
@@ -102,6 +113,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 
 			if (te instanceof IEnergyContainer) {
 				((IEnergyContainer) te).setEnergyStored(message.stored);
+				((IEnergyContainer) te).setMaxStorage(message.maxStorage);
 				
 				if (te instanceof TileEntityEnergyBankBase) {
 					for (int i = 0; i < message.openSides.length; i++) {

@@ -11,18 +11,24 @@ import java.util.HashMap;
 import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier2;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
 import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearPowerPort;
+import com.projectzed.mod.tileentity.container.TileEntityReactantCore;
+import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
@@ -56,8 +62,8 @@ public class TileEntityRegistry {
 		reg.map.put(TileEntityFurnaceGenerator.class, "furnaceGenTileEntity");
 		reg.idMap.put(TileEntityFurnaceGenerator.class, getNextID());
 		
-		reg.map.put(TileEntityNuclear.class, "nuclearControllerTileEntity");
-		reg.idMap.put(TileEntityNuclear.class, getNextID());
+		reg.map.put(TileEntityNuclearController.class, "nuclearControllerTileEntity");
+		reg.idMap.put(TileEntityNuclearController.class, getNextID());
 		
 		reg.map.put(TileEntityFabricationTable.class, "fabricationTableTileEntity");
 		reg.idMap.put(TileEntityFabricationTable.class, getNextID());
@@ -111,6 +117,24 @@ public class TileEntityRegistry {
 		
 		reg.map.put(TileEntityLiquidNode.class, "liquiductNode");
 		reg.idMap.put(TileEntityLiquidNode.class, getNextID());
+		
+		reg.map.put(TileEntityReactorGlass.class, "nuclearReactorGlass");
+		reg.idMap.put(TileEntityReactorGlass.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearChamberWall.class, "nuclearChamberWall");
+		reg.idMap.put(TileEntityNuclearChamberWall.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearChamberLock.class, "nuclearChamberLock");
+		reg.idMap.put(TileEntityNuclearChamberLock.class, getNextID());
+
+		reg.map.put(TileEntityReactantCore.class, "nuclearReactantCore");
+		reg.idMap.put(TileEntityReactantCore.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearPowerPort.class, "nuclearPowerPort");
+		reg.idMap.put(TileEntityNuclearPowerPort.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearControlPort.class, "nuclearControlPort");
+		reg.idMap.put(TileEntityNuclearControlPort.class, getNextID());
 	}
 	
 	/**

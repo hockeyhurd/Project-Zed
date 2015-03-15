@@ -6,14 +6,17 @@
 */
 package com.projectzed.mod.renderer;
 
-import org.lwjgl.opengl.GL11;
-
+import com.hockeyhurd.api.item.AbstractItemRenderer;
+import com.hockeyhurd.api.math.Vector4Helper;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import com.hockeyhurd.api.item.AbstractItemRenderer;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Class containing code for rendering fluid tanks as item.
@@ -21,18 +24,24 @@ import com.hockeyhurd.api.item.AbstractItemRenderer;
  * @author hockeyhurd
  * @version Jan 24, 2015
  */
+@SideOnly(Side.CLIENT)
 public class FluidTankItemRenderer extends AbstractItemRenderer {
 
 	protected Tessellator tess;
 	protected final float PIXEL = 1f / 16f;
 	protected float calc = 4f * PIXEL;
 	protected boolean renderInside = true;
+	protected byte tier;
+	protected Vector4Helper<Float> vec0, vec1;
 	
 	/**
 	 * @param icon = icon to draw from.
 	 */
-	public FluidTankItemRenderer(IIcon icon) {
+	public FluidTankItemRenderer(IIcon icon, byte tier) {
 		super(icon);
+		this.tier = tier;
+		this.vec0 = new Vector4Helper<Float>(5f / 16f, 2f / 16f, 5f / 16f);
+		this.vec1 = new Vector4Helper<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
 		this.tess = Tessellator.instance;
 	}
 	
@@ -61,6 +70,14 @@ public class FluidTankItemRenderer extends AbstractItemRenderer {
 			}
 			default:
 				break; // never here
+		}
+
+		boolean hasFluid = item.hasTagCompound() && item.stackTagCompound.getFloat("Fluid ID") >= 0 && item.stackTagCompound.getFloat("Fluid Amount") > 0;
+
+		if (hasFluid) {
+			int amount = (int) item.stackTagCompound.getFloat("Fluid Amount");
+			FluidStack fluidStack = new FluidStack(FluidRegistry.getFluid((int) item.stackTagCompound.getFloat("Fluid ID")), amount);
+			renderFluid(fluidStack);
 		}
 
 		// xpos face blue
@@ -153,5 +170,35 @@ public class FluidTankItemRenderer extends AbstractItemRenderer {
 		if (mustTranslate) GL11.glTranslatef(0.5f, 0.5f, 0.5f);
 	}
 
+	/**
+	 * Method to handle rendering of fluids inside of tank.
+	 *
+	 * @param stack fluidstack to render as reference.
+	 */
+	private void renderFluid(FluidStack stack) {
+		int current = stack.amount;
+		int max = TileEntityFluidTankBase.TIER_SIZE[this.tier];
+		IIcon icon = stack.getFluid().getStillIcon();
+
+		if (icon == null) return;
+
+		final Vector4Helper<Float> maxVecY = vec1.copy();
+		// vec1.y = (3f + ((int) (te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity()) * 10))) / 16f;
+		vec1.y = (3f + ((int) (current / (float) (max) * 10))) / 16f;
+
+		// this.bindTexture(TextureMap.locationBlocksTexture);
+		// Tessellator tess = tessHelp.tess;
+		// tess.startDrawingQuads();
+
+		tessHelp.drawZNeg(icon, vec0, vec1, false);
+		tessHelp.drawZPos(icon, vec0, vec1, false);
+		tessHelp.drawXNeg(icon, vec0, vec1, false);
+		tessHelp.drawXPos(icon, vec0, vec1, false);
+
+		tessHelp.drawYNeg(icon, vec0, maxVecY, false);
+		tessHelp.drawYPos(icon, vec0, maxVecY, false);
+
+		// tess.draw();
+	}
 
 }

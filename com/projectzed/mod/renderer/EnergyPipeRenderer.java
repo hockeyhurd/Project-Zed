@@ -6,6 +6,13 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IModularFrame;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
+import com.projectzed.mod.util.Connection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -13,17 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
-
-import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.energy.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
-import com.projectzed.mod.util.Connection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class handling rendering information for generic energy pipe.

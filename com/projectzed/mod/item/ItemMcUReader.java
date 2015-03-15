@@ -56,7 +56,7 @@ public class ItemMcUReader extends AbstractItemMetalic {
 			
 			if (world.isRemote) {
 				player.addChatComponentMessage(chatHelper.comp(GOLD + "Stored: " + WHITE + NumberFormatter.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
-				player.addChatComponentMessage(chatHelper.comp(GOLD + "Max Storage: " + WHITE + NumberFormatter.format(cont.getMaxStorage()) + "McU"));
+				player.addChatComponentMessage(chatHelper.comp(GOLD + "Max Storage: " + WHITE + NumberFormatter.format(cont.getMaxStorage()) +  " McU"));
 				if (cont instanceof TileEntityEnergyBankBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Tier: " + WHITE + (((TileEntityEnergyBankBase) cont).getTier() + 1)));
 				else if (cont instanceof TileEntityEnergyPipeBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Last Received Direction: " + WHITE + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection()));
 			}

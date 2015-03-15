@@ -6,16 +6,13 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.api.item.AbstractItemRenderer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.item.AbstractItemRenderer;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing rendering code for special renderer.

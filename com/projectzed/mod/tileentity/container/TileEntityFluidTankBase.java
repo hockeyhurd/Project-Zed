@@ -27,7 +27,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer implements IModularFrame {
 
 	protected byte tier = 0;
-	protected final int[] TIER_SIZE = new int[] {
+	public static final int[] TIER_SIZE = new int[] {
 			(int) 10e3, (int) 10e3 * 4, (int) 10e3 * 4 * 4, (int) 10e3 * 4 * 4 * 4
 	};
 

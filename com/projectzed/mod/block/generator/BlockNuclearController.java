@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.block.generator;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,13 +16,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.math.Vector4Helper;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
+import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.generator.TileEntityNuclear;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.util.WorldUtils;
 
@@ -52,7 +55,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	
 	/**
 	 * @param material
-	 * @param name
+	 * @param fusion toggle whether is fusion controller or not.
 	 */
 	public BlockNuclearController(Material material, boolean fusion) {
 		super(material, "nuclearController");
@@ -62,7 +65,12 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		this.FUSION_MODE = fusion;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockGenerator#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
 		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
@@ -75,7 +83,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	@Override
 	public AbstractTileEntityGenerator getTileEntity() {
-		TileEntityNuclear te = new TileEntityNuclear();
+		TileEntityNuclearController te = new TileEntityNuclearController();
 		te.setPlaceDir(placeDir, size, rel);
 		if (this.FUSION_MODE) te.setSource(EnumType.FUSION);
 		return te;
@@ -91,14 +99,8 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
-			if (te != null) {
-				if (!te.canProducePower()) {
-					te.reCheckLocks();
-				}
-			
-				FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclear.class), world, x, y, z);
-			}
+			TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class), world, x, y, z);
 			
 			return true;
 		}
@@ -110,13 +112,20 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+		TileEntityNuclearController cont = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+		if (cont == null) return;
+		
+		cont.setHasMaster(true);
+		cont.setIsMaster(true);
+		cont.setMasterVec(new Vector4Helper<Integer>(x, y, z));
+		
 		int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		
 		this.placeDir = (byte) dir;
 		this.size = getSizeFromDir(world, x, y, z, dir);
 		if (size > 7 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
-		System.out.println("Placed Dir: " + this.placeDir);
-		System.out.println("Size: " + this.size + "x" + this.size);
+		// System.out.println("Placed Dir: " + this.placeDir);
+		// System.out.println("Size: " + this.size + "x" + this.size);
 		
 		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
@@ -128,11 +137,11 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	/**
 	 * Function used to determine size of nuclear chamber 
 	 * 
-	 * @param world = world object as reference.
-	 * @param x = x-position of this block.
-	 * @param y = y-position of this block.
-	 * @param z = z-position of this block.
-	 * @param dir = direction to check from.
+	 * @param world world object as reference.
+	 * @param x x-position of this block.
+	 * @param y y-position of this block.
+	 * @param z z-position of this block.
+	 * @param dir direction to check from.
 	 * @return total size of reactant chamber.
 	 */
 	private byte getSizeFromDir(World world, int x, int y, int z, int dir) {
@@ -177,6 +186,30 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		else if (size != Byte.MAX_VALUE && size < 4) return (byte) (size * 3 - (size - 1));
 		else return 0;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onNeighborBlockChange(net.minecraft.world.World, int, int, int, net.minecraft.block.Block)
+	 */
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te != null && te instanceof IMultiBlockableController<?>) {
+			IMultiBlockableController<AbstractTileEntityGenerator> mb = (IMultiBlockableController<AbstractTileEntityGenerator>) te;
+			if (mb.hasMaster()) {
+				if (mb.isMaster()) {
+					if (!mb.checkMultiBlockForm()) mb.resetStructure();
+				}
+				
+				else if (!mb.checkForMaster()) {
+					mb.reset();
+					world.markBlockForUpdate(x, y, z);
+				}
+			}
+		}
+		
+		super.onNeighborBlockChange(world, x, y, z, block);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -184,7 +217,9 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
 	 */
 	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityNuclear te = (TileEntityNuclear) world.getTileEntity(x, y, z);
+		TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+
+		if (te.getMapVec() != null && te.getMapVec().size() > 0) te.resetStructure();
 		
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 		

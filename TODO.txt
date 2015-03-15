@@ -1,21 +1,23 @@
 BUGS:
 =================================
-    - Nuclear stuffs not showing generation rate in gui
+    - Nuclear stuffs not showing generation rate in GUI.
+    - Fix weirdness of fluid pipes when emptying.
+    - Fluid pipes breaking TE4 (fluid) machines?
 
 TODO:
 =================================
     - Add fuel registry for nuclear stuff. (kinda)
     - Make energy cell tiers unique (modify textures somehow).
     - Add implemented sounds to machines.
-    - Add NEI support for crafting machine related recipes.
     - Implement fusion reactor logic.
     - Make tiered solar arrays have tiered max storages.
     - Tweak energy bank/cells recipes.
     - When wrenching things:
         - Save items
         - Add cross compatibility for hybrid te's (industrial centrifuge).
+    - Make other nuclear components?
+    - Reactor glass needs to be re-worked/implemented
 
 IDEAS:
 =================================    
-    - Increase Titanium ore gen by * 2 at least. 
-    - Add fluid and item pipes?
+    - Add item pipes?

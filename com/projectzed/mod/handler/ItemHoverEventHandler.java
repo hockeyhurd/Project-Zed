@@ -6,26 +6,24 @@
 */
 package com.projectzed.mod.handler;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fluids.IFluidHandler;
-
-import com.projectzed.api.block.AbstractBlockContainer;
-import com.projectzed.api.block.AbstractBlockFluidContainer;
-import com.projectzed.api.block.AbstractBlockGenerator;
-import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.block.*;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipe;
 import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for all tooltip info related to blocks.
@@ -64,23 +62,30 @@ public class ItemHoverEventHandler {
 			if (b != null) {
 				if (b instanceof AbstractBlockContainer) {
 					type = 0;
-					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(((BlockEnergyCell) b).getTileEntity().getMaxStorage()) + " McU");
+					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) {
+						TileEntityEnergyBankBase bank = (TileEntityEnergyBankBase) ((BlockEnergyCell) b).getTileEntity();
+						if (stack.hasTagCompound() && stack.stackTagCompound.getInteger("ProjectZedPowerStored") > 0) {
+							event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(stack.stackTagCompound.getInteger("ProjectZedPowerStored")) + " McU");
+						}
+						event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
+					}
 					amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
 				}
 				
 				else if (b instanceof AbstractBlockPipe) {
 					IEnergyContainer contE = null;
-					IFluidHandler contF = null;
+					IFluidContainer contF = null;
 					if (b instanceof AbstractBlockEnergyPipe && ((AbstractBlockEnergyPipe) b).getTileEntity() instanceof IEnergyContainer) {
 						type = 0;
 						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
 						amount = contE.getMaxExportRate();
 					}
 
-					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidHandler) {
+					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidContainer) {
 						type = 4;
-						contF = (IFluidHandler) ((AbstractBlockLiquiduct) b).getTileEntity();
-						amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+						contF = (TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity();
+						// amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+						amount = contF.getMaxFluidExportRate();
 					}
 					
 					else {
@@ -102,10 +107,14 @@ public class ItemHoverEventHandler {
 				
 				else if (b instanceof AbstractBlockFluidContainer) {
 					type = 4;
-					AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity(); 
-					if (te.getTank().getFluidAmount() > 0 && te.getTank().getFluid() != null) {
-						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(te.getTank().getFluidAmount()) + " mb");
-						event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + te.getTank().getFluid().getLocalizedName() + " mb");
+					AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity();
+
+					if (stack.hasTagCompound() && stack.stackTagCompound.getFloat("Fluid ID") >= 0 && stack.stackTagCompound.getFloat("Fluid Amount") > 0) {
+						Fluid fluidStack = FluidRegistry.getFluid((int) stack.stackTagCompound.getFloat("Fluid ID"));
+						int fluidAmount = (int) stack.stackTagCompound.getFloat("Fluid Amount");
+
+						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(fluidAmount) + " mb");
+						event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + fluidStack.getLocalizedName());
 					}
 					
 					amount = te.getTank().getCapacity();
@@ -114,7 +123,7 @@ public class ItemHoverEventHandler {
 			
 			if (amount > 0) {
 				// TODO: make this applicable for fluid pipes!
-				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Stored: " : "Burn Rate: "));
+				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Max Storage: " : "Burn Rate: "));
 				String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
 				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
 			}

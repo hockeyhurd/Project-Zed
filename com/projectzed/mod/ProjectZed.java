@@ -17,7 +17,9 @@ import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.BlockFabricationTable;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
+import com.projectzed.mod.block.BlockNuclearControlPort;
 import com.projectzed.mod.block.BlockNuclearReactantCore;
+import com.projectzed.mod.block.BlockNuclearReactorGlass;
 import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
@@ -25,6 +27,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockLiquidNode;
 import com.projectzed.mod.block.container.BlockLiquiductBlue;
+import com.projectzed.mod.block.container.BlockNuclearPowerPort;
 import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.container.BlockTankTier0;
 import com.projectzed.mod.block.container.BlockTankTier1;
@@ -39,10 +42,15 @@ import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
 import com.projectzed.mod.block.machines.BlockIndustrialMetalPress;
 import com.projectzed.mod.block.machines.BlockMachineContainer;
+import com.projectzed.mod.block.ore.BlockAluminium;
 import com.projectzed.mod.block.ore.BlockAluminiumOre;
+import com.projectzed.mod.block.ore.BlockCopper;
 import com.projectzed.mod.block.ore.BlockCopperOre;
+import com.projectzed.mod.block.ore.BlockNickel;
 import com.projectzed.mod.block.ore.BlockNickelOre;
+import com.projectzed.mod.block.ore.BlockTitanium;
 import com.projectzed.mod.block.ore.BlockTitaniumOre;
+import com.projectzed.mod.block.ore.BlockUranium;
 import com.projectzed.mod.block.ore.BlockUraniumOre;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
@@ -111,9 +119,12 @@ public class ProjectZed {
 	// Blocks:
 	public static Block machineContainer;
 	public static Block thickenedGlass;
+	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
 	public static Block nuclearReactantCore;
+	public static Block nuclearPowerPort;
+	public static Block nuclearControlPort;
 	
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -173,6 +184,12 @@ public class ProjectZed {
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
 	public static Item mixedAlloy;
+
+	public static Block blockTitanium;
+	public static Block blockCopper;
+	public static Block blockNickel;
+	public static Block blockAluminium;
+	public static Block blockUranium;
 	
 	// Fuels
 	public static Item emptyFuelRod;
@@ -246,9 +263,12 @@ public class ProjectZed {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
+		nuclearReactorGlass = new BlockNuclearReactorGlass();
 		nuclearChamberWall = new BlockNuclearChamberWall();
 		nuclearChamberLock = new BlockNuclearChamberLock();
 		nuclearReactantCore = new BlockNuclearReactantCore();
+		nuclearPowerPort = new BlockNuclearPowerPort();
+		nuclearControlPort = new BlockNuclearControlPort();
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
@@ -256,8 +276,8 @@ public class ProjectZed {
 		solarArrayMV = new BlockSolarArray(Material.rock, (byte) 2);
 		solarArrayHV = new BlockSolarArray(Material.rock, (byte) 3);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
-		fusionController = new BlockNuclearController(Material.rock, true);
-		fissionController = new BlockNuclearController(Material.rock, false);
+		fusionController = new BlockNuclearController(Material.iron, true);
+		fissionController = new BlockNuclearController(Material.iron, false);
 		
 		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);
@@ -323,17 +343,23 @@ public class ProjectZed {
 		ingotAluminium = new ItemIngotAluminium("ingotAluminium", assetDir);
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
 		mixedAlloy = new ItemMixedAlloy("mixedAlloy", assetDir);
-		
+
+		blockTitanium = new BlockTitanium(Material.iron, "blockTitanium");
+		blockCopper = new BlockCopper(Material.iron, "blockCopper");
+		blockNickel = new BlockNickel(Material.iron, "blockNickel");
+		blockAluminium = new BlockAluminium(Material.iron, "blockAluminium");
+		blockUranium = new BlockUranium(Material.iron, "blockUranium");
+
 		// Fuels:
 		emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);
 		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
 		
 		// Worldgen:
-		worldgenTitanium = new OreWorldgen(oreTitanium, 6, 3, 6, 8, 24);
+		worldgenTitanium = new OreWorldgen(oreTitanium, 7, 4, 8, 8, 24);
 		worldgenNickel = new OreWorldgen(oreNickel, 6, 4, 6, 10, 30);
-		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 3, 7, 10, 64);
+		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 4, 8, 10, 64);
 		worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
-		worldgenUranium = new OreWorldgen(oreUranium, 4, 2, 4, 4, 16);
+		worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
 	}
 
 }

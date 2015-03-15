@@ -40,6 +40,7 @@ public class BlockThickenedGlass extends BlockGlass {
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.BlockBreakable#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "thickenedGlass");

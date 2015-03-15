@@ -4,33 +4,31 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.api.block;
+package com.projectzed.mod.renderer;
 
-import java.util.List;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
-import net.minecraft.block.Block;
+import com.hockeyhurd.api.item.AbstractItemRenderer;
 
 /**
- * Interface for multiblock structures to be implemented in the block's class.
+ * Simple item renderer of nuclearReactorGlass.
  * 
  * @author hockeyhurd
- * @version Jan 2, 2015
+ * @version Mar 7, 2015
  */
-public interface IMultiBlockable<T extends Block> {
+public class ReactorGlassItemRenderer extends AbstractItemRenderer {
 
-	/** Get the block's object. */
-	public T getInstance();
+	/**
+	 * @param icon
+	 */
+	public ReactorGlassItemRenderer(IIcon icon) {
+		super(icon);
+	}
 	
-	/** Whether we can have more than one of these in structure. */
-	public boolean isUnique();
-	
-	/** Whether this block can sub-able. */
-	public boolean isSubstituable();
-	
-	/** If has a substituable block, put in this list, else leave null. */
-	public List<IMultiBlockable> getSubList();
-	
-	/** Get the amount of blocks should have  */
-	public int getAmountFromSize(int size);
-	
+	@Override
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
+		super.renderItem(type, item, data);
+	}
+
 }

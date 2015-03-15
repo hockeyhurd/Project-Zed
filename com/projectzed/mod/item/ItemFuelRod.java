@@ -15,6 +15,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 
 import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.projectzed.mod.ProjectZed;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,6 +41,7 @@ public class ItemFuelRod extends AbstractItemMetalic {
 		this.name = name;
 		this.assetDir = assetDir;
 		this.isEmpty = isEmpty;
+		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxDamage(10);
 		if (!isEmpty) this.maxStackSize = 1;
 	}

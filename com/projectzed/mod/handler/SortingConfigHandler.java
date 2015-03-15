@@ -6,18 +6,15 @@
 */
 package com.projectzed.mod.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.hockeyhurd.api.handler.AbstractConfigHandler;
+import com.hockeyhurd.api.util.AbstractReference;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 
-import com.hockeyhurd.api.handler.AbstractConfigHandler;
-import com.hockeyhurd.api.util.AbstractReference;
-
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class containing code for generating, reading, and writing sorting config.

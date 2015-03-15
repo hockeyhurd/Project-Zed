@@ -73,6 +73,11 @@ public class CraftingRegistry {
 	 * Sub-init method for init'ing shapeless crafting recipes into list.
 	 */
 	private void initShapeless() {
+		reg.shapelessList.add(createShapelessRecipe(ingotTitanium, 9, "blockTitanium"));
+		reg.shapelessList.add(createShapelessRecipe(ingotCopper, 9, "blockCopper"));
+		reg.shapelessList.add(createShapelessRecipe(ingotNickel, 9, "blockNickel"));
+		reg.shapelessList.add(createShapelessRecipe(ingotAluminium, 9, "blockAluminium"));
+		reg.shapelessList.add(createShapelessRecipe(ingotUranium, 9, "blockUranium"));
 		reg.shapelessList.add(createShapelessRecipe(screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 		reg.shapelessList.add(createShapelessRecipe(sheetAluminium, 1, "ingotAluminium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 		reg.shapelessList.add(createShapelessRecipe(mixedAlloy, 2, "ingotIron", "ingotCopper", "ingotTitanium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
@@ -90,11 +95,21 @@ public class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
 		
 		// Blocks:
+		reg.shapedList.add(createShapedRecipe(blockTitanium, 1, "xxx", "xxx", "xxx", 'x', "ingotTitanium"));
+		reg.shapedList.add(createShapedRecipe(blockCopper, 1, "xxx", "xxx", "xxx", 'x', "ingotCopper"));
+		reg.shapedList.add(createShapedRecipe(blockNickel, 1, "xxx", "xxx", "xxx", 'x', "ingotNickel"));
+		reg.shapedList.add(createShapedRecipe(blockAluminium, 1, "xxx", "xxx", "xxx", 'x', "ingotAluminium"));
+		reg.shapedList.add(createShapedRecipe(blockUranium, 1, "xxx", "xxx", "xxx", 'x', "ingotUranium"));
 		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
-		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
+		
+		// non-machine tileentities:
+		reg.shapedList.add(createShapedRecipe(nuclearReactorGlass, 1, "xyx", 'x', thickenedGlass, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearChamberWall, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "stone"));
 		reg.shapedList.add(createShapedRecipe(nuclearChamberLock, 4, "x x", " y ", "x x", 'x', screw, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearReactantCore, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateReinforced", 'z', "blockDiamond"));
+		reg.shapedList.add(createShapedRecipe(nuclearPowerPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', energyCellTier0, 'a', machineContainer));
+		reg.shapedList.add(createShapedRecipe(nuclearControlPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer));
 		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 3, "xyx", "zzz", "xyx", 'x', "ingotIron", 'y', "dustCopper", 'z', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(energyPipeClear, 3, "xyx", "zzz", "xyx", 'x', "ingotTitanium", 'y', thickenedGlass, 'z', energyPipeOrange));

@@ -20,6 +20,7 @@ import com.projectzed.mod.block.BlockNuclearChamberLock;
  * @author hockeyhurd
  * @version Dec 27, 2014
  */
+@Deprecated
 public class LockMapper {
 	
 	private Vector4Helper<Integer> vec;

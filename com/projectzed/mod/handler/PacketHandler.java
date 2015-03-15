@@ -8,6 +8,7 @@ package com.projectzed.mod.handler;
 
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
+import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -38,6 +39,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, 5, Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, 6, Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, 7, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, 8, Side.CLIENT);
 	}
 	
 }

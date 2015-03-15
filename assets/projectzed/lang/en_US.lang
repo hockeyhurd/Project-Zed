@@ -5,6 +5,9 @@ tile.thickenedGlass.name=Thickened Glass
 tile.nuclearChamberWall.name=Reactant Chamber Wall
 tile.nuclearChamberLock.name=Reactant Chamber Lock
 tile.nuclearReactantCore.name=Reactant Core
+tile.nuclearReactorGlass.name=Reactant Glass
+tile.nuclearPowerPort.name=Nuclear Power Port
+tile.nuclearControlPort.name=Nuclear Control Port
 
 // Machines:
 tile.solarArray.name=Solar Array
@@ -30,6 +33,7 @@ tile.fluidTankTier0.name=Fluid Tank - I
 tile.fluidTankTier1.name=Fluid Tank - II
 tile.fluidTankTier2.name=Fluid Tank - III
 tile.fluidTankTier3.name=Fluid Tank - IV
+tile.liquiductBlue.name=Liquiduct - Blue
 
 
 // RF STUFF:
@@ -71,6 +75,12 @@ item.ingotNickel.name=Nickel Ingot
 item.ingotAluminium.name=Aluminium Ingot
 item.ingotUranium.name=Uranium Ingot
 item.mixedAlloy.name=Mixed Metal Alloy
+
+tile.blockTitanium.name=Block of Titanium
+tile.blockCopper.name=Block of Copper
+tile.blockNickel.name=Block of Nickel
+tile.blockAluminium.name=Block of Aluminium
+tile.blockUranium.name=Block of Uranium
 
 // Fuels:
 item.emptyFuelRod.name=Empty Fuel Rod

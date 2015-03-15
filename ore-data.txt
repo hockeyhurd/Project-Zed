@@ -1,6 +1,6 @@
-Ore:	min y	max y	per chunk	min vein size	max vein size
-Titanium	8	24	6	3	6
-Nickel	10	30	6	4	6
-Copper 	40	75	10	5	10
-Aluminium	10	64	8	3	7
-Uranium	4	16	4	2	4
+Ore:	min-y	max-y	per chunk	min vein size	max vein size
+Titanium	8	24	      7	          4	              8
+Nickel	    10	30	      6	          4	              6
+Copper 	    40	75	     10	          5	             10
+Aluminium	10	64	      8           3	              7
+Uranium	     4	16	      5	          3	              5

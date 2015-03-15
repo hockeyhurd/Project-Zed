@@ -211,7 +211,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
 
-		if (this.blockType != null && this.blockType instanceof AbstractBlockMachine) ((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+		if (worldObj.getTotalWorldTime() % 20L == 0 && this.blockType != null && this.blockType instanceof AbstractBlockMachine) {
+			((AbstractBlockMachine) this.blockType).updateBlockState(this.isPoweredOn(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+			// ProjectZed.logHelper.info(this.powerMode);
+		}
 		
 		if (flag1) this.markDirty();
 	}
