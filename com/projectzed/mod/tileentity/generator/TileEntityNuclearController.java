@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
@@ -48,6 +49,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private byte placeDir, size, rel;
 	private boolean isMaster, hasMaster;
 	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
+	private Vector4Helper<Integer> minVec = Vector4Helper.zero.getVector4i();
+	private Vector4Helper<Integer> maxVec = Vector4Helper.zero.getVector4i();
 	private HashMap<Block, Integer> mbMap;
 	private HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec;
 	
@@ -169,7 +172,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public boolean canProducePower() {
 		boolean flag = false;
 		if (worldObj.isRemote) return false;
-		else flag = checkMultiBlockForm();
+		else flag = checkMultiBlockForm() && checkCorners();
 		
 		return flag;
 	}
@@ -560,12 +563,19 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 						
 			if (!isSizeValid()) return false;
-	
+			if (minVec == null) minVec = Vector4Helper.zero.getVector4i();
+			if (maxVec == null) maxVec = Vector4Helper.zero.getVector4i();
+				
 			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
-			int xp = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
-			int yp = this.yCoord + ((size - 1) / 2);
+			minVec.x = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
+			minVec.y = this.yCoord + ((size - 1) / 2);
 			// int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
-			int zp = this.zCoord - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
+			minVec.z = this.zCoord - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
+			
+			maxVec.x = minVec.x + size - 1;
+			maxVec.y = minVec.y - size + 1;
+			maxVec.z = minVec.z + size - 1;
+			
 			int counterMaster = 0;
 			Vector4Helper<Integer> currentVec;
 			Block currentBlock;
@@ -579,8 +589,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (show) {
 				// System.out.println(size / 2 - 1);
 				System.out.println(placeDir);
-				System.out.println("1: (" + (xp) + ", " + (yp) + ", " + (zp) + ")");
-				System.out.println("2: (" + (xp + size - 1) + ", " + (yp - size + 1) + ", " + (zp + size - 1) + ")");
+				System.out.println("1: (" + (minVec.x) + ", " + (minVec.y) + ", " + (minVec.z) + ")");
+				System.out.println("2: (" + (minVec.x + size - 1) + ", " + (minVec.y - size + 1) + ", " + (minVec.z + size - 1) + ")");
 			}
 	
 			List<Vector4Helper<Integer>> list;
@@ -588,37 +598,46 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
-						currentVec = new Vector4Helper<Integer>(xp + x, yp - y, zp + z);
+						
+						currentVec = new Vector4Helper<Integer>(minVec.x + x, minVec.y - y, minVec.z + z);
 						currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
-	
+						// ProjectZed.logHelper.info(currentBlock.getUnlocalizedName());
+						
+						// if ( !((y == 0 || y == size - 1) && (x == 0 || x == size - 1) && (z == 0 || z == size - 1)) ) {
+						// if ( ((y > 0 || y <= size - 1) && (x > 0 || x <= size - 1) && (z > 0 || z <= size - 1)) ) {
+						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
+							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) )
+								// if (!(currentBlock instanceof BlockFluidBase) && currentBlock != Blocks.air) return false;
+								if (FluidRegistry.lookupFluidForBlock(currentBlock) == null && currentBlock != Blocks.air) return false;
+						}
+
 						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
 						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
 							counter++;
 							b = te.getBlockType();
 							if (!mbMap.containsKey(b)) mbMap.put(b, 1);
 							else mbMap.put(b, mbMap.get(b) + 1);
-	
+
 							if (!mbMapVec.containsKey(b)) {
 								list = new ArrayList<Vector4Helper<Integer>>();
 								list.add(currentVec);
 								mbMapVec.put(b, list);
 							}
-	
+
 							else {
 								list = mbMapVec.get(b);
 								list.add(currentVec);
 								mbMapVec.put(b, list);
 							}
-	
+
 							if (/* !((IMultiBlockable) te).isMaster() && */!((IMultiBlockable) te).hasMaster()) {
 								((IMultiBlockable) te).setHasMaster(true);
 								((IMultiBlockable) te).setMasterVec(worldVec());
-								
-								
+
 								if (currentBlock != null && currentBlock instanceof IMetaUpdate)
 									((IMetaUpdate) currentBlock).updateMeta(poweredLastUpdate, worldObj, currentVec);
 							}
-	
+
 							else if (((IMultiBlockable) te).isMaster()) counterMaster++;
 						}
 					}
@@ -632,6 +651,34 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			// ProjectZed.logHelper.info(flag ? "working!" : "not working..");
 		
 		}
+		return flag;
+	}
+	
+	private boolean checkCorners() {
+		boolean flag = false;
+		
+		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearChamberLock) && mbMapVec.get(ProjectZed.nuclearChamberLock).size() > 0) {
+			flag = true;
+			IMultiBlockable current;
+			
+			for (Vector4Helper<Integer> vec : mbMapVec.get(ProjectZed.nuclearChamberLock)) {
+				if (vec.equals(minVec)) continue;
+				else if (vec.equals(maxVec)) continue;
+				
+				else if (vec.y.equals(minVec.y) && vec.x.equals(minVec.x) && vec.z.equals(maxVec.z)) continue;
+				else if (vec.y.equals(maxVec.y) && vec.x.equals(minVec.x) && vec.z.equals(maxVec.z)) continue;
+				else if (vec.y.equals(minVec.y) && vec.x.equals(maxVec.x) && vec.z.equals(minVec.z)) continue;
+				else if (vec.y.equals(maxVec.y) && vec.x.equals(maxVec.x) && vec.z.equals(minVec.z)) continue;
+				else if (vec.y.equals(minVec.y) && vec.x.equals(maxVec.x) && vec.z.equals(maxVec.z)) continue;
+				else if (vec.y.equals(maxVec.y) && vec.x.equals(minVec.x) && vec.z.equals(minVec.z)) continue;
+				
+				else {
+					flag = false;
+					break;
+				}
+			}
+		}
+		
 		return flag;
 	}
 

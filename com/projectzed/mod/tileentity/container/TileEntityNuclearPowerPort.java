@@ -155,7 +155,7 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 && this.hasMaster) {
 			AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) worldObj.getTileEntity(masterVec.x, masterVec.y, masterVec.z);
 			
-			if (this.storedPower != te.getEnergyStored()) {
+			if (te != null && this.storedPower != te.getEnergyStored()) {
 				this.storedPower = te.getEnergyStored();
 				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 			}
