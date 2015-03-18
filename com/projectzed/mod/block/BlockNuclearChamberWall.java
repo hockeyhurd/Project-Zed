@@ -65,8 +65,18 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta) {
-		if (side == 0 && meta == 0) return blockIcon;
-		return meta == 0 ? blockIcon : (meta == 1 ? vert : (meta == 2 ? horiz : both));
+		// if (side == 0 && meta == 0) return blockIcon;
+		// return meta == 0 ? blockIcon : (meta == 1 ? vert : (meta == 2 ? horiz : both));
+		
+		if (meta == 0) return blockIcon;
+		else if (meta == 1) return vert;
+		else if (meta == 2) return horiz;
+		else if (meta == 3) return both;
+		else if (meta == 4) {
+			if (side != 0 && side != 1) return horiz;
+			else return vert;
+		}
+		else return blockIcon;
 	}
 
 	/*
@@ -149,13 +159,13 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 		
 		else if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && connections[WEST.ordinal()] && !connections[EAST.ordinal()]
 				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
-			ret = 2;
+			ret = 4;
 			// ProjectZed.logHelper.info("case 4");
 		}
 		
 		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && connections[WEST.ordinal()] && !connections[EAST.ordinal()]
 				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
-			ret = 2;
+			ret = 4;
 			// ProjectZed.logHelper.info("case 5");
 		}
 		
@@ -173,13 +183,13 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 		
 		else if (connections[DOWN.ordinal()] && !connections[UP.ordinal()] && !connections[WEST.ordinal()] && connections[EAST.ordinal()]
 				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
-			ret = 2;
+			ret = 4;
 			// ProjectZed.logHelper.info("case 8");
 		}
 		
 		else if (!connections[DOWN.ordinal()] && connections[UP.ordinal()] && !connections[WEST.ordinal()] && connections[EAST.ordinal()]
 				&& connections[NORTH.ordinal()] && connections[SOUTH.ordinal()]) {
-			ret = 2;
+			ret = 4;
 			// ProjectZed.logHelper.info("case 9");
 		}
 		

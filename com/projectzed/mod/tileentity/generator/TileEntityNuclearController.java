@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.hockeyhurd.api.math.Vector4Helper;
@@ -53,6 +54,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private Vector4Helper<Integer> maxVec = Vector4Helper.zero.getVector4i();
 	private HashMap<Block, Integer> mbMap;
 	private HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec;
+	private HashMap<Fluid, Boolean> fluidMap;
 	
 	public TileEntityNuclearController() {
 		super("nuclearController");
@@ -565,6 +567,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (!isSizeValid()) return false;
 			if (minVec == null) minVec = Vector4Helper.zero.getVector4i();
 			if (maxVec == null) maxVec = Vector4Helper.zero.getVector4i();
+			if (fluidMap == null) fluidMap = new HashMap<Fluid, Boolean>();
 				
 			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			minVec.x = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
@@ -585,6 +588,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			mbMapVec = new HashMap<Block, List<Vector4Helper<Integer>>>();
 			TileEntity te;
 			Block b;
+			Fluid fluid;
 	
 			if (show) {
 				// System.out.println(size / 2 - 1);
@@ -606,9 +610,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						// if ( !((y == 0 || y == size - 1) && (x == 0 || x == size - 1) && (z == 0 || z == size - 1)) ) {
 						// if ( ((y > 0 || y <= size - 1) && (x > 0 || x <= size - 1) && (z > 0 || z <= size - 1)) ) {
 						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
-							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) )
+							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) ) {
 								// if (!(currentBlock instanceof BlockFluidBase) && currentBlock != Blocks.air) return false;
-								if (FluidRegistry.lookupFluidForBlock(currentBlock) == null && currentBlock != Blocks.air) return false;
+								
+								fluid = FluidRegistry.lookupFluidForBlock(currentBlock); 
+								if (fluid != null && !fluidMap.containsKey(fluid)) fluidMap.put(fluid, false);
+								if (/*fluid == null*/ !fluidMap.containsKey(fluid) && currentBlock != Blocks.air) return false;
+							}
 						}
 
 						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
