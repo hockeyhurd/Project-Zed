@@ -5,6 +5,9 @@ tile.thickenedGlass.name=Verre épaissi
 tile.nuclearChamberWall.name=Mur de chambre de réactif
 tile.nuclearChamberLock.name=Verrou de chambre de réactif
 tile.nuclearReactantCore.name=Coeur de réactif
+tile.nuclearReactorGlass.name=Verre de réactif
+tile.nuclearPowerPort.name=Port d'énergie nucléaire
+tile.nuclearControlPort.name=Port de contrôle nucléaire
 
 // Machines:
 tile.solarArray.name=Panneau solaire
@@ -30,6 +33,7 @@ tile.fluidTankTier0.name=Réservoir à fluide - I
 tile.fluidTankTier1.name=Réservoir à fluide - II
 tile.fluidTankTier2.name=Réservoir à fluide - III
 tile.fluidTankTier3.name=Réservoir à fluide - IV
+tile.liquiductBlue.name=Liquiduc - Bleu
 
 
 // RF STUFF:
@@ -45,13 +49,14 @@ tile.oreUranium.name=Minerai d'uranium
 
 // Items:
 item.itemDongle.name=Clé électronique Dév.
-item.forgingHammer.name=Forging Hammer
+item.forgingHammer.name=Marteau de forge
 item.mcuReader.name=Lecteur McU
 item.screw.name=Tournevis
 item.sheetAluminium.name=Feuille d'aluminium
 item.sheetReinforced.name=Feuille composite renforcé
 item.gearAluminium.name=Mécanisme d'aluminium
 item.conductiveCoil.name=Bobine conductrice
+item.wrench.name=Clé anglaise
 
 // Metals:
 item.dustGold.name=Poussière d'or
@@ -70,6 +75,12 @@ item.ingotNickel.name=Lingot de nickel
 item.ingotAluminium.name=Lingot d'aluminium 
 item.ingotUranium.name=Lingot d'uranium 
 item.mixedAlloy.name=Alliage métalique mélangé
+
+tile.blockTitanium.name=Bloc de titane
+tile.blockCopper.name=Bloc de cuivre
+tile.blockNickel.name=Bloc de nickel
+tile.blockAluminium.name=Bloc d'aluminium
+tile.blockUranium.name=Bloc d'uranium
 
 // Fuels:
 item.emptyFuelRod.name=Barre de carburant vide
