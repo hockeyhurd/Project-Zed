@@ -26,7 +26,7 @@ import com.projectzed.mod.util.StackMapper;
  * @author hockeyhurd
  * @version Dec 30, 2014
  */
-public class CentrifugeRecipeRegistry {
+public final class CentrifugeRecipeRegistry {
 
 	private static HashMap<StackMapper<ItemStack>, ItemStack> mapVanilla;
 	private static HashMap<StackMapper<String>, String> mapModdedTry;

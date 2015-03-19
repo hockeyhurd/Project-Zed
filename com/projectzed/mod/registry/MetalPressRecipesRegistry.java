@@ -25,7 +25,7 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Dec 9, 2014
  */
-public class MetalPressRecipesRegistry {
+public final class MetalPressRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;

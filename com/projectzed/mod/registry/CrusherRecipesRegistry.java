@@ -27,7 +27,7 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Nov 4, 2014
  */
-public class CrusherRecipesRegistry {
+public final class CrusherRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;

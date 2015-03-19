@@ -44,7 +44,7 @@ import com.projectzed.mod.util.ModsLoadedHelper;
  * @author hockeyhurd
  * @version Oct 21, 2014
  */
-public class TileEntityRegistry {
+public final class TileEntityRegistry {
 
 	private HashMap<Class<? extends TileEntity>, String> map;
 	private HashMap<Class<? extends TileEntity>, Integer> idMap;

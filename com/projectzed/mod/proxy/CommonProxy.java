@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.entity.EntityAtomicBomb;
 import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.ItemHoverEventHandler;
@@ -37,6 +37,7 @@ import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 import com.projectzed.mod.registry.MetalPressRecipesRegistry;
+import com.projectzed.mod.registry.PZEntityRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.util.Reference;
 
@@ -124,7 +125,16 @@ public class CommonProxy {
 	}
 	
 	private void registerEntities() {
-		EntityRegistry.instance().registerGlobalEntityID(EntityAtomicBomb.class, "entityAtomicBomb", 0);
+		// EntityRegistry.instance().registerGlobalEntityID(EntityAtomicBomb.class, "entityAtomicBomb", 0);
+		
+		PZEntityRegistry.instance().init();
+
+		Iterator iter = PZEntityRegistry.instance().getMap().entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<Class<? extends Entity>, String> entry = (Entry<Class<? extends Entity>, String>) iter.next();
+			if (entry.getKey() != null && entry.getValue() != null && entry.getValue().length() > 0) 
+				EntityRegistry.instance().registerGlobalEntityID(entry.getKey(), entry.getValue(), PZEntityRegistry.instance().getNextID());
+		}
 	}
 	
 	private void registerTileEntities() {

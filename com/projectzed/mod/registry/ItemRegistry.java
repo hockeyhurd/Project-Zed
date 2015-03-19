@@ -18,7 +18,7 @@ import net.minecraft.item.Item;
  * @author hockeyhurd
  * @version Oct 20, 2014
  */
-public class ItemRegistry {
+public final class ItemRegistry {
 
 	private static List<Item> items;
 	private static List<Item> itemOres;

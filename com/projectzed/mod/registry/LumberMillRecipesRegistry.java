@@ -25,7 +25,7 @@ import net.minecraftforge.oredict.OreDictionary;
  * @author hockeyhurd
  * @version Nov 17, 2014
  */
-public class LumberMillRecipesRegistry {
+public final class LumberMillRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;

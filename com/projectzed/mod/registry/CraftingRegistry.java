@@ -26,7 +26,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  * @author hockeyhurd
  * @version Nov 9, 2014
  */
-public class CraftingRegistry {
+public final class CraftingRegistry {
 
 	private List<ShapelessOreRecipe> shapelessList;
 	private List<ShapedOreRecipe> shapedList;

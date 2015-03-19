@@ -18,7 +18,7 @@ import net.minecraft.block.Block;
  * @author hockeyhurd
  * @version Oct 20, 2014
  */
-public class BlockRegistry {
+public final class BlockRegistry {
 
 	private static List<Block> blocks;
 	private static List<Block> blockOres;
