@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.mod.block.BlockAtomicBomb;
 import com.projectzed.mod.block.BlockFabricationTable;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
@@ -119,6 +120,7 @@ public class ProjectZed {
 	// Blocks:
 	public static Block machineContainer;
 	public static Block thickenedGlass;
+	public static Block atomicBomb;
 	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
@@ -264,6 +266,7 @@ public class ProjectZed {
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
 		nuclearReactorGlass = new BlockNuclearReactorGlass();
+		atomicBomb = new BlockAtomicBomb();
 		nuclearChamberWall = new BlockNuclearChamberWall();
 		nuclearChamberLock = new BlockNuclearChamberLock();
 		nuclearReactantCore = new BlockNuclearReactantCore();

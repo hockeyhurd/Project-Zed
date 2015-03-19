@@ -24,6 +24,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.entity.EntityAtomicBomb;
 import com.projectzed.mod.handler.CraftingEventHandler;
 import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.ItemHoverEventHandler;
@@ -41,6 +42,7 @@ import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
@@ -76,6 +78,7 @@ public class CommonProxy {
 		registerItems();
 		registerOreDictionaryEntries();
 		registerWorldgen();
+		registerEntities();
 		registerTileEntities();
 		registerGuiHandler();
 		registerFurnaceRecipes();
@@ -118,6 +121,10 @@ public class CommonProxy {
 		GameRegistry.registerWorldGenerator(ProjectZed.worldgenAluminium, 1);
 		GameRegistry.registerWorldGenerator(ProjectZed.worldgenCopper, 1);
 		GameRegistry.registerWorldGenerator(ProjectZed.worldgenUranium, 1);
+	}
+	
+	private void registerEntities() {
+		EntityRegistry.instance().registerGlobalEntityID(EntityAtomicBomb.class, "entityAtomicBomb", 0);
 	}
 	
 	private void registerTileEntities() {

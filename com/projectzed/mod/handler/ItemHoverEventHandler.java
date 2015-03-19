@@ -10,11 +10,13 @@ import com.projectzed.api.block.*;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import com.projectzed.mod.block.BlockAtomicBomb;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipe;
 import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-
 import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
@@ -56,77 +57,88 @@ public class ItemHoverEventHandler {
 	public void onItemHover(ItemTooltipEvent event) {
 		ItemStack stack = event.itemStack;
 		if (stack != null) {
-			int amount = 0;
-			int type = 0;
+			insertTileEntityInfo(event, stack);
+			
 			Block b = Block.getBlockFromItem(stack.getItem());
-			if (b != null) {
-				if (b instanceof AbstractBlockContainer) {
+			
+			if (b instanceof BlockAtomicBomb) {
+				event.toolTip.add(EnumChatFormatting.GOLD + "WARNING: " + EnumChatFormatting.WHITE + "Highly Destructive!");
+				event.toolTip.add(EnumChatFormatting.GREEN + "Unbreakable");
+			}
+		}
+	}
+	
+	private void insertTileEntityInfo(ItemTooltipEvent event, ItemStack stack) {
+		int amount = 0;
+		int type = 0;
+		Block b = Block.getBlockFromItem(stack.getItem());
+		if (b != null) {
+			if (b instanceof AbstractBlockContainer) {
+				type = 0;
+				if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) {
+					TileEntityEnergyBankBase bank = (TileEntityEnergyBankBase) ((BlockEnergyCell) b).getTileEntity();
+					if (stack.hasTagCompound() && stack.stackTagCompound.getInteger("ProjectZedPowerStored") > 0) {
+						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(stack.stackTagCompound.getInteger("ProjectZedPowerStored")) + " McU");
+					}
+					event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
+				}
+				amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
+			}
+			
+			else if (b instanceof AbstractBlockPipe) {
+				IEnergyContainer contE = null;
+				IFluidContainer contF = null;
+				if (b instanceof AbstractBlockEnergyPipe && ((AbstractBlockEnergyPipe) b).getTileEntity() instanceof IEnergyContainer) {
 					type = 0;
-					if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) {
-						TileEntityEnergyBankBase bank = (TileEntityEnergyBankBase) ((BlockEnergyCell) b).getTileEntity();
-						if (stack.hasTagCompound() && stack.stackTagCompound.getInteger("ProjectZedPowerStored") > 0) {
-							event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(stack.stackTagCompound.getInteger("ProjectZedPowerStored")) + " McU");
-						}
-						event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
-					}
-					amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
+					contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
+					amount = contE.getMaxExportRate();
 				}
-				
-				else if (b instanceof AbstractBlockPipe) {
-					IEnergyContainer contE = null;
-					IFluidContainer contF = null;
-					if (b instanceof AbstractBlockEnergyPipe && ((AbstractBlockEnergyPipe) b).getTileEntity() instanceof IEnergyContainer) {
-						type = 0;
-						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
-						amount = contE.getMaxExportRate();
-					}
 
-					else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidContainer) {
-						type = 4;
-						contF = (TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity();
-						// amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
-						amount = contF.getMaxFluidExportRate();
-					}
-					
-					else {
-						type = 3;
-						contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
-						amount = contE.getMaxExportRate();
-					}
-				}
-				
-				else if (b instanceof AbstractBlockGenerator) {
-					type = 1;
-					amount = ((AbstractBlockGenerator) b).getTileEntity().getSource().getEffectiveSize();
-				}
-				
-				else if (b instanceof AbstractBlockMachine) {
-					type = 2;
-					amount = ((AbstractBlockMachine) b).getTileEntity().getEnergyBurnRate();
-				}
-				
-				else if (b instanceof AbstractBlockFluidContainer) {
+				else if (b instanceof AbstractBlockLiquiduct && ((AbstractBlockLiquiduct) b).getTileEntity() instanceof IFluidContainer) {
 					type = 4;
-					AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity();
-
-					if (stack.hasTagCompound() && stack.stackTagCompound.getFloat("Fluid ID") >= 0 && stack.stackTagCompound.getFloat("Fluid Amount") > 0) {
-						Fluid fluidStack = FluidRegistry.getFluid((int) stack.stackTagCompound.getFloat("Fluid ID"));
-						int fluidAmount = (int) stack.stackTagCompound.getFloat("Fluid Amount");
-
-						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(fluidAmount) + " mb");
-						event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + fluidStack.getLocalizedName());
-					}
-					
-					amount = te.getTank().getCapacity();
+					contF = (TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity();
+					// amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
+					amount = contF.getMaxFluidExportRate();
+				}
+				
+				else {
+					type = 3;
+					contE = (IEnergyContainer) ((AbstractBlockEnergyPipe) b).getTileEntity();
+					amount = contE.getMaxExportRate();
 				}
 			}
 			
-			if (amount > 0) {
-				// TODO: make this applicable for fluid pipes!
-				String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Max Storage: " : "Burn Rate: "));
-				String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
-				event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
+			else if (b instanceof AbstractBlockGenerator) {
+				type = 1;
+				amount = ((AbstractBlockGenerator) b).getTileEntity().getSource().getEffectiveSize();
 			}
+			
+			else if (b instanceof AbstractBlockMachine) {
+				type = 2;
+				amount = ((AbstractBlockMachine) b).getTileEntity().getEnergyBurnRate();
+			}
+			
+			else if (b instanceof AbstractBlockFluidContainer) {
+				type = 4;
+				AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity();
+
+				if (stack.hasTagCompound() && stack.stackTagCompound.getFloat("Fluid ID") >= 0 && stack.stackTagCompound.getFloat("Fluid Amount") > 0) {
+					Fluid fluidStack = FluidRegistry.getFluid((int) stack.stackTagCompound.getFloat("Fluid ID"));
+					int fluidAmount = (int) stack.stackTagCompound.getFloat("Fluid Amount");
+
+					event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(fluidAmount) + " mb");
+					event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + fluidStack.getLocalizedName());
+				}
+				
+				amount = te.getTank().getCapacity();
+			}
+		}
+		
+		if (amount > 0) {
+			// TODO: make this applicable for fluid pipes!
+			String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Max Storage: " : "Burn Rate: "));
+			String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
+			event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
 		}
 	}
 	

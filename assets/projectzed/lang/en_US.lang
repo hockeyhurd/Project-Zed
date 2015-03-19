@@ -2,6 +2,7 @@
 tile.machineContainer.name=Machine Container Frame
 tile.fabricationTable.name=Fabrication Table
 tile.thickenedGlass.name=Thickened Glass
+tile.atomicBomb.name=Atomic Bomb
 tile.nuclearChamberWall.name=Reactant Chamber Wall
 tile.nuclearChamberLock.name=Reactant Chamber Lock
 tile.nuclearReactantCore.name=Reactant Core
