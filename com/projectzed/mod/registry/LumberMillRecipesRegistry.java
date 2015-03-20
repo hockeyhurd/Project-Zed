@@ -25,7 +25,7 @@ import net.minecraftforge.oredict.OreDictionary;
  * @author hockeyhurd
  * @version Nov 17, 2014
  */
-public final class LumberMillRecipesRegistry {
+public class LumberMillRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;
@@ -107,8 +107,9 @@ public final class LumberMillRecipesRegistry {
 			String inputName = OreDictionary.getOreName(currentID);
 			if (!mapModded.containsKey(inputName)) return (ItemStack) null;
 			
-			String ouputName = mapModded.get(inputName);
-			temp = OreDictionary.getOres(ouputName).get(0);
+			String outputName = mapModded.get(inputName);
+			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).size() == 0) return (ItemStack) null;
+			temp = OreDictionary.getOres(outputName).get(0);
 			
 			if (temp == null) return (ItemStack) null;
 			

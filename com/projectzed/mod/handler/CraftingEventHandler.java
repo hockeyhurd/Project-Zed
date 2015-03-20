@@ -45,7 +45,7 @@ public class CraftingEventHandler {
 			if (event.craftMatrix.getStackInSlot(i) != null) count++;
 		}
 
-		if (count == 2) {
+		if (count == 2 || count == 4) {
 			for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
 				if (event.craftMatrix.getStackInSlot(i) != null) {
 					ItemStack stack = event.craftMatrix.getStackInSlot(i);

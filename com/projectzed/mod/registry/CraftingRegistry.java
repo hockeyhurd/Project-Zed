@@ -120,7 +120,7 @@ public final class CraftingRegistry {
 		// nuclear stuffs:
 		reg.shapedList.add(createShapedRecipe(nuclearReactorGlass, 1, "xyx", 'x', thickenedGlass, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearChamberWall, 4, "xyx", "y y", "xyx", 'x', "ingotTitanium", 'y', "stone"));
-		reg.shapedList.add(createShapedRecipe(nuclearChamberLock, 4, "x x", " y ", "x x", 'x', screw, 'y', nuclearChamberWall));
+		reg.shapedList.add(createShapedRecipe(nuclearChamberLock, 1, "x x", " y ", "x x", 'x', screw, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearReactantCore, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateReinforced", 'z', "blockDiamond"));
 		reg.shapedList.add(createShapedRecipe(nuclearPowerPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', energyCellTier0, 'a', machineContainer));
 		reg.shapedList.add(createShapedRecipe(nuclearControlPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer));

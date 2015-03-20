@@ -15,8 +15,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.projectzed.mod.ProjectZed;
-
 /**
  * Class containing code for initializing the metal press's smelting recipe list. <br>
  * NOTE: This class was closely followed to PulverizerRecipes.java by author hockeyhurd. <br>
@@ -25,7 +23,7 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Dec 9, 2014
  */
-public final class MetalPressRecipesRegistry {
+public class MetalPressRecipesRegistry {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;
@@ -42,10 +40,13 @@ public final class MetalPressRecipesRegistry {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping.
-		mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.sheetAluminium, 1));
-		mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.sheetReinforced, 1));
+		// mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.sheetAluminium, 1));
+		// mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.sheetReinforced, 1));
 		
 		// Fall back/modded mapping.
+		mapModded.put("ingotAluminium", "plateAluminium");
+		mapModded.put("ingotAluminum", "plateAluminum");
+		mapModded.put("mixedAlloy", "plateReinforced");
 		mapModded.put("ingotIron", "plateIron");
 		mapModded.put("ingotGold", "plateGold");
 		mapModded.put("ingotTin", "plateTin");
@@ -80,7 +81,7 @@ public final class MetalPressRecipesRegistry {
 	public static ItemStack pressList(ItemStack stack) {
 		boolean flag = false;
 		ItemStack temp = null;
-
+		
 		/*
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
@@ -102,8 +103,9 @@ public final class MetalPressRecipesRegistry {
 			String inputName = OreDictionary.getOreName(currentID);
 			if (!mapModded.containsKey(inputName)) return (ItemStack) null;
 			
-			String ouputName = mapModded.get(inputName);
-			temp = OreDictionary.getOres(ouputName).get(0);
+			String outputName = mapModded.get(inputName);
+			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).size() == 0) return (ItemStack) null;
+			temp = OreDictionary.getOres(outputName).get(0);
 			
 			if (temp == null) return (ItemStack) null;
 			

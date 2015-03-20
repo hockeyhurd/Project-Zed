@@ -18,7 +18,7 @@ import com.projectzed.mod.entity.EntityAtomicBomb;
  * @author hockeyhurd
  * @version Mar 19, 2015
  */
-public final class PZEntityRegistry {
+public class PZEntityRegistry {
 
 	private static final PZEntityRegistry reg = new PZEntityRegistry();
 	private HashMap<Class<? extends Entity>, String> map;

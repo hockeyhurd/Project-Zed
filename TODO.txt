@@ -3,9 +3,6 @@ BUGS:
     - Nuclear stuffs not showing generation rate in GUI.
     - Fix weirdness of fluid pipes when emptying.
     - Fluid pipes breaking TE4 (fluid) machines?
-    - Hammer + mixed alloy not returning reduced meta hammer.
-    - metal press recipes not working? (NEI not effected).
-    - Nuclear Chamber Lock recipe should be 1:1.
 
 TODO:
 =================================
