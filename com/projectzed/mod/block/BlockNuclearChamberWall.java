@@ -121,7 +121,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	private int isBlockAdjacent(BlockHelper bh, World world, int x, int y, int z) {
 		if (blockWhitelist == null) blockWhitelist = new Block[] {
 					this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.nuclearPowerPort, ProjectZed.nuclearControlPort,
-					ProjectZed.fissionController, ProjectZed.fusionController
+					ProjectZed.nuclearIOPort, ProjectZed.fissionController, ProjectZed.fusionController
 		};
 		
 		MultiblockHelper mb = new MultiblockHelper(world, new Vector4Helper<Integer>(x, y, z), blockWhitelist);

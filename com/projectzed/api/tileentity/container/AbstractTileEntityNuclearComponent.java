@@ -10,6 +10,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
@@ -217,6 +218,40 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	@Override
 	public Vector4Helper<Integer> worldVec() {
 		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		
+		// multiblock stuffs:
+		isMaster = comp.getBoolean("ProjectZedIsMaster");
+		hasMaster = comp.getBoolean("ProjectZedHasMaster");
+
+		if (masterVec == null) masterVec = Vector4Helper.zero.getVector4i();
+		masterVec.x = comp.getInteger("ProjectZedMasterX");
+		masterVec.y = comp.getInteger("ProjectZedMasterY");
+		masterVec.z = comp.getInteger("ProjectZedMasterZ");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		
+		// multiblock stuffs:
+		comp.setBoolean("ProjectZedIsMaster", isMaster);
+		comp.setBoolean("ProjectZedHasMaster", hasMaster);
+		comp.setInteger("ProjectZedMasterX", masterVec.x);
+		comp.setInteger("ProjectZedMasterY", masterVec.y);
+		comp.setInteger("ProjectZedMasterZ", masterVec.z);
 	}
 
 }

@@ -71,6 +71,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot == 1 ? false : true;
 	}
@@ -80,6 +81,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
+	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return side == 0 ? this.slotRight : this.slotTop;
 	}
@@ -89,6 +91,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return this.isItemValidForSlot(slot, stack);
 	}
@@ -98,6 +101,7 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		// return side != 1 /*|| side != 1*/ || stack.getItem() == Items.bucket;
 		return slot == 0 || slot == 1;

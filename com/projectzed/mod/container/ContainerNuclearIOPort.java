@@ -10,41 +10,39 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 
 /**
- * Class used as generic container for most/all generators.
+ * Class containing container code for NuclearIOPort.
  * 
  * @author hockeyhurd
- * @version Oct 21, 2014
+ * @version Mar 19, 2015
  */
-public class ContainerGenerator extends Container {
+public class ContainerNuclearIOPort extends Container {
 
-	private AbstractTileEntityGenerator te;
-	private int stored;
-	private boolean powerMode;
+	private TileEntityNuclearIOPort te;
 	private final int NUM_SLOTS;
-
-	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
+	
+	public ContainerNuclearIOPort(InventoryPlayer inv, TileEntityNuclearIOPort te) {
 		this.te = te;
 		this.NUM_SLOTS = te.getSizeInvenotry();
 		addSlots(inv, te);
 	}
-
+	
 	/**
 	 * Adds all slots, player and container.
 	 * @param inv = inventory.
 	 * @param te = tile entity object.
 	 */
-	private void addSlots(InventoryPlayer inv, AbstractTileEntityGenerator te) {
-		if (this.NUM_SLOTS == 0) {
+	private void addSlots(InventoryPlayer inv, TileEntityNuclearIOPort te) {
+		
+		if (this.NUM_SLOTS == 2) {
+			this.addSlotToContainer(new Slot(te, 0, 41, 21));
+			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 		}
-		else if (this.NUM_SLOTS == 1) this.addSlotToContainer(new Slot(te, 0, 79, 21));
 
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
@@ -58,28 +56,13 @@ public class ContainerGenerator extends Container {
 			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 142)); // 198
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	
+	/* (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
 	 */
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
-	}
-
-	@Override
-	public void detectAndSendChanges() {
-		this.stored = this.te.getEnergyStored();
-		this.powerMode = this.te.canProducePower();
-		super.detectAndSendChanges();
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int newVal, boolean mode) {
-		this.te.setEnergyStored(newVal);
-		this.te.setPowerMode(mode);
 	}
 	
 	@Override
@@ -117,13 +100,5 @@ public class ContainerGenerator extends Container {
 
 		return itemstack;
 	}
-
-	/**
-	 * Gets the TE instance.
-	 * @return te object.
-	 */
-	public AbstractTileEntityGenerator getTE() {
-		return this.te;
-	}
-
+	
 }

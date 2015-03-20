@@ -28,6 +28,7 @@ import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
 import com.projectzed.mod.block.container.BlockLiquidNode;
 import com.projectzed.mod.block.container.BlockLiquiductBlue;
+import com.projectzed.mod.block.container.BlockNuclearIOPort;
 import com.projectzed.mod.block.container.BlockNuclearPowerPort;
 import com.projectzed.mod.block.container.BlockRFBridge;
 import com.projectzed.mod.block.container.BlockTankTier0;
@@ -127,6 +128,7 @@ public class ProjectZed {
 	public static Block nuclearReactantCore;
 	public static Block nuclearPowerPort;
 	public static Block nuclearControlPort;
+	public static Block nuclearIOPort;
 	
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -272,6 +274,7 @@ public class ProjectZed {
 		nuclearReactantCore = new BlockNuclearReactantCore();
 		nuclearPowerPort = new BlockNuclearPowerPort();
 		nuclearControlPort = new BlockNuclearControlPort();
+		nuclearIOPort = new BlockNuclearIOPort();
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);

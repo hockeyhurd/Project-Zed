@@ -20,6 +20,7 @@ import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
 import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearPowerPort;
 import com.projectzed.mod.tileentity.container.TileEntityReactantCore;
 import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
@@ -135,6 +136,9 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityNuclearControlPort.class, "nuclearControlPort");
 		reg.idMap.put(TileEntityNuclearControlPort.class, getNextID());
+		
+		reg.map.put(TileEntityNuclearIOPort.class, "nuclearIOPort");
+		reg.idMap.put(TileEntityNuclearIOPort.class, getNextID());
 	}
 	
 	/**

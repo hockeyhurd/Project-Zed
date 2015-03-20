@@ -63,7 +63,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @return itemstack in slot.
 	 */
 	public ItemStack getStackInSlot(int slot) {
-		return this.slots[slot];
+		return slot >= 0 && slot < this.slots.length ? this.slots[slot] : null;
 	}
 
 	/*

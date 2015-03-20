@@ -9,6 +9,7 @@ tile.nuclearReactantCore.name=Reactant Core
 tile.nuclearReactorGlass.name=Reactant Glass
 tile.nuclearPowerPort.name=Nuclear Power Port
 tile.nuclearControlPort.name=Nuclear Control Port
+tile.nuclearIOPort.name=Nuclear IO Port
 
 // Machines:
 tile.solarArray.name=Solar Array

@@ -6,18 +6,38 @@
 */
 package com.projectzed.mod.handler;
 
-import com.projectzed.mod.container.*;
-import com.projectzed.mod.gui.*;
-import com.projectzed.mod.tileentity.TileEntityFabricationTable;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import com.projectzed.mod.tileentity.machine.*;
-import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import com.projectzed.mod.container.ContainerCentrifuge;
+import com.projectzed.mod.container.ContainerEnergyContainer;
+import com.projectzed.mod.container.ContainerFabricationTable;
+import com.projectzed.mod.container.ContainerGenerator;
+import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.container.ContainerNuclearIOPort;
+import com.projectzed.mod.container.ContainerRFBridge;
+import com.projectzed.mod.gui.GuiCentrifuge;
+import com.projectzed.mod.gui.GuiEnergyContainer;
+import com.projectzed.mod.gui.GuiFabricationTable;
+import com.projectzed.mod.gui.GuiGenerator;
+import com.projectzed.mod.gui.GuiMachine;
+import com.projectzed.mod.gui.GuiNuclearIOPort;
+import com.projectzed.mod.gui.GuiRFBridge;
+import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
+import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
+
+import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
  * Class container for handling all gui or container requests.
@@ -43,6 +63,8 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityRFBridge) return new ContainerRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new ContainerEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
 
+		else if (te instanceof TileEntityNuclearIOPort) return new ContainerNuclearIOPort(player.inventory, (TileEntityNuclearIOPort) te);
+		
 		return null;
 	}
 
@@ -61,6 +83,8 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityRFBridge) return new GuiRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new GuiEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
+		
+		else if (te instanceof TileEntityNuclearIOPort) return new GuiNuclearIOPort(player.inventory, (TileEntityNuclearIOPort) te);
 
 		return null;
 	}
