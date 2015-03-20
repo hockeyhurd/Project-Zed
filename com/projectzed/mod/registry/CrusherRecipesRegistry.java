@@ -87,6 +87,8 @@ public final class CrusherRecipesRegistry {
 		mapModded.put("gemQuartz", "dustNetherQuartz");
 		mapModded.put("crystalCertusQuartz", "dustCertusQuartz");
 		mapModded.put("crystalFluix", "dustFluix");
+		mapModded.put("oreZinc", "dustZinc");
+		mapModded.put("ingotZinc", "dustZinc");
 		mapModded.put("coal", "dustCoal");
 		mapModded.put("denseoreCoal", "oreCoal");
 		mapModded.put("denseoreLapis", "oreLapis");

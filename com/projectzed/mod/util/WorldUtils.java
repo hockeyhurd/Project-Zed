@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -151,9 +152,13 @@ public class WorldUtils {
 	public static IMultiBlockable<?> createFakeTE(Block block) {
 		IMultiBlockable<?> mb = null;
 		
-		if (block != null && block != Blocks.air && block instanceof AbstractBlockNuclearComponent) {
-			if (((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
+		if (block != null && block != Blocks.air) {
+			if (block instanceof AbstractBlockNuclearComponent && ((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
 				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();
+			}
+			
+			else if (block instanceof AbstractBlockContainer && ((AbstractBlockContainer) block).getTileEntity() instanceof IMultiBlockable<?>) {
+				mb = (IMultiBlockable<?>) ((AbstractBlockContainer) block).getTileEntity();
 			}
 		}
 		
