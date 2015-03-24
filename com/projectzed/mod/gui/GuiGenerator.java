@@ -38,8 +38,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiGenerator extends GuiContainer implements IInfoContainer {
 
-	public final ResourceLocation texture;
-	private AbstractTileEntityGenerator te;
+	protected ResourceLocation texture;
+	protected AbstractTileEntityGenerator te;
 	private String stringToDraw;
 
 	protected Vector4Helper<Integer> mouseVec, pos, minMax;

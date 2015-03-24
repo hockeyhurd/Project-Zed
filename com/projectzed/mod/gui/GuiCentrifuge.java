@@ -62,7 +62,7 @@ public class GuiCentrifuge extends GuiMachine {
 		int v = 0 - (int) progressWater;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 39);
 		
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 216, 0, 16, 39);
+		this.drawTexturedModalRect(guiLeft + 8, guiTop + 17, 216, 0, 16, 39);
 	}
 
 	/*

@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -28,6 +29,8 @@ import com.projectzed.mod.block.container.BlockNuclearIOPort;
 public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent implements IWrenchable {
 
 	// TODO: This class should take over IO of TileEntityNuclearController. For now this TE is set to optional use.
+	
+	private byte meta;
 	
 	public TileEntityNuclearIOPort() {
 		super("nuclearIOPort");
@@ -85,6 +88,11 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
+			byte current = (byte) this.blockMetadata;
+			if (this.meta != current) setMetaOnUpdate(current);
+		}
 	}
 	
 	/*
@@ -123,14 +131,43 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		return this.getBlockMetadata() == 2 && slot == 2;
 	}
 	
-	/*@Override
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		
-		for (int i = 0; i < slots.length; i++) {
-			this.slots[i] = ItemStack.loadItemStackFromNBT(comp);
-		}
-	}*/
+		this.meta = comp.getByte("ProjectZedNuclearIOPortMeta");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+
+		comp.setByte("ProjectZedNuclearIOPortMeta", this.meta);
+	}
+	
+	/**
+	 * @return the correct meta data for when multiblock structure is 'active'
+	 */
+	public byte getStoredMeta() {
+		return this.meta;
+	}
+	
+	/**
+	 * Sets stored meta data as byte.
+	 * 
+	 * @param meta new meta data value.
+	 */
+	public void setMetaOnUpdate(byte meta) {
+		if (meta > 0) this.meta = meta;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
@@ -141,6 +178,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		this.hasMaster = false;
 		this.masterVec = Vector4Helper.zero.getVector4i();
 		
+		setMetaOnUpdate((byte) worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z));
 		((BlockNuclearIOPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 
@@ -208,7 +246,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean canSaveDataOnPickup() {
-		return false;
+		return true;
 	}
 
 	/*
@@ -217,7 +255,11 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public HashMap<String, Number> dataToSave() {
-		return null;
+		HashMap<String, Number> data = new HashMap<String, Number>();
+		
+		data.put("Meta", this.meta);
+		
+		return data;
 	}
 
 }
