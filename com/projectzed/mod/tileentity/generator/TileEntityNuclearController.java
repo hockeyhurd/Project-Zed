@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -31,10 +30,11 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 
 /**
  * Class used to calculate and generate power through
- * nuclear fusion.
+ * nuclear fission/fusion.
  * 
  * @author hockeyhurd
  * @version Nov 24, 2014
@@ -45,7 +45,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private boolean fusionMode;
 	private boolean poweredLastUpdate = false;
 	private boolean poweredThisUpdate = false;
-	private int burnTime = 0;
 	
 	private byte placeDir, size, rel;
 	private boolean isMaster, hasMaster;
@@ -55,6 +54,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private HashMap<Block, Integer> mbMap;
 	private HashMap<Block, List<Vector4Helper<Integer>>> mbMapVec;
 	private HashMap<Fluid, Boolean> fluidMap;
+	private TileEntityNuclearIOPort inputPort;
 	
 	public TileEntityNuclearController() {
 		super("nuclearController");
@@ -205,13 +205,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public HashMap<Block, List<Vector4Helper<Integer>>> getMapVec() {
 		return mbMapVec;
 	}
-
-	/**
+/*
+	*//**
 	 * Function used to get the item burn time from given itemstack.
 	 * 
 	 * @param stack stack to (try) to burn.
 	 * @return length or burn time of stack if burnable, else returns false.
-	 */
+	 *//*
 	protected static int getItemBurnTime(ItemStack stack) {
 		if (stack == null) return 0;
 		else {
@@ -221,19 +221,20 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			
 			return 0;
 		}
-	}
+	}*/
 
-	/**
+	/*
+	*//**
 	 * Function used to determine if item in slot is fuel.
 	 * @return true if is fuel, else returns false.
-	 */
+	 *//*
 	protected boolean isFuel() {
 		return getItemBurnTime(this.slots[0]) > 0;
-	}
-
-	/**
+	}*/
+/*
+	*//**
 	 * Method used to consume fuel in given slot.
-	 */
+	 *//*
 	protected void consumeFuel() {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
@@ -247,7 +248,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				else this.slots[0] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
 			}
 		}
-	}
+	}*/
 	
 	/*
 	 * (non-Javadoc)
@@ -255,8 +256,40 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 */
 	@Override
 	public void generatePower() {
-		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && this.burnTime > 0) this.stored += this.source.getEffectiveSize();
+		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
+	}
+	
+	private TileEntityNuclearIOPort getInputDataFromIO() {
+		TileEntityNuclearIOPort te = null;
+		
+		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearIOPort)) {
+			
+			for (Vector4Helper<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
+				byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+
+				// it is input!
+				if (meta == 1 && worldObj.getTileEntity(vec.x, vec.y, vec.z) instanceof TileEntityNuclearIOPort) {
+					te = (TileEntityNuclearIOPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					break;
+				}
+			}
+		}
+		
+		return te;
+	}
+	
+	/**
+	 * Checks 
+	 * @param controlPort
+	 * @return
+	 */
+	public boolean checksAndConsumations(boolean controlPort) {
+		boolean flag = false;
+		
+		if (inputPort != null) flag = poweredLastUpdate && controlPort && inputPort.runCycle();
+		
+		return flag;
 	}
 	
 	/*
@@ -268,33 +301,30 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			
 			// Small, yet significant optimization to call checking of multiblock structure 1/sec instead of 20/sec.
-			if (this.worldObj.getTotalWorldTime() % 20L == 0) poweredLastUpdate = canProducePower();
-			
-			boolean controlPort = checkControlPort();
-			
-			if (this.slots[0] != null && isFuel() && poweredLastUpdate && controlPort) {
-				if (this.burnTime == 0) {
-					this.burnTime = getItemBurnTime(this.slots[0]);
-					consumeFuel();
-				}
+			if (this.worldObj.getTotalWorldTime() % 20L == 0) {
+				inputPort = getInputDataFromIO();
+				if (inputPort == null) return;
+				
+				poweredLastUpdate = canProducePower();
 			}
-			
-			else if (!poweredLastUpdate && this.burnTime > 0) this.burnTime = 0;
+
+			if (inputPort == null) return;
+			boolean controlPort = checkControlPort();
+			checksAndConsumations(controlPort);
 			
 			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) resetStructure();
 
 			poweredThisUpdate = poweredLastUpdate;
-			this.powerMode = this.burnTime > 0;
+			this.powerMode = inputPort.getBurnTime() > 0;
 			if (this.powerMode && controlPort) {
 				generatePower();
-				this.burnTime--;
+				inputPort.tickBurnTime();
 			}
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			this.markDirty();
 		}
 		
-		// super.updateEntity();
 	}
 	
 	/*
@@ -304,8 +334,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
-		int time = comp.getInteger("ProjectZedBurnTime");
-		this.burnTime = time > 0 ? time : 0;
 		
 		byte dir = comp.getByte("ProjectZedNuclearDir");
 		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
@@ -333,7 +361,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
-		comp.setInteger("ProjectZedBurnTime", this.burnTime);
+
 		comp.setByte("ProjectZedNuclearDir", this.placeDir);
 		comp.setByte("ProjectZedNuclearRel", this.rel);
 		comp.setByte("ProjectZedNuclearSize", this.size);
@@ -625,8 +653,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
 						// ProjectZed.logHelper.info(currentBlock.getUnlocalizedName());
 						
-						// if ( !((y == 0 || y == size - 1) && (x == 0 || x == size - 1) && (z == 0 || z == size - 1)) ) {
-						// if ( ((y > 0 || y <= size - 1) && (x > 0 || x <= size - 1) && (z > 0 || z <= size - 1)) ) {
 						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
 							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) ) {
 								// if (!(currentBlock instanceof BlockFluidBase) && currentBlock != Blocks.air) return false;

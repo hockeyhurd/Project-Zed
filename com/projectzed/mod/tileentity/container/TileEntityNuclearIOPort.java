@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -31,6 +32,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	// TODO: This class should take over IO of TileEntityNuclearController. For now this TE is set to optional use.
 	
 	private byte meta;
+	private int burnTime;
 	
 	public TileEntityNuclearIOPort() {
 		super("nuclearIOPort");
@@ -110,7 +112,8 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 1;
+		if (slot != 1 || stack == null) return false;
+		return stack.getItem() == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage();
 	}
 	
 	/*
@@ -119,7 +122,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return this.getBlockMetadata() == 1 && slot == 1;
+		return this.getBlockMetadata() == 1 && isItemValidForSlot(slot, stack);
 	}
 	
 	/*
@@ -128,7 +131,80 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return this.getBlockMetadata() == 2 && slot == 2;
+		return /*this.getBlockMetadata() == 2 &&*/ slot == 2;
+	}
+	
+	/**
+	 * Gets the item burn time for stack.
+	 * 
+	 * @param stack stack to test.
+	 * @return item burn time.
+	 */
+	public static final int getItemBurnTime(ItemStack stack) {
+		if (stack == null) return 0;
+		else {
+			Item item = stack.getItem();
+
+			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return 1600;
+			
+			return 0;
+		}
+	}
+	
+	/**
+	 * Function used to determine if item in slot is fuel.
+	 * 
+	 * @return true if is fuel, else returns false.
+	 */
+	public boolean isFuel() {
+		return getItemBurnTime(this.slots[0]) > 0;
+	}
+	
+	/**
+	 * Method used to consume fuel in given slot.
+	 */
+	public void consumeFuel() {
+		if (this.isFuel()) {
+			if (this.slots[0] == null) return;
+			else {
+				ItemStack stack = this.slots[0];
+				if (stack.getItemDamage() < stack.getMaxDamage() - 1) {
+					stack.setItemDamage(stack.getItemDamage() + 1);
+					this.slots[0] = stack;
+				}
+				
+				else {
+					this.slots[0] = (ItemStack) null;
+					this.slots[1] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
+				}
+			}
+		}
+	}
+	
+	public boolean runCycle() {
+		boolean flag = false;
+		
+		if (this.slots[0] != null && isFuel()) {
+			if (this.burnTime == 0) {
+				this.burnTime = getItemBurnTime(this.slots[0]);
+				consumeFuel();
+			}
+		}
+		
+		return flag;
+	}
+	
+	public void tickBurnTime() {
+		if (this.burnTime > 0) this.burnTime--;
+	}
+	
+	/**
+	 * Gets the current burn time for instance.
+	 * 
+	 * @return burn time as int value.
+	 */
+	public int getBurnTime() {
+		return this.burnTime;
 	}
 	
 	/*
@@ -140,6 +216,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		super.readFromNBT(comp);
 		
 		this.meta = comp.getByte("ProjectZedNuclearIOPortMeta");
+		this.burnTime = comp.getInteger("ProjectZedNuclearBurnTime");
 	}
 	
 	/*
@@ -151,6 +228,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		super.writeToNBT(comp);
 
 		comp.setByte("ProjectZedNuclearIOPortMeta", this.meta);
+		comp.setInteger("ProjectZedNuclearBurnTime", this.burnTime);
 	}
 	
 	/**

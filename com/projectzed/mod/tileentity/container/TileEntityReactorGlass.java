@@ -76,7 +76,6 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearChamberWall));
 			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearPowerPort));
 			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearControlPort));
-			subList.add(WorldUtils.createFakeTE(ProjectZed.nuclearIOPort));
 		}
 		
 		return subList;
@@ -87,7 +86,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
-		return width * height * depth - 9 - ((width - 2) * (height - 2) * (depth - 2));
+		return width * height * depth - 11 - ((width - 2) * (height - 2) * (depth - 2));
 	}
 
 }

@@ -6,9 +6,11 @@
 */
 package com.projectzed.mod.container;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
@@ -42,4 +44,33 @@ public class ContainerCentrifuge extends ContainerMachine {
 		this.waterStored = ((TileEntityIndustrialCentrifuge) this.te).getTank().getFluidAmount();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.container.ContainerMachine#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
+	 */
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+		ItemStack stack = null;
+		Slot slot = (Slot) this.inventorySlots.get(index);
+		if (slot != null && slot.getHasStack()) {
+			ItemStack slotStack = slot.getStack();
+			stack = slotStack.copy();
+			if (index < te.getSizeInvenotry()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
+			}
+			
+			else {
+				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
+			}
+
+			if (slotStack.stackSize == 0) slot.putStack((ItemStack) null);
+			else slot.onSlotChanged();
+
+			if (slotStack.stackSize == stack.stackSize) return null;
+			slot.onPickupFromSlot(player, slotStack);
+		}
+
+		return stack;
+	}
+	
 }
