@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 
@@ -46,6 +47,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
 	 */
+	@Override
 	public int getSizeInventory() {
 		return 1;
 	}
@@ -55,6 +57,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
 	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
@@ -64,6 +67,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
 	 */
+	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[1];
 	}
@@ -73,6 +77,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initSlotsArray()
 	 */
+	@Override
 	protected void initSlotsArray() {
 	}
 
@@ -81,6 +86,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return true;
 	}
@@ -90,6 +96,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
 	 */
+	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return new int[] {
 			0
@@ -101,6 +108,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return this.isItemValidForSlot(slot, stack);
 	}
@@ -110,6 +118,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return false;
 	}
@@ -119,6 +128,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
 	 */
+	@Override
 	public void defineSource() {
 		this.source = new Source(EnumType.BURNABLE);
 	}
@@ -162,23 +172,25 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		}
 	}
 
+	@Override
 	public void generatePower() {
 		if (canProducePower() && this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 
+	@Override
 	public void updateEntity() {
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			if (this.slots[0] != null && isFuel()) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
-					consumeFuel();
+					if (this.powerMode) consumeFuel();
 				}
 			}
 
 			if (this.burnTime > 0) this.burnTime--;
 
-			this.powerMode = this.burnTime > 0;
+			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 		super.updateEntity();
@@ -189,6 +201,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		int time = comp.getInteger("ProjectZedBurnTime");
@@ -200,6 +213,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 * 
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setInteger("ProjectZedBurnTime", this.burnTime);

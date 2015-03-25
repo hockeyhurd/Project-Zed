@@ -248,7 +248,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public boolean checksAndConsumations(boolean controlPort) {
 		boolean flag = false;
 		
-		if (inputPort != null) flag = poweredLastUpdate && controlPort && inputPort.runCycle();
+		if (inputPort != null) flag = poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle();
 		
 		return flag;
 	}

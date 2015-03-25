@@ -124,6 +124,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(nuclearReactantCore, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateReinforced", 'z', "blockDiamond"));
 		reg.shapedList.add(createShapedRecipe(nuclearPowerPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', energyCellTier0, 'a', machineContainer));
 		reg.shapedList.add(createShapedRecipe(nuclearControlPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer));
+		reg.shapedList.add(createShapedRecipe(nuclearIOPort, 1, "xzx", "yay", "xbx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer, 'b', Blocks.piston));
 		
 		// Machine stuff:
 		reg.shapedList.add(createShapedRecipe(solarArray, 1, "aba", "cdc", "aea", 'a', "ingotTitanium", 'b', "gemDiamond", 'c', screw, 'd', machineContainer, 'e', conductiveCoil));
