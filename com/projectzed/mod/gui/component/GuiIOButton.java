@@ -118,7 +118,25 @@ public class GuiIOButton extends GuiButton {
 
 		return ret;
 	}
+	
+	/**
+	 * Sets the state id.
+	 * 
+	 * @param id id value to set.
+	 */
+	public void setStateID(byte id) {
+		this.stateID = id;
+	}
 
+	/**
+	 * Gets the state id of the gui button.
+	 * 
+	 * @return state id.
+	 */
+	public byte getStateID() {
+		return this.stateID;
+	}
+	
 	/**
 	 * @return new button id.
 	 */

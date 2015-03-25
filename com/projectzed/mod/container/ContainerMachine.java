@@ -66,8 +66,8 @@ public class ContainerMachine extends Container {
 		
 		else if (this.NUM_SLOTS == 3) {
 			this.addSlotToContainer(new Slot(te, 0, 30, 21));
-			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 			this.addSlotToContainer(new Slot(te, 2, 55, 21));
+			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 		}
 
 		// Adds the player inventory to furnace's gui.

@@ -18,7 +18,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Mathd;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
@@ -255,15 +254,27 @@ public class GuiEnergyContainer extends GuiContainer {
 	 * (non-Javadoc)
 	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
 	 */
+	@Override
 	public void actionPerformed(GuiButton button) {
 		if (isEnergyCell && button.id >= 0 && button.id < buttons.length) {
-			ForgeDirection dirToSet = getDirectionFromName(button.displayString);
-			
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) this.te;
-			ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
-			te.setSideValveAndRotate(dirToSet);
-			ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 			
+			if (!this.isShiftKeyDown()) {
+				ForgeDirection dirToSet = getDirectionFromName(button.displayString);
+				
+				ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
+				te.setSideValveAndRotate(dirToSet);
+				ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
+			}
+			
+			else if (this.isShiftKeyDown()) {
+				// ProjectZed.logHelper.info(true);
+				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+					if (this.buttons[dir.ordinal()] instanceof GuiIOButton) ((GuiIOButton) this.buttons[dir.ordinal()]).setStateID((byte) 0);
+					te.setSideValve(dir, (byte) 0);
+				}
+			}
+
 			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityEnergyContainer(te));
 		}
 	}

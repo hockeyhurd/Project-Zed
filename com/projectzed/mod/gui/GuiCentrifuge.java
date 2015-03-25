@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.gui;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,6 +24,8 @@ public class GuiCentrifuge extends GuiMachine {
 
 	private int waterStored;
 	private TileEntityIndustrialCentrifuge te2;
+	private GuiButton[] buttons;
+	private byte amount = 1;
 
 	private Vector4Helper<Integer> pos2, minMax2;
 
@@ -45,6 +48,11 @@ public class GuiCentrifuge extends GuiMachine {
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		super.drawGuiContainerForegroundLayer(x, y);
+		
+		String name = amount < 10 ? " " + amount : "" + amount;
+		int xPos = this.xSize / 3 - this.fontRendererObj.getStringWidth(name) / 2;
+		int yPos = this.ySize / 3 - this.fontRendererObj.getStringWidth(name) / 2;
+		this.fontRendererObj.drawString(name, xPos, yPos, 4210752);
 	}
 
 	/*
@@ -77,6 +85,17 @@ public class GuiCentrifuge extends GuiMachine {
 		this.minMax2 = new Vector4Helper<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
 
 		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity()));
+		
+		this.buttons = new GuiButton[] {
+			// new GuiButton(0, guiLeft + 25, guiTop + 42, 20, 20, "-"),
+			new GuiButton(0, guiLeft + 38, guiTop + 49, 12, 12, "-"),
+			new GuiButton(1, guiLeft + 69, guiTop + 49, 12, 12, "+"),
+		};
+
+		for (GuiButton b : this.buttons) {
+			this.buttonList.add(b);
+		}
+		
 	}
 
 	/*
@@ -95,6 +114,26 @@ public class GuiCentrifuge extends GuiMachine {
 
 		if (getComponents() != null && getComponents().size() > 1) {
 			getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity());
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
+	 */
+	@Override
+	public void actionPerformed(GuiButton button) {
+		if (button.id >= 0 && button.id < this.buttons.length) {
+			// ProjectZed.logHelper.info("Button ID:\t" + button.id);
+			if (button.id == 0) {
+				if (!this.isShiftKeyDown() && amount - 1 >= 1) amount--;
+				else if (this.isShiftKeyDown() && amount > 1) amount = 1;
+			}
+			
+			else if (button.id == 1) {
+				if (!this.isShiftKeyDown() && amount + 1 <= 10) amount++;
+				else if (this.isShiftKeyDown() && amount < 10) amount = 10;
+			}
 		}
 	}
 

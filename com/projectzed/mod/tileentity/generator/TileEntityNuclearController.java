@@ -91,21 +91,20 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
 	 */
 	public int getSizeInventory() {
-		return 1;
+		return 0;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
 	 */
 	public int getInventoryStackLimit() {
-		return 64;
+		return 0;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
 	 */
 	protected void initContentsArray() {
-		this.slots = new ItemStack[1];
 	}
 
 	/* (non-Javadoc)
@@ -118,14 +117,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return true;
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return new int[] { 0 };
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -205,50 +204,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public HashMap<Block, List<Vector4Helper<Integer>>> getMapVec() {
 		return mbMapVec;
 	}
-/*
-	*//**
-	 * Function used to get the item burn time from given itemstack.
-	 * 
-	 * @param stack stack to (try) to burn.
-	 * @return length or burn time of stack if burnable, else returns false.
-	 *//*
-	protected static int getItemBurnTime(ItemStack stack) {
-		if (stack == null) return 0;
-		else {
-			Item item = stack.getItem();
-
-			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return 1600;
-			
-			return 0;
-		}
-	}*/
-
-	/*
-	*//**
-	 * Function used to determine if item in slot is fuel.
-	 * @return true if is fuel, else returns false.
-	 *//*
-	protected boolean isFuel() {
-		return getItemBurnTime(this.slots[0]) > 0;
-	}*/
-/*
-	*//**
-	 * Method used to consume fuel in given slot.
-	 *//*
-	protected void consumeFuel() {
-		if (this.isFuel()) {
-			if (this.slots[0] == null) return;
-			else {
-				ItemStack stack = this.slots[0];
-				if (stack.getItemDamage() < stack.getMaxDamage() - 1) {
-					stack.setItemDamage(stack.getItemDamage() + 1);
-					this.slots[0] = stack;
-				}
-				
-				else this.slots[0] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
-			}
-		}
-	}*/
 	
 	/*
 	 * (non-Javadoc)
@@ -260,6 +215,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 	
+	/**
+	 * Gets the 'first' input nuclear io part in mapping.
+	 * 
+	 * @return nuclear io port object if found, else returns false.
+	 */
 	private TileEntityNuclearIOPort getInputDataFromIO() {
 		TileEntityNuclearIOPort te = null;
 		
@@ -280,9 +240,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	}
 	
 	/**
-	 * Checks 
-	 * @param controlPort
-	 * @return
+	 * Checks and consumes input port fuel.
+	 *  
+	 * @param controlPort flag whether control port is appropriately set.
+	 * @return true if successful, else returns false.
 	 */
 	public boolean checksAndConsumations(boolean controlPort) {
 		boolean flag = false;

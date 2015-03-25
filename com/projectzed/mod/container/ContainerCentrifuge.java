@@ -9,7 +9,6 @@ package com.projectzed.mod.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -44,10 +43,6 @@ public class ContainerCentrifuge extends ContainerMachine {
 		this.waterStored = ((TileEntityIndustrialCentrifuge) this.te).getTank().getFluidAmount();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.container.ContainerMachine#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
-	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack stack = null;
@@ -55,6 +50,7 @@ public class ContainerCentrifuge extends ContainerMachine {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
+			
 			if (index < te.getSizeInvenotry()) {
 				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
 			}
