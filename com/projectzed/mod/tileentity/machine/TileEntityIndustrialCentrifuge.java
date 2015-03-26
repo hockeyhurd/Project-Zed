@@ -159,17 +159,31 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		if (this.slots[0] == null || this.slots[2] == null || this.stored - this.energyBurnRate <= 0 || !hasWaterInTank()) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+			// ItemStack stack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+			ItemStack itemStack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+			int amountLeft = /*this.slots[2].getMaxDamage() - */this.slots[2].getItemDamage();
+			int allowedAmount = Math.min(this.craftingAmount, amountLeft);
+			allowedAmount = Math.min(allowedAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize));
 			
-			if (stack == null) return false;
+			if (allowedAmount > 0 && this.slots[0].stackSize < allowedAmount && this.slots[2].stackSize < allowedAmount) return false;
+			
+			if (craftingAmount > 1 && itemStack != null && itemStack.stackSize > 0) {
+				itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, allowedAmount);
+				if (itemStack == null) {
+					itemStack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+					itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, Math.min(this.craftingAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize)));
+				}
+			}
+			
+			if (itemStack == null) return false;
 			if (this.slots[1] == null) return true;
-			if (!this.slots[1].isItemEqual(stack)) return false;
+			if (!this.slots[1].isItemEqual(itemStack)) return false;
 
 			// Add the result of the furnace recipe to the current stack size (already smelted so far).
-			int result = this.slots[1].stackSize + stack.stackSize;
+			int result = this.slots[1].stackSize + itemStack.stackSize;
 
 			// Make sure we aren't going over the set stack limit's size.
-			return (result <= getInventoryStackLimit() && result <= stack.getMaxStackSize());
+			return (result <= getInventoryStackLimit() && result <= itemStack.getMaxStackSize());
 		}
 	}
 	
@@ -199,12 +213,23 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	@Override
 	public void smeltItem() {
 		if (this.canSmelt()) {
-			ItemStack itemstack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
-
-			// TODO: Implement crafting amount!
+			ItemStack itemStack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+			int amountLeft = /*this.slots[2].getMaxDamage() - */this.slots[2].getItemDamage();
+			int allowedAmount = Math.min(this.craftingAmount, amountLeft);
+			allowedAmount = Math.min(allowedAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize));
 			
-			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
-			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
+			if (allowedAmount > 0 && this.slots[0].stackSize < allowedAmount && this.slots[2].stackSize < allowedAmount) return;
+			
+			if (craftingAmount > 1 && itemStack != null && itemStack.stackSize > 0) {
+				itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, allowedAmount);
+				if (itemStack == null) {
+					itemStack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
+					itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, Math.min(this.craftingAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize)));
+				}
+			}
+			
+			if (this.slots[1] == null) this.slots[1] = itemStack.copy();
+			else if (this.slots[1].isItemEqual(itemStack)) slots[1].stackSize += itemStack.stackSize;
 
 			this.slots[0].stackSize--;
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
@@ -253,7 +278,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		this.internalTank.writeToNBT(comp);
-		comp.setInteger("ProjectZedCentrifugeCraftingAmount", this.craftingAmount);
+		comp.setByte("ProjectZedCentrifugeCraftingAmount", this.craftingAmount);
 	}
 
 	/*

@@ -98,6 +98,7 @@ public class GuiCentrifuge extends GuiMachine {
 			this.buttonList.add(b);
 		}
 		
+		this.amount = this.te2.getCraftingAmount();
 	}
 
 	/*

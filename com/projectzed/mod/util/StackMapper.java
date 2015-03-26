@@ -20,8 +20,8 @@ public class StackMapper<T> {
 	private final T[] ARRAY;
 	
 	/**
-	 * @param output = output of recipe.
-	 * @param array = input stack array.
+	 * @param output output of recipe.
+	 * @param array input stack array.
 	 */
 	public StackMapper(T... array) {
 		this.ARRAY = array;
@@ -37,7 +37,7 @@ public class StackMapper<T> {
 	/**
 	 * Function used to get an itemstack at said index of input array.
 	 * 
-	 * @param index = index to get itemstack from.
+	 * @param index index to get itemstack from.
 	 * @return itemstack at index of array.
 	 */
 	public T get(int index) {
@@ -45,9 +45,38 @@ public class StackMapper<T> {
 	}
 	
 	/**
+	 * Tries to get first valid value from key in array.
+	 * 
+	 * @param key actual value.
+	 * @param value value attempting to get.
+	 * @return found value else can return false.
+	 */
+	public T get(T key, T value) {
+		if (!contains(key) || !contains(value)) return null;
+		
+		T ret = null;
+		
+		if (key instanceof ItemStack) {
+			ItemStack valCopy = (ItemStack) value;
+			
+			for (ItemStack stack : (ItemStack[]) ARRAY) {
+				if (ItemStack.areItemStacksEqual(stack, valCopy) && stack.getItemDamage() == valCopy.getItemDamage()) break;
+			}
+		}
+		
+		else {
+			for (T t : ARRAY) {
+				if (t.equals(value)) break;
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
 	 * Function used to see if array contains Object<T> in array.
 	 * 
-	 * @param check = object to check.
+	 * @param check object to check.
 	 * @return true if contains said object, else returns false.
 	 */
 	public boolean contains(T check) {
@@ -88,8 +117,8 @@ public class StackMapper<T> {
 	/**
 	 * Function used to copy and replicate one array to another. 
 	 * 
-	 * @param refMap = map to copy from as reference.
-	 * @param length = length of new array.
+	 * @param refMap map to copy from as reference.
+	 * @param length length of new array.
 	 * @return copied array if successful, else returns null.
 	 */
 	public static StackMapper[] copyOf(StackMapper[] refMap, int length) {

@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -81,6 +79,19 @@ public class CentrifugeRecipeRegistry {
 	 */
 	private static StackMapper<ItemStack> createStack(ItemStack... stacks) {
 		return new StackMapper<ItemStack>(stacks);
+	}
+	
+	/**
+	 * Function to get offset values from gui set amount.
+	 * 
+	 * @param stack stack to reference.
+	 * @param offset offset (item/block's meta data value).
+	 * @return new itemstack with new meta data value.
+	 */
+	public static ItemStack stackOffset(ItemStack stack, int offset) {
+		if (offset <= 0 || offset > 10) return null;
+		
+		return new ItemStack(stack.getItem(), 1, stack.getItemDamage() - offset + 1);
 	}
 	
 	/**
