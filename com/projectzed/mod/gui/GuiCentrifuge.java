@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.mod.gui.component.FluidLabel;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 
 /**
@@ -134,6 +136,9 @@ public class GuiCentrifuge extends GuiMachine {
 				if (!this.isShiftKeyDown() && amount + 1 <= 10) amount++;
 				else if (this.isShiftKeyDown() && amount < 10) amount = 10;
 			}
+			
+			this.te2.setCraftingAmount(amount);
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityCentrifuge(te2));
 		}
 	}
 

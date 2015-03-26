@@ -6,11 +6,12 @@
 */
 package com.projectzed.mod.handler;
 
+import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
-import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
@@ -29,17 +30,23 @@ import cpw.mods.fml.relauncher.Side;
 public class PacketHandler {
 
 	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_NAME);
+	public static int id = 0;
 	
 	public static void init() {
-		INSTANCE.registerMessage(MessageTileEntityGenerator.class, MessageTileEntityGenerator.class, 0, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, 1, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, 2, Side.SERVER);
-		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, 3, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, 4, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, 5, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, 6, Side.SERVER);
-		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, 7, Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, 8, Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityGenerator.class, MessageTileEntityGenerator.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityCentrifuge.class, MessageTileEntityCentrifuge.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, getNextID(), Side.CLIENT);
+	}
+	
+	public static int getNextID() {
+		return id++;
 	}
 	
 }

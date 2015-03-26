@@ -3,6 +3,7 @@ BUGS:
     - Nuclear stuffs not showing generation rate in GUI.
     - Fix weirdness of fluid pipes when emptying.
     - Fluid pipes breaking TE4 (fluid) machines?
+    - Industrial Centrifuge not dropping materials on break.
 
 TODO:
 =================================

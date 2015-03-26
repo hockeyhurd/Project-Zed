@@ -302,6 +302,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getDescriptionPacket()
 	 */
+	// NOTE: server -> client
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
@@ -311,6 +312,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * (non-Javadoc)
 	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
 	 */
+	// NOTE: client -> server
 	@Override
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));

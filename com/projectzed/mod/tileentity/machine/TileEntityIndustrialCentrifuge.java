@@ -8,6 +8,8 @@ package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidEvent;
@@ -18,6 +20,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 
 /**
@@ -30,11 +34,30 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 
 	private final int MAX_WATER_STORAGE = 10000;
 	private FluidTank internalTank;
+	private byte craftingAmount = 1;
 	
 	public TileEntityIndustrialCentrifuge() {
 		super("industrialCentrifuge");
 		this.slots = new ItemStack[3];
 		this.internalTank = new FluidTank(this.MAX_WATER_STORAGE);
+	}
+	
+	/**
+	 * Gets the crafting amount when processing.
+	 * 
+	 * @return crafting amount.
+	 */
+	public byte getCraftingAmount() {
+		return craftingAmount;
+	}
+	
+	/**
+	 * Sets the crafting amount for processing.
+	 * 
+	 * @param craftingAmount craftingAmount to set.
+	 */
+	public void setCraftingAmount(byte craftingAmount) {
+		this.craftingAmount = craftingAmount;
 	}
 
 	/*
@@ -178,6 +201,8 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		if (this.canSmelt()) {
 			ItemStack itemstack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
 
+			// TODO: Implement crafting amount!
+			
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
 			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
 
@@ -193,8 +218,18 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	
 	/*
 	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityCentrifuge(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
 	 */
+	@Override
 	public Sound getSound() {
 		return null;
 	}
@@ -205,8 +240,9 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
-		this.internalTank.readFromNBT(comp);
 		super.readFromNBT(comp);
+		this.internalTank.readFromNBT(comp);
+		this.craftingAmount = comp.getByte("ProjectZedCentrifugeCraftingAmount");
 	}
 	
 	/*
@@ -215,8 +251,9 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
-		this.internalTank.writeToNBT(comp);
 		super.writeToNBT(comp);
+		this.internalTank.writeToNBT(comp);
+		comp.setInteger("ProjectZedCentrifugeCraftingAmount", this.craftingAmount);
 	}
 
 	/*
