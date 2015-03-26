@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
@@ -217,6 +218,8 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 			int amountLeft = /*this.slots[2].getMaxDamage() - */this.slots[2].getItemDamage();
 			int allowedAmount = Math.min(this.craftingAmount, amountLeft);
 			allowedAmount = Math.min(allowedAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize));
+			int altAmount = Math.min(this.craftingAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize));
+			boolean usedAlt = false;
 			
 			if (allowedAmount > 0 && this.slots[0].stackSize < allowedAmount && this.slots[2].stackSize < allowedAmount) return;
 			
@@ -224,17 +227,34 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 				itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, allowedAmount);
 				if (itemStack == null) {
 					itemStack = CentrifugeRecipeRegistry.centrifugeList(this.slots[0], this.slots[2]);
-					itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, Math.min(this.craftingAmount, Math.max(this.slots[0].stackSize, this.slots[0].stackSize)));
+					itemStack = CentrifugeRecipeRegistry.stackOffset(itemStack, altAmount);
+					usedAlt = true;
 				}
 			}
 			
 			if (this.slots[1] == null) this.slots[1] = itemStack.copy();
 			else if (this.slots[1].isItemEqual(itemStack)) slots[1].stackSize += itemStack.stackSize;
 
-			this.slots[0].stackSize--;
+			if (this.slots[0].stackSize > this.slots[2].stackSize) {
+				this.slots[0].stackSize -= !usedAlt ? allowedAmount : altAmount;
+				this.slots[2].stackSize--;
+				ProjectZed.logHelper.info("this one!", allowedAmount);
+			}
+			
+			else if (this.slots[0].stackSize < this.slots[2].stackSize) {
+				this.slots[0].stackSize--;
+				this.slots[2].stackSize -= !usedAlt ? allowedAmount : altAmount;
+			}
+			
+			else {
+				this.slots[0].stackSize--;
+				this.slots[2].stackSize--;
+			}
+			
+			// this.slots[0].stackSize--;
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
 			
-			this.slots[2].stackSize--;
+			// this.slots[2].stackSize--;
 			if (this.slots[2].stackSize <= 0) this.slots[2] = null;
 			
 			this.internalTank.drain(1000, true);
