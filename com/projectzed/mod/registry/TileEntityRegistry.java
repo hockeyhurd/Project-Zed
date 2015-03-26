@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
+import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
@@ -139,6 +140,9 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityNuclearIOPort.class, "nuclearIOPort");
 		reg.idMap.put(TileEntityNuclearIOPort.class, getNextID());
+		
+		reg.map.put(TileEntityWickedClearGlass.class, "wickedClearGlass");
+		reg.idMap.put(TileEntityWickedClearGlass.class, getNextID());
 	}
 	
 	/**

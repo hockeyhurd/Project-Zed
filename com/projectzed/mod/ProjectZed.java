@@ -22,6 +22,7 @@ import com.projectzed.mod.block.BlockNuclearControlPort;
 import com.projectzed.mod.block.BlockNuclearReactantCore;
 import com.projectzed.mod.block.BlockNuclearReactorGlass;
 import com.projectzed.mod.block.BlockThickenedGlass;
+import com.projectzed.mod.block.BlockWickedClearGlass;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
@@ -121,6 +122,7 @@ public class ProjectZed {
 	// Blocks:
 	public static Block machineContainer;
 	public static Block thickenedGlass;
+	public static Block wickedClearGlass;
 	public static Block atomicBomb;
 	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
@@ -267,6 +269,7 @@ public class ProjectZed {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
+		wickedClearGlass = new BlockWickedClearGlass();
 		nuclearReactorGlass = new BlockNuclearReactorGlass();
 		atomicBomb = new BlockAtomicBomb();
 		nuclearChamberWall = new BlockNuclearChamberWall();

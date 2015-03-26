@@ -4,35 +4,31 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.renderer;
+package com.projectzed.mod.proxy;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.client.IItemRenderer;
 
 import com.hockeyhurd.api.item.AbstractItemRenderer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Simple item renderer of nuclearReactorGlass.
+ * Item rendering class for wickedClearGlass.
  * 
  * @author hockeyhurd
- * @version Mar 7, 2015
+ * @version Mar 26, 2015
  */
 @SideOnly(Side.CLIENT)
-public class ReactorGlassItemRenderer extends AbstractItemRenderer {
+public class WickedClearGlassItemRenderer extends AbstractItemRenderer implements IItemRenderer {
 
 	/**
-	 * @param icon
+	 * @param icon icon to draw.
 	 */
-	public ReactorGlassItemRenderer(IIcon icon) {
+	public WickedClearGlassItemRenderer(IIcon icon) {
 		super(icon);
-	}
-	
-	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		super.renderItem(type, item, data);
 	}
 
 }

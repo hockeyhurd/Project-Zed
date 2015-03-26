@@ -102,6 +102,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(blockUranium, 1, "xxx", "xxx", "xxx", 'x', "ingotUranium"));
 		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
 		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(wickedClearGlass, 8, "xxx", "x x", "xxx", 'x', thickenedGlass));
 		
 		// non-machine tileentities:
 		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "blockGlass"));

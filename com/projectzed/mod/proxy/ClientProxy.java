@@ -23,6 +23,8 @@ import com.projectzed.mod.renderer.ReactorGlassItemRenderer;
 import com.projectzed.mod.renderer.ReactorGlassRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassItemRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassRenderer;
+import com.projectzed.mod.renderer.WickedClearGlassRenderer;
+import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
@@ -52,6 +54,7 @@ public class ClientProxy extends CommonProxy {
 	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	public static int liquiductBlue;
 	public static int thickenedGlass;
+	public static int wickedClearGlass;
 	public static int reactorGlass;
 	
 	/**
@@ -77,6 +80,7 @@ public class ClientProxy extends CommonProxy {
 		fluidTankTier3 = RenderingRegistry.getNextAvailableRenderId();
 		liquiductBlue = RenderingRegistry.getNextAvailableRenderId();
 		thickenedGlass = RenderingRegistry.getNextAvailableRenderId();
+		wickedClearGlass = RenderingRegistry.getNextAvailableRenderId();
 		reactorGlass = RenderingRegistry.getNextAvailableRenderId();
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
@@ -89,6 +93,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLiquiductBlue.class, new FluidPipeRenderer(EnumColor.BLUE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer((byte) 3));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorGlass.class, new ReactorGlassRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWickedClearGlass.class, new WickedClearGlassRenderer());
 		
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
@@ -104,6 +109,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.liquiductBlue), new FluidPipeItemRenderer(ProjectZed.liquiductBlue.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.nuclearReactorGlass), new ReactorGlassItemRenderer(ProjectZed.nuclearReactorGlass.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.thickenedGlass), new ThickenedGlassItemRenderer(ProjectZed.thickenedGlass.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.wickedClearGlass), new WickedClearGlassItemRenderer(ProjectZed.wickedClearGlass.getBlockTextureFromSide(0)));
 		
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
 	}

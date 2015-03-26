@@ -6,36 +6,33 @@
 */
 package com.projectzed.mod.block;
 
-import net.minecraft.block.Block;
+import java.util.Random;
+
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
-import com.hockeyhurd.api.util.BlockHelper;
-import com.projectzed.api.block.AbstractBlockNuclearComponent;
-import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
-import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
+import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Class containing block code for nuclearReactorGlass.
+ * Block class for wickedClearGlass.
  * 
  * @author hockeyhurd
- * @version Mar 6, 2015
+ * @version Mar 26, 2015
  */
-public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
+public class BlockWickedClearGlass extends BlockContainer {
 
-	private BlockHelper bh;
-	private Block[] blockWhitelist;
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
-	
-	public BlockNuclearReactorGlass() {
-		super(Material.glass, "nuclearReactorGlass");
+	public BlockWickedClearGlass() {
+		super(Material.glass);
+		this.setCreativeTab(ProjectZed.modCreativeTab);
+		this.setBlockName("wickedClearGlass");
 		this.setHardness(0.75f);
 		this.setResistance(2000.0f);
 		this.setStepSound(soundTypeGlass);
@@ -44,22 +41,12 @@ public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
+	 * @see net.minecraft.block.BlockBreakable#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(this.assetDir + this.name + "_normal"); 
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return blockIcon;
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "wickedClearGlassItem");
 	}
 	
 	/*
@@ -89,7 +76,7 @@ public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
-		return ClientProxy.reactorGlass;
+		return ClientProxy.wickedClearGlass;
 	}
 	
 	/*
@@ -112,13 +99,23 @@ public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 	public int getRenderBlockPass() {
 		return 1;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.BlockGlass#quantityDropped(java.util.Random)
 	 */
 	@Override
-	public AbstractTileEntityNuclearComponent getTileEntity() {
-		return new TileEntityReactorGlass();
+	public int quantityDropped(Random random) {
+		return 1;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	 */
+	@Override
+	public TileEntity createNewTileEntity(World world, int id) {
+		return new TileEntityWickedClearGlass();
+	}
+	
 }
