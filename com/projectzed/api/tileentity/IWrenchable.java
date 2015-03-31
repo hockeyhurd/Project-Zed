@@ -8,6 +8,8 @@ package com.projectzed.api.tileentity;
 
 import java.util.HashMap;
 
+import net.minecraft.item.ItemStack;
+
 import com.hockeyhurd.api.math.Vector4Helper;
 
 /**
@@ -47,6 +49,13 @@ public interface IWrenchable {
 	 * @return mapping to save.
 	 */
 	HashMap<String, Number> dataToSave();
+	
+	/**
+	 * Function to get itemstacks to save to nbt.
+	 * 
+	 * @return itemstack array.
+	 */
+	ItemStack[] stacksToSave();
 	
 	/**
 	 * Function to get world coordinates of wrenchable tileentity.

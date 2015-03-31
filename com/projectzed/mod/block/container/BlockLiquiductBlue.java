@@ -13,7 +13,7 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
 
 /**
- * 
+ * Class containing block code for blue liquiduct.
  * 
  * @author hockeyhurd
  * @version Feb 13, 2015

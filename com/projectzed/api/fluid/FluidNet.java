@@ -6,18 +6,19 @@
 */
 package com.projectzed.api.fluid;
 
-import com.projectzed.api.energy.source.IColorComponent;
-import com.projectzed.api.fluid.container.IFluidContainer;
-import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+import java.util.HashMap;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import java.util.HashMap;
+import com.projectzed.api.energy.source.IColorComponent;
+import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.api.tileentity.IModularFrame;
+import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 /**
  * Class containing code for how fluid is to transfer from
@@ -127,9 +128,9 @@ public class FluidNet {
 					if (counter > 1 && amount > 1) {
 						if (amount / counter > 0) amount /= counter;
 					}
-
+					
 					if (amount > 0) {
-						if (colorDep && cont instanceof IColorComponent && cont.getTankInfo(dir)[value].fluid.amount > 0 && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
+						if (colorDep && cont instanceof IColorComponent && sourceCont.getTankInfo(dir)[value].fluid.amount > 0 && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
 
 						FluidStack temp = stackSrc.copy();
 						temp.amount = amount;
@@ -257,8 +258,14 @@ public class FluidNet {
 		}
 
 		else if (cont instanceof TileEntityLiquiductBase && ((TileEntityLiquiductBase) cont).getLastReceivedDirection().getOpposite() == lastDir) {
-			shouldSend = true;
-			clearDirectionalTraffic((IFluidContainer) sourceCont);
+			
+			if ((((TileEntityLiquiductBase) sourceCont).getFluidID() != ((TileEntityLiquiductBase) cont).getFluidID())
+					|| (((TileEntityLiquiductBase) sourceCont).getFluidID() == ((TileEntityLiquiductBase) cont).getFluidID() && ((TileEntityLiquiductBase) sourceCont)
+							.getTank().getFluidAmount() <= ((TileEntityLiquiductBase) cont).getTank().getFluidAmount())) {
+			
+				shouldSend = true;
+				clearDirectionalTraffic((IFluidContainer) sourceCont);
+			}
 		}
 	}
 

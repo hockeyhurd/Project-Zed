@@ -8,6 +8,7 @@ package com.projectzed.api.tileentity.container;
 
 import java.util.HashMap;
 
+import javafx.application.ConditionalFeature;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -23,13 +24,46 @@ import com.projectzed.api.tileentity.IWrenchable;
 public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer implements IWrenchable {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
-	public ForgeDirection[] connections;
+	protected ForgeDirection[] connections;
 	
+	/** The last know received direction received from. */
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
+	/**
+	 * @param name name of tileentity.
+	 */
 	public AbstractTileEntityPipe(String name) {
 		super(name);
 		connections = new ForgeDirection[6];
+	}
+	
+	/**
+	 * Get all connections held in array.
+	 * 
+	 * @return forgedirectional array.
+	 */
+	public ForgeDirection[] getConnections() {
+		return connections;
+	}
+	
+	/**
+	 * Gets the forgedirection connection from array.
+	 * 
+	 * @param dir direction to check.
+	 * @return forgedirection connection.
+	 */
+	public ForgeDirection getConnection(ForgeDirection dir) {
+		return connections[dir.ordinal()];
+	}
+	
+	/**
+	 * Gets the forgedirection connection from array.
+	 * 
+	 * @param dir direction to check.
+	 * @return forgedirection connection.
+	 */
+	public ForgeDirection getConnection(int dir) {
+		return dir >= 0 && dir < connections.length ? connections[dir] : ForgeDirection.UNKNOWN;
 	}
 
 	/*
@@ -168,5 +202,13 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 */
 	@Override
 	public abstract HashMap<String, Number> dataToSave();
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
+	 */
+	@Override
+	public ItemStack[] stacksToSave() {
+		return null;
+	}
 }

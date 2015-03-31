@@ -10,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraftforge.common.util.EnumHelper;
 
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.LogHelper;
@@ -62,10 +64,9 @@ import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
 import com.projectzed.mod.item.ItemForgingHammer;
 import com.projectzed.mod.item.ItemFuelRod;
-import com.projectzed.mod.item.ItemGearAluminium;
+import com.projectzed.mod.item.ItemGear;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
-import com.projectzed.mod.item.ItemWrench;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCoal;
 import com.projectzed.mod.item.metals.ItemDustCopper;
@@ -82,6 +83,8 @@ import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.item.metals.ItemMixedAlloy;
 import com.projectzed.mod.item.metals.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemSheetReinforced;
+import com.projectzed.mod.item.tools.ItemMiningDrill;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
@@ -169,9 +172,21 @@ public class ProjectZed {
 	public static Item screw;
 	public static Item sheetAluminium;
 	public static Item sheetReinforced;
-	public static Item gearAluminium;
 	public static Item conductiveCoil;
+	public static Item gearWooden;
+	public static Item gearStone;
+	public static Item gearIron;
+	public static Item gearCopper;
+	public static Item gearAluminium;
+	public static Item gearGold;
+	public static Item gearDiamond;
+	public static Item gearTitanium;
+	
+	// Tools:
+	public static final ToolMaterial drillMat = EnumHelper.addToolMaterial("DRILLING", 4, 1000 + 1, 20.0f, 4.0f, 0);
+	
 	public static Item wrench;
+	public static Item titaniumDrill;
 	
 	// Metals:
 	public static Item dustGold;
@@ -331,9 +346,20 @@ public class ProjectZed {
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
 		sheetReinforced = new ItemSheetReinforced("sheetReinforced", assetDir);
-		gearAluminium = new ItemGearAluminium("gearAluminium", assetDir);
 		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
+		gearWooden = new ItemGear("gearWooden", assetDir);
+		gearStone = new ItemGear("gearStone", assetDir);
+		gearIron = new ItemGear("gearIron", assetDir);
+		gearCopper = new ItemGear("gearCopper", assetDir);
+		gearGold = new ItemGear("gearGold", assetDir);
+		gearDiamond = new ItemGear("gearDiamond", assetDir);
+		gearAluminium = new ItemGear("gearAluminium", assetDir);
+		gearTitanium = new ItemGear("gearTitanium", assetDir);
+		gearDiamond = new ItemGear("gearDiamond", assetDir);
+		
+		// Tools.
 		wrench = new ItemWrench("wrench");
+		titaniumDrill = new ItemMiningDrill(drillMat, "titaniumDrill");
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);

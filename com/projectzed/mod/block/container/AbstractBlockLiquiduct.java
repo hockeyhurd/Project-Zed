@@ -9,9 +9,13 @@ package com.projectzed.mod.block.container;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
@@ -93,12 +97,12 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.connections[0] != null;
-			boolean down = pipe.connections[1] != null;
-			boolean north = pipe.connections[2] != null;
-			boolean east = pipe.connections[3] != null;
-			boolean south = pipe.connections[4] != null;
-			boolean west = pipe.connections[5] != null;
+			boolean up = pipe.getConnection(0) != null;
+			boolean down = pipe.getConnection(1) != null;
+			boolean north = pipe.getConnection(2)!= null;
+			boolean east = pipe.getConnection(3) != null;
+			boolean south = pipe.getConnection(4) != null;
+			boolean west = pipe.getConnection(5) != null;
 			
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
@@ -131,12 +135,12 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.connections[0] != null;
-			boolean down = pipe.connections[1] != null;
-			boolean north = pipe.connections[2] != null;
-			boolean east = pipe.connections[3] != null;
-			boolean south = pipe.connections[4] != null;
-			boolean west = pipe.connections[5] != null;
+			boolean up = pipe.getConnection(0) != null;
+			boolean down = pipe.getConnection(1) != null;
+			boolean north = pipe.getConnection(2)!= null;
+			boolean east = pipe.getConnection(3) != null;
+			boolean south = pipe.getConnection(4) != null;
+			boolean west = pipe.getConnection(5) != null;
 			
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
@@ -153,6 +157,24 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		}
 
 		return AxisAlignedBB.getBoundingBox(x + this.minX, y + this.minY, z + this.minZ, x + this.maxX, y + this.maxY, z + this.maxZ);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
+	 */
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
+		if (stack.hasTagCompound() && world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEntityLiquiductBase) {
+			TileEntityLiquiductBase te = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
+			
+			int id = (int) stack.stackTagCompound.getFloat("Fluid Amount");
+			if (id == -1) return;
+			
+			int amount = (int) stack.stackTagCompound.getFloat("Fluid ID");
+			
+			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
+		}
 	}
 
 }

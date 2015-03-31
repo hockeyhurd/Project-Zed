@@ -10,14 +10,14 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.projectzed.mod.ProjectZed;
 
 /**
- * Class containing code for gear aluminium.
+ * Class containing code for all gears.
  * 
  * @author hockeyhurd
  * @version Nov 14, 2014
  */
-public class ItemGearAluminium extends AbstractItemMetalic {
+public class ItemGear extends AbstractItemMetalic {
 
-	public ItemGearAluminium(String name, String assetDir) {
+	public ItemGear(String name, String assetDir) {
 		super(name, assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}

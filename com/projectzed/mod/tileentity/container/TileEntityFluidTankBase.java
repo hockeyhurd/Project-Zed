@@ -40,6 +40,9 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		super("fluidTank");
 		this.maxFluidStorage = this.TIER_SIZE[this.tier];
 		internalTank = new FluidTank(this.maxFluidStorage);
+		
+		this.openSides[ForgeDirection.UP.ordinal()] = -1;
+		this.openSides[ForgeDirection.DOWN.ordinal()] = 1;
 	}
 
 	/**

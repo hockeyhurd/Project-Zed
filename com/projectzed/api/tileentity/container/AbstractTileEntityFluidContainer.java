@@ -390,6 +390,15 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
+	 */
+	@Override
+	public ItemStack[] stacksToSave() {
+		return this.slots;
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IWrenchable#worldVec()
 	 */
 	@Override

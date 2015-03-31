@@ -422,10 +422,17 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public HashMap<String, Number> dataToSave() {
 		HashMap<String, Number> data = new HashMap<String, Number>();
 		data.put("ProjectZedPowerStored", this.stored);
-
-		// TODO: Implement saving of items!
 		
 		return data;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
+	 */
+	@Override
+	public ItemStack[] stacksToSave() {
+		return this.slots;
 	}
 
 }

@@ -57,9 +57,19 @@ item.mcuReader.name=McU Reader
 item.screw.name=Screw
 item.sheetAluminium.name=Sheet of Aluminium
 item.sheetReinforced.name=Sheet of Reinforced Composite
-item.gearAluminium.name=Aluminium Gear
 item.conductiveCoil.name=Conductive Coil
+item.gearWooden.name=Wooden Gear
+item.gearStone.name=Stone Gear
+item.gearIron.name=Iron Gear
+item.gearCopper.name=Copper Gear
+item.gearAluminium.name=Aluminium Gear
+item.gearGold.name=Gold Gear
+item.gearDiamond.name=Diamond Gear
+item.gearTitanium.name=Titanium Gear
+
+// Tools:
 item.wrench.name=Crescent Wrench
+item.titaniumDrill.name=Mining Drill - Titanium
 
 // Metals:
 item.dustGold.name=Gold Dust

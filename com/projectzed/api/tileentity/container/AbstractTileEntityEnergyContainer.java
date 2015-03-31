@@ -272,5 +272,14 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		
 		return data;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
+	 */
+	@Override
+	public ItemStack[] stacksToSave() {
+		return this.slots;
+	}
 
 }

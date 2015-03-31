@@ -26,6 +26,7 @@ import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
@@ -155,7 +156,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		importContents();
 		exportContents();
 		
-		if (!this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLiquiduct(this));
+		if (!this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0) {
+			// if (this.lastReceivedDir != ForgeDirection.UNKNOWN) ProjectZed.logHelper.info(this.lastReceivedDir.name());
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLiquiduct(this));
+		}
 		
 		// if (!this.getWorldObj().isRemote) System.out.println(getTank().getFluidAmount());
 		// if (!this.getWorldObj().isRemote && getTank().getFluidAmount() > 0) ProjectZed.logHelper.info(getTank().getFluidAmount(), lastReceivedDir.name(), worldVec().toString());

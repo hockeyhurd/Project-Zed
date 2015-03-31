@@ -339,5 +339,14 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		
 		return data;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
+	 */
+	@Override
+	public ItemStack[] stacksToSave() {
+		return this.slots;
+	}
 
 }

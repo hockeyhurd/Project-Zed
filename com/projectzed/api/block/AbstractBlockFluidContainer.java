@@ -16,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -95,6 +96,17 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 			
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
 			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid((int) comp.getFloat("Fluid ID")), (int) comp.getFloat("Fluid Amount")));
+			
+			if (te.getSizeInvenotry() > 0) {
+				NBTTagList tagList = comp.getTagList("Items", 10);
+
+				for (int i = 0; i < tagList.tagCount(); i++) {
+					NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
+					byte b0 = temp.getByte("Slot");
+
+					if (b0 >= 0 && b0 < te.getSizeInvenotry()) te.setInventorySlotContents(b0, ItemStack.loadItemStackFromNBT(temp));
+				}
+			}
 		}
 	}
 	

@@ -6,12 +6,6 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
-import com.projectzed.mod.util.Connection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -20,7 +14,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidHandler;
+
 import org.lwjgl.opengl.GL11;
+
+import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.tileentity.IModularFrame;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+import com.projectzed.mod.util.Connection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing rendering code for fluid pipes.
@@ -100,11 +103,11 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 	/**
 	 * Determines whether the given pipe can connect to neighboring te.
 	 * 
-	 * @param world = world object as reference.
-	 * @param te = te object as reference.
-	 * @param x = position x.
-	 * @param y = position y.
-	 * @param z = position z.
+	 * @param world world object as reference.
+	 * @param te te object as reference.
+	 * @param x position x.
+	 * @param y position y.
+	 * @param z position z.
 	 * @return true if can connect, else returns false.
 	 */
 	private Connection canConnect(World world, TileEntity te, int index, int x, int y, int z) {

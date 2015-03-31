@@ -18,12 +18,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
@@ -216,6 +216,18 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
 			te.setEnergyStored((int) comp.getFloat("ProjectZedPowerStored"));
+			
+			if (te.getSizeInvenotry() > 0) {
+				NBTTagList tagList = comp.getTagList("Items", 10);
+				System.out.println(tagList.tagCount());
+				
+				for (int i = 0; i < tagList.tagCount(); i++) {
+					NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
+					byte b0 = temp.getByte("Slot");
+
+					if (b0 >= 0 && b0 < te.getSizeInvenotry()) te.setInventorySlotContents(b0, ItemStack.loadItemStackFromNBT(temp));
+				}
+			}
 		}
 	}
 

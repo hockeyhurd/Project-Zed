@@ -34,6 +34,7 @@ import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
+import com.projectzed.mod.registry.DrillSetRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 import com.projectzed.mod.registry.MetalPressRecipesRegistry;
@@ -86,7 +87,7 @@ public class CommonProxy {
 		registerRegisters();
 		registerEventHandlers();
 	}
-
+	
 	private void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.instance.getClass());
 		for (Block b : BlockRegistry.instance().getBlocks()) {
@@ -180,6 +181,7 @@ public class CommonProxy {
 		LumberMillRecipesRegistry.init();
 		MetalPressRecipesRegistry.init();
 		CentrifugeRecipeRegistry.init();
+		DrillSetRegistry.init();
 	}
 	
 	private void registerEventHandlers() {

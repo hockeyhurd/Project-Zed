@@ -4,7 +4,7 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.item;
+package com.projectzed.mod.item.tools;
 
 import java.util.Map.Entry;
 
@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -93,6 +94,22 @@ public class ItemWrench extends Item {
 					for (Entry<String, Number> e : wrench.dataToSave().entrySet()) {
 						buffer = e.getValue().floatValue();
 						comp.setFloat(e.getKey(), buffer);
+					}
+					
+					if (wrench.stacksToSave() != null && wrench.stacksToSave().length > 0) {
+						System.out.println(wrench.stacksToSave()[0]);
+
+						NBTTagList tagList = comp.getTagList("Items", 10);
+
+						for (int i = 0; i < wrench.stacksToSave().length; i++) {
+							if (wrench.stacksToSave()[i] != null) {
+								NBTTagCompound temp = new NBTTagCompound();
+								temp.setByte("Slot", (byte) i);
+								wrench.stacksToSave()[i].writeToNBT(temp);
+								tagList.appendTag(temp);
+							}
+						}
+						
 					}
 					
 					itemToDrop.stackTagCompound = comp;
