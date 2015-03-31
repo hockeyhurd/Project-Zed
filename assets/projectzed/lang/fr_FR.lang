@@ -2,12 +2,15 @@
 tile.machineContainer.name=Cadre de conteneur de machine
 tile.fabricationTable.name=Table de fabrication
 tile.thickenedGlass.name=Verre épaissi
+tile.wickedClearGlass.name=L'abject verre clair
+tile.atomicBomb.name=Bombe atomique
 tile.nuclearChamberWall.name=Mur de chambre de réactif
 tile.nuclearChamberLock.name=Verrou de chambre de réactif
 tile.nuclearReactantCore.name=Coeur de réactif
 tile.nuclearReactorGlass.name=Verre de réactif
 tile.nuclearPowerPort.name=Port d'énergie nucléaire
 tile.nuclearControlPort.name=Port de contrôle nucléaire
+tile.nuclearIOPort.name=Port d'E/S nucléaire
 
 // Machines:
 tile.solarArray.name=Panneau solaire
@@ -54,9 +57,19 @@ item.mcuReader.name=Lecteur McU
 item.screw.name=Tournevis
 item.sheetAluminium.name=Feuille d'aluminium
 item.sheetReinforced.name=Feuille composite renforcé
-item.gearAluminium.name=Mécanisme d'aluminium
 item.conductiveCoil.name=Bobine conductrice
-item.wrench.name=Clé anglaise
+item.gearWooden.name=Mécanisme en bois
+item.gearStone.name=Mécanisme en pierre
+item.gearIron.name=Mécanisme en fer
+item.gearCopper.name=Mécanisme en cuivre
+item.gearAluminium.name=Mécanisme en aluminium
+item.gearGold.name=Mécanisme en or
+item.gearDiamond.name=Mécanisme en diamant
+item.gearTitanium.name=Mécanisme en titane
+
+// Tools:
+item.wrench.name=Clef anglaise
+item.titaniumDrill.name=Foret d'extraction - Titane
 
 // Metals:
 item.dustGold.name=Poussière d'or
