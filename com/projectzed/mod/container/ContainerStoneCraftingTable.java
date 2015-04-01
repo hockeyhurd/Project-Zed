@@ -101,12 +101,17 @@ public class ContainerStoneCraftingTable extends Container {
 	 * Clears crafting grid matrix.
 	 */
 	public void clearCraftingGrid() {
+		ItemStack stack;
+		Slot slot;
+		
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
-				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) {
+				stack = this.craftMatrix.getStackInSlot(i);
+				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, 36, false)) {
 					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
 					this.te.setInventorySlotContents(i, (ItemStack) null);
 				}
+				
 				else {
 					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
 					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);

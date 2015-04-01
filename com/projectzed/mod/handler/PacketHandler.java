@@ -40,6 +40,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);
 		// INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.SERVER);
+		// INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);

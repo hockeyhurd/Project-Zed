@@ -7,8 +7,13 @@
 package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 
 /**
  * Class containing tileentity code for 
@@ -91,6 +96,35 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
 		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
+	 */
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityStoneCraftingTable(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStoneCraftingTable(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStoneCraftingTable(this));
 	}
 
 }
