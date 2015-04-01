@@ -179,6 +179,10 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
 	@Override
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));

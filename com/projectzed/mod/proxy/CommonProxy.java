@@ -134,7 +134,8 @@ public class CommonProxy {
 		while (iter.hasNext()) {
 			Entry<Class<? extends Entity>, String> entry = (Entry<Class<? extends Entity>, String>) iter.next();
 			if (entry.getKey() != null && entry.getValue() != null && entry.getValue().length() > 0) 
-				EntityRegistry.instance().registerGlobalEntityID(entry.getKey(), entry.getValue(), PZEntityRegistry.instance().getNextID());
+				// EntityRegistry.instance().registerGlobalEntityID(entry.getKey(), entry.getValue(), PZEntityRegistry.instance().getNextID());
+				EntityRegistry.instance().registerGlobalEntityID(entry.getKey(), entry.getValue(), EntityRegistry.findGlobalUniqueEntityId());
 		}
 	}
 	

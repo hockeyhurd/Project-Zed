@@ -38,6 +38,7 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
 import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
+import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 import com.projectzed.mod.util.ModsLoadedHelper;
 
 /**
@@ -69,6 +70,9 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityFabricationTable.class, "fabricationTableTileEntity");
 		reg.idMap.put(TileEntityFabricationTable.class, getNextID());
+
+		reg.map.put(TileEntityStoneCraftingTable.class, "craftingStoneTable");
+		reg.idMap.put(TileEntityStoneCraftingTable.class, getNextID());
 		
 		reg.map.put(TileEntityIndustrialFurnace.class, "industrialFurnaceTileEntity");
 		reg.idMap.put(TileEntityIndustrialFurnace.class, getNextID());

@@ -55,8 +55,8 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 	public void initGui() {
 		super.initGui();
 		
-		int posX = (this.width - this.xSize) / 2 + 50;
-		int posY = (this.height - this.ySize) / 2 + 8;
+		final int posX = (this.width - this.xSize) / 2 + 50;
+		final int posY = (this.height - this.ySize) / 2 + 8;
 		
 		this.buttonList.add(new GuiClearButton(0, posX, posY, ""));
 		this.buttonList.add(new GuiSortButton(1, posX - 24, posY + 16, "sort123"));

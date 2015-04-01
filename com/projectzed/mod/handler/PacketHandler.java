@@ -14,6 +14,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
+import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -38,6 +39,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityCentrifuge.class, MessageTileEntityCentrifuge.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);
+		// INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);

@@ -47,6 +47,7 @@ import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
 import com.projectzed.mod.block.machines.BlockIndustrialMetalPress;
 import com.projectzed.mod.block.machines.BlockMachineContainer;
+import com.projectzed.mod.block.machines.BlockStoneCraftingTable;
 import com.projectzed.mod.block.ore.BlockAluminium;
 import com.projectzed.mod.block.ore.BlockAluminiumOre;
 import com.projectzed.mod.block.ore.BlockCopper;
@@ -140,6 +141,7 @@ public class ProjectZed {
 	public static Block furnaceGen;
 	public static Block fusionController, fissionController;
 	public static Block fabricationTable;
+	public static Block stoneCraftingTable;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
@@ -305,6 +307,7 @@ public class ProjectZed {
 		
 		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);
+		stoneCraftingTable = new BlockStoneCraftingTable(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();

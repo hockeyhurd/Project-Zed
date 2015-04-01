@@ -43,7 +43,8 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 	}
 
 	/**
-	 * @param te = te object as reference.
+	 * @param te te object as reference.
+	 * @param buttonHit button hit.
 	 */
 	public MessageTileEntityFabricationTable(TileEntityFabricationTable te, int buttonHit) {
 		this.te = te;
