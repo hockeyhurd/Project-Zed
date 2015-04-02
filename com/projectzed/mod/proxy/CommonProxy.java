@@ -56,7 +56,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class CommonProxy {
 
 	protected UpdateHandler updateHandler;
-	protected HashMap<Short, String> map;
+	protected HashMap<String, String> map;
 	public boolean updateFlag = false;
 	protected static GuiHandler guiHandler;
 	

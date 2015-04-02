@@ -184,7 +184,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 			if (this.slots[0] != null && isFuel()) {
 				if (this.burnTime == 0) {
 					this.burnTime = getItemBurnTime(this.slots[0]);
-					if (this.powerMode) consumeFuel();
+					if (this.stored < this.maxStored) consumeFuel();
 				}
 			}
 

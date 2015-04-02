@@ -59,7 +59,9 @@ public class ContainerMachine extends Container {
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
 		
-		if (this.NUM_SLOTS == 2) {
+		if (this.NUM_SLOTS == 1) this.addSlotToContainer(new Slot(te, 0, 79, 21));
+		
+		else if (this.NUM_SLOTS == 2) {
 			this.addSlotToContainer(new Slot(te, 0, 41, 21));
 			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 		}
@@ -89,7 +91,7 @@ public class ContainerMachine extends Container {
 	 */
 	public void addCraftingToCrafters(ICrafting craft) {
 		super.addCraftingToCrafters(craft);
-		craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
+		if (this.NUM_SLOTS > 1) craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
 	}
 
 	/*
@@ -110,10 +112,12 @@ public class ContainerMachine extends Container {
 		super.detectAndSendChanges();
 		this.stored = this.te.getEnergyStored();
 
-		for (int i = 0; i < this.crafters.size(); i++) {
-			ICrafting icrafting = (ICrafting) this.crafters.get(i);
-
-			if (this.lastCookTime != this.te.cookTime) icrafting.sendProgressBarUpdate(this, 0, this.te.cookTime);
+		if (this.NUM_SLOTS > 1) {
+			for (int i = 0; i < this.crafters.size(); i++) {
+				ICrafting icrafting = (ICrafting) this.crafters.get(i);
+	
+				if (this.lastCookTime != this.te.cookTime) icrafting.sendProgressBarUpdate(this, 0, this.te.cookTime);
+			}
 		}
 	}
 
@@ -123,7 +127,7 @@ public class ContainerMachine extends Container {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int slot, int newVal) {
-		if (slot == 0) this.te.cookTime = newVal;
+		if (this.NUM_SLOTS > 1 && slot == 0) this.te.cookTime = newVal;
 	}
 
 	/**

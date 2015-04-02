@@ -31,6 +31,7 @@ public class Sound {
 	public final int LENGTH;
 
 	public static Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f, 2);
+	public static Sound ENERGIZER = new Sound("industrialEnergizerSound", 1.0f, 1.0f, 2);
 	
 	/**
 	 * @param name = name of sound.

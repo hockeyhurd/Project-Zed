@@ -43,6 +43,7 @@ import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.block.machines.BlockIndustrialCentrifuge;
 import com.projectzed.mod.block.machines.BlockIndustrialCrusher;
+import com.projectzed.mod.block.machines.BlockIndustrialEnergizer;
 import com.projectzed.mod.block.machines.BlockIndustrialFurnace;
 import com.projectzed.mod.block.machines.BlockIndustrialLumberMill;
 import com.projectzed.mod.block.machines.BlockIndustrialMetalPress;
@@ -147,6 +148,7 @@ public class ProjectZed {
 	public static Block industrialLumberMill;
 	public static Block industrialMetalPress;
 	public static Block industrialCentrifuge;
+	public static Block industrialEnergizer;
 	
 	// Containers:
 	public static Block energyPipeRed;
@@ -313,6 +315,7 @@ public class ProjectZed {
 		industrialLumberMill = new BlockIndustrialLumberMill();
 		industrialMetalPress = new BlockIndustrialMetalPress();
 		industrialCentrifuge = new BlockIndustrialCentrifuge();
+		industrialEnergizer = new BlockIndustrialEnergizer();
 		
 		// Containers:
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);

@@ -188,13 +188,19 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 		if (stack.getItem() != this || amount == 0) return 0;
 		
 		int current = this.capacity - stack.getItemDamage();
+		int ret = 0;
 		if (current + amount >= 0 && current + amount <= this.capacity) {
-			int ret = current + amount; 
-			stack.setItemDamage(ret); 
-			return ret;
+			ret = current + amount; 
+			// stack.setItemDamage(ret); 
 		}
 		
-		return 0;
+		else {
+			amount = this.capacity - current;
+			ret = current + amount;
+			// stack.setItemDamage(ret / 10);
+		}
+		
+		return ret;
 	}
 
 	@Override

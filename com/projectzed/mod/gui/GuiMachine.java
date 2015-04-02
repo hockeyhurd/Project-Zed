@@ -49,7 +49,8 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		if (te.getSizeInvenotry() == 1) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
+		else if (te.getSizeInvenotry() == 2) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
 
 		this.te = te;
 		this.xSize = 176;
@@ -85,11 +86,13 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
-
-		int i1 = 0;
-		if (this.te.isPoweredOn() && this.te.cookTime > 0) {
-			i1 = this.te.getCookProgressScaled(24);
-			this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
+	
+		if (this.te.getSizeInvenotry() > 1) {
+			int i1 = 0;
+			if (this.te.isPoweredOn() && this.te.cookTime > 0) {
+				i1 = this.te.getCookProgressScaled(24);
+				this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
+			}
 		}
 	}
 
