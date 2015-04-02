@@ -63,6 +63,7 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.canRepair = false;
 		this.setMaxStackSize(1);
+		this.setMaxDamage(capacity / 10);
 		
 		th = new TimerHelper(20, 2);
 		this.capacity = capacity;
@@ -87,6 +88,7 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + (this.capacity - stack.getItemDamage() * 10) + " McU");
+		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + (this.capacity) + " McU");
 	}
 	
 	/*
@@ -95,7 +97,7 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 	 */
 	@Override
 	public float func_150893_a(ItemStack stack, Block block) {
-        return DrillSetRegistry.set.contains(block) ? this.efficiencyOnProperMaterial : 1.0f;
+        return DrillSetRegistry.set.contains(block) && stack.getItemDamage() < stack.getMaxDamage() ? this.efficiencyOnProperMaterial : 1.0f;
     }
 	
 	/*
@@ -106,18 +108,16 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 	public boolean func_150897_b(Block block) {
         return DrillSetRegistry.set.contains(block);
     }
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onCreated(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.player.EntityPlayer)
+	 * @see net.minecraft.item.Item#onBlockStartBreak(net.minecraft.item.ItemStack, int, int, int, net.minecraft.entity.player.EntityPlayer)
 	 */
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
-		if (stack.getItem() != this) return;
-		
-		stack.setItemDamage(this.capacity - 1);
+	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
+		return stack.getItemDamage() < stack.getMaxDamage();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.item.Item#onItemUse(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)

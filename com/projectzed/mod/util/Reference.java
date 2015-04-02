@@ -71,7 +71,7 @@ public class Reference extends AbstractReference {
 		public static final int BASE_ITEM_Capacity_RATE = 10000;
 		
 		/** Base charge rate for powered items. */
-		public static final int BASE_ITEM_CHARGE_RATE = BASE_ITEM_Capacity_RATE / 20;
+		public static final int BASE_ITEM_CHARGE_RATE = 10;
 		
 		/**
 		 * Conversion rate from mcu to rf.

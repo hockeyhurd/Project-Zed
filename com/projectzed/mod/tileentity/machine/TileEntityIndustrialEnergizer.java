@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * TileEntity code for industrialEnergizer.
@@ -45,7 +46,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	protected void initContentsArray() {
-		this.slots = new ItemStack[1];
+		this.slots = new ItemStack[2];
 	}
 
 	/* (non-Javadoc)
@@ -56,9 +57,9 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		this.slotTop = new int[] {
 			0
 		};
-		/*this.slotRight = new int[] {
+		this.slotRight = new int[] {
 			1
-		};*/
+		};
 	}
 
 	public boolean isItemValid(ItemStack stack) {
@@ -105,23 +106,33 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {
 			boolean valid = this.isItemValid(this.slots[0]);
+			int chargeRate = 0;
+			int left = 0;
 			if (valid) {
-				this.energyBurnRate = 10;
+				chargeRate = ((IItemChargeable) this.slots[0].getItem()).getChargeRate();
+				left = this.slots[0].getItemDamage() * chargeRate;
+				// this.energyBurnRate = 10;
+				this.energyBurnRate = chargeRate;
+				
 				this.slots[0].setItemDamage(this.slots[0].getItemDamage() - 1);
+			}
+			
+			if (this.cookTime == 0 && chargeRate > 0 && left > 0) {
+				this.scaledTime = left / chargeRate - 1;
+				ProjectZed.logHelper.info("this.scaledTime:", this.scaledTime);
 			}
 			
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
 			ItemStack stack =  valid? this.slots[0] : (ItemStack) null;
 			if (stack == null) return false;
-			else return true;
-			// if (this.slots[1] == null) return true;
-			// if (!this.slots[1].isItemEqual(stack)) return false;
+			if (this.slots[1] == null) return true;
+			if (!this.slots[1].isItemEqual(stack)) return false;
 
 			// Add the result of the furnace recipe to the current stack size (already smelted so far).
-			// int result = this.slots[1].stackSize + stack.stackSize;
+			int result = this.slots[1].stackSize + stack.stackSize;
 
 			// Make sure we aren't going over the set stack limit's size.
-			// return (result <= getInventoryStackLimit() && result <= stack.getMaxStackSize());
+			return (result <= getInventoryStackLimit() && result <= stack.getMaxStackSize());
 		}
 	}
 
@@ -130,7 +141,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public void smeltItem() {
-		/*if (this.canSmelt()) {
+		if (this.canSmelt()) {
 			// this.slots[0].setItemDamage(this.slots[0].getItemDamage() - 1);
 			ItemStack itemStack = this.slots[0];
 			itemStack.setItemDamage(0);
@@ -142,7 +153,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 			this.slots[0].stackSize--;
 
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
-		}*/
+		}
 	}
 
 	/* (non-Javadoc)

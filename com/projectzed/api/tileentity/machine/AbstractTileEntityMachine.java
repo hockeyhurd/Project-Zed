@@ -21,6 +21,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -47,7 +48,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	public int cookTime;
 	public static int defaultCookTime = 200;
-	public static int scaledTime = (defaultCookTime / 10) * 5;
+	public int scaledTime = (defaultCookTime / 10) * 5;
 
 	/**
 	 * @param name name of machine.
@@ -125,7 +126,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	@SideOnly(Side.CLIENT)
 	public int getCookProgressScaled(int i) {
-		return this.cookTime * i / scaledTime;
+		return cookTime > 0 && scaledTime > 0 ? cookTime * i / scaledTime : cookTime == 0 ? 0 : cookTime > 0 ? 1 : 0;
 	}
 
 	public boolean isBurning() {
@@ -192,6 +193,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				if (this.cookTime == scaledTime) {
 					this.cookTime = 0;
 					this.smeltItem();
+					ProjectZed.logHelper.info("Item smelted!");
 					flag1 = true;
 				}
 				

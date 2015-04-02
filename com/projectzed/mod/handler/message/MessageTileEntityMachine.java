@@ -27,6 +27,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	public AbstractTileEntityMachine te;
 	public int x, y, z;
 	public int stored;
+	public int scaledCookTime;
 	public boolean powerMode;
 	
 	public boolean containsFluid;
@@ -41,6 +42,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
+		this.scaledCookTime = te.scaledTime;
 		this.powerMode = te.isPoweredOn();
 		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
 		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount();
@@ -51,6 +53,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.scaledCookTime = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		this.containsFluid = buf.readBoolean();
 		if (this.containsFluid) this.fluidStored = buf.readInt();
@@ -61,6 +64,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeInt(scaledCookTime);
 		buf.writeBoolean(powerMode);
 		buf.writeBoolean(containsFluid);
 		if (this.containsFluid) buf.writeInt(this.fluidStored);
@@ -72,6 +76,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		if (te instanceof AbstractTileEntityMachine) {
 			((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
 			((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
+			((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
 			
 			if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
 		}

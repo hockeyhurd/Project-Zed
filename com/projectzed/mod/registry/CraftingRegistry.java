@@ -95,7 +95,8 @@ public final class CraftingRegistry {
 		
 		// tools:
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
-		reg.shapedList.add(createShapedRecipe(titaniumDrill, 1, "ede", "dad", "cbc", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', "ingotTitanium"));
+		// reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', gearTitanium));
+		reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', gearTitanium));
 		
 		// Blocks:
 		reg.shapedList.add(createShapedRecipe(blockTitanium, 1, "xxx", "xxx", "xxx", 'x', "ingotTitanium"));
@@ -151,6 +152,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', emptyFuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 	}
 	
 	/**
@@ -177,9 +179,21 @@ public final class CraftingRegistry {
 	
 	/**
 	 * Method used for creating a new shaped crafting recipe.
-	 * @param item = item output from said recipe.
-	 * @param amount = amount of items to receive.
-	 * @param objects = array of objects for how crafting recipe essentially should look.
+	 * @param item item output from said recipe.
+	 * @param amount amount of items to receive.
+	 * @param objects array of objects for how crafting recipe essentially should look.
+	 * @param damage damage the itemstack should have.
+	 * @return created shaped recipe object if successful, else return null.
+	 */
+	private static ShapedOreRecipe createShapedRecipeWithMeta(Item item, int amount, int damage, Object... objects) {
+		return item == null || objects == null || objects.length < 4 ? null : new ShapedOreRecipe(new ItemStack(item, amount, damage), objects);
+	}
+	
+	/**
+	 * Method used for creating a new shaped crafting recipe.
+	 * @param item item output from said recipe.
+	 * @param amount amount of items to receive.
+	 * @param objects array of objects for how crafting recipe essentially should look.
 	 * @return created shaped recipe object if successful, else return null.
 	 */
 	private static ShapedOreRecipe createShapedRecipe(Item item, int amount, Object... objects) {
