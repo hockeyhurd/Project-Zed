@@ -42,7 +42,7 @@ public class Reference extends AbstractReference {
 	 * @author hockeyhurd
 	 * @version Nov 8, 2014
 	 */
-	public static class Constants {
+	public static final class Constants {
 
 		// Kept old in case of reverting or need of comparison.
 		

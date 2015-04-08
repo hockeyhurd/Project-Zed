@@ -53,6 +53,10 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	/** Variable containing relative location. */
 	private byte rel;
 	
+	public static final float[] TIERED_MOD = new float[] {
+		1.0f, 1.5f, 2.5f, 4.0f, 	
+	};
+	
 	/**
 	 * @param material
 	 * @param fusion toggle whether is fusion controller or not.
@@ -85,8 +89,16 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	public AbstractTileEntityGenerator getTileEntity() {
 		TileEntityNuclearController te = new TileEntityNuclearController();
 		te.setPlaceDir(placeDir, size, rel);
+		te.getSource().setModifier(getModifierFromSize());
 		if (this.FUSION_MODE) te.setSource(EnumType.FUSION);
 		return te;
+	}
+	
+	private float getModifierFromSize() {
+		if (this.size <= 0) return 1.0f;
+		
+		int index = (this.size - 1) / 2;
+		return index > 0 ? TIERED_MOD[index - 1] : index <= 0 ? TIERED_MOD[index] : 1.0f;
 	}
 
 	/*
@@ -123,7 +135,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		
 		this.placeDir = (byte) dir;
 		this.size = getSizeFromDir(world, x, y, z, dir);
-		if (size > 7 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
+		if (size > 9 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
 		// System.out.println("Placed Dir: " + this.placeDir);
 		// System.out.println("Size: " + this.size + "x" + this.size);
 		
@@ -155,25 +167,25 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		 */
 		
 		if (dir == 0) {
-			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size < 3) {
+			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size < 4) {
 				size++;
 			}
 		}
 		
 		else if (dir == 2) {
-			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size > -4) {
+			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size > -5) {
 				size--;
 			}
 		}
 		
 		else if (dir == 1) {
-			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size > -4) {
+			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size > -5) {
 				size--;
 			}
 		}
 		
 		else if (dir == 3) {
-			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size < 3) {
+			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size < 4) {
 				size++;
 			}
 		}
@@ -183,7 +195,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		this.rel = size;
 		size = (byte) Math.abs(size);
 		if (size == 1) return (byte) (size * 3);
-		else if (size != Byte.MAX_VALUE && size < 4) return (byte) (size * 3 - (size - 1));
+		else if (size != Byte.MAX_VALUE && size < 5) return (byte) (size * 3 - (size - 1));
 		else return 0;
 	}
 	

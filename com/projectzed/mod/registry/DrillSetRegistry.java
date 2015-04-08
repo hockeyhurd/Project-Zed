@@ -32,6 +32,7 @@ public class DrillSetRegistry {
 		Material.sand,
 		Material.piston,
 		Material.snow,
+		Material.circuits,
 	};
 	
 	private DrillSetRegistry() {

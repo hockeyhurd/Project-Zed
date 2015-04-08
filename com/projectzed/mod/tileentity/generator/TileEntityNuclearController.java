@@ -184,7 +184,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @return true if valid, else returns false.
 	 */
 	private boolean isSizeValid() {
-		return this.size >= 3 && this.size <= 7;
+		return this.size >= 3 && this.size <= 9;
 	}
 	
 	/**
@@ -300,10 +300,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
 
 		byte rel = comp.getByte("ProjectZedNuclearRel");
-		this.rel = rel > -4 && rel < 4 ? rel : 0;
+		this.rel = rel > -5 && rel < 5 ? rel : 0;
 		
 		byte size = comp.getByte("ProjectZedNuclearSize");
-		this.size = size > 0 && size <= 7 ? size : 0;
+		this.size = size > 0 && size <= 9 ? size : 0;
 		
 		// multiblock stuffs:
 		isMaster = comp.getBoolean("ProjectZedIsMaster");

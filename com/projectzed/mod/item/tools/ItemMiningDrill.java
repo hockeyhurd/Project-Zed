@@ -115,7 +115,7 @@ public class ItemMiningDrill extends ItemTool implements IItemChargeable {
 	 */
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
-		return stack.getItemDamage() < stack.getMaxDamage();
+		return stack.getItemDamage() > stack.getMaxDamage();
 	}
 	
 	/*
