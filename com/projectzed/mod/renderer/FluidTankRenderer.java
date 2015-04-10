@@ -242,8 +242,6 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			// System.out.println(te.getTank().getFluidAmount());
 			return;
 		}
-		
-		
 
 		IIcon icon = fluid.getFluid().getStillIcon();
 		if (icon == null) {

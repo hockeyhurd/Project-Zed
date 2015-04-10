@@ -130,7 +130,7 @@ public class FluidNet {
 					}
 					
 					if (amount > 0) {
-						if (colorDep && cont instanceof IColorComponent && sourceCont.getTankInfo(dir)[value].fluid.amount > 0 && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
+						if (colorDep && cont instanceof IColorComponent && cont.getTankInfo(dir)[value].fluid.amount > 0 && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
 
 						FluidStack temp = stackSrc.copy();
 						temp.amount = amount;

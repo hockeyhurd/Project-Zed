@@ -29,6 +29,7 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductClear;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -124,6 +125,9 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityLiquiductBlue.class, "liquiductBlue");
 		reg.idMap.put(TileEntityLiquiductBlue.class, getNextID());
+
+		reg.map.put(TileEntityLiquiductClear.class, "liquiductClear");
+		reg.idMap.put(TileEntityLiquiductClear.class, getNextID());
 		
 		reg.map.put(TileEntityLiquidNode.class, "liquiductNode");
 		reg.idMap.put(TileEntityLiquidNode.class, getNextID());

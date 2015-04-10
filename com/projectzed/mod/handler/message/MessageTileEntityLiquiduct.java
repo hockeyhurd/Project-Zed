@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -80,7 +79,7 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 	public IMessage onMessage(MessageTileEntityLiquiduct message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
-		if (te != null && te instanceof TileEntityFluidTankBase) {
+		if (te != null && te instanceof TileEntityLiquiductBase) {
 			TileEntityLiquiductBase te2 = (TileEntityLiquiductBase) te;
 			
 			if (message.fluidID >= 0) {
