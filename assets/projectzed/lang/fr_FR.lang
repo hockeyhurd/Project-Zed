@@ -25,6 +25,7 @@ tile.industrialCrusher.name=Broyeur industriel
 tile.industrialLumberMill.name=Scierie industrielle
 tile.industrialMetalPress.name=Presse métallique industrielle
 tile.industrialCentrifuge.name=Centrifugeuse industrielle
+tile.industrialEnergizer.name=Energiseuse industrielle
 tile.energyPipeRed.name=Conduit d'énergie - Rouge
 tile.energyPipeOrange.name=Conduit d'énergie - Orange
 tile.energyPipeClear.name=Conduit d'énergie - Vide
@@ -100,5 +101,5 @@ item.emptyFuelRod.name=Barre de carburant vide
 item.fuelRod.name=Barre d'uranium
 
 // Containers/GUIs
-container.industrialFurnace= Four industriel
+container.industrialFurnace=Four industriel
 container.industrialCrusher=Broyeur industriel
