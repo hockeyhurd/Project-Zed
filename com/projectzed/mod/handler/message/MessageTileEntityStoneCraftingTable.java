@@ -29,13 +29,17 @@ import cpw.mods.fml.relauncher.Side;
  * @author hockeyhurd
  * @version Apr 1, 2015
  */
-public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHandler<MessageTileEntityStoneCraftingTable, IMessage>{
+public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHandler<MessageTileEntityStoneCraftingTable, IMessage> {
 
 	private TileEntityStoneCraftingTable te;
 	private Vector4Helper<Integer> vec;
 	private int numSlots;
 	private ItemStack[] slots;
 	private byte buttonHit;
+
+	@Deprecated
+	public MessageTileEntityStoneCraftingTable() {
+	}
 	
 	public MessageTileEntityStoneCraftingTable(TileEntityStoneCraftingTable te) {
 		this(te, (byte) -1);
@@ -43,7 +47,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	
 	public MessageTileEntityStoneCraftingTable(TileEntityStoneCraftingTable te, byte buttonHit) {
 		this.te = te;
-		this.vec = new Vector4Helper<Integer>(te.xCoord, te.yCoord, te.zCoord);
+		this.vec = new Vector4Helper<Integer>(te.xCoord, te.yCoord, te.zCoord); 
 		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInvenotry();
 		this.slots = new ItemStack[numSlots];
@@ -52,7 +56,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	}
 
 	private void syncStacks() {
-		if (this.te != null) {
+		if (this.te != null && this.numSlots > 0) {
 			if (this.slots == null) this.slots = new ItemStack[numSlots];
 			
 			for (int i = 0; i < this.slots.length; i++) {
@@ -94,24 +98,21 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 			ByteBufUtils.writeItemStack(buf, this.slots[i]);
 		}
 	}
-	
+
 	@Override
 	public IMessage onMessage(MessageTileEntityStoneCraftingTable message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
 			TileEntity te = world.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
-	
+			
 			if (world != null && te != null && te instanceof TileEntityStoneCraftingTable) {
 				TileEntityStoneCraftingTable te2 = (TileEntityStoneCraftingTable) te;
 				
 				if (message.slots != null && message.slots.length > 0) {
-					
-					if (message.buttonHit == 1) {
-						EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
-						if (player != null && player.openContainer != null && player.openContainer instanceof ContainerStoneCraftingTable) {
-							ContainerStoneCraftingTable cont = (ContainerStoneCraftingTable) player.openContainer;
-							cont.clearCraftingGrid();
-						}
+					EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
+					if (player != null && player.openContainer != null && player.openContainer instanceof ContainerStoneCraftingTable) {
+						ContainerStoneCraftingTable cont = (ContainerStoneCraftingTable) player.openContainer;
+						cont.clearCraftingGrid();
 					}
 					
 					for (int i = 0; i < message.slots.length; i++) {
@@ -135,9 +136,9 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 					}
 				}
 			}
- 		}
+		}
 		
 		return null;
 	}
-
+	
 }

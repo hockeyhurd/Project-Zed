@@ -93,8 +93,22 @@ public class ContainerStoneCraftingTable extends Container {
 	 */
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		if (this.craftMatrix != null) {
+			this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+
+			this.craftMatrix.markDirty();
+		}
+		
 		super.onCraftMatrixChanged(inv);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
+	 */
+	@Override
+	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
 	}
 	
 	/**

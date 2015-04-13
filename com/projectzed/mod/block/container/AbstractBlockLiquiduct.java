@@ -172,6 +172,7 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			if (id == -1) return;
 			
 			int amount = (int) stack.stackTagCompound.getFloat("Fluid ID");
+			if (amount <= 0) return;
 			
 			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
 		}
