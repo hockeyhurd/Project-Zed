@@ -26,7 +26,6 @@ import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
@@ -153,6 +152,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		// updateNetwork();
 		importContents();
 		exportContents();
 		

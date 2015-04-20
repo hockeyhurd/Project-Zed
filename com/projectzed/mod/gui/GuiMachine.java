@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector4Helper;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
@@ -80,6 +81,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	@Override
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+		if (texture == null) {
+			ProjectZed.logHelper.severe("Size:", this.te.getSizeInvenotry());
+			return;
+		}
+		
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);

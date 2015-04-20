@@ -18,6 +18,7 @@ import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 /**
@@ -98,8 +99,15 @@ public class FluidNet {
 				// if (sourceCont.getTankInfo(dir.getOpposite())[0] != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid.amount == sourceCont.getTankInfo(dir.getOpposite())[0].capacity) break;
 
 				if (sides[dir.ordinal()] && dir != lastDir && map.containsKey(dir)) {
-					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 
+					/*if (counter >= 2 && !hasDestination(dir, world, x, y, z)) {
+						ProjectZed.logHelper.info("Has no where to go!", dir.name());
+						counter--;
+						continue;
+					}*/
+					
+					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+					
 					int value = map.get(dir);
 
 					if (value == -1 || cont.getTankInfo(dir)[value] == null || cont.getTankInfo(dir)[value].fluid.getFluid() == null || cont.getTankInfo(dir)[value].fluid.amount == 0) {
@@ -125,13 +133,13 @@ public class FluidNet {
 					if (stackCont.amount > 0) amount = Math.min(amount, stackCont.amount);
 					if (sourceCont.getTank().getCapacity() - sourceCont.getTank().getFluidAmount() > 0) amount = Math.min(amount, sourceCont.getTank().getCapacity() - sourceCont.getTank().getFluidAmount());
 
-					if (counter > 1 && amount > 1) {
+					/*if (counter > 1 && amount > 1) {
 						if (amount / counter > 0) amount /= counter;
-					}
+					}*/
 					
 					if (amount > 0) {
 						if (colorDep && cont instanceof IColorComponent && cont.getTankInfo(dir)[value].fluid.amount > 0 && cont.getTankInfo(dir)[value].fluid.amount <= sourceCont.getTankInfo(dir.getOpposite())[value].fluid.amount) continue;
-
+						
 						FluidStack temp = stackSrc.copy();
 						temp.amount = amount;
 
@@ -147,6 +155,28 @@ public class FluidNet {
 
 	}
 
+	private static boolean hasDestination(ForgeDirection vecDir, World world, int x, int y, int z) {
+		ForgeDirection[] blackList = new ForgeDirection[] {
+			vecDir/*, vecDir.getOpposite()*/
+		};
+		
+		if (world.getTileEntity(x, y, z) == null) return false;
+		
+		ProjectZed.logHelper.info("vec dir:", vecDir.name());
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			if (dir == blackList[0] /*|| dir == blackList[1]*/) continue;
+			
+			TileEntity te = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+			if (te != null && te instanceof IFluidHandler) {
+				if (te instanceof IFluidContainer && ((IFluidContainer) te).isPipe()) return hasDestination(dir, world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+				return true;
+			}
+		}
+		
+		// return hasDestination(vecDir, world, x + vecDir.offsetX, y + vecDir.offsetY, z + vecDir.offsetZ);
+		return false;
+	}
+	
 	/**
 	 * Method used to transfer fluid to all fluid tanks that aren't of my own. (tanks, liquiducts, etc)
 	 * <br><bold>NOTE: </bold>Liquiducts <bold>DO NOT </bold>use this for transport to one another.
@@ -169,6 +199,8 @@ public class FluidNet {
 		HashMap<ForgeDirection, Integer> map = new HashMap<ForgeDirection, Integer>();
 
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			if (!(world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IFluidHandler)) continue;
+			
 			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 			if (cont == null) continue;
 			// if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
