@@ -23,6 +23,7 @@ import com.projectzed.mod.renderer.ReactorGlassItemRenderer;
 import com.projectzed.mod.renderer.ReactorGlassRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassItemRenderer;
 import com.projectzed.mod.renderer.ThickenedGlassRenderer;
+import com.projectzed.mod.renderer.WickedClearGlassItemRenderer;
 import com.projectzed.mod.renderer.WickedClearGlassRenderer;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;

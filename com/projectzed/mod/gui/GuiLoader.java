@@ -7,6 +7,7 @@
 package com.projectzed.mod.gui;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
@@ -28,6 +29,7 @@ public class GuiLoader extends GuiMachine {
 	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
 		super(inv, te);
 		this.te2 = te;
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 	}
 
 }

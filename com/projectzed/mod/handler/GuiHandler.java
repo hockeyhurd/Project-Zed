@@ -22,6 +22,7 @@ import com.projectzed.mod.gui.GuiCentrifuge;
 import com.projectzed.mod.gui.GuiEnergyContainer;
 import com.projectzed.mod.gui.GuiFabricationTable;
 import com.projectzed.mod.gui.GuiGenerator;
+import com.projectzed.mod.gui.GuiLoader;
 import com.projectzed.mod.gui.GuiMachine;
 import com.projectzed.mod.gui.GuiNuclearController;
 import com.projectzed.mod.gui.GuiNuclearIOPort;
@@ -90,7 +91,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialMetalPress) return new GuiMachine(player.inventory, (TileEntityIndustrialMetalPress) te);
 		else if (te instanceof TileEntityIndustrialCentrifuge) return new GuiCentrifuge(player.inventory, (TileEntityIndustrialCentrifuge) te);
 		else if (te instanceof TileEntityIndustrialEnergizer) return new GuiMachine(player.inventory, (TileEntityIndustrialEnergizer) te);
-		else if (te instanceof TileEntityIndustrialLoader) return new GuiMachine(player.inventory, (TileEntityIndustrialLoader) te);
+		else if (te instanceof TileEntityIndustrialLoader) return new GuiLoader(player.inventory, (TileEntityIndustrialLoader) te);
 		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityStoneCraftingTable) return new GuiStoneCraftingTable(player.inventory, (TileEntityStoneCraftingTable) te);
 		else if (te instanceof TileEntityRFBridge) return new GuiRFBridge(player.inventory, (TileEntityRFBridge) te);

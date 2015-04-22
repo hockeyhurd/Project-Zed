@@ -7,9 +7,14 @@
 package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing tileentity code for industrialLoader.
@@ -19,6 +24,8 @@ import com.projectzed.api.util.Sound;
  */
 public class TileEntityIndustrialLoader extends AbstractTileEntityMachine {
 
+	public Ticket heldChunk;
+	
 	public TileEntityIndustrialLoader() {
 		super("industrialLoader");
 		this.energyBurnRate = 0x200; 
@@ -110,6 +117,47 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityMachine {
 	@Override
 	public Sound getSound() {
 		return null;
+	}
+	
+	// DO LOADING HERE:
+	
+	@Override
+	public void invalidate() {
+		forceChunkLoading(null);
+		super.invalidate();
+	}
+	
+	@Override
+	public void validate() {
+		forceChunkLoading(null);
+		super.validate();
+	}
+	
+	public void forceChunkLoading(Ticket ticket) {
+		if (this.worldObj.isRemote) return;
+		
+		if (ticket != null) {
+			this.heldChunk = ticket;
+			ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+		}
+		
+		else {
+			if (this.heldChunk == null) {
+				Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
+				newTicket.getModData().setInteger("xCoord", this.xCoord);
+				newTicket.getModData().setInteger("yCoord", this.yCoord);
+				newTicket.getModData().setInteger("zCoord", this.zCoord);
+				
+				this.heldChunk = newTicket;
+				
+				ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+			}
+			
+			else {
+				ForgeChunkManager.releaseTicket(this.heldChunk);
+				this.heldChunk = null;
+			}
+		}
 	}
 
 }

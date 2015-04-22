@@ -30,6 +30,7 @@ import com.projectzed.mod.handler.GuiHandler;
 import com.projectzed.mod.handler.ItemHoverEventHandler;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.PlayerEventHandler;
+import com.projectzed.mod.handler.WorldChunkHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
@@ -190,6 +191,8 @@ public class CommonProxy {
 		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
+		
+		WorldChunkHandler.instance();
 	}
 	
 	protected void registerFurnaceRecipes() {
