@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
@@ -81,10 +81,10 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isActive, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(boolean isActive, World world, Vector4<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
@@ -96,10 +96,10 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
@@ -124,7 +124,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 					ProjectZed.nuclearIOPort, ProjectZed.fissionController, ProjectZed.fusionController
 		};
 		
-		MultiblockHelper mb = new MultiblockHelper(world, new Vector4Helper<Integer>(x, y, z), blockWhitelist);
+		MultiblockHelper mb = new MultiblockHelper(world, new Vector4<Integer>(x, y, z), blockWhitelist);
 		mb.calculateConnections();
 
 		int counter = mb.getCounter();

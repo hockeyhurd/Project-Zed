@@ -6,7 +6,19 @@
 */
 package com.projectzed.mod.handler;
 
-import com.projectzed.api.block.*;
+import static com.hockeyhurd.api.util.NumberFormatter.format;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import com.projectzed.api.block.AbstractBlockContainer;
+import com.projectzed.api.block.AbstractBlockFluidContainer;
+import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.block.AbstractBlockMachine;
+import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
@@ -18,13 +30,6 @@ import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for all tooltip info related to blocks.

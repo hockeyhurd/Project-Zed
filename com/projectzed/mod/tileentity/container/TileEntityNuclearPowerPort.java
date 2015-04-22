@@ -12,7 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -32,7 +32,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContainer implements IMultiBlockable<AbstractTileEntityGeneric> {
 
 	private boolean hasMaster;
-	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
+	private Vector4<Integer> masterVec = Vector4.zero.getVector4i();
 	
 	public TileEntityNuclearPowerPort() {
 		super("nuclearPowerPort");
@@ -268,10 +268,10 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void setMasterVec(Vector4Helper<Integer> vec) {
+	public void setMasterVec(Vector4<Integer> vec) {
 		this.masterVec = vec;
 		this.setMaxStorage(((AbstractTileEntityGenerator) worldObj.getTileEntity(vec.x, vec.y, vec.z)).getMaxStorage());
 	}
@@ -281,7 +281,7 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
 	 */
 	@Override
-	public Vector4Helper<Integer> getMasterVec() {
+	public Vector4<Integer> getMasterVec() {
 		return masterVec;
 	}
 
@@ -292,7 +292,7 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	@Override
 	public void reset() {
 		this.hasMaster = false;
-		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.masterVec = Vector4.zero.getVector4i();
 		this.storedPower = 0;
 		
 		((BlockNuclearPowerPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());

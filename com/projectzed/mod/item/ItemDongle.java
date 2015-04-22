@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.util.BlockHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -39,7 +39,7 @@ public class ItemDongle extends Item {
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
 		boolean used = false;
 		if (!world.isRemote) {
-			Vector4Helper<Integer> vec = new Vector4Helper<Integer>(player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
+			Vector4<Integer> vec = new Vector4<Integer>(player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
 			BlockHelper bh = new BlockHelper(world, player);
 			
 			int xPos = (int) player.posX;

@@ -6,17 +6,20 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.hockeyhurd.api.util.TessellatorHelper;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing rendering code for energy cell bank. <br>
@@ -77,7 +80,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * @param max = max size.
 	 */
 	protected void drawCuboid(TileEntityEnergyBankBase te, float min, float max, byte layer) {
-		drawCuboid(te, new Vector4Helper<Float>(min, min, min), new Vector4Helper<Float>(max, max, max), layer);
+		drawCuboid(te, new Vector4<Float>(min, min, min), new Vector4<Float>(max, max, max), layer);
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * @param layer = layer to draw.
 	 * @param valve = valve, (blue : -1, grey : 0, orange : 1).
 	 */
-	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, byte layer) {
+	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4<Float> minVec, Vector4<Float> maxVec, byte layer) {
 		
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);

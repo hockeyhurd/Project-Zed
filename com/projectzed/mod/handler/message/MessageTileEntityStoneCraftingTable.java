@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 
@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.Side;
 public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHandler<MessageTileEntityStoneCraftingTable, IMessage> {
 
 	private TileEntityStoneCraftingTable te;
-	private Vector4Helper<Integer> vec;
+	private Vector4<Integer> vec;
 	private int numSlots;
 	private ItemStack[] slots;
 	private byte buttonHit;
@@ -47,7 +47,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	
 	public MessageTileEntityStoneCraftingTable(TileEntityStoneCraftingTable te, byte buttonHit) {
 		this.te = te;
-		this.vec = new Vector4Helper<Integer>(te.xCoord, te.yCoord, te.zCoord); 
+		this.vec = new Vector4<Integer>(te.xCoord, te.yCoord, te.zCoord); 
 		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInvenotry();
 		this.slots = new ItemStack[numSlots];
@@ -71,7 +71,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		if (this.vec == null) this.vec = new Vector4Helper<Integer>();
+		if (this.vec == null) this.vec = new Vector4<Integer>();
 		
 		this.vec.x = buf.readInt();
 		this.vec.y = buf.readInt();

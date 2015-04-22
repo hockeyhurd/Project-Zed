@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -254,7 +254,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.masterVec = Vector4.zero.getVector4i();
 		
 		setMetaOnUpdate((byte) worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z));
 		((BlockNuclearIOPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());

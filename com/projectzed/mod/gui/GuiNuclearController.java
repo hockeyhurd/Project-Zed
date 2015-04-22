@@ -6,13 +6,10 @@
 */
 package com.projectzed.mod.gui;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 
 import cpw.mods.fml.relauncher.Side;
@@ -52,7 +49,7 @@ public class GuiNuclearController extends GuiGenerator {
 	public void initGui() {
 		super.initGui();
 		
-		// this.labelList.add(new FluidLabel<Integer>(new Vector4Helper<Integer>(guiLeft + 7, guiTop + 17, 0), new Vector4Helper<Integer>(
+		// this.labelList.add(new FluidLabel<Integer>(new Vector4<Integer>(guiLeft + 7, guiTop + 17, 0), new Vector4<Integer>(
 		//		guiLeft + 7 + 16, guiTop + 17 + 41, 0), storedCoolant, getTE().getCoolantFluidStored()));
 	}
 	

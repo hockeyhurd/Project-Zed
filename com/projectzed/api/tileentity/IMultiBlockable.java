@@ -10,7 +10,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 
 /**
  * Interface for multiblock structures to be implemented in the TE's class.
@@ -27,7 +27,7 @@ public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 	Block getBlock();
 	
 	/** Get the location in world of TE. */
-	Vector4Helper<Integer> worldVec();
+	Vector4<Integer> worldVec();
 	
 	/** Whether we can have more than one of these in structure. */
 	boolean isUnique();
@@ -61,10 +61,10 @@ public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 	void setHasMaster(boolean master);
 	
 	/** Sets the location of the MASTER TE object for reference. */
-	void setMasterVec(Vector4Helper<Integer> vec);
+	void setMasterVec(Vector4<Integer> vec);
 	
 	/** Gets the coordinates of the MASTER TE object in structure. */
-	Vector4Helper<Integer> getMasterVec();
+	Vector4<Integer> getMasterVec();
 	
 	/**
 	 * Method to handle to reset internal data of multiblock structure.

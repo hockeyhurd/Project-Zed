@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 
 /**
  * Interface for all tileentities that can be wrenched.
@@ -62,6 +62,6 @@ public interface IWrenchable {
 	 * 
 	 * @return vector4 component.
 	 */
-	Vector4Helper<Integer> worldVec();
+	Vector4<Integer> worldVec();
 	
 }

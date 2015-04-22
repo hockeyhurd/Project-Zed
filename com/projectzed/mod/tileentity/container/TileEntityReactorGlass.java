@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
@@ -47,7 +47,7 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.masterVec = Vector4.zero.getVector4i();
 	}
 
 	/* (non-Javadoc)

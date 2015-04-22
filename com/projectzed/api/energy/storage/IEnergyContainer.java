@@ -8,7 +8,7 @@ package com.projectzed.api.energy.storage;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 
 /**
  * Interface for an object (TileEntity, tool, etc.) that contains power.
@@ -64,6 +64,6 @@ public interface IEnergyContainer {
 	public ForgeDirection getLastReceivedDirection();
 
 	/** Gets and stored the vector co-ordinates of this te. */
-	public Vector4Helper<Integer> worldVec();
+	public Vector4<Integer> worldVec();
 
 }

@@ -11,7 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.util.BlockHelper;
 
 /**
@@ -24,7 +24,7 @@ import com.hockeyhurd.api.util.BlockHelper;
 public class MultiblockHelper {
 
 	private World world;
-	private Vector4Helper<Integer> vec;
+	private Vector4<Integer> vec;
 	private Block[] blocks;
 	private BlockHelper bh;
 	private boolean[] connections = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
@@ -36,7 +36,7 @@ public class MultiblockHelper {
 	 * @param vec global position of current block.
 	 * @param blocks white-listed blocks.
 	 */
-	public MultiblockHelper(World world, Vector4Helper<Integer> vec, Block[] blocks) {
+	public MultiblockHelper(World world, Vector4<Integer> vec, Block[] blocks) {
 		this.world = world;
 		this.vec = vec;
 		this.bh = new BlockHelper(world, null);

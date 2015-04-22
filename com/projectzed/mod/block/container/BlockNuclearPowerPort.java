@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -60,19 +60,19 @@ public class BlockNuclearPowerPort extends AbstractBlockContainer implements IMe
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isActive, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(boolean isActive, World world, Vector4<Integer> vec) {
 		updateMeta(isActive ? 1 : 0, world, vec);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
 		TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null) {

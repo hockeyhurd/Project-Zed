@@ -10,7 +10,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
@@ -26,7 +26,7 @@ public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearCompo
 
 	private boolean isActive;
 	private boolean hasMaster;
-	private Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
+	private Vector4<Integer> masterVec = Vector4.zero.getVector4i();
 	
 	public TileEntityNuclearControlPort() {
 		super("nuclearControlPort");
@@ -57,7 +57,7 @@ public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearCompo
 	public void reset() {
 		this.isActive = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.masterVec = Vector4.zero.getVector4i();
 		
 		((BlockNuclearControlPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}

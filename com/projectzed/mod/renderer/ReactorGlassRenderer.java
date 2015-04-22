@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.util.TessellatorHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 
 	private TessellatorHelper tessHelp;
-	private Vector4Helper<Float> minVec, maxVec;
+	private Vector4<Float> minVec, maxVec;
 	private final float pixel = 1f / 96f;
 	private final float min = 0f, max = 16f * this.pixel;
 	private Connection[] connections = new Connection[ForgeDirection.VALID_DIRECTIONS.length];
@@ -42,8 +42,8 @@ public class ReactorGlassRenderer extends TileEntitySpecialRenderer {
 	
 	public ReactorGlassRenderer() {
 		tessHelp = new TessellatorHelper(null);
-		minVec = Vector4Helper.zero.getVector4f();
-		maxVec = new Vector4Helper<Float>(1f, 1f, 1f);
+		minVec = Vector4.zero.getVector4f();
+		maxVec = new Vector4<Float>(1f, 1f, 1f);
 		
 		texture = new ResourceLocation(ProjectZed.modID.toLowerCase(), "textures/blocks/nuclearReactorGlass.png");
 		

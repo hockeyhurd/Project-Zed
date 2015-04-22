@@ -6,11 +6,6 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.hockeyhurd.api.util.TessellatorHelper;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -19,7 +14,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.lwjgl.opengl.GL11;
+
+import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class handling all client side rendering code for fluid tanks.
@@ -35,8 +38,8 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	private byte tier = 0;
 	private boolean renderInside = true;
 
-	private Vector4Helper<Float> minVec, maxVec;
-	private Vector4Helper<Float> fluidMinVec, fluidMaxVec;
+	private Vector4<Float> minVec, maxVec;
+	private Vector4<Float> fluidMinVec, fluidMaxVec;
 	private TessellatorHelper tessHelp;
 
 	/**
@@ -45,11 +48,11 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	public FluidTankRenderer(byte tier) {
 		this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
 
-		minVec = new Vector4Helper<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
-		maxVec = new Vector4Helper<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
+		minVec = new Vector4<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
+		maxVec = new Vector4<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
 		
-		fluidMinVec = new Vector4Helper<Float>(5f / 16f, 2f / 16f, 5f / 16f);
-		fluidMaxVec = new Vector4Helper<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
+		fluidMinVec = new Vector4<Float>(5f / 16f, 2f / 16f, 5f / 16f);
+		fluidMaxVec = new Vector4<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
 		
 		tessHelp = new TessellatorHelper(null);
 	}
@@ -82,10 +85,10 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	}
 
 	protected void drawCuboid(TileEntityFluidTankBase te, float min, float max, byte layer) {
-		drawCuboid(te, new Vector4Helper<Float>(min, min, min), new Vector4Helper<Float>(max, max, max), layer);
+		drawCuboid(te, new Vector4<Float>(min, min, min), new Vector4<Float>(max, max, max), layer);
 	}
 
-	protected void drawCuboid(TileEntityFluidTankBase te, Vector4Helper<Float> minVec, Vector4Helper<Float> maxVec, byte layer) {
+	protected void drawCuboid(TileEntityFluidTankBase te, Vector4<Float> minVec, Vector4<Float> maxVec, byte layer) {
 
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityFluidTankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);
@@ -230,7 +233,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	 * @param vec0 min vector.
 	 * @param vec1 max vector.
 	 */
-	protected void drawFluid(TileEntityFluidTankBase te, Vector4Helper<Float> vec0, Vector4Helper<Float> vec1) {
+	protected void drawFluid(TileEntityFluidTankBase te, Vector4<Float> vec0, Vector4<Float> vec1) {
 		if (te == null || te.getTank() == null) {
 			// System.err.println("Error something is null!");
 			return;
@@ -249,7 +252,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			return;
 		}
 
-		final Vector4Helper<Float> maxVecY = vec1.copy();
+		final Vector4<Float> maxVecY = vec1.copy();
 		
 		// vec1.y = (3f + this.progressIndex) / 16f;
 		vec1.y = (3f + ((int) (te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity()) * 10))) / 16f;

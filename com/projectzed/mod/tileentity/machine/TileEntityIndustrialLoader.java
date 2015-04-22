@@ -29,7 +29,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public int getSizeInventory() {
-		return this.slots.length;
+		return 0;
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +53,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityMachine {
 	@Override
 	protected void initSlotsArray() {
 		// 4 upgrades, 9 container
-		this.slots = new ItemStack[4 + 9];
+		// this.slots = new ItemStack[4 + 9];
 	}
 
 	/* (non-Javadoc)

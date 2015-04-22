@@ -12,7 +12,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
@@ -93,7 +93,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4Helper.zero.getVector4i();
+		this.masterVec = Vector4.zero.getVector4i();
 		
 		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
@@ -110,7 +110,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
 		hasMaster = comp.getBoolean("ProjectZedHasMaster");
 
-		if (masterVec == null) masterVec = Vector4Helper.zero.getVector4i();
+		if (masterVec == null) masterVec = Vector4.zero.getVector4i();
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");

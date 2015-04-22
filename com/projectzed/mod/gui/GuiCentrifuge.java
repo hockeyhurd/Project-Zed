@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
@@ -29,7 +29,7 @@ public class GuiCentrifuge extends GuiMachine {
 	private GuiButton[] buttons;
 	private byte amount = 1;
 
-	private Vector4Helper<Integer> pos2, minMax2;
+	private Vector4<Integer> pos2, minMax2;
 
 	/**
 	 * @param inv
@@ -83,8 +83,8 @@ public class GuiCentrifuge extends GuiMachine {
 	public void initGui() {
 		super.initGui();
 
-		this.pos2 = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 17, 0);
-		this.minMax2 = new Vector4Helper<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
+		this.pos2 = new Vector4<Integer>(guiLeft + 7, guiTop + 17, 0);
+		this.minMax2 = new Vector4<Integer>(guiLeft + 7 + 16, guiTop + 17 + 41, 0);
 
 		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity()));
 		

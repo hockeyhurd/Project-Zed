@@ -6,11 +6,12 @@
 */
 package com.projectzed.mod.handler;
 
-import com.hockeyhurd.api.math.Vector4Helper;
-import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+
+import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing code for playing a given sound.
@@ -56,7 +57,7 @@ public class SoundHandler {
 	 * @param volume = volume to play at.
 	 * @param pitch = pitch to play at.
 	 */
-	public static void playEffect(String name, World world, Vector4Helper<Integer> pos, float volume, float pitch) {
+	public static void playEffect(String name, World world, Vector4<Integer> pos, float volume, float pitch) {
 		world.playSoundEffect(pos.x, pos.y, pos.z, name, volume, pitch);
 	}
 	
@@ -67,7 +68,7 @@ public class SoundHandler {
 	 * @param world = world object as reference.
 	 * @param pos = position in world to play.
 	 */
-	public static void playEffect(Sound sound, World world, Vector4Helper<Integer> pos) {
+	public static void playEffect(Sound sound, World world, Vector4<Integer> pos) {
 		playEffect(sound.NAME, world, pos, sound.VOLUME, sound.PITCH);
 	}
 

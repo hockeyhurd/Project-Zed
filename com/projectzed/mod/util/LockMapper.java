@@ -11,7 +11,7 @@ package com.projectzed.mod.util;
 
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
 
 /**
@@ -23,14 +23,14 @@ import com.projectzed.mod.block.BlockNuclearChamberLock;
 @Deprecated
 public class LockMapper {
 	
-	private Vector4Helper<Integer> vec;
+	private Vector4<Integer> vec;
 	private boolean isMB;
 	
 	/**
 	 * @param vec = location of block represented in vector format.
 	 * @param isMB = boolean flag whether is a multi-block structure or nah.
 	 */
-	public LockMapper(Vector4Helper<Integer> vec, boolean isMB) {
+	public LockMapper(Vector4<Integer> vec, boolean isMB) {
 		this.vec = vec;
 		this.isMB = isMB;
 	}
@@ -38,7 +38,7 @@ public class LockMapper {
 	/**
 	 * @return vector or location of this block instance.
 	 */
-	public Vector4Helper<Integer> getVec() {
+	public Vector4<Integer> getVec() {
 		return this.vec;
 	}
 	

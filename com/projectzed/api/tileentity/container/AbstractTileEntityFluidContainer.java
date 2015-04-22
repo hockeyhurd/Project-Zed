@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IWrenchable;
 
@@ -402,8 +402,8 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @see com.projectzed.api.tileentity.IWrenchable#worldVec()
 	 */
 	@Override
-	public Vector4Helper<Integer> worldVec() {
-		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector4<Integer> worldVec() {
+		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 }

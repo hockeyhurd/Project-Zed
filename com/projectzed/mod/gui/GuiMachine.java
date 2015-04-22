@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
@@ -41,7 +41,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	private AbstractTileEntityMachine te;
 	private String stringToDraw;
 
-	protected Vector4Helper<Integer> mouseVec, pos, minMax;
+	protected Vector4<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
 
 	/**
@@ -52,6 +52,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		super(new ContainerMachine(inv, te));
 		if (te.getSizeInvenotry() == 1) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
 		else if (te.getSizeInvenotry() == 2) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
 		this.te = te;
 		this.xSize = 176;
@@ -125,9 +126,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public void initGui() {
 		super.initGui();
 
-		this.mouseVec = Vector4Helper.zero;
-		this.pos = new Vector4Helper<Integer>(guiLeft + 7, guiTop + 61, 0);
-		this.minMax = new Vector4Helper<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
+		this.mouseVec = Vector4.zero;
+		this.pos = new Vector4<Integer>(guiLeft + 7, guiTop + 61, 0);
+		this.minMax = new Vector4<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
 
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 	}

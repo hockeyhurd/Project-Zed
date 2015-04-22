@@ -12,7 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
 
@@ -25,7 +25,7 @@ import com.projectzed.api.tileentity.IMultiBlockable;
 public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEntityGeneric implements IMultiBlockable<AbstractTileEntityGeneric> {
 
 	protected boolean isMaster, hasMaster;
-	protected Vector4Helper<Integer> masterVec = Vector4Helper.zero.getVector4i();
+	protected Vector4<Integer> masterVec = Vector4.zero.getVector4i();
 	
 	/**
 	 * @param name
@@ -179,10 +179,10 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void setMasterVec(Vector4Helper<Integer> vec) {
+	public void setMasterVec(Vector4<Integer> vec) {
 		this.masterVec = vec;
 	}
 
@@ -191,7 +191,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
 	 */
 	@Override
-	public Vector4Helper<Integer> getMasterVec() {
+	public Vector4<Integer> getMasterVec() {
 		return masterVec;
 	}
 
@@ -216,8 +216,8 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#worldVec()
 	 */
 	@Override
-	public Vector4Helper<Integer> worldVec() {
-		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector4<Integer> worldVec() {
+		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 	
 	/*
@@ -232,7 +232,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
 		hasMaster = comp.getBoolean("ProjectZedHasMaster");
 
-		if (masterVec == null) masterVec = Vector4Helper.zero.getVector4i();
+		if (masterVec == null) masterVec = Vector4.zero.getVector4i();
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");

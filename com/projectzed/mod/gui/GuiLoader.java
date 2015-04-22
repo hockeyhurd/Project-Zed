@@ -4,30 +4,30 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.gui.component;
+package com.projectzed.mod.gui;
 
-import java.util.List;
+import net.minecraft.entity.player.InventoryPlayer;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 
 /**
- * Interface for gui labels.
+ * Class containing gui code for industrial loader.
  * 
  * @author hockeyhurd
- * @version Dec 31, 2014
+ * @version Apr 21, 2015
  */
-public interface IInfoLabel<N> {
+public class GuiLoader extends GuiMachine {
 
-	/** Get label to display to user. */
-	public List<String> getLabel();
+	private final TileEntityIndustrialLoader te2;
 	
-	/** Get effective percent full of storage. */
-	public float getPercent();
-	
-	/** Function to determine if label can be shown */
-	public boolean isVisible(boolean ignoreMouse);
-	
-	/** Handles update appropriate values. */
-	public void update(Vector4<Integer> mouseVec, Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max);
-	
+	/**
+	 * @param inv
+	 * @param te
+	 */
+	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
+		super(inv, te);
+		this.te2 = te;
+	}
+
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 
 /**
  * Helper interface to get more relevant info for this te tank.
@@ -81,6 +81,6 @@ public interface IFluidContainer extends IFluidHandler {
 	 * 
 	 * @return world vector.
 	 */
-	Vector4Helper<Integer> worldVec();
+	Vector4<Integer> worldVec();
 	
 }

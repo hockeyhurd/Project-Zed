@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -88,15 +88,15 @@ public class BlockNuclearControlPort extends AbstractBlockNuclearComponent imple
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4Helper)
+	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isActive, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(boolean isActive, World world, Vector4<Integer> vec) {
 		// updateMeta(isActive ? 1 : 0, world, vec);
 	}
 
 	@Override
-	public void updateMeta(int meta, World world, Vector4Helper<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
 		TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null) {

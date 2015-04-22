@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -257,8 +257,8 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
-	public Vector4Helper<Integer> worldVec() {
-		return new Vector4Helper<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector4<Integer> worldVec() {
+		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*

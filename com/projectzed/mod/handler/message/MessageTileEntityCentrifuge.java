@@ -9,7 +9,7 @@ package com.projectzed.mod.handler.message;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
-import com.hockeyhurd.api.math.Vector4Helper;
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 public class MessageTileEntityCentrifuge implements IMessage, IMessageHandler<MessageTileEntityCentrifuge, IMessage> {
 
 	private TileEntityIndustrialCentrifuge te;
-	private Vector4Helper<Integer> vec;
+	private Vector4<Integer> vec;
 	private byte craftingAmount = 1;
 	
 	@Deprecated
@@ -45,7 +45,7 @@ public class MessageTileEntityCentrifuge implements IMessage, IMessageHandler<Me
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		if (this.vec == null) this.vec = Vector4Helper.zero.getVector4i();
+		if (this.vec == null) this.vec = Vector4.zero.getVector4i();
 		
 		this.vec.x = buf.readInt();
 		this.vec.y = buf.readInt();
