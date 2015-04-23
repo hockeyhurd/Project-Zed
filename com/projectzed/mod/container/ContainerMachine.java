@@ -53,8 +53,9 @@ public class ContainerMachine extends Container {
 
 	/**
 	 * Adds all slots, player and container.
-	 * @param inv = inventory.
-	 * @param te = tile entity object.
+	 * 
+	 * @param inv inventory.
+	 * @param te tile entity object.
 	 */
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
@@ -89,6 +90,7 @@ public class ContainerMachine extends Container {
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#addCraftingToCrafters(net.minecraft.inventory.ICrafting)
 	 */
+	@Override
 	public void addCraftingToCrafters(ICrafting craft) {
 		super.addCraftingToCrafters(craft);
 		if (this.NUM_SLOTS > 1) craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
@@ -108,6 +110,7 @@ public class ContainerMachine extends Container {
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
 	 */
+	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		this.stored = this.te.getEnergyStored();
@@ -126,6 +129,7 @@ public class ContainerMachine extends Container {
 	 * @see net.minecraft.inventory.Container#updateProgressBar(int, int)
 	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void updateProgressBar(int slot, int newVal) {
 		if (this.NUM_SLOTS > 1 && slot == 0) this.te.cookTime = newVal;
 	}
@@ -142,6 +146,7 @@ public class ContainerMachine extends Container {
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
 	 */
+	@Override
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}
@@ -150,6 +155,7 @@ public class ContainerMachine extends Container {
 	 * Player shift-clicking a slot.
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
 	 */
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack stack = null;
 		Slot slot = (Slot) this.inventorySlots.get(index);

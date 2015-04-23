@@ -6,9 +6,15 @@
 */
 package com.projectzed.mod.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.opengl.GL11;
+
+import com.projectzed.mod.container.ContainerLoader;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 
 /**
@@ -17,18 +23,51 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
  * @author hockeyhurd
  * @version Apr 21, 2015
  */
-public class GuiLoader extends GuiMachine {
+public class GuiLoader extends GuiContainer {
 
-	private final TileEntityIndustrialLoader te2;
+	private final TileEntityIndustrialLoader te;
+	protected ResourceLocation texture;
 	
 	/**
 	 * @param inv
 	 * @param te
 	 */
 	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
-		super(inv, te);
-		this.te2 = te;
+		super(new ContainerLoader(inv, te));
+		this.te = te;
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
+	 */
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#initGui()
+	 */
+	@Override
+	public void initGui() {
+		super.initGui();
+		
+		this.buttonList.add(new GuiButton(0, guiLeft + 20, guiTop + 20, 20, 20, "-"));
+		this.buttonList.add(new GuiButton(1, guiLeft + 50, guiTop + 20, 20, 20, "+"));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
+	 */
+	@Override
+	public void actionPerformed(GuiButton button) {
+		// ProjectZed.logHelper.info(button.id);
 	}
 
 }
