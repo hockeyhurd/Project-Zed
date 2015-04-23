@@ -6,17 +6,20 @@
 */
 package com.projectzed.mod.block.machines;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for industrialLoader.
@@ -24,26 +27,26 @@ import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
  * @author hockeyhurd
  * @version Apr 19, 2015
  */
-public class BlockIndustrialLoader extends AbstractBlockMachine {
+public class BlockIndustrialLoader extends BlockContainer {
 
+	private final String name;
+	
 	public BlockIndustrialLoader() {
-		super("industrialLoader");
+		super(Material.rock);
+		this.name = "industrialLoader";
+		this.setBlockName(this.name);
+		this.setHardness(1.0f);
+		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
+	@SideOnly(Side.CLIENT)
 	@Override
-	public AbstractTileEntityMachine getTileEntity() {
-		return new TileEntityIndustrialLoader();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
-	 */
-	@Override
-	protected Block getBlockInstance() {
-		return this;
+	public void registerBlockIcons(IIconRegister reg) {
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + name);
 	}
 
 	/* (non-Javadoc)
@@ -54,12 +57,21 @@ public class BlockIndustrialLoader extends AbstractBlockMachine {
 		if (world.isRemote) return true;
 
 		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(x, y, z);
 			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
 			// world, x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y, z);
 			return true;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	 */
+	@Override
+	public TileEntity createNewTileEntity(World world, int id) {
+		return new TileEntityIndustrialLoader();
 	}
 
 }

@@ -6,14 +6,19 @@
 */
 package com.projectzed.mod.handler;
 
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 
 /**
  * The chunkloader event handler.
@@ -24,8 +29,16 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 public class WorldChunkHandler implements LoadingCallback {
 
 	private static final WorldChunkHandler INSTANCE = new WorldChunkHandler();
+	private static HashMap<Object, ModContainer> mods = new HashMap<Object, ModContainer>();
 	
 	private WorldChunkHandler() {
+	}
+	
+	public void registerMod(Object mod) {
+		ModContainer container = Loader.instance().getModObjectList().inverse().get(mod);
+		if (container == null) throw new NullPointerException("Mod container not found for: " + mod);
+		mods.put(mod, container);
+		ForgeChunkManager.setForcedChunkLoadingCallback(mod, instance());
 	}
 	
 	public static WorldChunkHandler instance() {

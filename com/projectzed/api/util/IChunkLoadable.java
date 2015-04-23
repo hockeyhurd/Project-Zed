@@ -4,31 +4,33 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.gui;
+package com.projectzed.api.util;
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 /**
- * Class containing gui code for industrial loader.
+ * Simple interface for any tileentity that can force chunk loading.
  * 
  * @author hockeyhurd
- * @version Apr 21, 2015
+ * @version Apr 22, 2015
  */
-public class GuiLoader extends GuiMachine {
+public interface IChunkLoadable {
 
-	private final TileEntityIndustrialLoader te2;
+	/**
+	 * Validates tileentity.
+	 */
+	void validate();
 	
 	/**
-	 * @param inv
-	 * @param te
+	 * Invalidates tileentity.
 	 */
-	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
-		super(inv, te);
-		this.te2 = te;
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
-	}
-
+	void invalidate();
+	
+	/**
+	 * Forces chunk loading method call.
+	 * 
+	 * @param ticket ticket to reference.
+	 */
+	void forceChunkLoading(Ticket ticket);
+	
 }

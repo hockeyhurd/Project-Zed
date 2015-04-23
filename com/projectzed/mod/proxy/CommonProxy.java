@@ -192,7 +192,7 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
 		
-		WorldChunkHandler.instance();
+		WorldChunkHandler.instance().registerMod(ProjectZed.instance);
 	}
 	
 	protected void registerFurnaceRecipes() {

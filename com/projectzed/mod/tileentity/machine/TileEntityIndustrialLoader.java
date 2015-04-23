@@ -12,8 +12,8 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.api.util.Sound;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -22,117 +22,121 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Apr 19, 2015
  */
-public class TileEntityIndustrialLoader extends AbstractTileEntityMachine {
+public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implements IChunkLoadable {
 
 	public Ticket heldChunk;
 	
 	public TileEntityIndustrialLoader() {
-		super("industrialLoader");
-		this.energyBurnRate = 0x200; 
+		super();
+		setCustomName("industrialLoader");
 	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
 	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
 	 */
 	@Override
 	public int getInventoryStackLimit() {
-		return 64;
+		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
 	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
 	@Override
 	protected void initSlotsArray() {
-		// 4 upgrades, 9 container
-		// this.slots = new ItemStack[4 + 9];
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
+	 */
+	@Override
+	public void setCustomName(String name) {
+		this.customName = name;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		// TODO: Add stuffs for uprades here.
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot == 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
-	 */
-	@Override
-	protected boolean canSmelt() {
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
-	 */
-	@Override
-	public void smeltItem() {
-	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
-	 */
-	@Override
-	public Sound getSound() {
-		return null;
-	}
 	
-	// DO LOADING HERE:
+	// DO CHUNK LOADING HERE:
 	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#invalidate()
+	 */
 	@Override
 	public void invalidate() {
 		forceChunkLoading(null);
 		super.invalidate();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#validate()
+	 */
 	@Override
 	public void validate() {
 		forceChunkLoading(null);
 		super.validate();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IChunkLoadable#forceChunkLoading(net.minecraftforge.common.ForgeChunkManager.Ticket)
+	 */
+	@Override
 	public void forceChunkLoading(Ticket ticket) {
 		if (this.worldObj.isRemote) return;
 		

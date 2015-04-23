@@ -61,6 +61,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(assetDir + name);
 	}
