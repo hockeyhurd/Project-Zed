@@ -6,16 +6,18 @@
 */
 package com.projectzed.mod.handler.message;
 
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * TileEntity message handler for packets.
@@ -46,7 +48,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
-		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.fluidID : -1;
+		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluidID() : -1;
 	}
 	
 	/*

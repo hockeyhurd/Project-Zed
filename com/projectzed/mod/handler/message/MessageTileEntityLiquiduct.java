@@ -46,7 +46,7 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
-		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.fluidID : -1;
+		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluidID() : -1;
 	}
 
 	/*

@@ -59,7 +59,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 */
 	@Override
 	public int getFluidID() {
-		return getTank().getFluid() != null ? getTank().getFluid().fluidID : -1;
+		return getTank().getFluid() != null ? getTank().getFluid().getFluidID() : -1;
 	}
 
 	/*
@@ -381,7 +381,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		HashMap<String, Number> data = new HashMap<String, Number>();
 		
 		int id = -1;
-		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().fluidID;
+		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().getFluidID();
 		
 		data.put("Fluid Amount", this.internalTank.getFluidAmount());
 		data.put("Fluid ID", id);

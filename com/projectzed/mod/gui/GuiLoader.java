@@ -6,6 +6,8 @@
 */
 package com.projectzed.mod.gui;
 
+import static com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader.MAX_RADII;
+import static com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader.MIN_RADII;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -27,6 +29,7 @@ public class GuiLoader extends GuiContainer {
 
 	private final TileEntityIndustrialLoader te;
 	protected ResourceLocation texture;
+	private byte size = 1;
 	
 	/**
 	 * @param inv
@@ -35,9 +38,23 @@ public class GuiLoader extends GuiContainer {
 	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
 		super(new ContainerLoader(inv, te));
 		this.te = te;
-		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiLoader.png");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerForegroundLayer(int, int)
+	 */
+	@Override
+	public void drawGuiContainerForegroundLayer(int x, int y) {
+		super.drawGuiContainerForegroundLayer(x, y);
+		
+		String name = size < 10 ? " " + size : "" + size;
+		int xPos = this.xSize - 132 - this.fontRendererObj.getStringWidth(name) / 2;
+		int yPos = this.ySize - 100 - this.fontRendererObj.getStringWidth(name) / 2;
+		this.fontRendererObj.drawString(name, xPos, yPos, 4210752);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
@@ -47,6 +64,19 @@ public class GuiLoader extends GuiContainer {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		
+		GL11.glColor4f(0f, 1f, 1f, 1f);
+		GL11.glPushMatrix();
+		
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2f(10f, 10f);
+		GL11.glVertex2f(100f, 10f);
+		GL11.glVertex2f(10f, 100f);
+		GL11.glVertex2f(100f, 100f);
+		GL11.glEnd();
+		
+		GL11.glPopMatrix();
+		
 	}
 	
 	/*
@@ -57,8 +87,8 @@ public class GuiLoader extends GuiContainer {
 	public void initGui() {
 		super.initGui();
 		
-		this.buttonList.add(new GuiButton(0, guiLeft + 20, guiTop + 20, 20, 20, "-"));
-		this.buttonList.add(new GuiButton(1, guiLeft + 50, guiTop + 20, 20, 20, "+"));
+		this.buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 56, 20, 20, "-"));
+		this.buttonList.add(new GuiButton(1, guiLeft + 60, guiTop + 56, 20, 20, "+"));
 	}
 	
 	/*
@@ -67,7 +97,15 @@ public class GuiLoader extends GuiContainer {
 	 */
 	@Override
 	public void actionPerformed(GuiButton button) {
-		// ProjectZed.logHelper.info(button.id);
+		if (button.displayString.equals("-")) {
+			if (!this.isShiftKeyDown() && size - 1 >= MIN_RADII) size--;
+			else if (this.isShiftKeyDown() && size > MIN_RADII) size = MIN_RADII;
+		}
+		
+		else if (button.displayString.equals("+")) {
+			if (!this.isShiftKeyDown() && size + 1 <= MAX_RADII) size++;
+			else if (this.isShiftKeyDown() && size < MAX_RADII) size = 10;
+		}
 	}
 
 }

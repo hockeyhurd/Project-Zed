@@ -26,6 +26,9 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 
 	public Ticket heldChunk;
 	
+	public static final byte MIN_RADII = 1;
+	public static final byte MAX_RADII = 10;
+	
 	public TileEntityIndustrialLoader() {
 		super();
 		setCustomName("industrialLoader");
