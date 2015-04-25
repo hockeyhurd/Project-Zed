@@ -12,6 +12,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
+import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
@@ -41,6 +42,8 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityLoader.class, MessageTileEntityLoader.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityLoader.class, MessageTileEntityLoader.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);

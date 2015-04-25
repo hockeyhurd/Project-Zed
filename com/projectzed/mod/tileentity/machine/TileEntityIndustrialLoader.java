@@ -7,14 +7,22 @@
 package com.projectzed.mod.tileentity.machine;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityLoader;
+import com.sun.javafx.geom.Vec2d;
 
 /**
  * Class containing tileentity code for industrialLoader.
@@ -27,7 +35,8 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public Ticket heldChunk;
 	
 	public static final byte MIN_RADII = 1;
-	public static final byte MAX_RADII = 10;
+	public static final byte MAX_RADII = 6;
+	private byte radii = 1;
 	
 	public TileEntityIndustrialLoader() {
 		super();
@@ -113,6 +122,58 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		return false;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void readFromNBT(NBTTagCompound comp) {
+		super.readFromNBT(comp);
+		this.radii = comp.getByte("ChunkRadii");
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
+	public void writeToNBT(NBTTagCompound comp) {
+		super.writeToNBT(comp);
+		comp.setByte("ChunkRadii", this.radii);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
+	 */
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
+	}
+	
+	public byte getRadii() {
+		return radii;
+	}
+	
+	public void setRadii(byte radii) {
+		byte before = this.radii;
+		this.radii = radii;
+		
+		if (before != this.radii) {
+			forceChunkLoading(null);
+			forceChunkLoading(null);
+		}
+	}
+	
 	// DO CHUNK LOADING HERE:
 	
 	/*
@@ -145,7 +206,18 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		
 		if (ticket != null) {
 			this.heldChunk = ticket;
-			ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+			// ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+			if (this.radii == 1) ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+			else {
+				Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+				
+				for (int x = -this.radii + 1; x <= this.radii; x++) {
+					for (int z = -this.radii + 1; z <= this.radii; z++) {
+						ProjectZed.logHelper.info(1, "Radii:", this.radii, vec.x + (x >> 4), vec.z + (z >> 4));
+						ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
+					}
+				}
+			}
 		}
 		
 		else {
@@ -157,7 +229,19 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 				
 				this.heldChunk = newTicket;
 				
-				ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+				if (this.radii == 1) ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
+				else {
+					Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+					
+					for (int x = -this.radii + 1; x < this.radii; x++) {
+						for (int z = -this.radii + 1; z < this.radii; z++) {
+							ProjectZed.logHelper.info(x, z);
+							// ProjectZed.logHelper.info(2, "Radii:", this.radii, vec.x + (x >> 4), vec.z + (z >> 4), x >> 4);
+							ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
+						}
+					}
+				}
+				
 			}
 			
 			else {

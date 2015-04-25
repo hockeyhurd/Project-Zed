@@ -17,6 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.mod.container.ContainerLoader;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 
 /**
@@ -29,7 +31,7 @@ public class GuiLoader extends GuiContainer {
 
 	private final TileEntityIndustrialLoader te;
 	protected ResourceLocation texture;
-	private byte size = 1;
+	private byte radii = 1;
 	
 	/**
 	 * @param inv
@@ -38,6 +40,7 @@ public class GuiLoader extends GuiContainer {
 	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
 		super(new ContainerLoader(inv, te));
 		this.te = te;
+		this.radii = te.getRadii();
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiLoader.png");
 	}
 
@@ -49,7 +52,7 @@ public class GuiLoader extends GuiContainer {
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		super.drawGuiContainerForegroundLayer(x, y);
 		
-		String name = size < 10 ? " " + size : "" + size;
+		String name = radii < 10 ? " " + radii : "" + radii;
 		int xPos = this.xSize - 132 - this.fontRendererObj.getStringWidth(name) / 2;
 		int yPos = this.ySize - 100 - this.fontRendererObj.getStringWidth(name) / 2;
 		this.fontRendererObj.drawString(name, xPos, yPos, 4210752);
@@ -64,18 +67,16 @@ public class GuiLoader extends GuiContainer {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+
+		if (radii > 1) {
+			for (int yy = -radii + 1; yy < radii; yy++) {
+				for (int xx = -radii + 1; xx < radii; xx++) {
+					this.drawTexturedModalRect(guiLeft + 125 + (xx * 6), guiTop + 40 + (yy * 6), 0, 171, 6, 6);
+				}
+			}
+		}
 		
-		GL11.glColor4f(0f, 1f, 1f, 1f);
-		GL11.glPushMatrix();
-		
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2f(10f, 10f);
-		GL11.glVertex2f(100f, 10f);
-		GL11.glVertex2f(10f, 100f);
-		GL11.glVertex2f(100f, 100f);
-		GL11.glEnd();
-		
-		GL11.glPopMatrix();
+		else this.drawTexturedModalRect(guiLeft + 125, guiTop + 40, 0, 171, 6, 6);
 		
 	}
 	
@@ -97,14 +98,25 @@ public class GuiLoader extends GuiContainer {
 	 */
 	@Override
 	public void actionPerformed(GuiButton button) {
+		boolean didSomething = false;
+		
 		if (button.displayString.equals("-")) {
-			if (!this.isShiftKeyDown() && size - 1 >= MIN_RADII) size--;
-			else if (this.isShiftKeyDown() && size > MIN_RADII) size = MIN_RADII;
+			if (!this.isShiftKeyDown() && radii - 1 >= MIN_RADII) radii--;
+			else if (this.isShiftKeyDown() && radii > MIN_RADII) radii = MIN_RADII;
+			
+			didSomething = true;
 		}
 		
 		else if (button.displayString.equals("+")) {
-			if (!this.isShiftKeyDown() && size + 1 <= MAX_RADII) size++;
-			else if (this.isShiftKeyDown() && size < MAX_RADII) size = 10;
+			if (!this.isShiftKeyDown() && radii + 1 <= MAX_RADII) radii++;
+			else if (this.isShiftKeyDown() && radii < MAX_RADII) radii = MAX_RADII;
+			
+			didSomething = true;
+		}
+		
+		if (didSomething) {
+			this.te.setRadii(this.radii);
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityLoader(this.te, this.radii));
 		}
 	}
 
