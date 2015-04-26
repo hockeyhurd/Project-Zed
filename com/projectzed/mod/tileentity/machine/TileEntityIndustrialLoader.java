@@ -22,7 +22,6 @@ import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLoader;
-import com.sun.javafx.geom.Vec2d;
 
 /**
  * Class containing tileentity code for industrialLoader.
@@ -37,6 +36,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public static final byte MIN_RADII = 1;
 	public static final byte MAX_RADII = 6;
 	private byte radii = 1;
+	private byte lastRadii = 1;
 	
 	public TileEntityIndustrialLoader() {
 		super();
@@ -130,6 +130,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		this.radii = comp.getByte("ChunkRadii");
+		this.lastRadii = this.radii;
 	}
 	
 	/*
@@ -165,12 +166,22 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	}
 	
 	public void setRadii(byte radii) {
-		byte before = this.radii;
 		this.radii = radii;
+	}
+	
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
 		
-		if (before != this.radii) {
-			forceChunkLoading(null);
-			forceChunkLoading(null);
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLoader(this, getRadii()));
+
+			if (this.lastRadii != this.radii) {
+				// if (this.heldChunk != null) ForgeChunkManager.releaseTicket(this.heldChunk);
+				forceChunkLoading(null);
+				forceChunkLoading(null);
+				this.lastRadii = this.radii;
+			}
 		}
 	}
 	
@@ -213,7 +224,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 				
 				for (int x = -this.radii + 1; x <= this.radii; x++) {
 					for (int z = -this.radii + 1; z <= this.radii; z++) {
-						ProjectZed.logHelper.info(1, "Radii:", this.radii, vec.x + (x >> 4), vec.z + (z >> 4));
 						ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
 					}
 				}
@@ -232,10 +242,11 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 				if (this.radii == 1) ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
 				else {
 					Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+					ProjectZed.logHelper.info(-this.radii + 1, this.radii - 1);
 					
 					for (int x = -this.radii + 1; x < this.radii; x++) {
 						for (int z = -this.radii + 1; z < this.radii; z++) {
-							ProjectZed.logHelper.info(x, z);
+							// ProjectZed.logHelper.info(x, z);
 							// ProjectZed.logHelper.info(2, "Radii:", this.radii, vec.x + (x >> 4), vec.z + (z >> 4), x >> 4);
 							ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
 						}

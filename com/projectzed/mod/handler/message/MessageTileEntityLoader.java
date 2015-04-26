@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -70,7 +71,15 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 			if (world != null && te != null && te instanceof TileEntityIndustrialLoader) {
 				TileEntityIndustrialLoader te2 = (TileEntityIndustrialLoader) te;
 
-				te2.setRadii(message.radii);
+				if (message.radii != -1 && message.radii != te2.getRadii()) te2.setRadii(message.radii);
+			}
+		}
+		
+		else if (ctx.side == Side.CLIENT) {
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			
+			if (te != null && te instanceof TileEntityIndustrialLoader) {
+				if (((TileEntityIndustrialLoader) te).getRadii() != message.radii) ((TileEntityIndustrialLoader) te).setRadii(message.radii);
 			}
 		}
 		

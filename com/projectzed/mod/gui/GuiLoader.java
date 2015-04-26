@@ -31,7 +31,7 @@ public class GuiLoader extends GuiContainer {
 
 	private final TileEntityIndustrialLoader te;
 	protected ResourceLocation texture;
-	private byte radii = 1;
+	private byte radii;
 	
 	/**
 	 * @param inv
@@ -40,7 +40,6 @@ public class GuiLoader extends GuiContainer {
 	public GuiLoader(InventoryPlayer inv, TileEntityIndustrialLoader te) {
 		super(new ContainerLoader(inv, te));
 		this.te = te;
-		this.radii = te.getRadii();
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiLoader.png");
 	}
 
@@ -90,6 +89,8 @@ public class GuiLoader extends GuiContainer {
 		
 		this.buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 56, 20, 20, "-"));
 		this.buttonList.add(new GuiButton(1, guiLeft + 60, guiTop + 56, 20, 20, "+"));
+		
+		this.radii = te.getRadii();
 	}
 	
 	/*
