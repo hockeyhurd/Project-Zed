@@ -26,6 +26,7 @@ tile.industrialLumberMill.name=Industrial Lumber Mill
 tile.industrialMetalPress.name=Industrial Metal Press
 tile.industrialCentrifuge.name=Industrial Centrifuge
 tile.industrialEnergizer.name=Industrial Energizer
+tile.industrialLoader.name=Industrial Chunk Loader
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
