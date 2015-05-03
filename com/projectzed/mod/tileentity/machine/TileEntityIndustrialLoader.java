@@ -34,7 +34,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public Ticket heldChunk;
 	
 	public static final byte MIN_RADII = 1;
-	public static final byte MAX_RADII = 6;
+	public static final byte MAX_RADII = 3; // temp lowered from 6 to 3 until decided how to overcome forge chunk loading limitations.
 	private byte radii = 1;
 	private byte lastRadii = 1;
 	
@@ -177,9 +177,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLoader(this, getRadii()));
 
 			if (this.lastRadii != this.radii) {
-				// if (this.heldChunk != null) ForgeChunkManager.releaseTicket(this.heldChunk);
-				forceChunkLoading(null);
-				forceChunkLoading(null);
+				loadChunk(null);
 				this.lastRadii = this.radii;
 			}
 		}
@@ -193,7 +191,8 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 */
 	@Override
 	public void invalidate() {
-		forceChunkLoading(null);
+		// forceChunkLoading(null);
+		unloadChunk();
 		super.invalidate();
 	}
 
@@ -203,62 +202,60 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 */
 	@Override
 	public void validate() {
-		forceChunkLoading(null);
+		// forceChunkLoading(null);
+		loadChunk(null);
 		super.validate();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IChunkLoadable#forceChunkLoading(net.minecraftforge.common.ForgeChunkManager.Ticket)
+	 * @see com.projectzed.api.util.IChunkLoadable#loadChunk(net.minecraftforge.common.ForgeChunkManager.Ticket)
 	 */
 	@Override
-	public void forceChunkLoading(Ticket ticket) {
-		if (this.worldObj.isRemote) return;
-		
+	public void loadChunk(Ticket ticket) {
 		if (ticket != null) {
 			this.heldChunk = ticket;
-			// ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
-			if (this.radii == 1) ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
-			else {
-				Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
-				
-				for (int x = -this.radii + 1; x <= this.radii; x++) {
-					for (int z = -this.radii + 1; z <= this.radii; z++) {
-						ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
-					}
+			
+			Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+			
+			for (int x = -this.radii + 1; x < this.radii; x++) {
+				for (int z = -this.radii + 1; z < this.radii; z++) {
+					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.z + z));
 				}
 			}
+			
 		}
 		
 		else {
-			if (this.heldChunk == null) {
-				Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
-				newTicket.getModData().setInteger("xCoord", this.xCoord);
-				newTicket.getModData().setInteger("yCoord", this.yCoord);
-				newTicket.getModData().setInteger("zCoord", this.zCoord);
-				
-				this.heldChunk = newTicket;
-				
-				if (this.radii == 1) ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(this.xCoord >> 4, this.zCoord >> 4));
-				else {
-					Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
-					ProjectZed.logHelper.info(-this.radii + 1, this.radii - 1);
-					
-					for (int x = -this.radii + 1; x < this.radii; x++) {
-						for (int z = -this.radii + 1; z < this.radii; z++) {
-							// ProjectZed.logHelper.info(x, z);
-							// ProjectZed.logHelper.info(2, "Radii:", this.radii, vec.x + (x >> 4), vec.z + (z >> 4), x >> 4);
-							ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + (x >> 4), vec.z + (z >> 4)));
-						}
-					}
+			if (this.heldChunk != null) unloadChunk();
+			
+			Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
+			newTicket.getModData().setInteger("xCoord", this.xCoord);
+			newTicket.getModData().setInteger("yCoord", this.yCoord);
+			newTicket.getModData().setInteger("zCoord", this.zCoord);
+			
+			this.heldChunk = newTicket;
+			
+			Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+			
+			for (int x = -this.radii + 1; x < this.radii; x++) {
+				for (int z = -this.radii + 1; z < this.radii; z++) {
+					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.z + z));
 				}
-				
 			}
 			
-			else {
-				ForgeChunkManager.releaseTicket(this.heldChunk);
-				this.heldChunk = null;
-			}
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IChunkLoadable#unloadChunk()
+	 */
+	@Override
+	public void unloadChunk() {
+		if (this.heldChunk != null) {
+			ForgeChunkManager.releaseTicket(this.heldChunk);
+			this.heldChunk = null;
 		}
 	}
 

@@ -25,12 +25,17 @@ public interface IChunkLoadable {
 	 * Invalidates tileentity.
 	 */
 	void invalidate();
+
+	/**
+	 * Forces chunk loading from provided ticket.
+	 * 
+	 * @param ticket ticket to reference for chunk loading.
+	 */
+	void loadChunk(Ticket ticket);
 	
 	/**
-	 * Forces chunk loading method call.
-	 * 
-	 * @param ticket ticket to reference.
+	 * Releases ticket and removes force chunk loading operation.
 	 */
-	void forceChunkLoading(Ticket ticket);
+	void unloadChunk();
 	
 }

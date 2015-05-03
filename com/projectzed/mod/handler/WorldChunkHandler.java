@@ -57,7 +57,8 @@ public class WorldChunkHandler implements LoadingCallback {
 			vec.z = ticket.getModData().getInteger("zCoord");
 			
 			if (world.getTileEntity(vec.x, vec.y, vec.z) != null && world.getTileEntity(vec.x, vec.y, vec.z) instanceof TileEntityIndustrialLoader) {
-				((TileEntityIndustrialLoader) world.getTileEntity(vec.x, vec.y, vec.z)).forceChunkLoading(ticket);
+				// ((TileEntityIndustrialLoader) world.getTileEntity(vec.x, vec.y, vec.z)).forceChunkLoading(ticket);
+				((TileEntityIndustrialLoader) world.getTileEntity(vec.x, vec.y, vec.z)).loadChunk(ticket);
 			}
 		}
 	}

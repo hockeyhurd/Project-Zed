@@ -31,6 +31,7 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.util.HeatLogic;
 
 /**
  * Class used to calculate and generate power through
@@ -55,10 +56,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private HashMap<Block, List<Vector4<Integer>>> mbMapVec;
 	private HashMap<Fluid, Boolean> fluidMap;
 	private TileEntityNuclearIOPort inputPort;
+	private HeatLogic heatLogic;
 	
 	public TileEntityNuclearController() {
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
+		
+		heatLogic = new HeatLogic(2500, 0.05f);
 	}
 	
 	/**
