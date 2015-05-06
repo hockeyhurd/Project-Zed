@@ -9,14 +9,18 @@ package com.projectzed.mod.tileentity.container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
+import com.projectzed.mod.util.Reference;
 
 /**
  * Class containing code for te fluid tank.
@@ -207,9 +211,58 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		return false;
 	}
 
-	// TODO: Create logic for importing contents (via pipe or something).
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#importContents()
+	 */
 	@Override
 	protected void importContents() {
+		if (!this.worldObj.isRemote) {
+			
+			// export to tank below:
+			if (this.getTank().getFluidAmount() > 0 && this.openSides[ForgeDirection.DOWN.ordinal()] == 1) {
+				TileEntity te = worldObj.getTileEntity(worldVec().x, worldVec().y - 1, worldVec().z);
+				if (te != null && te instanceof IFluidHandler) {
+					IFluidHandler tank = (IFluidHandler) te;
+					
+					if (this.getTank().getFluid() != null && this.getTank().getFluid().getFluid() != null
+							&& tank.canFill(ForgeDirection.UP, this.getTank().getFluid().getFluid())) {
+						
+						FluidStack thisStack = this.getTank().getFluid();
+						int amount = getAmountFromTank(tank, thisStack, ForgeDirection.UP);
+						
+						// if destination tank is empty set to default size.
+						if (amount == 0) amount = Reference.Constants.BASE_FLUID_TRANSFER_RATE;
+						
+						amount = Math.min(amount, thisStack.amount);
+						amount = Math.min(amount, Reference.Constants.BASE_FLUID_TRANSFER_RATE);
+						
+						if (amount > 0) {
+							FluidStack sendStack = thisStack.copy();
+							sendStack.amount = amount;
+							
+							amount = sendStack.amount = tank.fill(ForgeDirection.UP, sendStack, false);
+							
+							this.getTank().drain(amount, true);
+							tank.fill(ForgeDirection.UP, sendStack, true);
+						}
+						
+					}
+				}
+			}
+			
+		}
+	}
+	
+	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, ForgeDirection dir) {
+		if (tank != null && stack != null && stack.amount > 0 && dir != ForgeDirection.UNKNOWN && tank.getTankInfo(dir) != null &&tank.getTankInfo(dir).length > 0) {
+			for (int i = 0; i < tank.getTankInfo(dir).length; i++) {
+				if (tank.getTankInfo(dir)[i].fluid != null && tank.getTankInfo(dir)[i].fluid.amount > 0
+						&& tank.getTankInfo(dir)[i].fluid.isFluidEqual(stack)) return tank.getTankInfo(dir)[i].fluid.amount; 
+			}
+		}
+		
+		return 0;
 	}
 
 	/*
