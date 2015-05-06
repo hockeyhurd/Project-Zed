@@ -10,14 +10,18 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.projectzed.mod.ProjectZed;
 
 /**
- * Item class for conductiveCoil.
+ * Item class for electricMotor.
  * 
  * @author hockeyhurd
- * @version Nov 29, 2014
+ * @version May 5, 2015
  */
-public class ItemConductiveCoil extends AbstractItemMetalic {
+public class ItemElectricMotor extends AbstractItemMetalic {
 
-	public ItemConductiveCoil(String name, String assetDir) {
+	/**
+	 * @param name
+	 * @param assetDir
+	 */
+	public ItemElectricMotor(String name, String assetDir) {
 		super(name, assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}

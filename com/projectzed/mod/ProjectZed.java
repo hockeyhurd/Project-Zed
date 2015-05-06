@@ -66,6 +66,7 @@ import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.handler.SortingConfigHandler;
 import com.projectzed.mod.item.ItemConductiveCoil;
 import com.projectzed.mod.item.ItemDongle;
+import com.projectzed.mod.item.ItemElectricMotor;
 import com.projectzed.mod.item.ItemForgingHammer;
 import com.projectzed.mod.item.ItemFuelRod;
 import com.projectzed.mod.item.ItemGear;
@@ -76,6 +77,7 @@ import com.projectzed.mod.item.metals.ItemDustCoal;
 import com.projectzed.mod.item.metals.ItemDustCopper;
 import com.projectzed.mod.item.metals.ItemDustGold;
 import com.projectzed.mod.item.metals.ItemDustIron;
+import com.projectzed.mod.item.metals.ItemDustMixedAlloy;
 import com.projectzed.mod.item.metals.ItemDustNickel;
 import com.projectzed.mod.item.metals.ItemDustTitanium;
 import com.projectzed.mod.item.metals.ItemDustUranium;
@@ -181,6 +183,7 @@ public class ProjectZed {
 	public static Item sheetAluminium;
 	public static Item sheetReinforced;
 	public static Item conductiveCoil;
+	public static Item electricMotor;
 	public static Item gearWooden;
 	public static Item gearStone;
 	public static Item gearIron;
@@ -206,6 +209,7 @@ public class ProjectZed {
 	public static Item dustAluminium;
 	public static Item dustUranium;
 	public static Item enrichedUranium;
+	public static Item dustMixedAlloy;
 	
 	public static Item ingotTitanium;
 	public static Item ingotCopper;
@@ -358,7 +362,8 @@ public class ProjectZed {
 		screw = new ItemScrew("screw", assetDir);
 		sheetAluminium = new ItemSheetAluminium("sheetAluminium", assetDir);
 		sheetReinforced = new ItemSheetReinforced("sheetReinforced", assetDir);
-		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
+		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);	
+		electricMotor = new ItemElectricMotor("electricMotor", assetDir);
 		gearWooden = new ItemGear("gearWooden", assetDir);
 		gearStone = new ItemGear("gearStone", assetDir);
 		gearIron = new ItemGear("gearIron", assetDir);
@@ -383,6 +388,7 @@ public class ProjectZed {
 		dustAluminium = new ItemDustAluminium("dustAluminium", assetDir);
 		dustUranium = new ItemDustUranium("dustUranium", assetDir, false);
 		enrichedUranium = new ItemDustUranium("enrichedUranium", assetDir, true);
+		dustMixedAlloy = new ItemDustMixedAlloy("dustMixedAlloy", assetDir);
 		
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);

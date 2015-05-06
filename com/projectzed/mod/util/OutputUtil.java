@@ -4,22 +4,37 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.item;
+package com.projectzed.mod.util;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
-import com.projectzed.mod.ProjectZed;
+import net.minecraft.item.ItemStack;
 
 /**
- * Item class for conductiveCoil.
+ * Small util class using in mapping stacks with numerical data.
  * 
  * @author hockeyhurd
- * @version Nov 29, 2014
+ * @version May 5, 2015
  */
-public class ItemConductiveCoil extends AbstractItemMetalic {
+public class OutputUtil {
 
-	public ItemConductiveCoil(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+	public final ItemStack stack;
+	public final float xp;
+	
+	/**
+	 * @param stack itemstack
+	 * @param xp xp/data.
+	 */
+	public OutputUtil(ItemStack stack, float xp) {
+		this.stack = stack;
+		this.xp = xp;
+	}
+	
+	/**
+	 * Checks to see if itemstack is valid.
+	 * 
+	 * @return true if valid, else returns false.
+	 */
+	public boolean isValid() {
+		return stack != null && stack.stackSize > 0;
 	}
 
 }

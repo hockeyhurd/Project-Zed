@@ -90,13 +90,15 @@ public final class CraftingRegistry {
 		// Items:
 		reg.shapedList.add(createShapedRecipe(forgingHammer, 1, "xxx", "xyx", " y ", 'x', "ingotTitanium", 'y', "stickWood"));
 		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, " yx", "yxy", "xy ", 'x', "ingotCopper", 'y', Items.redstone));
+		reg.shapedList.add(createShapedRecipe(electricMotor, 1, "bab", "cac", "dad", 'a', conductiveCoil, 'b', Items.redstone, 'c', "plateAluminium", 'd', gearIron));
 		reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
+		reg.shapedList.add(createShapedRecipe(dustMixedAlloy, 2, "xxx", "yyy", "zzz", 'x', "dustIron", 'y', "dustCopper", 'z', "dustTitanium"));
 		
 		// tools:
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
 		// reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', gearTitanium));
-		reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', gearTitanium));
+		reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', electricMotor, 'b', conductiveCoil, 'c', Items.redstone, 'd', sheetReinforced, 'e', gearTitanium));
 		
 		// Blocks:
 		reg.shapedList.add(createShapedRecipe(blockTitanium, 1, "xxx", "xxx", "xxx", 'x', "ingotTitanium"));

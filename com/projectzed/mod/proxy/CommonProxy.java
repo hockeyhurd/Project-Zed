@@ -13,9 +13,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
@@ -36,11 +34,13 @@ import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import com.projectzed.mod.registry.DrillSetRegistry;
+import com.projectzed.mod.registry.FurnaceRecipeRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 import com.projectzed.mod.registry.MetalPressRecipesRegistry;
 import com.projectzed.mod.registry.PZEntityRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.util.OutputUtil;
 import com.projectzed.mod.util.Reference;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -84,7 +84,6 @@ public class CommonProxy {
 		registerEntities();
 		registerTileEntities();
 		registerGuiHandler();
-		registerFurnaceRecipes();
 		registerRegisters();
 		registerEventHandlers();
 	}
@@ -113,8 +112,10 @@ public class CommonProxy {
 		}
 		
 		OreDictionary.registerOre("plateAluminium", ProjectZed.sheetAluminium);
+		OreDictionary.registerOre("plateAluminum", ProjectZed.sheetAluminium);
 		OreDictionary.registerOre("plateReinforced", ProjectZed.sheetReinforced);
 		OreDictionary.registerOre("mixedAlloy", ProjectZed.mixedAlloy);
+		OreDictionary.registerOre("dustMixedAlloy", ProjectZed.dustMixedAlloy);
 		OreDictionary.registerOre("dustCoal", ProjectZed.dustCoal);
 	}
 	
@@ -179,6 +180,20 @@ public class CommonProxy {
 			}
 		}
 		
+		FurnaceRecipeRegistry furn = FurnaceRecipeRegistry.instance();
+		furn.init();
+		OutputUtil out;
+		
+		for (Object obj : furn.getMap().keySet()) {
+			if (obj != null && furn.getMap().containsKey(obj)) {
+				out = furn.getMap().get(obj);
+				if (out == null || !out.isValid()) continue;
+				
+				if (obj instanceof Block) GameRegistry.addSmelting((Block) obj, out.stack, out.xp);
+				else if (obj instanceof Item) GameRegistry.addSmelting((Item) obj, out.stack, out.xp);
+			}
+		}
+		
 		CrusherRecipesRegistry.init();
 		LumberMillRecipesRegistry.init();
 		MetalPressRecipesRegistry.init();
@@ -193,23 +208,6 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
 		
 		WorldChunkHandler.instance().registerMod(ProjectZed.instance);
-	}
-	
-	protected void registerFurnaceRecipes() {
-		GameRegistry.addSmelting(ProjectZed.dustIron, new ItemStack(Items.iron_ingot), 25f);
-		GameRegistry.addSmelting(ProjectZed.dustGold, new ItemStack(Items.gold_ingot), 25f);
-		
-		GameRegistry.addSmelting(ProjectZed.oreTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
-		GameRegistry.addSmelting(ProjectZed.dustTitanium, new ItemStack(ProjectZed.ingotTitanium, 1), 50f);
-		
-		GameRegistry.addSmelting(ProjectZed.oreCopper, new ItemStack(ProjectZed.ingotCopper, 1), 50f);
-		GameRegistry.addSmelting(ProjectZed.dustCopper, new ItemStack(ProjectZed.ingotCopper, 1), 50f);
-		
-		GameRegistry.addSmelting(ProjectZed.oreNickel, new ItemStack(ProjectZed.ingotNickel, 1), 50f);
-		GameRegistry.addSmelting(ProjectZed.dustNickel, new ItemStack(ProjectZed.ingotNickel, 1), 50f);
-		
-		GameRegistry.addSmelting(ProjectZed.oreAluminium, new ItemStack(ProjectZed.ingotAluminium, 1), 50f);
-		GameRegistry.addSmelting(ProjectZed.dustAluminium, new ItemStack(ProjectZed.ingotAluminium, 1), 50f);
 	}
 	
 	public void registerUpdateHandler() {

@@ -4,20 +4,24 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.item;
+package com.projectzed.mod.item.metals;
 
 import com.hockeyhurd.api.item.AbstractItemMetalic;
 import com.projectzed.mod.ProjectZed;
 
 /**
- * Item class for conductiveCoil.
+ * Item class for dustMixedAlloy.
  * 
  * @author hockeyhurd
- * @version Nov 29, 2014
+ * @version May 5, 2015
  */
-public class ItemConductiveCoil extends AbstractItemMetalic {
+public class ItemDustMixedAlloy extends AbstractItemMetalic {
 
-	public ItemConductiveCoil(String name, String assetDir) {
+	/**
+	 * @param name
+	 * @param assetDir
+	 */
+	public ItemDustMixedAlloy(String name, String assetDir) {
 		super(name, assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
