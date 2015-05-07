@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -316,6 +318,14 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	@Override
 	public boolean canRotateTE() {
 		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
+	 */
+	@Override
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec) {
 	}
 
 	/*

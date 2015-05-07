@@ -6,18 +6,22 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
 import com.projectzed.mod.util.Reference;
@@ -227,7 +231,6 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 					
 					if (this.getTank().getFluid() != null && this.getTank().getFluid().getFluid() != null
 							&& tank.canFill(ForgeDirection.UP, this.getTank().getFluid().getFluid())) {
-						
 						FluidStack thisStack = this.getTank().getFluid();
 						int amount = getAmountFromTank(tank, thisStack, ForgeDirection.UP);
 						
@@ -326,4 +329,20 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
+	 */
+	@Override
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec) {
+		if (!world.isRemote && !player.isSneaking()) {
+			
+			ProjectZed.logHelper.info(this.openSides[ForgeDirection.DOWN.ordinal()]);
+			// change valve on tank's bottom size:
+			setSideValveAndRotate(ForgeDirection.DOWN);
+			
+			ProjectZed.logHelper.info(this.openSides[ForgeDirection.DOWN.ordinal()]);
+		}
+	}
+	
 }

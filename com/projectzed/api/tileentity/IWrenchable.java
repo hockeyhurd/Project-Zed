@@ -8,7 +8,9 @@ package com.projectzed.api.tileentity;
 
 import java.util.HashMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import com.hockeyhurd.api.math.Vector4;
 
@@ -35,6 +37,16 @@ public interface IWrenchable {
 	 * @return true if can be rotated else returns false.
 	 */
 	boolean canRotateTE();
+	
+	/**
+	 * Method called when wrench was used on tileentity.
+	 * 
+	 * @param stack itemstack, (reference to wrench itself).
+	 * @param player player interacted with.
+	 * @param world world used.
+	 * @param vec vector of tileentity.
+	 */
+	void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec);
 	
 	/**
 	 * Function to get whether picking up tileentity should save its data and contents.

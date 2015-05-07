@@ -117,6 +117,8 @@ public class ItemWrench extends Item {
 					WorldUtils.addItemDrop(itemToDrop, world, vecClick.x, vecClick.y, vecClick.z);
 				}
 				
+				wrench.onInteract(stack, player, world, vecClick);
+				
 			}
 		}
 		

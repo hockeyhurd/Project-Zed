@@ -8,6 +8,7 @@ package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,6 +34,8 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	public int fluidID;
 	public byte tier;
 	
+	public byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	
 	public MessageTileEntityFluidTank() {
 	}
 	
@@ -49,6 +52,10 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		
 		FluidStack fluidStack = te.getTank().getFluid();
 		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluidID() : -1;
+		
+		for (int i = 0; i < openSides.length; i++) {
+			this.openSides[i] = te.getSideValve(i);
+		}
 	}
 	
 	/*
@@ -63,6 +70,10 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		this.tier = buf.readByte();
 		this.fluidAmount = buf.readInt();
 		this.fluidID = buf.readInt();
+		
+		for (int i = 0; i < openSides.length; i++) {
+			openSides[i] = buf.readByte();
+		}
 	}
 
 	/*
@@ -77,6 +88,10 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 		buf.writeByte(this.tier);
 		buf.writeInt(this.fluidAmount);
 		buf.writeInt(this.fluidID);
+		
+		for (byte b : openSides) {
+			buf.writeByte(b);
+		}
 	}
 	
 	/*
@@ -102,6 +117,10 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 			}
 			
 			else te2.getTank().setFluid((FluidStack) null);
+			
+			for (int i = 0; i < message.openSides.length; i++) {
+				te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+			}
 		}
 		
 		return null;

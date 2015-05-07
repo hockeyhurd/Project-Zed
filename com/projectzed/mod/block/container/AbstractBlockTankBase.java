@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
@@ -136,6 +137,7 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 			if (te != null && player != null) {
 
 				if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() != null) {
+					if (player.getCurrentEquippedItem().getItem() instanceof ItemWrench) return false;
 
 					// fill item from fluid tank.
 					if (FluidContainerRegistry.isEmptyContainer(player.getCurrentEquippedItem())
