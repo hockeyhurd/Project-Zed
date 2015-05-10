@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.api.fluid.FluidNetwork;
 
 /**
  * Helper interface to get more relevant info for this te tank.
@@ -82,5 +83,15 @@ public interface IFluidContainer extends IFluidHandler {
 	 * @return world vector.
 	 */
 	Vector4<Integer> worldVec();
+	
+	// Start fluid networking:
+	
+	boolean canBeMaster();
+	
+	boolean isMaster();
+	
+	boolean hasFluidNetwork();
+	
+	FluidNetwork getNetwork();
 	
 }

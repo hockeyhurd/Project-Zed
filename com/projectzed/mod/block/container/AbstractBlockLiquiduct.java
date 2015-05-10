@@ -177,5 +177,16 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockPipe#doBreakBlock(net.minecraft.world.World, int, int, int)
+	 */
+	@Override
+	protected void doBreakBlock(World world, int x, int y, int z) {
+		TileEntityLiquiductBase duct = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
+		
+		if (duct != null && duct.getNetwork() != null) duct.getNetwork().remove(duct.getNetwork().getNodeAt(duct.worldVec()));
+	}
 
 }

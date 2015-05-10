@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 
 import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IWrenchable;
 
@@ -37,6 +38,9 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	protected FluidTank internalTank;
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	
+	protected FluidNetwork network;
+	protected boolean isMaster;
 
 	/**
 	 * @param name = name of te (its custom name).
@@ -414,6 +418,26 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	@Override
 	public Vector4<Integer> worldVec() {
 		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	}
+	
+	@Override
+	public boolean canBeMaster() {
+		return false;
+	}
+	
+	@Override
+	public boolean isMaster() {
+		return isMaster;
+	}
+	
+	@Override
+	public boolean hasFluidNetwork() {
+		return network != null;
+	}
+	
+	@Override
+	public FluidNetwork getNetwork() {
+		return network;
 	}
 
 }
