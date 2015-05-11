@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.mod.util.WorldUtils;
 
 /**
  * Class containing code for a FluidNode, used in and for tracking 
@@ -25,17 +26,46 @@ import com.projectzed.api.fluid.container.IFluidContainer;
 public class FluidNode {
 
 	private IFluidHandler container;
+	private ForgeDirection[] connections;
 	private Vector4<Integer> vec = Vector4.zero.getVector4i();
-	private ValveType type;
+	private ValveType valveType;
 	
-	public FluidNode(IFluidContainer container, Vector4<Integer> vec) {
-		this(container, vec, ValveType.NEUTRAL);
+	private FluidNetwork network = null;
+	
+	public FluidNode(IFluidContainer container, ForgeDirection[] connections, Vector4<Integer> vec) {
+		this(container, connections, vec, ValveType.NEUTRAL);
 	}
 	
-	public FluidNode(IFluidHandler container, Vector4<Integer> vec, ValveType type) {
+	public FluidNode(IFluidHandler container, ForgeDirection[] connections, Vector4<Integer> vec, ValveType type) {
 		this.container = container;
+		this.connections = new ForgeDirection[connections.length];
+		
+		for (int i = 0; i < connections.length; i++) {
+			this.connections[i] = connections[i];
+		}
+		
 		this.vec = vec;
-		this.type = type;
+		this.valveType = type;
+	}
+	
+	public void setFluidNetwork(FluidNetwork network) {
+		this.network = network;
+	}
+	
+	public FluidNetwork getFluidNetwork() {
+		return network;
+	}
+	
+	public boolean hasFluidNetwork() {
+		return getFluidNetwork() != null;
+	}
+	
+	public ForgeDirection[] getConnections() {
+		return connections;
+	}
+	
+	public void setConnection(ForgeDirection dir) {
+		if (dir != ForgeDirection.UNKNOWN) this.connections[dir.ordinal()] = dir;
 	}
 	
 	public boolean containsFluid(Fluid fluid) {
@@ -106,7 +136,7 @@ public class FluidNode {
 	
 	public boolean isSourceNode() {
 		if (getIFluidContainer() != null && getIFluidContainer().isPipe()) return false;
-		return this.type == ValveType.OUTPUT && containsFluid();
+		return this.valveType == ValveType.OUTPUT && containsFluid();
 	}
 	
 	public IFluidHandler getFluidContainer() {
@@ -117,12 +147,16 @@ public class FluidNode {
 		return container != null && container instanceof IFluidContainer ? (IFluidContainer) getFluidContainer() : null;
 	}
 	
-	public void setValveType(ValveType type) {
-		this.type = type;
+	public boolean isPipe() {
+		return getIFluidContainer() != null ? getIFluidContainer().isPipe() : false;
 	}
 	
-	public ValveType getFluidType() {
-		return this.type;
+	public void setValveType(ValveType type) {
+		this.valveType = type;
+	}
+	
+	public ValveType getValveType() {
+		return this.valveType;
 	}
 	
 	public void setWorldVec(Vector4<Integer> vec) {
@@ -132,18 +166,55 @@ public class FluidNode {
 	}
 	
 	public static ValveType appropriateValveType(IFluidHandler container, ForgeDirection dir) {
+		if (container instanceof IFluidContainer && ((IFluidContainer) container).isPipe()) return ValveType.NEUTRAL;
+		
 		boolean in = false;
 		boolean out = false;
-		boolean containsFluid = containsFluid(container);
 		
-		if (!containsFluid) in = true;
-		else out = true;
+		// first pass, check if has anything.
+		for (FluidTankInfo info : container.getTankInfo(dir)) {
+			if (info != null && info.fluid != null && info.fluid.amount > 0) {
+				out = true;
+				break;
+			}
+		}
+		
+		// second pass see if full.
+		for (FluidTankInfo info : container.getTankInfo(dir)) {
+			if (info != null && info.fluid != null && info.fluid.amount < info.capacity) {
+				in = true;
+				break;
+			}
+		}
 		
 		return in && !out ? ValveType.INPUT : !in && out ? ValveType.OUTPUT : ValveType.NEUTRAL;
 	}
 	
 	public Vector4<Integer> worldVec() {
 		return vec;
+	}
+	
+	/**
+	 * Main update call for this node. Goal of this method 
+	 * is to update checks on things such as fluid capacity, fullness, connections
+	 * to main network, etc.
+	 */
+	public void update() {
+		if (hasFluidNetwork()) {
+			FluidNode[] surrounding = network.getSurroundingNodes(this);
+			if (surrounding == null || surrounding.length == 0 || surrounding.length != this.connections.length) return;
+			
+			for (int i = 0; i < this.connections.length; i++) {
+				this.connections[i] = ForgeDirection.UNKNOWN;
+			}
+			
+			for (int i = 0; i < surrounding.length; i++) {
+				if (surrounding[i] == null) continue;
+				
+				this.connections[i] = WorldUtils.getDirectionRelativeTo(worldVec(), surrounding[i].worldVec());
+				this.valveType = appropriateValveType(this.container, this.connections[i]);
+			}
+		}
 	}
 
 	@Override

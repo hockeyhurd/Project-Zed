@@ -28,6 +28,7 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
  * @author hockeyhurd
  * @version Feb 13, 2015
  */
+@Deprecated
 public class FluidNet {
 
 	// Mostly static class, no need to instantiate outside of this class!

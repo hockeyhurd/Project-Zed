@@ -7,7 +7,9 @@
 
 package com.projectzed.mod.tileentity.container.pipe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -43,7 +45,8 @@ import com.projectzed.mod.util.Reference;
  */
 public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidContainer, IColorComponent {
 
-	protected int maxFluidStorage = 2000;
+	// protected int maxFluidStorage = 2000;
+	protected int maxFluidStorage = 0; // temp set '0'
 	protected int importRate, exportRate;
 	protected FluidTank internalTank; 
 	
@@ -496,6 +499,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		if (worldObj.isRemote) return;
 		
 		if (!hasFluidNetwork()) {
+			List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
+			
 			ProjectZed.logHelper.info("Help me find a network!");
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ); 
@@ -504,20 +509,27 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					TileEntityLiquiductBase cont = (TileEntityLiquiductBase) te;
 					if (cont.getColor() == getColor() && cont.hasFluidNetwork()) {
 						network = cont.getNetwork();
+						directions.add(dir);
 						ProjectZed.logHelper.info("Yeah! I found a network and decided to join the fun!", cont.getNetwork().size());
 					}
 				}
 			}
 			
+			// create new fluid network.
 			if (!hasFluidNetwork()) {
-				network = new FluidNetwork(new FluidNode(this, worldVec()));
+				directions.add(ForgeDirection.UNKNOWN);
+				network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
 				ProjectZed.logHelper.info("Network still not found, guess I'll start my own!");
 			}
 			
-			else network.add(new FluidNode(this, worldVec()));
+			// if has a fluid network, add this node to the current network.
+			else network.add(new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
 		}
 		
+		// if this node is apart of the fluid network check for other nodes to add and update if is master node.
 		else {
+			
+			// merging networks together if applicable.
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
 				
@@ -525,21 +537,46 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					if (te instanceof TileEntityLiquiductBase) {
 						TileEntityLiquiductBase te2 = (TileEntityLiquiductBase) te;
 						
-						if (te2.hasFluidNetwork() && te2.network != network && te2.getNetwork().size() < network.size()) {
+						if (te2.hasFluidNetwork() && !te2.network.equals(network)) {
 							TileEntityLiquiductBase master = (TileEntityLiquiductBase) te2.getNetwork().getMasterNode().getFluidContainer();
-							network.merge(master.getNetwork());
-							master.voidNetwork();
+							
+							// merge smaller (or equal to), other network with this network.
+							if (te2.getNetwork().size() <= network.size()) {
+								network.merge(master.getNetwork());
+								master.voidNetwork();
+							}
+							
+							// merge this smaller network with larger, other network.
+							else if (te2.getNetwork().size() > network.size()) {
+								master.getNetwork().merge(network);
+								if (isMaster()) voidNetwork();
+							}
 						}
 						
 						continue;
 					}
 					
-					network.add(new FluidNode((IFluidHandler) te, new Vector4<Integer>(te.xCoord, te.yCoord, te.zCoord), FluidNode.appropriateValveType((IFluidHandler) te, dir)));
+					Vector4<Integer> vec = new Vector4<Integer>(te.xCoord, te.yCoord, te.zCoord);
+					List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
+					FluidNode n = network.getNodeAt(vec);
+					if (n != null) {
+						for (ForgeDirection con : n.getConnections()) {
+							directions.add(con);
+						}
+					}
+					
+					directions.add(dir);
+					
+					network.add(new FluidNode((IFluidHandler) te, directions.toArray(new ForgeDirection[directions.size()]), vec, FluidNode.appropriateValveType((IFluidHandler) te, dir)));
 				}
 			}
 			
 			// if this was the first node placed, then we must call update here!
-			if (network != null && network.size() > 0 && network.isMasterNode(network.getNodeAt(worldVec()))) network.update();
+			if (network != null && network.size() > 0) {
+				this.isMaster = network.isMasterNode(network.getNodeAt(worldVec()));
+				
+				if (this.isMaster) network.update();
+			}
 			
 			/*if (network != null) {
 				ProjectZed.logHelper.info("Size:", network, network.size());
