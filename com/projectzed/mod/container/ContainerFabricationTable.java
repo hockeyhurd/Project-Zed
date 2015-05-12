@@ -113,7 +113,6 @@ public class ContainerFabricationTable extends Container {
 		TimeLapse timeLapse = new TimeLapse();
 		HashMap<Integer, List<ItemStack>> map = new HashMap<Integer, List<ItemStack>>();
 		HashMap<String, List<ItemStack>> map2 = new HashMap<String, List<ItemStack>>();
-		List<ItemStack> outputList = new ArrayList<ItemStack>();
 		
 		int id = 0;
 		String name = "";
@@ -121,7 +120,7 @@ public class ContainerFabricationTable extends Container {
 			if (te.getStackInSlot(i) != null) {
 				id = Item.getIdFromItem(te.getStackInSlot(i).getItem());
 				name = te.getStackInSlot(i).getDisplayName();
-				List<ItemStack> tempList = new ArrayList<ItemStack>();
+				List<ItemStack> tempList = new ArrayList<ItemStack>(te.getSizeInvenotry() - 10);
 				
 				if (sortType <= 2 && map.containsKey(id)) tempList = map.get(id);
 				else if (sortType > 2 && map2.containsKey(name)) tempList = map2.get(name);
@@ -133,6 +132,8 @@ public class ContainerFabricationTable extends Container {
 				te.setInventorySlotContents(i,(ItemStack) null);
 			}
 		}
+		
+		List<ItemStack> outputList = new ArrayList<ItemStack>(map.keySet().size());
 		
 		if (sortType <= 2) {
 			List<Integer> keys = new ArrayList<Integer>(map.keySet());

@@ -560,8 +560,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
 					FluidNode n = network.getNodeAt(vec);
 					if (n != null) {
-						for (ForgeDirection con : n.getConnections()) {
-							directions.add(con);
+						if (n.getConnections().length >= 1 && n.getConnections()[0] != ForgeDirection.UNKNOWN) {
+							for (ForgeDirection con : n.getConnections()) {
+								directions.add(con);
+							}
 						}
 					}
 					

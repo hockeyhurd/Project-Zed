@@ -186,12 +186,12 @@ public class WorldUtils {
 		det.y = origin.y - other.y;
 		det.z = origin.z - other.z;
 		
-		if (det.x == 0 && det.y < 0 && det.z == 0) return ForgeDirection.DOWN;
-		else if (det.x == 0 && det.y > 0 && det.z == 0) return ForgeDirection.UP;
-		else if (det.x == 0 && det.y == 0 && det.z < 0) return ForgeDirection.NORTH;
-		else if (det.x == 0 && det.y == 0 && det.z > 0) return ForgeDirection.SOUTH;
-		else if (det.x < 0 && det.y == 0 && det.z == 0) return ForgeDirection.WEST;
-		else if (det.x > 0 && det.y == 0 && det.z == 0) return ForgeDirection.EAST;
+		if (det.x == 0 && det.y < 0 && det.z == 0) dir = ForgeDirection.DOWN;
+		else if (det.x == 0 && det.y > 0 && det.z == 0) dir = ForgeDirection.UP;
+		else if (det.x == 0 && det.y == 0 && det.z < 0) dir = ForgeDirection.NORTH;
+		else if (det.x == 0 && det.y == 0 && det.z > 0) dir = ForgeDirection.SOUTH;
+		else if (det.x < 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.WEST;
+		else if (det.x > 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.EAST;
 		
 		// ensure for w/e reason direction could not be determined, return unknown.
 		else dir = ForgeDirection.UNKNOWN;

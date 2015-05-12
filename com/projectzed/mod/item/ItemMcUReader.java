@@ -41,6 +41,7 @@ public class ItemMcUReader extends AbstractItemMetalic {
 	public ItemMcUReader() {
 		super("mcuReader", ProjectZed.assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
+		this.setMaxStackSize(1);
 		chatHelper = new ChatHelper();
 	}
 	

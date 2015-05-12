@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
 
 /**
@@ -58,6 +59,16 @@ public class FluidNode {
 	
 	public boolean hasFluidNetwork() {
 		return getFluidNetwork() != null;
+	}
+	
+	public boolean hasConnections() {
+		if (connections == null || connections.length == 0) return false;
+		
+		for (int i = 0; i < connections.length; i++) {
+			if (connections[i] != null || connections[i] != ForgeDirection.UNKNOWN) return true;
+		}
+		
+		return false;
 	}
 	
 	public ForgeDirection[] getConnections() {
@@ -136,7 +147,8 @@ public class FluidNode {
 	
 	public boolean isSourceNode() {
 		if (getIFluidContainer() != null && getIFluidContainer().isPipe()) return false;
-		return this.valveType == ValveType.OUTPUT && containsFluid();
+		// return this.valveType == ValveType.OUTPUT && containsFluid();
+		return this.valveType != ValveType.INPUT && containsFluid();
 	}
 	
 	public IFluidHandler getFluidContainer() {
@@ -174,7 +186,7 @@ public class FluidNode {
 		// first pass, check if has anything.
 		for (FluidTankInfo info : container.getTankInfo(dir)) {
 			if (info != null && info.fluid != null && info.fluid.amount > 0) {
-				out = true;
+				out = container.canDrain(dir, info.fluid.getFluid());
 				break;
 			}
 		}
@@ -182,10 +194,12 @@ public class FluidNode {
 		// second pass see if full.
 		for (FluidTankInfo info : container.getTankInfo(dir)) {
 			if (info != null && info.fluid != null && info.fluid.amount < info.capacity) {
-				in = true;
+				in = container.canFill(dir, info.fluid.getFluid());
 				break;
 			}
 		}
+		
+		ProjectZed.logHelper.info("dir:", dir, "in:", in, "out:", out);
 		
 		return in && !out ? ValveType.INPUT : !in && out ? ValveType.OUTPUT : ValveType.NEUTRAL;
 	}
@@ -202,12 +216,20 @@ public class FluidNode {
 	public void update() {
 		if (hasFluidNetwork()) {
 			FluidNode[] surrounding = network.getSurroundingNodes(this);
-			if (surrounding == null || surrounding.length == 0 || surrounding.length != this.connections.length) return;
+			if (surrounding == null || surrounding.length == 0) {
+				ProjectZed.logHelper.severe("Error finding surrounding fluid nodes!");
+				network.remove(this);
+				return;
+			}
 			
+			this.connections = new ForgeDirection[surrounding.length];
+			
+			// clear connections.
 			for (int i = 0; i < this.connections.length; i++) {
 				this.connections[i] = ForgeDirection.UNKNOWN;
 			}
 			
+			// apply surrounding connections to this 'connections'.
 			for (int i = 0; i < surrounding.length; i++) {
 				if (surrounding[i] == null) continue;
 				

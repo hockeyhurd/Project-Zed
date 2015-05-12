@@ -11,11 +11,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -35,12 +37,15 @@ public class FluidNetwork {
 	private final World world;
 	private LinkedList<FluidNode> nodes;
 	private FluidNode masterNode;
+	private final int MAX_IO;
 	
 	public FluidNetwork(World world, FluidNode masterNode) {
 		this.world = world;
 		nodes = new LinkedList<FluidNode>();
 		this.masterNode = masterNode;
 		nodes.addLast(masterNode);
+		
+		this.MAX_IO = Math.min(masterNode.getIFluidContainer().getMaxFluidExportRate(), masterNode.getIFluidContainer().getMaxFluidImportRate());
 	}
 	
 	public void add(FluidNode node) {
@@ -138,7 +143,13 @@ public class FluidNetwork {
 			if (current != null) list.add(current);
 		}
 		
-		return new FluidNode[list.size()];
+		FluidNode[] ret = new FluidNode[list.size()];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = list.get(i);
+		}
+		
+		// return new FluidNode[list.size()];
+		return ret;
 	}
 	
 	public FluidNode[] getSurroundingNodes(Vector4<Integer> vec) {
@@ -170,18 +181,23 @@ public class FluidNetwork {
 		
 		if (nodes != null && nodes.size() > 0) {
 			sourceNodes = new HashSet<FluidNode>();
+
+			ListIterator<FluidNode> iter = nodes.listIterator();
 			
 			// find our sources and remove, removed fluid nodes:
-			for (FluidNode node : nodes) {
-				if (!exists(node)) {
+			// for (FluidNode node : nodes) {
+			while (iter.hasNext()) {
+				FluidNode node = iter.next();
+				
+				if (!exists(node) || !node.hasConnections()) {
 					remove(node);
 					continue;
 				}
-				
+
 				if (!node.hasFluidNetwork()) node.setFluidNetwork(this);
-				
+
 				node.update();
-				
+
 				if (node.isSourceNode()) sourceNodes.add(node);
 			}
 
@@ -190,7 +206,6 @@ public class FluidNetwork {
 				
 				// nodes which can receive fluid.
 				acceptorNodes = new HashSet<FluidNode>();
-				ProjectZed.logHelper.info("SourceSize:", sourceNodes.size());
 				
 				// check each source
 				for (FluidNode srcNode : sourceNodes) {
@@ -212,7 +227,7 @@ public class FluidNetwork {
 								// check all available nodes and: 1, see if its not the same source node, and 2 check if can accept fluid. If so, we add it to acceptorNodes.
 								for (FluidNode fillNode : nodes) {
 									// if (!subNode.equals(node) && subNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) acceptorNodes.add(subNode);
-									if (!fillNode.equals(srcNode)&& info.fluid != null && fillNode.getValveType() == ValveType.INPUT && fillNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) {
+									if (!fillNode.equals(srcNode)&& info.fluid != null && fillNode.getValveType() != ValveType.OUTPUT && fillNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) {
 										acceptorNodes.add(fillNode);
 									}
 								}
@@ -227,14 +242,19 @@ public class FluidNetwork {
 			// flushNetwork();
 		}
 		
+		// ProjectZed.logHelper.info(sourceNodes != null ? sourceNodes.size() : 0, acceptorNodes != null ? acceptorNodes.size() : 0);
+		
 		// transfer time!
 		if (sourceNodes != null && !sourceNodes.isEmpty() && acceptorNodes != null && !acceptorNodes.isEmpty()) {
-			
 			HashMap<FluidNode, FluidToken> tokens = new HashMap<FluidNode, FluidToken>();
 			
 			for (FluidNode node : sourceNodes) {
-				if (node.getConnections().length > 0 && node.getConnections()[0] != ForgeDirection.UNKNOWN) {
+				if (node.getConnections().length > 0 /*&& node.getConnections()[0] != ForgeDirection.UNKNOWN*/) {
 					for (ForgeDirection dir : node.getConnections()) {
+						if (dir == null || dir == ForgeDirection.UNKNOWN) {
+							// ProjectZed.logHelper.info(dir);
+							continue;
+						}
 						FluidTankInfo[] info = node.getFluidContainer().getTankInfo(dir);
 						
 						for (int i = 0; i < info.length; i++) {
@@ -244,22 +264,48 @@ public class FluidNetwork {
 				}
 			}
 			
+			// ProjectZed.logHelper.info("Tokens empty?", tokens.isEmpty());
 			if (!tokens.isEmpty()) {
+				
+				for (FluidNode node : tokens.keySet()) {
+					FluidToken token = tokens.get(node);
+					if (token == null || token.dir == null) {
+						ProjectZed.logHelper.warn("token is null!", token.dir == null);
+						continue;
+					}
 
-				for (FluidNode accNode : acceptorNodes) {
-					if (accNode.getConnections() != null && accNode.getConnections().length > 0) {
-						for (ForgeDirection dir : accNode.getConnections()) {
-							if (dir == ForgeDirection.UNKNOWN) continue;
-							FluidTankInfo[] info = accNode.getFluidContainer().getTankInfo(dir);
+					int amount = this.MAX_IO;
+					
+					for (FluidNode accNode : acceptorNodes) {
+						if (accNode.getConnections() != null && accNode.getConnections().length > 0) {
+							for (ForgeDirection dir : accNode.getConnections()) {
+								if (dir == ForgeDirection.UNKNOWN) continue;
+								FluidTankInfo[] info = accNode.getFluidContainer().getTankInfo(dir);
 
-							for (int i = 0; i < info.length; i++) {
-								if (info[i] != null
-										&& ((info[i].fluid != null && info[i].fluid.amount < info[i].capacity) || (info[i].fluid == null || info[i].fluid.amount == 0))) {
-									for (FluidNode node : tokens.keySet()) {
+								for (int i = 0; i < info.length; i++) {
+									if (info[i] != null) {
+										int fluidAmount = info[i].fluid != null ? info[i].fluid.amount : 0;
+										// ProjectZed.logHelper.info("Token amount:", token.getAmount());
+										amount = Math.min(amount, info[i].capacity - fluidAmount);
+										amount = Math.min(amount, token.getAmount());
+										FluidStack temp = new FluidStack(token.getFluid(), amount);
 										
+										if (info[i].fluid != null && info[i].fluid.amount < info[i].capacity && info[i].fluid.getFluid().equals(token.getFluid())) {
+											node.getFluidContainer().drain(token.getDirection(), temp, true);
+											amount = temp.amount = amount - accNode.getFluidContainer().fill(dir, temp, true);
+										}
+										
+										else if (info[i].fluid == null || info[i].fluid.amount == 0) {
+											node.getFluidContainer().drain(token.getDirection(), temp, true);
+											amount = temp.amount = amount - accNode.getFluidContainer().fill(dir, temp, true);
+										}
+										
+										if (amount == 0) break;
 									}
 								}
 							}
+							
+							if (amount == 0) break;
 						}
 					}
 				}
@@ -303,11 +349,20 @@ public class FluidNetwork {
 		
 		FluidToken(FluidStack stack, ForgeDirection dir, int index) {
 			this.stack = stack;
+			this.dir = dir;
 			this.index = index;
 		}
 		
 		FluidStack getFluidStack() {
 			return stack;
+		}
+		
+		Fluid getFluid() {
+			return stack.getFluid();
+		}
+		
+		int getAmount() {
+			return stack.amount;
 		}
 		
 		ForgeDirection getDirection() {
