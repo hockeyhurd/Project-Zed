@@ -33,10 +33,21 @@ public class FluidNode {
 	
 	private FluidNetwork network = null;
 	
+	/**
+	 * @param container container/tank.
+	 * @param connections connections with other nodes.
+	 * @param vec coordinate location.
+	 */
 	public FluidNode(IFluidContainer container, ForgeDirection[] connections, Vector4<Integer> vec) {
 		this(container, connections, vec, ValveType.NEUTRAL);
 	}
 	
+	/**
+	 * @param container container/tank.
+	 * @param connections connections with other nodes.
+	 * @param vec coordinate location.
+	 * @param type type of valve.
+	 */
 	public FluidNode(IFluidHandler container, ForgeDirection[] connections, Vector4<Integer> vec, ValveType type) {
 		this.container = container;
 		this.connections = new ForgeDirection[connections.length];
@@ -49,18 +60,34 @@ public class FluidNode {
 		this.valveType = type;
 	}
 	
+	/**
+	 * Sets network associated with this fluid node.
+	 * 
+	 * @param network network to set with.
+	 */
 	public void setFluidNetwork(FluidNetwork network) {
 		this.network = network;
 	}
 	
+	/**
+	 * @return fluid network if has one, else can return null.
+	 */
 	public FluidNetwork getFluidNetwork() {
 		return network;
 	}
 	
+	/**
+	 * @return flag to check if this node has a network.
+	 */
 	public boolean hasFluidNetwork() {
 		return getFluidNetwork() != null;
 	}
 	
+	/**
+	 * Checks for continued connections with other nodes.
+	 * 
+	 * @return true if has any connections, else returns false.
+	 */
 	public boolean hasConnections() {
 		if (connections == null || connections.length == 0) return false;
 		
@@ -71,14 +98,29 @@ public class FluidNode {
 		return false;
 	}
 	
+	/**
+	 * Gets ForgeDirection array of connections to other nodes.
+	 * @return
+	 */
 	public ForgeDirection[] getConnections() {
 		return connections;
 	}
 	
+	/**
+	 * Sets connection on given ForgeDirection.
+	 * 
+	 * @param dir direction to set.
+	 */
 	public void setConnection(ForgeDirection dir) {
 		if (dir != ForgeDirection.UNKNOWN) this.connections[dir.ordinal()] = dir;
 	}
 	
+	/**
+	 * Checks if this container/tank has said fluid.
+	 * 
+	 * @param fluid fluid to check for.
+	 * @return true if contains said fluid, else can return false.
+	 */
 	public boolean containsFluid(Fluid fluid) {
 		if (container != null) {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -89,6 +131,11 @@ public class FluidNode {
 		return false;
 	}
 	
+	/**
+	 * Generalized check to see if container/tank has any fluid stored.
+	 * 
+	 * @return true if contains any fluid, else returns false.
+	 */
 	public boolean containsFluid() {
 		if (container != null) {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -103,6 +150,12 @@ public class FluidNode {
 		return false;
 	}
 	
+	/**
+	 * Static method to check if container/tank contains any fluid.
+	 * 
+	 * @param container cotnainer/tank to check.
+	 * @return true if has any fluid, else returns false.
+	 */
 	public static boolean containsFluid(IFluidHandler container) {
 		if (container != null) {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -117,6 +170,12 @@ public class FluidNode {
 		return false;
 	}
 	
+	/**
+	 * Gets amout of fluid stored of said fluid.
+	 * 
+	 * @param fluid fluid to check.
+	 * @return amount stored if has said fluid, else returns '0'.
+	 */
 	public int getAmountStored(Fluid fluid) {
 		if (container != null && containsFluid(fluid)) {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -131,6 +190,12 @@ public class FluidNode {
 		return 0;
 	}
 	
+	/**
+	 * Gets the capacity of stored fluid.
+	 * 
+	 * @param fluid fluid to reference.
+	 * @return capacity if found, else returns '0'.
+	 */
 	public int getCapacity(Fluid fluid) {
 		if (container != null) {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -145,38 +210,87 @@ public class FluidNode {
 		return 0;
 	}
 	
+	/**
+	 * Internal check to see if fluid node is of source node type.
+	 * 
+	 * @return true if is source node, else returns false.
+	 */
 	public boolean isSourceNode() {
-		if (getIFluidContainer() != null && getIFluidContainer().isPipe()) return false;
-		// return this.valveType == ValveType.OUTPUT && containsFluid();
-		return this.valveType != ValveType.INPUT && containsFluid();
+		return getIFluidContainer() != null && getIFluidContainer().canBeSourceNode() && containsFluid();
 	}
 	
+	/**
+	 * Gets reference of IFluidHandler.
+	 * 
+	 * @return IFluidHandler instance.
+	 */
 	public IFluidHandler getFluidContainer() {
 		return container;
 	}
 	
+	/**
+	 * Helper getter to get if is IFluidContainer type.
+	 * 
+	 * @return IFluidContainer instance if is instanceof, else returns null.
+	 */
 	public IFluidContainer getIFluidContainer() {
 		return container != null && container instanceof IFluidContainer ? (IFluidContainer) getFluidContainer() : null;
 	}
 	
+	/**
+	 * Gets whether fluid node is a pipe or not.
+	 * 
+	 * @return true if is a pipe, else returns false.
+	 */
 	public boolean isPipe() {
 		return getIFluidContainer() != null ? getIFluidContainer().isPipe() : false;
 	}
 	
+	/**
+	 * Setter method for setting valve type.
+	 * 
+	 * @param type type to set.
+	 */
 	public void setValveType(ValveType type) {
 		this.valveType = type;
 	}
 	
+	/**
+	 * Gets the valve type at this node.
+	 * 
+	 * @return valve type.
+	 */
 	public ValveType getValveType() {
 		return this.valveType;
 	}
 	
+	/**
+	 * Setter method to update coordinates of this fluid node.
+	 * 
+	 * @param vec vector to set.
+	 */
 	public void setWorldVec(Vector4<Integer> vec) {
 		this.vec.x = vec.x;
 		this.vec.y = vec.y;
 		this.vec.z = vec.z;
 	}
 	
+	/**
+	 * Gets world vector coordinates of this fluid node.
+	 * 
+	 * @return world vector coordinates.
+	 */
+	public Vector4<Integer> worldVec() {
+		return vec;
+	}
+	
+	/**
+	 * Helper function to determine and get valve type for said container on ForgeDirection side.
+	 * 
+	 * @param container container to reference.
+	 * @param dir directional side to check.
+	 * @return valve type.
+	 */
 	public static ValveType appropriateValveType(IFluidHandler container, ForgeDirection dir) {
 		if (container instanceof IFluidContainer && ((IFluidContainer) container).isPipe()) return ValveType.NEUTRAL;
 		
@@ -184,28 +298,36 @@ public class FluidNode {
 		boolean out = false;
 		
 		// first pass, check if has anything.
-		for (FluidTankInfo info : container.getTankInfo(dir)) {
+		// for (FluidTankInfo info : container.getTankInfo(dir)) {
+		for (FluidTankInfo info : container.getTankInfo(dir.getOpposite())) {
 			if (info != null && info.fluid != null && info.fluid.amount > 0) {
-				out = container.canDrain(dir, info.fluid.getFluid());
+				// out = container.canDrain(dir, info.fluid.getFluid());
+				out = container.canDrain(dir.getOpposite(), info.fluid.getFluid());
 				break;
 			}
 		}
 		
 		// second pass see if full.
-		for (FluidTankInfo info : container.getTankInfo(dir)) {
-			if (info != null && info.fluid != null && info.fluid.amount < info.capacity) {
-				in = container.canFill(dir, info.fluid.getFluid());
+		// for (FluidTankInfo info : container.getTankInfo(dir)) {
+		for (FluidTankInfo info : container.getTankInfo(dir.getOpposite())) {
+			if (info == null) continue;
+			
+			if (info.fluid != null && info.fluid.amount < info.capacity) {
+				// in = container.canFill(dir, info.fluid.getFluid());
+				in = container.canFill(dir.getOpposite(), info.fluid.getFluid());
+				break;
+			}
+			
+			else {
+				in = true;
 				break;
 			}
 		}
 		
-		ProjectZed.logHelper.info("dir:", dir, "in:", in, "out:", out);
+		// ProjectZed.logHelper.info("dir:", dir, "in:", in, "out:", out);
+		// ProjectZed.logHelper.info("dir:", dir.getOpposite(), "in:", in, "out:", out);
 		
 		return in && !out ? ValveType.INPUT : !in && out ? ValveType.OUTPUT : ValveType.NEUTRAL;
-	}
-	
-	public Vector4<Integer> worldVec() {
-		return vec;
 	}
 	
 	/**

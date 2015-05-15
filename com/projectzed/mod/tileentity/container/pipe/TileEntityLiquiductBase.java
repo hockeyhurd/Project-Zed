@@ -464,26 +464,54 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		return this.internalTank.getFluidAmount() == this.internalTank.getCapacity();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#canBeSourceNode()
+	 */
+	@Override
+	public boolean canBeSourceNode() {
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#canBeMaster()
+	 */
 	@Override
 	public boolean canBeMaster() {
 		return true;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#isMaster()
+	 */
 	@Override
 	public boolean isMaster() {
 		return isMaster;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#hasFluidNetwork()
+	 */
 	@Override
 	public boolean hasFluidNetwork() {
 		return network != null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getNetwork()
+	 */
 	@Override
 	public FluidNetwork getNetwork() {
 		return network;
 	}
 	
+	/**
+	 * Method used to void all fluid nodes in the network if this is the master.
+	 */
 	public void voidNetwork() {
 		if (network != null && network.size() > 0 && network.isMasterNode(network.getNodeAt(worldVec()))) {
 			for (FluidNode node : network.getNodes()) {
@@ -495,8 +523,14 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		}
 	}
 	
+	/**
+	 * Main update method used to add adjacent containers/tanks to fluid network and creating/joining fluid network(s).
+	 */
 	protected void updateNetwork() {
 		if (worldObj.isRemote) return;
+		
+		// run every half second!
+		if (worldObj.getTotalWorldTime() % (20L / 2) != 0) return;
 		
 		if (!hasFluidNetwork()) {
 			List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);

@@ -86,12 +86,33 @@ public interface IFluidContainer extends IFluidHandler {
 	
 	// Start fluid networking:
 	
+	/**
+	 * Gets whether this container/tank can be of a source node.
+	 * 
+	 * @return flag.
+	 */
+	boolean canBeSourceNode();
+	
+	/**
+	 * Gets whether this container can serve as 'master' of given fluid network.
+	 * 
+	 * @return true if eligible, else returns false.
+	 */
 	boolean canBeMaster();
 	
+	/**
+	 * @return true if master of fluid network, else can return false.
+	 */
 	boolean isMaster();
-	
+
+	/**
+	 * @return if this container/tank has a fluid network.
+	 */
 	boolean hasFluidNetwork();
 	
+	/**
+	 * @return fluid network if applicable, else returns null.
+	 */
 	FluidNetwork getNetwork();
 	
 }

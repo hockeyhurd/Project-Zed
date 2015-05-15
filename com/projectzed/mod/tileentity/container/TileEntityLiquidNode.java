@@ -30,7 +30,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 */
 	public TileEntityLiquidNode() {
 		super("liquidNode");
-		this.maxFluidStorage = 8000;
+		this.maxFluidStorage = 1000;
 		if (this.internalTank == null) this.internalTank = new FluidTank(this.maxFluidStorage);
 		else this.internalTank.setCapacity(this.maxFluidStorage);
 	}
@@ -127,8 +127,8 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 */
 	@Override
 	public void updateEntity() {
-		super.updateEntity();
-		exportContents();
+		// super.updateEntity();
+		// exportContents();
 	}
 
 	/* (non-Javadoc)
@@ -138,6 +138,24 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	public Packet getDescriptionPacket() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeSourceNode()
+	 */
+	@Override
+	public boolean canBeSourceNode() {
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeMaster()
+	 */
+	@Override
+	public boolean canBeMaster() {
+		return false;
 	}
 
 }

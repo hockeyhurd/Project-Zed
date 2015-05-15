@@ -421,6 +421,11 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	}
 	
 	@Override
+	public boolean canBeSourceNode() {
+		return false;
+	}
+	
+	@Override
 	public boolean canBeMaster() {
 		return false;
 	}
