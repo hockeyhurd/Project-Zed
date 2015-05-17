@@ -15,12 +15,24 @@ package com.projectzed.api.fluid;
  */
 public enum ValveType {
 
-	INPUT, OUTPUT, NEUTRAL;
+	INPUT, OUTPUT, NEUTRAL, UNKNOWN;
 	
 	public static final ValveType[] TYPES = new ValveType[] {
 		INPUT, OUTPUT, NEUTRAL,
 	};
 	
+	/**
+	 * @param id id to use/get.
+	 * @return valve type by ID.
+	 */
+	public static final ValveType getByID(int id) {
+		return id >= 0 && id < TYPES.length ? TYPES[id] : UNKNOWN;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
 	@Override
 	public String toString() {
 		return name();

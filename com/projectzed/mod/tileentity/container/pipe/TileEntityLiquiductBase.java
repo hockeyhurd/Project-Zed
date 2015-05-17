@@ -28,6 +28,7 @@ import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.FluidNode;
+import com.projectzed.api.fluid.ValveType;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
@@ -322,6 +323,67 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		this.internalTank.readFromNBT(comp);
+		
+		isMaster = comp.getBoolean("FluidNetworkIsMaster");
+		
+		if (isMaster) {
+
+			List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
+			
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ); 
+				
+				if (te instanceof TileEntityLiquiductBase) {
+					TileEntityLiquiductBase cont = (TileEntityLiquiductBase) te;
+					if (cont.getColor() == getColor() && cont.hasFluidNetwork()) directions.add(dir);
+				}
+			}
+			
+			// create new fluid network.
+			if (!hasFluidNetwork()) {
+				directions.add(ForgeDirection.UNKNOWN);
+				network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
+			}
+			
+			final int numNodes = comp.getInteger("NodesSize");
+			Vector4<Integer> currentVec = Vector4.zero.getVector4i();
+			IFluidHandler currentCont;
+			FluidNode currentNode;
+			
+			// node data.
+			for (int i = 1; i < numNodes; i++) {
+				currentVec.x = comp.getInteger("VecX" + i);
+				currentVec.y = comp.getInteger("VecY" + i);
+				currentVec.z = comp.getInteger("VecZ" + i);
+				
+				currentCont = (IFluidHandler) worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+				if (currentCont == null) continue;
+				
+				currentNode = new FluidNode(currentCont, new ForgeDirection[] { ForgeDirection.UNKNOWN }, currentVec, ValveType.NEUTRAL);
+				
+				if (currentNode != null) {
+					/*int numConnections = comp.getInteger("NumConnections");
+					int val = 0;
+					List<ForgeDirection> list = new ArrayList<ForgeDirection>(numConnections);
+					
+					for (int j = 0; j < numConnections; j++) {
+						val = comp.getInteger("Direction " + j);
+						if (val != -1) list.add(ForgeDirection.getOrientation(val));
+					}
+					
+					for (ForgeDirection dir : connections) {
+						currentNode.setConnection(dir);
+					}
+					
+					currentNode.setValveType(ValveType.getByID(comp.getInteger("ValveType")));*/
+					
+					currentNode.readFromNBT(comp);
+					
+					network.add(currentNode);
+				}
+			}
+			
+		}
 	}
 	
 	/*
@@ -332,6 +394,22 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		this.internalTank.writeToNBT(comp);
+		
+		// if (hasFluidNetwork()) network.getNodeAt(worldVec()).writeToNBT(comp);
+		
+		comp.setBoolean("FluidNetworkIsMaster", isMaster);
+		
+		if (isMaster && hasFluidNetwork()) {
+			comp.setInteger("NodesSize", network.size());
+			
+			for (int i = 0; i < network.size(); i++) {
+				comp.setInteger("VecX" + i, network.getNodes().get(i).worldVec().x);
+				comp.setInteger("VecY" + i, network.getNodes().get(i).worldVec().y);
+				comp.setInteger("VecZ" + i, network.getNodes().get(i).worldVec().z);
+				
+				network.getNodes().get(i).writeToNBT(comp);
+			}
+		}
 	}
 
 	/*

@@ -6,6 +6,10 @@
 */
 package com.projectzed.api.fluid;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -359,6 +363,37 @@ public class FluidNode {
 				this.valveType = appropriateValveType(this.container, this.connections[i]);
 			}
 		}
+	}
+	
+	/**
+	 * @param comp NBTTagCompound to read from.
+	 */
+	public void readFromNBT(NBTTagCompound comp) {
+		int numConnections = comp.getInteger("NumConnections");
+		int val = 0;
+		List<ForgeDirection> list = new ArrayList<ForgeDirection>(numConnections);
+		
+		for (int i = 0; i < numConnections; i++) {
+			val = comp.getInteger("Direction " + i);
+			if (val != -1) list.add(ForgeDirection.getOrientation(val));
+		}
+		
+		connections = list.toArray(new ForgeDirection[list.size()]);
+		comp.getInteger("ValveType");
+	}
+	
+	/**
+	 * @param comp NBTTagCompound to write to.
+	 */
+	public void writeToNBT(NBTTagCompound comp) {
+		comp.setInteger("NumConnections", connections.length);
+		
+		for (int i = 0; i < connections.length; i++) {
+			if (connections[i] != null && connections[i] != ForgeDirection.UNKNOWN) comp.setInteger("Direction " + i, connections[i].ordinal());
+			else comp.setInteger("Directions " + i, -1);
+		}
+		
+		comp.setInteger("ValveType", valveType.ordinal());
 	}
 
 	@Override
