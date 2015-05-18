@@ -155,6 +155,8 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', emptyFuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialLoader, 1, "xyx", "yzy", "xyx", 'x', Blocks.obsidian, 'y', "plateReinforced", 'z', machineContainer));
+		reg.shapedList.add(createShapedRecipe(liquidNode, 1, "wyw", "xzx", "vuv", 'u', conductiveCoil, 'v', "dustRedstone", 'w', "gemLapis", 'x', liquiductBlue, 'y', Items.bucket, 'z', machineContainer));
 	}
 	
 	/**
