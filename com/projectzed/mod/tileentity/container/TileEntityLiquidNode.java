@@ -9,6 +9,8 @@ package com.projectzed.mod.tileentity.container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -24,15 +26,19 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 
 	private ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	byte[] sides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	private byte cachedMeta;
 	
 	/**
 	 * @param name
 	 */
 	public TileEntityLiquidNode() {
 		super("liquidNode");
-		this.maxFluidStorage = 8000;
+		this.maxFluidStorage = 1000;
 		if (this.internalTank == null) this.internalTank = new FluidTank(this.maxFluidStorage);
 		else this.internalTank.setCapacity(this.maxFluidStorage);
+		
+		cachedMeta = -1;
 	}
 
 	/* (non-Javadoc)
@@ -127,8 +133,25 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 */
 	@Override
 	public void updateEntity() {
-		super.updateEntity();
-		exportContents();
+		// super.updateEntity();
+		// exportContents();
+		
+		
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
+			byte currentMeta = (byte) (worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z) - 1);
+			
+			if (currentMeta != this.cachedMeta) {
+				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+					if (dir.ordinal() == currentMeta) sides[dir.ordinal()] = 1;
+					else sides[dir.ordinal()] = -1;
+				}
+				
+				this.cachedMeta = currentMeta;
+				
+				this.markDirty();
+				worldObj.markBlockForUpdate(worldVec().x, worldVec().y, worldVec().z);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -138,6 +161,129 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	public Packet getDescriptionPacket() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeSourceNode()
+	 */
+	@Override
+	public boolean canBeSourceNode() {
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeMaster()
+	 */
+	@Override
+	public boolean canBeMaster() {
+		return false;
+	}
+	
+	// START FLUID API METHODS AND HANDLERS:
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 */
+	@Override
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+		if (!worldObj.isRemote) {
+			if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != -1) return 0;
+
+			int fillAmount = internalTank.fill(resource, doFill);
+
+			if (doFill) {
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				this.markDirty();
+				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+			}
+
+			return fillAmount;
+		}
+
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 */
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+		return drain(from, resource, -1, doDrain);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
+	 */
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		return drain(from, null, maxDrain, doDrain);
+	}
+
+	/**
+	 * Drains fluid from this block to another.
+	 * 
+	 * @param from direction drained from.
+	 * @param drainFluid the fluid drained.
+	 * @param drainAmount amount of fluid drained.
+	 * @param doDrain whether draining should be simulated or not.
+	 * @return type and amount of fluid drained.
+	 */
+	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+		if (!worldObj.isRemote) {
+			if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != 1) return null;
+			
+			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
+					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
+					
+			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
+				this.markDirty();
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+			}
+			
+			return drainedFluid;
+		}
+
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 */
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) {
+		if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != -1) return false;
+		if (fluid != null && !isFull()) {
+			FluidStack tankFluid = this.internalTank.getFluid();
+			
+			return tankFluid == null || tankFluid.isFluidEqual(new FluidStack(fluid, 0));
+		}
+		
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 */
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+		if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != 1) return false;
+		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
+			FluidStack tankFluid = this.internalTank.getFluid();
+			
+			return tankFluid != null && tankFluid.isFluidEqual(new FluidStack(fluid, 0));
+		}
+		
+		return false;
 	}
 
 }

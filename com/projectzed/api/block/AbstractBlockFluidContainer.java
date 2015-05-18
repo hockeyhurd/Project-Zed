@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -61,8 +62,19 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
 	 */
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(assetDir + name);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.Block#getIcon(int, int)
+	 */
+	@SideOnly(Side.CLIENT)
+	@Override
+	public IIcon getIcon(int side, int meta) {
+		return blockIcon;
 	}
 	
 	/**

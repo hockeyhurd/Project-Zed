@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.api.fluid.FluidNetwork;
 
 /**
  * Helper interface to get more relevant info for this te tank.
@@ -82,5 +83,36 @@ public interface IFluidContainer extends IFluidHandler {
 	 * @return world vector.
 	 */
 	Vector4<Integer> worldVec();
+	
+	// Start fluid networking:
+	
+	/**
+	 * Gets whether this container/tank can be of a source node.
+	 * 
+	 * @return flag.
+	 */
+	boolean canBeSourceNode();
+	
+	/**
+	 * Gets whether this container can serve as 'master' of given fluid network.
+	 * 
+	 * @return true if eligible, else returns false.
+	 */
+	boolean canBeMaster();
+	
+	/**
+	 * @return true if master of fluid network, else can return false.
+	 */
+	boolean isMaster();
+
+	/**
+	 * @return if this container/tank has a fluid network.
+	 */
+	boolean hasFluidNetwork();
+	
+	/**
+	 * @return fluid network if applicable, else returns null.
+	 */
+	FluidNetwork getNetwork();
 	
 }

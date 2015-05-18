@@ -143,4 +143,12 @@ public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.block.AbstractBlockPipe#doBreakBlock(net.minecraft.world.World, int, int, int)
+	 */
+	@Override
+	protected void doBreakBlock(World world, int x, int y, int z) {
+	}
+	
 }

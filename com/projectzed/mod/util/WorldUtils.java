@@ -13,7 +13,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
+import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
@@ -163,6 +165,38 @@ public class WorldUtils {
 		}
 		
 		return mb;
+	}
+	
+	/**
+	 * Determines direction between two vectors relative to the first vector.
+	 * 
+	 * @param origin starting vector.
+	 * @param other vector to find about the 'origin'.
+	 * @return direction relative to the 'origin' if found, else can return ForgeDirection.UNKNOWN.
+	 */
+	public static ForgeDirection getDirectionRelativeTo(Vector4<Integer> origin, Vector4<Integer> other) {
+		
+		// if any vectors are null or are the same, return unknown direction.
+		if (origin == null || other == null || origin.equals(other)) return ForgeDirection.UNKNOWN;
+		
+		ForgeDirection dir = ForgeDirection.UNKNOWN;
+		Vector4<Integer> det = Vector4.zero.getVector4i();
+		
+		det.x = origin.x - other.x;
+		det.y = origin.y - other.y;
+		det.z = origin.z - other.z;
+		
+		if (det.x == 0 && det.y < 0 && det.z == 0) dir = ForgeDirection.DOWN;
+		else if (det.x == 0 && det.y > 0 && det.z == 0) dir = ForgeDirection.UP;
+		else if (det.x == 0 && det.y == 0 && det.z < 0) dir = ForgeDirection.NORTH;
+		else if (det.x == 0 && det.y == 0 && det.z > 0) dir = ForgeDirection.SOUTH;
+		else if (det.x < 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.WEST;
+		else if (det.x > 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.EAST;
+		
+		// ensure for w/e reason direction could not be determined, return unknown.
+		else dir = ForgeDirection.UNKNOWN;
+		
+		return dir;
 	}
 
 }

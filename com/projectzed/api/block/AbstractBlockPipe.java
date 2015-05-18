@@ -6,6 +6,7 @@
 */
 package com.projectzed.api.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -102,5 +103,25 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	protected boolean canConnect(World world, double x, double y, double z) {
 		return world.getBlock((int) x, (int) y, (int) z) == this;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
+	 */
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
+		doBreakBlock(world, x, y, z);
+		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+	}
+	
+	/**
+	 * Method allows for control of behavior of block when being destroyed.
+	 * 
+	 * @param world = world object.
+	 * @param x = x-position.
+	 * @param y = y-position.
+	 * @param z = z-position.
+	 */
+	protected abstract void doBreakBlock(World world, int x, int y, int z);
 
 }

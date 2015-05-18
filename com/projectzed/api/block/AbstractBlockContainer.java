@@ -125,6 +125,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 
 	/**
 	 * Method allows for control of behavior of block when being destroyed.
+	 * 
 	 * @param world = world object.
 	 * @param x = x-position.
 	 * @param y = y-position.

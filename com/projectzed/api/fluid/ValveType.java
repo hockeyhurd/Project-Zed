@@ -4,42 +4,38 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.util;
+package com.projectzed.api.fluid;
+
 
 /**
- * Utility class used primarily when trying to figure out whether to render something.
+ * Simple enum type for handling flow of fluid valves.
  * 
  * @author hockeyhurd
- * @version Feb 13, 2015
+ * @version May 7, 2015
  */
-public class Connection {
+public enum ValveType {
 
-	private boolean connect;
-	private int type;
+	INPUT, OUTPUT, NEUTRAL, UNKNOWN;
+	
+	public static final ValveType[] TYPES = new ValveType[] {
+		INPUT, OUTPUT, NEUTRAL,
+	};
 	
 	/**
-	 * @param connect is connected.
-	 * @param type type of connection.
+	 * @param id id to use/get.
+	 * @return valve type by ID.
 	 */
-	public Connection(boolean connect, int type) {
-		this.connect = connect;
-		this.type = type;
+	public static final ValveType getByID(int id) {
+		return id >= 0 && id < TYPES.length ? TYPES[id] : UNKNOWN;
 	}
 	
-	/**
-	 * @return whether is connected or not.
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Enum#toString()
 	 */
-	public boolean isConnected() {
-		return connect;
+	@Override
+	public String toString() {
+		return name();
 	}
 	
-	/**
-	 * Other common conventions: (-1: input, 0: neutral, 1: output).
-	 * 
-	 * @return connection type, (0: none, 1: fluid pipe, 2: Machine/other).
-	 */
-	public int getType() {
-		return type;
-	}
-
 }
