@@ -11,8 +11,12 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
@@ -31,8 +35,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Feb 16, 2015
  */
 public class BlockLiquidNode extends AbstractBlockFluidContainer {
-
-	private IIcon[] icons = new IIcon[4];
+	
+	private IIcon input, output, neutral;
 	
 	/**
 	 * @param material
@@ -48,11 +52,9 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister reg) {
-		for (int i = 0; i < icons.length; i++) {
-			icons[i] = reg.registerIcon(this.assetDir + this.name + "_" + i);
-		}
-		
-		blockIcon = icons[0];
+		blockIcon = neutral = reg.registerIcon(assetDir + name + "_side_neutral");
+		input = reg.registerIcon(assetDir + name + "_side_input");
+		output = reg.registerIcon(assetDir + name + "_side_output");
 	}
 	
 	/*
@@ -62,7 +64,8 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta) {
-		return meta >= 0 && meta < icons.length ? icons[meta] : icons[meta - (meta > icons.length ? icons.length : 1)];
+		if (/*side == 3 && */meta == 0) return neutral;
+		return side == meta - 1 ? output : input;
 	}
 	
 	/* (non-Javadoc)
@@ -103,11 +106,25 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 		
 		// if (w == 4) w--;
 		
-		world.setBlockMetadataWithNotify(x, y, z, w, 2);
+		ForgeDirection dir = ForgeDirection.getOrientation(w);
 		
-		ProjectZed.logHelper.info("Side:", w);
+		// world.setBlockMetadataWithNotify(x, y, z, w, 2);
+		world.setBlockMetadataWithNotify(x, y, z, dir.ordinal() + 1, 2);
 
 		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+			
+			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
+			
+			int id = (int) comp.getFloat("Fluid ID");
+			int amount = (int) comp.getFloat("Fluid Amount");
+			
+			if (id < 0 || amount == 0) return;
+			
+			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
+		}
 	}
 	
 	/* (non-Javadoc)

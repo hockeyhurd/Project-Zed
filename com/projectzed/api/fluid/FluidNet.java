@@ -24,7 +24,8 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 /**
  * Class containing code for how fluid is to transfer from
  * <br>one te object to another across the fluid network system.
- *
+ * <br><bold>DO NOT USE!</bold> this class will be removed in the near future!
+ * 
  * @author hockeyhurd
  * @version Feb 13, 2015
  */

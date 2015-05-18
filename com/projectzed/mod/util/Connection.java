@@ -34,6 +34,8 @@ public class Connection {
 	}
 	
 	/**
+	 * Other common conventions: (-1: input, 0: neutral, 1: output).
+	 * 
 	 * @return connection type, (0: none, 1: fluid pipe, 2: Machine/other).
 	 */
 	public int getType() {

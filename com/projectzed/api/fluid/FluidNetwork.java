@@ -243,7 +243,7 @@ public class FluidNetwork {
 	/**
 	 * Main method call for network to update fluid transfer.
 	 */
-	public void update() {
+	public synchronized void update() {
 		Set<FluidNode> sourceNodes = null;
 		Set<FluidNode> acceptorNodes = null;
 		
@@ -326,9 +326,8 @@ public class FluidNetwork {
 						}
 						
 						FluidTankInfo[] info = node.getFluidContainer().getTankInfo(dir);
-						
 						for (int i = 0; i < info.length; i++) {
-							if (info[i] != null && info[i].fluid != null && info[i].fluid.amount > 0) tokens.put(node, new FluidToken(info[i].fluid, dir, i));
+							if (info[i] != null && info[i].fluid != null && info[i].fluid.amount > 0) tokens.put(node, new FluidToken(info[i].fluid, dir.getOpposite(), i));
 						}
 					}
 				}
