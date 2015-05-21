@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.fluid.FluidNetwork;
 
 /**
@@ -82,7 +82,7 @@ public interface IFluidContainer extends IFluidHandler {
 	 * 
 	 * @return world vector.
 	 */
-	Vector4<Integer> worldVec();
+	Vector3<Integer> worldVec();
 	
 	// Start fluid networking:
 	

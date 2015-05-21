@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -256,7 +256,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4.zero.getVector4i();
+		this.masterVec = Vector3.zero.getVector3i();
 		
 		setMetaOnUpdate((byte) worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z));
 		((BlockNuclearIOPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
@@ -325,7 +325,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
 	 */
 	@Override
-	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec) {
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 	}
 
 	/*

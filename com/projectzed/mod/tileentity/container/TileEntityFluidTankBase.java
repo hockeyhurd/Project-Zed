@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;
@@ -334,7 +334,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
 	 */
 	@Override
-	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec) {
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 		if (!world.isRemote && !player.isSneaking()) {
 			
 			ProjectZed.logHelper.info(this.openSides[ForgeDirection.DOWN.ordinal()]);

@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -70,7 +70,7 @@ public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isActive, World world, Vector4<Integer> vec) {
+	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearIOPort) {
@@ -90,7 +90,7 @@ public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearIOPort) {
@@ -114,9 +114,9 @@ public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements
 			
 			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(x, y, z);
 			
-			if (meta == 0) updateMeta(1, world, new Vector4<Integer>(x, y, z));
+			if (meta == 0) updateMeta(1, world, new Vector3<Integer>(x, y, z));
 			
-			else updateMeta(meta, world, new Vector4<Integer>(x, y, z));
+			else updateMeta(meta, world, new Vector3<Integer>(x, y, z));
 		}
 	}
 

@@ -8,6 +8,8 @@ package com.projectzed.mod.gui.component;
 
 import java.util.List;
 
+import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.math.Vector4;
 
 /**
@@ -28,6 +30,6 @@ public interface IInfoLabel<N> {
 	public boolean isVisible(boolean ignoreMouse);
 	
 	/** Handles update appropriate values. */
-	public void update(Vector4<Integer> mouseVec, Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max);
+	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max);
 	
 }

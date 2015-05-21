@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -70,7 +70,7 @@ public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent imple
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isConnected, World world, Vector4<Integer> vec) {
+	public void updateMeta(boolean isConnected, World world, Vector3<Integer> vec) {
 		updateMeta(isConnected ? 1 : 0, world, vec);
 	}
 	
@@ -79,7 +79,7 @@ public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent imple
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberLock) {

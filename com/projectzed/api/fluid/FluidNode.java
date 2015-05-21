@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
@@ -32,7 +32,7 @@ public class FluidNode {
 
 	private IFluidHandler container;
 	private ForgeDirection[] connections;
-	private Vector4<Integer> vec = Vector4.zero.getVector4i();
+	private Vector3<Integer> vec = Vector3.zero.getVector3i();
 	private ValveType valveType;
 	
 	private FluidNetwork network = null;
@@ -42,7 +42,7 @@ public class FluidNode {
 	 * @param connections connections with other nodes.
 	 * @param vec coordinate location.
 	 */
-	public FluidNode(IFluidContainer container, ForgeDirection[] connections, Vector4<Integer> vec) {
+	public FluidNode(IFluidContainer container, ForgeDirection[] connections, Vector3<Integer> vec) {
 		this(container, connections, vec, ValveType.NEUTRAL);
 	}
 	
@@ -52,7 +52,7 @@ public class FluidNode {
 	 * @param vec coordinate location.
 	 * @param type type of valve.
 	 */
-	public FluidNode(IFluidHandler container, ForgeDirection[] connections, Vector4<Integer> vec, ValveType type) {
+	public FluidNode(IFluidHandler container, ForgeDirection[] connections, Vector3<Integer> vec, ValveType type) {
 		this.container = container;
 		this.connections = new ForgeDirection[connections.length];
 		
@@ -273,7 +273,7 @@ public class FluidNode {
 	 * 
 	 * @param vec vector to set.
 	 */
-	public void setWorldVec(Vector4<Integer> vec) {
+	public void setWorldVec(Vector3<Integer> vec) {
 		this.vec.x = vec.x;
 		this.vec.y = vec.y;
 		this.vec.z = vec.z;
@@ -284,7 +284,7 @@ public class FluidNode {
 	 * 
 	 * @return world vector coordinates.
 	 */
-	public Vector4<Integer> worldVec() {
+	public Vector3<Integer> worldVec() {
 		return vec;
 	}
 	

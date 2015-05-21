@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.TessellatorHelper;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 
@@ -80,7 +80,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * @param max = max size.
 	 */
 	protected void drawCuboid(TileEntityEnergyBankBase te, float min, float max, byte layer) {
-		drawCuboid(te, new Vector4<Float>(min, min, min), new Vector4<Float>(max, max, max), layer);
+		drawCuboid(te, new Vector3<Float>(min, min, min), new Vector3<Float>(max, max, max), layer);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer {
 	 * @param layer = layer to draw.
 	 * @param valve = valve, (blue : -1, grey : 0, orange : 1).
 	 */
-	protected void drawCuboid(TileEntityEnergyBankBase te, Vector4<Float> minVec, Vector4<Float> maxVec, byte layer) {
+	protected void drawCuboid(TileEntityEnergyBankBase te, Vector3<Float> minVec, Vector3<Float> maxVec, byte layer) {
 		
 		if (te.getWorldObj() != null && te.getWorldObj().getTotalWorldTime() % 20L == 0) {
 			te = (TileEntityEnergyBankBase) te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord);

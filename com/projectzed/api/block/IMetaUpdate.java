@@ -8,7 +8,7 @@ package com.projectzed.api.block;
 
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 
 /**
  * Simple interface to allow updating of block metadata through method call.
@@ -26,7 +26,7 @@ public interface IMetaUpdate {
 	 * @param world world object as reference.
 	 * @param vec world vector coordinate.
 	 */
-	void updateMeta(boolean isActive, World world, Vector4<Integer> vec);
+	void updateMeta(boolean isActive, World world, Vector3<Integer> vec);
 	
 	/**
 	 * Method used to update texture through metadata.
@@ -35,6 +35,6 @@ public interface IMetaUpdate {
 	 * @param world world object as reference.
 	 * @param vec world vector coordinate.
 	 */
-	void updateMeta(int meta, World world, Vector4<Integer> vec);
+	void updateMeta(int meta, World world, Vector3<Integer> vec);
 	
 }

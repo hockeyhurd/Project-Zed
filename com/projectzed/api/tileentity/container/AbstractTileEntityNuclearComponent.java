@@ -12,7 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
 
@@ -25,7 +25,7 @@ import com.projectzed.api.tileentity.IMultiBlockable;
 public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEntityGeneric implements IMultiBlockable<AbstractTileEntityGeneric> {
 
 	protected boolean isMaster, hasMaster;
-	protected Vector4<Integer> masterVec = Vector4.zero.getVector4i();
+	protected Vector3<Integer> masterVec = Vector3.zero.getVector3i();
 	
 	/**
 	 * @param name
@@ -179,10 +179,10 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4)
+	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector3)
 	 */
 	@Override
-	public void setMasterVec(Vector4<Integer> vec) {
+	public void setMasterVec(Vector3<Integer> vec) {
 		this.masterVec = vec;
 	}
 
@@ -191,7 +191,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
 	 */
 	@Override
-	public Vector4<Integer> getMasterVec() {
+	public Vector3<Integer> getMasterVec() {
 		return masterVec;
 	}
 
@@ -216,8 +216,8 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#worldVec()
 	 */
 	@Override
-	public Vector4<Integer> worldVec() {
-		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector3<Integer> worldVec() {
+		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 	
 	/*
@@ -232,7 +232,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
 		hasMaster = comp.getBoolean("ProjectZedHasMaster");
 
-		if (masterVec == null) masterVec = Vector4.zero.getVector4i();
+		if (masterVec == null) masterVec = Vector3.zero.getVector3i();
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");

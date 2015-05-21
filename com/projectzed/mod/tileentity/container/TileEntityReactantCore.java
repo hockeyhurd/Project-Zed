@@ -11,7 +11,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
@@ -80,7 +80,7 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4.zero.getVector4i();
+		this.masterVec = Vector3.zero.getVector3i();
 	}
 	
 	/*
@@ -95,7 +95,7 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
 		hasMaster = comp.getBoolean("ProjectZedHasMaster");
 
-		if (masterVec == null) masterVec = Vector4.zero.getVector4i();
+		if (masterVec == null) masterVec = Vector3.zero.getVector3i();
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");

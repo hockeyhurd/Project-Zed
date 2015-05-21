@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.math.Vector4;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
@@ -84,7 +85,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(boolean isActive, World world, Vector4<Integer> vec) {
+	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
@@ -99,7 +100,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void updateMeta(int meta, World world, Vector4<Integer> vec) {
+	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {

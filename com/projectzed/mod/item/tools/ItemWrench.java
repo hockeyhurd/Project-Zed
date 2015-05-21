@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
@@ -70,7 +70,7 @@ public class ItemWrench extends Item {
 		if (!world.isRemote) {
 			if (bh == null) bh = new BlockHelper(world, player);
 			
-			Vector4<Integer> vecClick = new Vector4<Integer>(x, y, z);
+			Vector3<Integer> vecClick = new Vector3<Integer>(x, y, z);
 			Block b = bh.getBlock(vecClick.x, vecClick.y, vecClick.z); 
 			TileEntity te = world.getTileEntity(vecClick.x, vecClick.y, vecClick.z);
 			

@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.mod.container.ContainerRFBridge;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
@@ -43,7 +43,7 @@ public class GuiRFBridge extends GuiContainer implements IInfoContainer {
 	private String stringToDraw;
 	private final DecimalFormat df = new DecimalFormat("###,###,###");
 	
-	private Vector4<Integer> mouseVec, pos, pos2, minMax, minMax2;
+	private Vector2<Integer> mouseVec, pos, pos2, minMax, minMax2;
 	private List<IInfoLabel> labelList;
 
 	/**
@@ -104,11 +104,11 @@ public class GuiRFBridge extends GuiContainer implements IInfoContainer {
 	public void initGui() {
 		super.initGui();
 		
-		this.mouseVec = Vector4.zero;
-		this.pos = new Vector4<Integer>(guiLeft + 7, guiTop + 61, 0);
-		this.pos2 = new Vector4<Integer>(guiLeft + 7, guiTop + 17, 0);
-		this.minMax = new Vector4<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
-		this.minMax2 = new Vector4<Integer>(guiLeft + 7 + 16, guiTop + 61 + 40, 0);
+		this.mouseVec = Vector2.zero;
+		this.pos = new Vector2<Integer>(guiLeft + 7, guiTop + 61);
+		this.pos2 = new Vector2<Integer>(guiLeft + 7, guiTop + 17);
+		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17);
+		this.minMax2 = new Vector2<Integer>(guiLeft + 7 + 16, guiTop + 61 + 40);
 		
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxEnergyStored()));
 		this.labelList.add(new PowerLabel<Integer>(this.pos2, this.minMax2, this.te.storedRF, this.te.getMaxEnergyStored(), false));

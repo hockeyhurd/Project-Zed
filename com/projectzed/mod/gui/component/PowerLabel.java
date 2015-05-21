@@ -13,6 +13,7 @@ import java.util.List;
 
 import net.minecraft.util.EnumChatFormatting;
 
+import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector4;
 import com.projectzed.mod.util.Reference;
 
@@ -24,7 +25,7 @@ import com.projectzed.mod.util.Reference;
  */
 public class PowerLabel<N> implements IInfoLabel<N> {
 
-	private Vector4<Integer> mouseVec, pos, minMax;
+	private Vector2<Integer> mouseVec, pos, minMax;
 	private boolean useMCU;
 	private N stored, max;
 	private List<String> list;
@@ -39,7 +40,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
-	public PowerLabel(Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max) {
+	public PowerLabel(Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
 		this(pos, minMax, stored, max, true);
 	}
 	
@@ -50,14 +51,14 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * @param max = max stored at start.
 	 * @param useMCU = whether to use native energy unit (true), else use RF energy unit (false).
 	 */
-	public PowerLabel(Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max, boolean useMCU) {
+	public PowerLabel(Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max, boolean useMCU) {
 		this.pos = pos;
 		this.minMax = minMax;
 		this.stored = stored;
 		this.max = max;
 		this.useMCU = useMCU;
 		
-		this.mouseVec = Vector4.zero;
+		this.mouseVec = Vector2.zero;
 		this.list = new ArrayList<String>();
 	}
 
@@ -109,7 +110,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
 	@Override
-	public void update(Vector4<Integer> mouseVec, Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max) {
+	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;

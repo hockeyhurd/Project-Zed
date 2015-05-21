@@ -9,7 +9,7 @@ package com.projectzed.mod.handler;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 
@@ -57,7 +57,7 @@ public class SoundHandler {
 	 * @param volume = volume to play at.
 	 * @param pitch = pitch to play at.
 	 */
-	public static void playEffect(String name, World world, Vector4<Integer> pos, float volume, float pitch) {
+	public static void playEffect(String name, World world, Vector3<Integer> pos, float volume, float pitch) {
 		world.playSoundEffect(pos.x, pos.y, pos.z, name, volume, pitch);
 	}
 	
@@ -68,7 +68,7 @@ public class SoundHandler {
 	 * @param world = world object as reference.
 	 * @param pos = position in world to play.
 	 */
-	public static void playEffect(Sound sound, World world, Vector4<Integer> pos) {
+	public static void playEffect(Sound sound, World world, Vector3<Integer> pos) {
 		playEffect(sound.NAME, world, pos, sound.VOLUME, sound.PITCH);
 	}
 

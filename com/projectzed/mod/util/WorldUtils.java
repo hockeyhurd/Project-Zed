@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
@@ -174,13 +174,13 @@ public class WorldUtils {
 	 * @param other vector to find about the 'origin'.
 	 * @return direction relative to the 'origin' if found, else can return ForgeDirection.UNKNOWN.
 	 */
-	public static ForgeDirection getDirectionRelativeTo(Vector4<Integer> origin, Vector4<Integer> other) {
+	public static ForgeDirection getDirectionRelativeTo(Vector3<Integer> origin, Vector3<Integer> other) {
 		
 		// if any vectors are null or are the same, return unknown direction.
 		if (origin == null || other == null || origin.equals(other)) return ForgeDirection.UNKNOWN;
 		
 		ForgeDirection dir = ForgeDirection.UNKNOWN;
-		Vector4<Integer> det = Vector4.zero.getVector4i();
+		Vector3<Integer> det = Vector3.zero.getVector3i();
 		
 		det.x = origin.x - other.x;
 		det.y = origin.y - other.y;

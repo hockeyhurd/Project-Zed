@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
@@ -43,7 +43,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	private AbstractTileEntityMachine te;
 	private String stringToDraw;
 
-	protected Vector4<Integer> mouseVec, pos, minMax;
+	protected Vector2<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
 	protected GuiConfigButton[] configButtons;
 
@@ -124,9 +124,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public void initGui() {
 		super.initGui();
 
-		this.mouseVec = Vector4.zero;
-		this.pos = new Vector4<Integer>(guiLeft + 7, guiTop + 61, 0);
-		this.minMax = new Vector4<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17, 0);
+		this.mouseVec = Vector2.zero;
+		this.pos = new Vector2<Integer>(guiLeft + 7, guiTop + 61);
+		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17);
 
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 		

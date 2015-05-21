@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.TessellatorHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class WickedClearGlassRenderer extends TileEntitySpecialRenderer {
 
 	private TessellatorHelper tessHelp;
-	private Vector4<Float> minVec, maxVec;
+	private Vector3<Float> minVec, maxVec;
 	private final float pixel = 1f / 96f;
 	private final float min = 0f, max = 16f * this.pixel;
 	private Connection[] connections = new Connection[ForgeDirection.VALID_DIRECTIONS.length];
@@ -42,8 +42,8 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer {
 	
 	public WickedClearGlassRenderer() {
 		tessHelp = new TessellatorHelper(null);
-		minVec = Vector4.zero.getVector4f();
-		maxVec = new Vector4<Float>(1f, 1f, 1f);
+		minVec = Vector3.zero.getVector3f();
+		maxVec = new Vector3<Float>(1f, 1f, 1f);
 		
 		texture = new ResourceLocation(ProjectZed.modID.toLowerCase(), "textures/blocks/wickedClearGlass.png");
 		

@@ -16,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
@@ -129,7 +129,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		
 		cont.setHasMaster(true);
 		cont.setIsMaster(true);
-		cont.setMasterVec(new Vector4<Integer>(x, y, z));
+		cont.setMasterVec(new Vector3<Integer>(x, y, z));
 		
 		int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		

@@ -18,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.energy.source.EnumType;
@@ -49,11 +49,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	
 	private byte placeDir, size, rel;
 	private boolean isMaster, hasMaster;
-	private Vector4<Integer> masterVec = Vector4.zero.getVector4i();
-	private Vector4<Integer> minVec = Vector4.zero.getVector4i();
-	private Vector4<Integer> maxVec = Vector4.zero.getVector4i();
+	private Vector3<Integer> masterVec = Vector3.zero.getVector3i();
+	private Vector3<Integer> minVec = Vector3.zero.getVector3i();
+	private Vector3<Integer> maxVec = Vector3.zero.getVector3i();
 	private HashMap<Block, Integer> mbMap;
-	private HashMap<Block, List<Vector4<Integer>>> mbMapVec;
+	private HashMap<Block, List<Vector3<Integer>>> mbMapVec;
 	private HashMap<Fluid, Boolean> fluidMap;
 	private TileEntityNuclearIOPort inputPort;
 	private HeatLogic heatLogic;
@@ -205,7 +205,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * 
 	 * @return mapping.
 	 */
-	public HashMap<Block, List<Vector4<Integer>>> getMapVec() {
+	public HashMap<Block, List<Vector3<Integer>>> getMapVec() {
 		return mbMapVec;
 	}
 	
@@ -229,7 +229,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearIOPort)) {
 			
-			for (Vector4<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
+			for (Vector3<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
 				byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
 
 				// it is input!
@@ -313,7 +313,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
 		hasMaster = comp.getBoolean("ProjectZedHasMaster");
 		
-		if (masterVec == null) masterVec = Vector4.zero.getVector4i();
+		if (masterVec == null) masterVec = Vector3.zero.getVector3i();
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
@@ -348,7 +348,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		boolean flag = true;
 		
 		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearControlPort)) {
-			Vector4<Integer> vec = mbMapVec.get(ProjectZed.nuclearControlPort).get(0);
+			Vector3<Integer> vec = mbMapVec.get(ProjectZed.nuclearControlPort).get(0);
 			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
 			
 			if (te != null && te.hasRedstoneSignal()) flag = false;
@@ -400,7 +400,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @param refVec reference map with coordinate of each TE.
 	 * @return true if mapping is valid, else returns false.
 	 */
-	private boolean isMappingValid(HashMap<Block, Integer> ref, HashMap<Block, List<Vector4<Integer>>> refVec) {
+	private boolean isMappingValid(HashMap<Block, Integer> ref, HashMap<Block, List<Vector3<Integer>>> refVec) {
 		if (ref == null || ref.size() == 0 || this.size < 3 || refVec == null || refVec.size() == 0) return false;
 		
 		boolean flag = true;
@@ -409,7 +409,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		IMultiBlockable tile;
 		for (Block b : ref.keySet()) {
 			if (ref.containsKey(b) && refVec.containsKey(b)) {
-				for (Vector4<Integer> vec : refVec.get(b)) { 
+				for (Vector3<Integer> vec : refVec.get(b)) { 
 					tile = (IMultiBlockable) worldObj.getTileEntity(vec.x, vec.y, vec.z);
 					if (tile != null) {
 						if (!tile.getMasterVec().x.equals(worldVec().x) || !tile.getMasterVec().y.equals(worldVec().y) || !tile.getMasterVec().z.equals(worldVec().z) || !tile.hasMaster()) {
@@ -550,7 +550,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4)
 	 */
 	@Override
-	public void setMasterVec(Vector4<Integer> vec) {
+	public void setMasterVec(Vector3<Integer> vec) {
 		this.masterVec = vec;
 	}
 
@@ -559,7 +559,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
 	 */
 	@Override
-	public Vector4<Integer> getMasterVec() {
+	public Vector3<Integer> getMasterVec() {
 		return masterVec;
 	}
 
@@ -576,8 +576,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 						
 			if (!isSizeValid()) return false;
-			if (minVec == null) minVec = Vector4.zero.getVector4i();
-			if (maxVec == null) maxVec = Vector4.zero.getVector4i();
+			if (minVec == null) minVec = Vector3.zero.getVector3i();
+			if (maxVec == null) maxVec = Vector3.zero.getVector3i();
 			if (fluidMap == null) fluidMap = new HashMap<Fluid, Boolean>();
 				
 			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
@@ -591,12 +591,12 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			maxVec.z = minVec.z + size - 1;
 			
 			int counterMaster = 0;
-			Vector4<Integer> currentVec;
+			Vector3<Integer> currentVec;
 			Block currentBlock;
 			boolean show = false;
 			int counter = 0;
 			mbMap = new HashMap<Block, Integer>();
-			mbMapVec = new HashMap<Block, List<Vector4<Integer>>>();
+			mbMapVec = new HashMap<Block, List<Vector3<Integer>>>();
 			TileEntity te;
 			Block b;
 			Fluid fluid;
@@ -608,13 +608,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				System.out.println("2: (" + (minVec.x + size - 1) + ", " + (minVec.y - size + 1) + ", " + (minVec.z + size - 1) + ")");
 			}
 	
-			List<Vector4<Integer>> list;
+			List<Vector3<Integer>> list;
 	
 			for (int y = 0; y < size; y++) {
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
 						
-						currentVec = new Vector4<Integer>(minVec.x + x, minVec.y - y, minVec.z + z);
+						currentVec = new Vector3<Integer>(minVec.x + x, minVec.y - y, minVec.z + z);
 						currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
 						// ProjectZed.logHelper.info(currentBlock.getUnlocalizedName());
 						
@@ -636,7 +636,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							else mbMap.put(b, mbMap.get(b) + 1);
 
 							if (!mbMapVec.containsKey(b)) {
-								list = new ArrayList<Vector4<Integer>>();
+								list = new ArrayList<Vector3<Integer>>();
 								list.add(currentVec);
 								mbMapVec.put(b, list);
 							}
@@ -678,7 +678,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			flag = true;
 			IMultiBlockable current;
 			
-			for (Vector4<Integer> vec : mbMapVec.get(ProjectZed.nuclearChamberLock)) {
+			for (Vector3<Integer> vec : mbMapVec.get(ProjectZed.nuclearChamberLock)) {
 				if (vec.equals(minVec)) continue;
 				else if (vec.equals(maxVec)) continue;
 				
@@ -718,7 +718,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			TileEntity te;
 			for (Block b : mbMapVec.keySet()) {
 				
-				for (Vector4<Integer> vec : mbMapVec.get(b)) {
+				for (Vector3<Integer> vec : mbMapVec.get(b)) {
 					te = worldObj.getTileEntity(vec.x, vec.y, vec.z);
 					if (te != null && te instanceof IMultiBlockable && !(te instanceof TileEntityNuclearController)) ((IMultiBlockable) te).reset();
 				}
@@ -734,7 +734,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4.zero.getVector4i();
+		this.masterVec = Vector3.zero.getVector3i();
 	}
 	
 }

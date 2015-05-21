@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.FluidNet;
@@ -189,8 +189,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * @see com.projectzed.api.tileentity.IWrenchable#worldVec()
 	 */
 	@Override
-	public Vector4<Integer> worldVec() {
-		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector3<Integer> worldVec() {
+		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*
@@ -346,7 +346,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			}
 			
 			final int numNodes = comp.getInteger("NodesSize");
-			Vector4<Integer> currentVec = Vector4.zero.getVector4i();
+			Vector3<Integer> currentVec = Vector3.zero.getVector3i();
 			IFluidHandler currentCont;
 			FluidNode currentNode;
 			
@@ -668,7 +668,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 						continue;
 					}
 					
-					Vector4<Integer> vec = new Vector4<Integer>(te.xCoord, te.yCoord, te.zCoord);
+					Vector3<Integer> vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
 					List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
 					FluidNode n = network.getNodeAt(vec);
 					if (n != null) {

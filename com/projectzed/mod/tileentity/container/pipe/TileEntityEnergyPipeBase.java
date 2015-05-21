@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
@@ -326,8 +326,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#worldVec()
 	 */
 	@Override
-	public Vector4<Integer> worldVec() {
-		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector3<Integer> worldVec() {
+		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*

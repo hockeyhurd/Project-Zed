@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.item.AbstractItemRenderer;
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,7 +35,7 @@ public class FluidTankItemRenderer extends AbstractItemRenderer {
 	protected float calc = 4f * PIXEL;
 	protected boolean renderInside = true;
 	protected byte tier;
-	protected Vector4<Float> vec0, vec1;
+	protected Vector3<Float> vec0, vec1;
 	
 	/**
 	 * @param icon = icon to draw from.
@@ -43,8 +43,8 @@ public class FluidTankItemRenderer extends AbstractItemRenderer {
 	public FluidTankItemRenderer(IIcon icon, byte tier) {
 		super(icon);
 		this.tier = tier;
-		this.vec0 = new Vector4<Float>(5f / 16f, 2f / 16f, 5f / 16f);
-		this.vec1 = new Vector4<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
+		this.vec0 = new Vector3<Float>(5f / 16f, 2f / 16f, 5f / 16f);
+		this.vec1 = new Vector3<Float>(1f - 5f / 16f, 1f -  1f / 16f, 1f - 5f / 16f);
 		this.tess = Tessellator.instance;
 	}
 	
@@ -185,7 +185,7 @@ public class FluidTankItemRenderer extends AbstractItemRenderer {
 
 		if (icon == null) return;
 
-		final Vector4<Float> maxVecY = vec1.copy();
+		final Vector3<Float> maxVecY = vec1.copy();
 		// vec1.y = (3f + ((int) (te.getTank().getFluidAmount() / (float) (te.getTank().getCapacity()) * 10))) / 16f;
 		vec1.y = (3f + ((int) (current / (float) (max) * 10))) / 16f;
 

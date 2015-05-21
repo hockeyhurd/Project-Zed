@@ -15,7 +15,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
@@ -170,8 +170,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
-	public Vector4<Integer> worldVec() {
-		return new Vector4<Integer>(this.xCoord, this.yCoord, this.zCoord);
+	public Vector3<Integer> worldVec() {
+		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	/*
@@ -414,7 +414,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
 	 */
 	@Override
-	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector4<Integer> vec) {
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 	}
 
 	/*

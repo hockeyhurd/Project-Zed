@@ -13,7 +13,7 @@ import java.util.List;
 
 import net.minecraft.util.EnumChatFormatting;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -24,7 +24,7 @@ import com.projectzed.mod.util.Reference;
  */
 public class FluidLabel<N> implements IInfoLabel<N> {
 
-	private Vector4<Integer> mouseVec, pos, minMax;
+	private Vector2<Integer> mouseVec, pos, minMax;
 	private N stored, max;
 	private List<String> list;
 	private boolean visible;
@@ -35,13 +35,13 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	 * @param stored = amount stored at start.
 	 * @param max = max stored at start.
 	 */
-	public FluidLabel(Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max) {
+	public FluidLabel(Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
 		this.pos = pos;
 		this.minMax = minMax;
 		this.stored = stored;
 		this.max = max;
 		
-		this.mouseVec = Vector4.zero;
+		this.mouseVec = Vector2.zero;
 		this.list = new ArrayList<String>();
 	}
 
@@ -93,7 +93,7 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
 	@Override
-	public void update(Vector4<Integer> mouseVec, Vector4<Integer> pos, Vector4<Integer> minMax, N stored, N max) {
+	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;

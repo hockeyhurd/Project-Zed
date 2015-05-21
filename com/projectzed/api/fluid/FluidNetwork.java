@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
@@ -113,7 +113,7 @@ public class FluidNetwork {
 	 * @param vec vector to check.
 	 * @return fluid node if found at vector, else can return null.
 	 */
-	public FluidNode getNodeAt(Vector4<Integer> vec) {
+	public FluidNode getNodeAt(Vector3<Integer> vec) {
 		if (nodes != null && size() > 0 && vec != null) {
 			for (FluidNode node : nodes) {
 				if (node.worldVec().equals(vec)) return node;
@@ -193,7 +193,7 @@ public class FluidNetwork {
 		if (node == null) return null;
 		
 		List<FluidNode> list = new ArrayList<FluidNode>(ForgeDirection.VALID_DIRECTIONS.length);
-		Vector4<Integer> offset = node.worldVec().copy();
+		Vector3<Integer> offset = node.worldVec().copy();
 		FluidNode current;
 		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -220,12 +220,12 @@ public class FluidNetwork {
 	 * @param vec vector to check at.
 	 * @return array of adjacent fluid nodes if any, else can return null/empty array.
 	 */
-	public FluidNode[] getSurroundingNodes(Vector4<Integer> vec) {
+	public FluidNode[] getSurroundingNodes(Vector3<Integer> vec) {
 		FluidNode origin = getNodeAt(vec);
 		if (origin == null) return null;
 		
 		List<FluidNode> list = new ArrayList<FluidNode>(ForgeDirection.VALID_DIRECTIONS.length);
-		Vector4<Integer> offset = vec.copy();
+		Vector3<Integer> offset = vec.copy();
 		FluidNode current;
 		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
