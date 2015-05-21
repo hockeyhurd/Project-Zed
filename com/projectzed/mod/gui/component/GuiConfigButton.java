@@ -8,46 +8,47 @@ package com.projectzed.mod.gui.component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.projectzed.mod.ProjectZed;
 
 /**
- * Class used to implement input, ouput, off, gui interface. <br>
- * Primarily to be used with energy cell gui but may be used <br>
- * in other future gui interfaces.
+ * 
  * 
  * @author hockeyhurd
- * @version Dec 7, 2014
+ * @version May 20, 2015
  */
-@SideOnly(Side.CLIENT)
-public class GuiIOButton extends GuiButton {
+public class GuiConfigButton extends GuiButton {
 
 	protected final Tessellator TESS;
 	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
-	protected byte stateID;
 	protected final float PIXEL;
+	protected byte stateID;
 	
+	protected int x, y;
+	protected static final int panelSize = 50;
+	protected boolean active;
 	protected float calc, calc2, dif;
-
+	protected static final float SIZE = 16f;
+	
 	/**
 	 * @param id
 	 * @param x
 	 * @param y
 	 * @param text
 	 */
-	public GuiIOButton(int id, int x, int y, String text, byte state) {
+	public GuiConfigButton(int id, int x, int y, String text, byte stateID) {
 		super(id, x, y, text);
 		this.width = 16;
 		this.height = 16;
 		this.PIXEL = 1f / 64f;
 		
-		this.stateID = state;
+		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
 	}
 
@@ -59,89 +60,88 @@ public class GuiIOButton extends GuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiIOButton(int id, int x, int y, int width, int height, String text, byte state) {
+	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID) {
 		super(id, x, y, 16, 16, text);
 		this.width = 16;
 		this.height = 16;
 		this.PIXEL = 1f / 64f;
 		
-		this.stateID = state;
+		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
 	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontrenderer = minecraft.fontRenderer;
+			FontRenderer fontRenderer = minecraft.fontRenderer;
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
-
-			calc = (width * (this.stateID + 2)) * this.PIXEL;
-			dif = 16f * this.PIXEL; 
-			calc2 = this.width * (this.stateID + 1) * this.PIXEL;
+			
+			calc = (SIZE * this.stateID) * this.PIXEL;
+			dif = 3f * SIZE * this.PIXEL;
+			calc2 = (SIZE * (this.stateID + 1)) * this.PIXEL;
+			//ProjectZed.logHelper.info("calc2:", calc2 / this.PIXEL, dif);
+			// need to offset height by '2 * 16'
 			
 			this.TESS.startDrawingQuads();
 
-			if (this.stateID == -1) {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
+			if (this.stateID == 0) {
+				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, calc2);// bottom left texture
+				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, dif - calc2);// top left
+				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, dif - calc2);// top right
+				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, calc2);// bottom right
 			}
 			
 			else {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc2, 0);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc2, dif);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, dif);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
+				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, dif - calc2);// bottom left texture
+				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, calc2);// top left
+				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, calc2);// top right
+				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, dif - calc2);// bottom right
 			}
-
+			
 			this.TESS.draw();
-
-			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			if (active) Gui.drawRect(this.x, 60 + this.y, panelSize, panelSize + 164, 0xffff0000);
+			
+			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.client.gui.GuiButton#mousePressed(net.minecraft.client.Minecraft, int, int)
 	 */
 	@Override
 	public boolean mousePressed(Minecraft minecraft, int x, int y) {
-		boolean ret = super.mousePressed(minecraft, x, y); 
-		if (ret) this.stateID = shiftButtonMatrix();
-
+		boolean ret = super.mousePressed(minecraft, x, y);
+		
+		if (ret) active = !active;
+		
 		return ret;
 	}
 	
-	/**
-	 * Sets the state id.
-	 * 
-	 * @param id id value to set.
-	 */
-	public void setStateID(byte id) {
-		this.stateID = id;
-	}
-
-	/**
-	 * Gets the state id of the gui button.
-	 * 
-	 * @return state id.
-	 */
-	public byte getStateID() {
-		return this.stateID;
+	public boolean isActive() {
+		return active;
 	}
 	
-	/**
-	 * @return new button id.
-	 */
-	private byte shiftButtonMatrix() {
-		return (byte) (this.stateID == -1 ? 0 : (this.stateID == 0 ? 1 : -1));
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
+	public void setPos(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public int getX() {
+		return this.x;
 	}
 
+	public int getY() {
+		return this.y;
+	}
+	
 }
