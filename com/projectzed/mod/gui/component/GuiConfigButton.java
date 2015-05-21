@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.projectzed.mod.ProjectZed;
+import com.hockeyhurd.api.math.Rect;
 
 /**
  * 
@@ -30,7 +30,8 @@ public class GuiConfigButton extends GuiButton {
 	protected final float PIXEL;
 	protected byte stateID;
 	
-	protected int x, y;
+	protected int x = 16, y = 16;
+	protected final Rect<Integer> rect;
 	protected static final int panelSize = 50;
 	protected boolean active;
 	protected float calc, calc2, dif;
@@ -42,7 +43,7 @@ public class GuiConfigButton extends GuiButton {
 	 * @param y
 	 * @param text
 	 */
-	public GuiConfigButton(int id, int x, int y, String text, byte stateID) {
+	public GuiConfigButton(int id, int x, int y, String text, byte stateID, Rect<Integer> rect) {
 		super(id, x, y, text);
 		this.width = 16;
 		this.height = 16;
@@ -50,6 +51,7 @@ public class GuiConfigButton extends GuiButton {
 		
 		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
+		this.rect = rect;
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class GuiConfigButton extends GuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID) {
+	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID, Rect<Integer> rect) {
 		super(id, x, y, 16, 16, text);
 		this.width = 16;
 		this.height = 16;
@@ -68,6 +70,7 @@ public class GuiConfigButton extends GuiButton {
 		
 		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
+		this.rect = rect;
 	}
 	
 	/*
@@ -104,7 +107,20 @@ public class GuiConfigButton extends GuiButton {
 			}
 			
 			this.TESS.draw();
-			if (active) Gui.drawRect(this.x, 60 + this.y, panelSize, panelSize + 164, 0xffff0000);
+			
+			if (active) {
+				if (this.x < rect.max.x) this.x++;
+				if (this.y < rect.max.y) this.y++;
+				
+				Gui.drawRect(rect.min.x, rect.min.y, rect.min.x - this.x, rect.min.y + this.y, rect.getColor());
+			}
+			
+			else if (!active && (this.x != 16 || this.y != 16)) {
+				if (this.x > 16) this.x--;
+				if (this.y > 16) this.y--;
+				
+				Gui.drawRect(rect.min.x, rect.min.y, rect.min.x - this.x, rect.min.y + this.y, rect.getColor());
+			}
 			
 			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
 		}

@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
@@ -131,11 +132,12 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 		
 		configButtons = new GuiConfigButton[] {
-				new GuiConfigButton(0, guiLeft - 16, guiTop + 16, null, (byte) 0),
-				new GuiConfigButton(1, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1), 
+				new GuiConfigButton(0, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(50, 100), 0xffff0000)),
+				new GuiConfigButton(1, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 50), 0xff0000ff)), 
 		};
 		
 		for (GuiConfigButton button : configButtons) {
+			button.setActive(false);
 			this.buttonList.add(button);
 		}
 		
@@ -147,32 +149,28 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		
 		if (button.id == 0) {
 			ProjectZed.logHelper.info("button.id:", button.id);
-			if (configButtons == null || configButtons.length == 0) return;
-			isActive = configButtons[button.id].isActive();
-			ProjectZed.logHelper.info(isActive);
-			isActive = !isActive;
-			ProjectZed.logHelper.info(isActive);
+			isActive = ((GuiConfigButton) this.buttonList.get(button.id)).isActive();
 			
 			for (int i = 0; i < configButtons.length; i++) {
 				if (button.id == i) continue;
-				configButtons[i].setActive(isActive);
-				configButtons[i].visible = !configButtons[i].visible;
+				((GuiConfigButton) this.buttonList.get(i)).setActive(isActive);
+				((GuiConfigButton) this.buttonList.get(i)).visible = !((GuiConfigButton) this.buttonList.get(i)).visible;
 			}
 			
-			configButtons[button.id].setActive(isActive);
+			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
 		}
 			
 		else if (button.id == 1) {
 			ProjectZed.logHelper.info("button.id:", button.id);
-			if (configButtons == null || configButtons.length == 0) return;
+			isActive = ((GuiConfigButton) this.buttonList.get(button.id)).isActive();
 			
 			for (int i = 0; i < configButtons.length; i++) {
 				if (button.id == i) continue;
-				configButtons[i].setActive(false);
-				configButtons[i].visible = !configButtons[i].visible;
+				((GuiConfigButton) this.buttonList.get(i)).setActive(isActive);
+				((GuiConfigButton) this.buttonList.get(i)).visible = !((GuiConfigButton) this.buttonList.get(i)).visible;
 			}
 			
-			configButtons[button.id].setActive(!configButtons[button.id].isActive());
+			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
 		}
 		
 		// ProjectZed.logHelper.info("button.id:", button.id);
@@ -225,12 +223,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
-		}
-		
-		if (configButtons != null && configButtons.length > 0) {
-			for (GuiConfigButton button : configButtons) {
-				if (button.getX() != this.guiLeft || button.getY() != this.guiTop) button.setPos(guiLeft, guiTop);
-			}
 		}
 		
 	}
