@@ -9,6 +9,7 @@ package com.projectzed.api.tileentity.machine;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,6 +32,7 @@ import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.api.util.IRedstoneComponent;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -137,34 +139,83 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return openSides[side] == 1;
+		return slot == 1 && openSides[side] == 1;
 	}
 	
 	protected void handleSidedIO() {
 		TileEntity te = null;
-		ISidedInventory inv = null;
-		ItemStack in = this.getStackInSlot(0);
-		ItemStack out = this.getStackInSlot(1);
+		IInventory otherInv = null;
+		ItemStack in = null;
+		ItemStack out = null;
 		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
 			
-			if (te != null && te instanceof ISidedInventory) { 
-				inv = (ISidedInventory) te;
+			if (te != null && te instanceof IInventory) { 
+				otherInv = (IInventory) te;
 				
-				// gather input
-				if (in.stackSize < in.getMaxStackSize() && openSides[dir.ordinal()] == -1) {
+				if (openSides[dir.ordinal()] == -1) {
 					
-					for (int i = 0; i < inv.getSizeInventory(); i++) {
-						ItemStack invIn = inv.getStackInSlot(i);
+					for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+						ItemStack invIn = otherInv.getStackInSlot(otherSlot);
+						if (invIn == null || invIn.stackSize == 0) continue;
 						
-						if (inv.canExtractItem(i, invIn, dir.ordinal()) && invIn.isItemEqual(in)) {
-							int amount = Math.min(in.getMaxStackSize() - in.stackSize, invIn.stackSize);
-							in.stackSize += amount;
-							inv.decrStackSize(i, amount);
+						for (int thisSlot = 0; thisSlot < this.getSizeInvenotry(); thisSlot++) {
+							in = this.getStackInSlot(thisSlot);
+							boolean hasStack = in != null && in.stackSize > 0 && in.stackSize < in.getMaxStackSize();
+							
+							if (isItemValidForSlot(thisSlot, invIn) && (!hasStack || invIn.isItemEqual(in))) {
+								int amount = invIn.stackSize;
+								if (hasStack) amount = Math.min(in.getMaxStackSize() - in.stackSize, amount);
+								
+								if (hasStack) in.stackSize += amount;
+								else {
+									ItemStack copy = invIn.copy();
+									copy.stackSize = amount;
+									in = copy;
+								}
+								
+								this.setInventorySlotContents(thisSlot, in);
+								
+								otherInv.decrStackSize(otherSlot, amount);
+							}
 						}
 					}
 					
+				}
+				
+				else if (openSides[dir.ordinal()] == 1) {
+					for (int thisSlot = 0; thisSlot < this.getSizeInventory(); thisSlot++) {
+						out = this.getStackInSlot(thisSlot);
+						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
+						
+						int remainder = 0;
+						
+						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+							if (otherInv.isItemValidForSlot(otherSlot, out)) {
+								ItemStack destStack = otherInv.getStackInSlot(otherSlot);
+								if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
+								
+								int amount = out.stackSize;
+								if (destStack != null) amount = Math.min(destStack.getMaxStackSize() - destStack.stackSize, amount);
+								else {
+									ItemStack copy = out.copy();
+									copy.stackSize = amount;
+									destStack = copy;
+								}
+								
+								remainder -= amount;
+								ProjectZed.logHelper.info("remainder:", remainder);
+								
+								otherInv.setInventorySlotContents(otherSlot, destStack);
+								this.decrStackSize(thisSlot, amount);
+							}
+							
+							if (remainder == 0) break;
+						}
+						
+						if (remainder == 0) break;
+					}
 				}
 			}
 		}
