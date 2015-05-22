@@ -8,16 +8,19 @@ package com.projectzed.mod.handler.message;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * 
@@ -26,14 +29,16 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
  */
 public class MessageTileEntityMachine implements IMessage, IMessageHandler<MessageTileEntityMachine, IMessage> {
 
-	public AbstractTileEntityMachine te;
-	public int x, y, z;
-	public int stored;
-	public int scaledCookTime;
-	public boolean powerMode;
+	private AbstractTileEntityMachine te;
+	private int x, y, z;
+	private int stored;
+	private int scaledCookTime;
+	private boolean powerMode;
 	
-	public boolean containsFluid;
-	public int fluidStored;
+	private boolean containsFluid;
+	private int fluidStored;
+	
+	private EnumRedstoneType redstoneType;
 	
 	public MessageTileEntityMachine() {
 	}
@@ -48,6 +53,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.powerMode = te.isPoweredOn();
 		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
 		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount();
+		
+		this.redstoneType = te.getRedstoneType() != null ? te.getRedstoneType() : EnumRedstoneType.LOW;
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -59,6 +66,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.powerMode = buf.readBoolean();
 		this.containsFluid = buf.readBoolean();
 		if (this.containsFluid) this.fluidStored = buf.readInt();
+		
+		this.redstoneType = EnumRedstoneType.TYPES[buf.readInt()];
 	}
 
 	public void toBytes(ByteBuf buf) {
@@ -70,17 +79,33 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		buf.writeBoolean(powerMode);
 		buf.writeBoolean(containsFluid);
 		if (this.containsFluid) buf.writeInt(this.fluidStored);
+		
+		buf.writeInt(redstoneType.ordinal());
 	}
 
 	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
-		
-		if (te instanceof AbstractTileEntityMachine) {
-			((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
-			((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
-			((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
+		if (ctx.side == Side.CLIENT) {
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 			
-			if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
+			if (te instanceof AbstractTileEntityMachine) {
+				((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
+				((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
+				((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
+				((AbstractTileEntityMachine) te).setRedstoneType(message.redstoneType);
+				
+				if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
+			}
+		}
+		
+		else if (ctx.side == Side.SERVER) {
+			World world = ctx.getServerHandler().playerEntity.worldObj;
+			TileEntity te = world.getTileEntity(message.x, message.y, message.z);
+			
+			if (world != null && te != null && te instanceof AbstractTileEntityMachine) {
+				AbstractTileEntityMachine te2 = (AbstractTileEntityMachine) te;
+				
+				te2.setRedstoneType(message.redstoneType);
+			}
 		}
 		
 		return null;

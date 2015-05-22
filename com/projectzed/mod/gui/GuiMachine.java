@@ -7,6 +7,7 @@
 package com.projectzed.mod.gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -21,12 +22,16 @@ import org.lwjgl.opengl.GL11;
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.component.GuiConfigButton;
+import com.projectzed.mod.gui.component.GuiRedstoneButton;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
 import com.projectzed.mod.gui.component.PowerLabel;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,7 +51,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 	protected Vector2<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
+	
+	// button controls:
 	protected GuiConfigButton[] configButtons;
+	protected HashMap<GuiRedstoneButton, Integer> redstoneButtons;
+	protected EnumRedstoneType redstoneType;
 
 	/**
 	 * @param inv
@@ -63,6 +72,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.ySize = 166;
 
 		this.labelList = new ArrayList<IInfoLabel>();
+		this.redstoneType = te.getRedstoneType();
 	}
 
 	/*
@@ -131,13 +141,32 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 		
-		configButtons = new GuiConfigButton[] {
-				new GuiConfigButton(0, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(50, 100), 0xffff0000)),
-				new GuiConfigButton(1, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 50), 0xff0000ff)), 
-		};
+		int counter = 0;
+		
+		if (configButtons == null || configButtons.length == 0) {
+			configButtons = new GuiConfigButton[] {
+					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(50, 100), 0xffff0000)),
+					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 50), 0xff0000ff)), 
+			};
+		}
+		
+		if (redstoneButtons == null || redstoneButtons.isEmpty()) {
+			redstoneButtons = new HashMap<GuiRedstoneButton, Integer>();
+			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED), counter++);
+			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW), counter++);	
+			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH), counter++);
+		}
 		
 		for (GuiConfigButton button : configButtons) {
 			button.setActive(false);
+			this.buttonList.add(button);
+		}
+		
+		for (GuiRedstoneButton button : redstoneButtons.keySet()) {
+			if (button.getType() != this.te.getRedstoneType()) button.setActive(false);
+			else if (button.getType() == this.te.getRedstoneType()) button.setActive(true);
+
+			button.visible = false;
 			this.buttonList.add(button);
 		}
 		
@@ -158,6 +187,14 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			}
 			
 			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
+			
+			int index = 0;
+			
+			for (GuiRedstoneButton redButton : redstoneButtons.keySet()) {
+				index = redstoneButtons.get(redButton);
+				
+				((GuiRedstoneButton) this.buttonList.get(index)).visible = false;
+			}
 		}
 			
 		else if (button.id == 1) {
@@ -171,6 +208,32 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			}
 			
 			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
+			
+			int index = 0;
+			
+			for (GuiRedstoneButton redButton : redstoneButtons.keySet()) {
+				index = redstoneButtons.get(redButton);
+				
+				((GuiRedstoneButton) this.buttonList.get(index)).visible = isActive;
+			}
+		}
+		
+		else if (button instanceof GuiRedstoneButton) {
+			if (redstoneType == ((GuiRedstoneButton) button).getType()) return;
+			else redstoneType = ((GuiRedstoneButton) button).getType();
+			
+			te.setRedstoneType(redstoneType);
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
+
+			for (Object b : this.buttonList) {
+				if (!(b instanceof GuiRedstoneButton)) continue;
+				if (((GuiRedstoneButton) b).getType() != redstoneType) ((GuiRedstoneButton) b).setActive(false);
+				else ((GuiRedstoneButton) b).setActive(true);
+			}
+		}
+		
+		else {
+			ProjectZed.logHelper.info("button.id:", button.id);
 		}
 		
 		// ProjectZed.logHelper.info("button.id:", button.id);

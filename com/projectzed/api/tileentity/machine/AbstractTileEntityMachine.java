@@ -11,7 +11,9 @@ import java.util.HashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -22,8 +24,9 @@ import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IWrenchable;
+import com.projectzed.api.util.EnumRedstoneType;
+import com.projectzed.api.util.IRedstoneComponent;
 import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -38,7 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 22, 2014
  */
-public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IWrenchable {
+public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IRedstoneComponent, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotRight;
 
@@ -51,6 +54,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public int cookTime;
 	public static int defaultCookTime = 200;
 	public int scaledTime = (defaultCookTime / 10) * 5;
+	
+	protected EnumRedstoneType redstoneType;
 
 	/**
 	 * @param name name of machine.
@@ -187,7 +192,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.stored > 0) burnEnergy();
 
 		if (!this.worldObj.isRemote) {
-
+			if (!isActiveFromRedstoneSignal()) return;
+			
 			if (this.isBurning() && this.canSmelt()) {
 				this.cookTime++;
 				this.powerMode = true;
@@ -195,7 +201,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				if (this.cookTime == scaledTime) {
 					this.cookTime = 0;
 					this.smeltItem();
-					ProjectZed.logHelper.info("Item smelted!");
+					// ProjectZed.logHelper.info("Item smelted!");
 					flag1 = true;
 				}
 				
@@ -363,7 +369,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		this.cookTime = comp.getShort("CookTime");
 		this.stored = comp.getInteger("ProjectZedPowerStored");
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
-
+		
+		int typeID = comp.hasKey("RedstoneType") ? comp.getInteger("RedstoneType") : 1;
+		this.redstoneType = EnumRedstoneType.TYPES[typeID >= 0 && typeID < EnumRedstoneType.TYPES.length ? typeID : 1];
+		
 		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
 	}
 
@@ -378,6 +387,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		comp.setShort("CookTime", (short) this.cookTime);
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
+		
+		if (this.redstoneType == null) this.redstoneType = EnumRedstoneType.LOW;
+		comp.setInteger("RedstoneType", this.redstoneType.ordinal());
 
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
@@ -389,6 +401,15 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
+	 */
+	@Override
+	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
 	}
 	
 	/*
@@ -445,6 +466,43 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	@Override
 	public ItemStack[] stacksToSave() {
 		return this.slots;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()
+	 */
+	@Override
+	public EnumRedstoneType getRedstoneType() {
+		return redstoneType;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IRedstoneComponent#setRedstoneType(com.projectzed.api.util.EnumRedstoneType)
+	 */
+	@Override
+	public void setRedstoneType(EnumRedstoneType type) {
+		this.redstoneType = type;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneSignal()
+	 */
+	@Override
+	public int getRedstoneSignal() {
+		return worldObj.getBlockPowerInput(worldVec().x, worldVec().y, worldVec().z);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.util.IRedstoneComponent#isActiveFromRedstoneSignal()
+	 */
+	@Override
+	public boolean isActiveFromRedstoneSignal() {
+		return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
+				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;
 	}
 
 }

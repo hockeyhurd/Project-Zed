@@ -37,6 +37,7 @@ public class PacketHandler {
 	public static void init() {
 		INSTANCE.registerMessage(MessageTileEntityGenerator.class, MessageTileEntityGenerator.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityCentrifuge.class, MessageTileEntityCentrifuge.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);

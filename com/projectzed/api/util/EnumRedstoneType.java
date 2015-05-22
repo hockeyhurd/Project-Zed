@@ -16,6 +16,10 @@ public enum EnumRedstoneType {
 
 	DISABLED(-1), LOW(0x0), HIGH(0xf), CUSTOM(0xf);
 	
+	public static final EnumRedstoneType[] TYPES = new EnumRedstoneType[] {
+		DISABLED, LOW, HIGH, CUSTOM,
+	};
+	
 	private int strength;
 	
 	/**

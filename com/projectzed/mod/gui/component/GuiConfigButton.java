@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 import com.hockeyhurd.api.math.Rect;
 
 /**
- * 
+ * Gui buttons for controlling tabs/widgets.
  * 
  * @author hockeyhurd
  * @version May 20, 2015
@@ -158,6 +158,10 @@ public class GuiConfigButton extends GuiButton {
 
 	public int getY() {
 		return this.y;
+	}
+	
+	public boolean isExpanding() {
+		return (this.x != 16 && this.x != rect.max.x) || (this.y != 16 && this.y != rect.max.y);
 	}
 	
 }

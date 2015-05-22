@@ -14,13 +14,14 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.util.EnumRedstoneType;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * 
+ * Gui buttons for redstone conrol.
  * 
  * @author hockeyhurd
  * @version May 20, 2015
@@ -34,7 +35,8 @@ public class GuiRedstoneButton extends GuiButton {
 	protected EnumRedstoneType type;
 	
 	protected boolean active;
-	protected float calc, calc2, dif;
+	protected Vector2<Float> min = Vector2.zero.getVector2f(); 
+	protected Vector2<Float> max = Vector2.zero.getVector2f(); 
 	protected static final float SIZE = 16f;
 	
 	/**
@@ -82,27 +84,17 @@ public class GuiRedstoneButton extends GuiButton {
 			GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 			
-			calc = (SIZE * this.type.ordinal()) * this.PIXEL;
-			dif = 3f * this.width * this.PIXEL;
-			calc2 = (SIZE * (this.type.ordinal() + 1)) * this.PIXEL;
-			// ProjectZed.logHelper.info("calc2:", calc2 / this.PIXEL, dif);
-			// need to offset height by '2 * 16'
+			min.x = (SIZE * (this.type.ordinal() + 0)) * this.PIXEL;
+			min.y = (SIZE * ((active ? 0 : 1) + 2)) * this.PIXEL;
+			max.x = (SIZE * (this.type.ordinal() + 1)) * this.PIXEL;
+			max.y = (SIZE * ((active ? 0 : 1) + 3)) * this.PIXEL;
 			
 			this.TESS.startDrawingQuads();
-
-			if (this.type.ordinal() == 0) {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, calc2);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, dif - calc2);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, dif - calc2);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, calc2);// bottom right
-			}
 			
-			else {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, dif - calc2);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, calc2);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, calc2);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, dif - calc2);// bottom right
-			}
+			this.TESS.addVertexWithUV(xPosition, yPosition, 0, min.x, min.y);
+			this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, min.x, max.y);
+			this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, max.x, max.y);
+			this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, max.x, min.y);
 			
 			this.TESS.draw();
 			
@@ -118,7 +110,7 @@ public class GuiRedstoneButton extends GuiButton {
 	public boolean mousePressed(Minecraft minecraft, int x, int y) {
 		boolean ret = super.mousePressed(minecraft, x, y);
 
-		if (ret) active = !active; 			
+		// if (ret) active = !active; 			
 		
 		return ret;
 	}
@@ -137,6 +129,24 @@ public class GuiRedstoneButton extends GuiButton {
 	
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		GuiRedstoneButton other = (GuiRedstoneButton) obj;
+		if (type != other.type) return false;
+		return true;
 	}
 	
 }

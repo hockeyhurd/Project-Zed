@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
 
 /**
  * TileEntity code for industrialEnergizer.
@@ -119,7 +118,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 			
 			if (this.cookTime == 0 && chargeRate > 0 && left > 0) {
 				this.scaledTime = left / chargeRate - 1;
-				ProjectZed.logHelper.info("this.scaledTime:", this.scaledTime);
+				// ProjectZed.logHelper.info("this.scaledTime:", this.scaledTime);
 			}
 			
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
