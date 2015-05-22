@@ -62,6 +62,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @param slot = slot id.
 	 * @return itemstack in slot.
 	 */
+	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return slot >= 0 && slot < this.slots.length ? this.slots[slot] : null;
 	}
@@ -71,19 +72,20 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * 
 	 * @see net.minecraft.inventory.IInventory#decrStackSize(int, int)
 	 */
-	public ItemStack decrStackSize(int par1, int par2) {
-		if (this.slots[par1] != null) {
+	@Override
+	public ItemStack decrStackSize(int slot, int amount) {
+		if (this.slots[slot] != null) {
 			ItemStack itemstack;
 
-			if (this.slots[par1].stackSize <= par2) {
-				itemstack = this.slots[par1];
-				this.slots[par1] = null;
+			if (this.slots[slot].stackSize <= amount) {
+				itemstack = this.slots[slot];
+				this.slots[slot] = null;
 				return itemstack;
 			}
 			else {
-				itemstack = this.slots[par1].splitStack(par2);
+				itemstack = this.slots[slot].splitStack(amount);
 
-				if (this.slots[par1].stackSize == 0) this.slots[par1] = null;
+				if (this.slots[slot].stackSize == 0) this.slots[slot] = null;
 				return itemstack;
 			}
 		}

@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -32,7 +31,6 @@ import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.api.util.IRedstoneComponent;
 import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -142,6 +140,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return slot == 1 && openSides[side] == 1;
 	}
 	
+	/**
+	 * Method handler for pushing/pulling itemstacks to and from neighboring inventories.
+	 */
 	protected void handleSidedIO() {
 		TileEntity te = null;
 		IInventory otherInv = null;
@@ -189,32 +190,37 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 						out = this.getStackInSlot(thisSlot);
 						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
 						
-						int remainder = 0;
+						int amount = out.stackSize;
 						
 						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
-							if (otherInv.isItemValidForSlot(otherSlot, out)) {
-								ItemStack destStack = otherInv.getStackInSlot(otherSlot);
-								if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
+							ItemStack destStack = otherInv.getStackInSlot(otherSlot);
+							if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
+							
+							if ((destStack != null && out.isItemEqual(destStack)) || otherInv.isItemValidForSlot(otherSlot, out)) {
 								
-								int amount = out.stackSize;
-								if (destStack != null) amount = Math.min(destStack.getMaxStackSize() - destStack.stackSize, amount);
+								if (destStack != null) {
+									amount = Math.min(destStack.getMaxStackSize() - destStack.stackSize, amount);	
+									otherInv.getStackInSlot(otherSlot).stackSize += amount;
+								}
+								
 								else {
 									ItemStack copy = out.copy();
 									copy.stackSize = amount;
 									destStack = copy;
+									otherInv.setInventorySlotContents(otherSlot, destStack);
 								}
 								
-								remainder -= amount;
-								ProjectZed.logHelper.info("remainder:", remainder);
+								out.stackSize -= amount;
+								if (out.stackSize == 0) out = null;
 								
-								otherInv.setInventorySlotContents(otherSlot, destStack);
 								this.decrStackSize(thisSlot, amount);
 							}
 							
-							if (remainder == 0) break;
+							if (amount == 0 || out == null || out.stackSize == 0) break;
 						}
 						
-						if (remainder == 0) break;
+						if (out == null || out.stackSize == 0) continue;
+						
 					}
 				}
 			}
@@ -283,7 +289,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 		if (!this.worldObj.isRemote) {
 			
-			handleSidedIO();
+			if (this.worldObj.getTotalWorldTime() % 20L == 0) handleSidedIO();
 			
 			if (!isActiveFromRedstoneSignal()) return;
 			
@@ -294,7 +300,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				if (this.cookTime == scaledTime) {
 					this.cookTime = 0;
 					this.smeltItem();
-					// ProjectZed.logHelper.info("Item smelted!");
 					flag1 = true;
 				}
 				
@@ -306,10 +311,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				this.powerMode = false;
 			}
 
-			if (flag != this.stored > 0) {
-				flag1 = true;
-				// ((AbstractBlockMachine) this.blockType).updateBlockState(this.cookTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-			}
+			if (flag != this.stored > 0) flag1 = true;
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
