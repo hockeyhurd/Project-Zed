@@ -14,18 +14,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.component.GuiConfigButton;
+import com.projectzed.mod.gui.component.GuiIOButton;
 import com.projectzed.mod.gui.component.GuiRedstoneButton;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
@@ -33,6 +37,7 @@ import com.projectzed.mod.gui.component.PowerLabel;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -56,6 +61,10 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	protected GuiConfigButton[] configButtons;
 	protected HashMap<GuiRedstoneButton, Integer> redstoneButtons;
 	protected EnumRedstoneType redstoneType;
+	
+	protected HashMap<GuiIOButton, Integer> ioButtons;
+	protected int startIndexIO = 0;
+	protected Waila waila;
 
 	/**
 	 * @param inv
@@ -73,6 +82,10 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 		this.labelList = new ArrayList<IInfoLabel>();
 		this.redstoneType = te.getRedstoneType();
+		
+		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
+		
+		waila = new Waila(null, player.worldObj, player, null, 0);
 	}
 
 	/*
@@ -145,8 +158,8 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		
 		if (configButtons == null || configButtons.length == 0) {
 			configButtons = new GuiConfigButton[] {
-					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(50, 100), 0xffff0000)),
-					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 50), 0xff0000ff)), 
+					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(60, 60), 0xffff0000)),
+					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 35), 0xff0000ff)), 
 			};
 		}
 		
@@ -168,6 +181,21 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 			button.visible = false;
 			this.buttonList.add(button);
+		}
+		
+		waila.finder(false);
+		
+		startIndexIO = counter;
+		
+		if (ioButtons == null || ioButtons.isEmpty()) ioButtons = new HashMap<GuiIOButton, Integer>();
+		
+		getLayoutFromFacingDirection(getFacingDirection(waila.getSideHit()), counter, guiLeft - 72, guiTop + 38);
+		
+		if (ioButtons != null && !ioButtons.isEmpty()) {
+			for (GuiIOButton b : ioButtons.keySet()) {
+				b.visible = false;
+				this.buttonList.add(b);
+			}
 		}
 		
 	}
@@ -195,6 +223,15 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				
 				((GuiRedstoneButton) this.buttonList.get(index)).visible = false;
 			}
+			
+			index = 0;
+			
+			for (GuiIOButton ioButton : ioButtons.keySet()) {
+				index = ioButtons.get(ioButton);
+				
+				((GuiIOButton) this.buttonList.get(index)).visible = isActive;
+			}
+			
 		}
 			
 		else if (button.id == 1) {
@@ -216,6 +253,14 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				
 				((GuiRedstoneButton) this.buttonList.get(index)).visible = isActive;
 			}
+			
+			index = 0;
+			
+			for (GuiIOButton ioButton : ioButtons.keySet()) {
+				index = ioButtons.get(ioButton);
+				
+				((GuiIOButton) this.buttonList.get(index)).visible = false;
+			}
 		}
 		
 		else if (button instanceof GuiRedstoneButton) {
@@ -230,6 +275,26 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				if (((GuiRedstoneButton) b).getType() != redstoneType) ((GuiRedstoneButton) b).setActive(false);
 				else ((GuiRedstoneButton) b).setActive(true);
 			}
+		}
+		
+		else if (button instanceof GuiIOButton) {
+			if (!this.isShiftKeyDown()) {
+				ForgeDirection dirToSet = getDirectionFromName(button.displayString);
+				
+				ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
+				te.setSideValveAndRotate(dirToSet);
+				ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
+			}
+			
+			/*else if (this.isShiftKeyDown()) {
+				// ProjectZed.logHelper.info(true);
+				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+					if (this.ioButtons[dir.ordinal()] instanceof GuiIOButton) ((GuiIOButton) this.ioButtons[dir.ordinal()]).setStateID((byte) 0);
+					te.setSideValve(dir, (byte) 0);
+				}
+			}*/
+			
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
 		}
 		
 		else {
@@ -288,6 +353,117 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
 		}
 		
+	}
+	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param dir = direction player is facing.
+	 * @param posX = position x to start drawing button.
+	 * @param posY = position y to start drawing button.
+	 * @return gui button array for side player is currently facing.
+	 */
+	private void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
+		
+		if (dir == ForgeDirection.SOUTH) {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+		}
+
+		else if (dir == ForgeDirection.NORTH) {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+		}
+
+		else if (dir == ForgeDirection.EAST) {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+		}
+
+		else if (dir == ForgeDirection.WEST) {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+		}
+
+		else if (dir == ForgeDirection.DOWN) {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+		}
+
+		else {
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
+			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+		}
+		
+	}
+	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param side = side to get.
+	 * @return opposite direction of side 'side'.
+	 */
+	private ForgeDirection getFacingDirection(int side) {
+		return side >= 0 && side < ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.VALID_DIRECTIONS[side].getOpposite() : ForgeDirection.UNKNOWN;
+	}
+	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param name = name of side.
+	 * @return direction associated by button's name.
+	 */
+	private ForgeDirection getDirectionFromName(String name) {
+		ForgeDirection dir = ForgeDirection.UNKNOWN;
+		
+		if (name.equalsIgnoreCase("n")) dir = ForgeDirection.NORTH;
+		else if (name.equalsIgnoreCase("s")) dir = ForgeDirection.SOUTH;
+		else if (name.equalsIgnoreCase("e")) dir = ForgeDirection.EAST;
+		else if (name.equalsIgnoreCase("w")) dir = ForgeDirection.WEST;
+		else if (name.equalsIgnoreCase("t")) dir = ForgeDirection.UP;
+		else if (name.equalsIgnoreCase("b")) dir = ForgeDirection.DOWN;
+		
+		return dir;
+	}
+	
+	/**
+	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
+	 * 
+	 * @param dir = direction to get.
+	 * @return value of the 'valve' on side specified.
+	 */
+	private byte getSideValueFromTE(ForgeDirection dir) {
+		return te instanceof AbstractTileEntityMachine ? ((AbstractTileEntityMachine) te).getSideValve(dir) : 0;
 	}
 
 }

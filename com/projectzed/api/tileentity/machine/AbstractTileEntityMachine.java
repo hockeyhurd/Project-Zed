@@ -9,11 +9,13 @@ package com.projectzed.api.tileentity.machine;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -23,7 +25,9 @@ import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.IWrenchable;
+import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.api.util.IRedstoneComponent;
 import com.projectzed.api.util.Sound;
@@ -41,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 22, 2014
  */
-public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IRedstoneComponent, IWrenchable {
+public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IModularFrame, IRedstoneComponent, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotRight;
 
@@ -55,6 +59,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public static int defaultCookTime = 200;
 	public int scaledTime = (defaultCookTime / 10) * 5;
 	
+	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
 
 	/**
@@ -122,14 +127,48 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
-
+	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+		return openSides[side] == -1 && isItemValidForSlot(slot, stack);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+		return openSides[side] == 1;
+	}
+	
+	protected void handleSidedIO() {
+		TileEntity te = null;
+		ISidedInventory inv = null;
+		ItemStack in = this.getStackInSlot(0);
+		ItemStack out = this.getStackInSlot(1);
+		
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+			
+			if (te != null && te instanceof ISidedInventory) { 
+				inv = (ISidedInventory) te;
+				
+				// gather input
+				if (in.stackSize < in.getMaxStackSize() && openSides[dir.ordinal()] == -1) {
+					
+					for (int i = 0; i < inv.getSizeInventory(); i++) {
+						ItemStack invIn = inv.getStackInSlot(i);
+						
+						if (inv.canExtractItem(i, invIn, dir.ordinal()) && invIn.isItemEqual(in)) {
+							int amount = Math.min(in.getMaxStackSize() - in.stackSize, invIn.stackSize);
+							in.stackSize += amount;
+							inv.decrStackSize(i, amount);
+						}
+					}
+					
+				}
+			}
+		}
+	}
 
 	@SideOnly(Side.CLIENT)
 	public int getCookProgressScaled(int i) {
@@ -192,6 +231,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.stored > 0) burnEnergy();
 
 		if (!this.worldObj.isRemote) {
+			
+			handleSidedIO();
+			
 			if (!isActiveFromRedstoneSignal()) return;
 			
 			if (this.isBurning() && this.canSmelt()) {
@@ -373,6 +415,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		int typeID = comp.hasKey("RedstoneType") ? comp.getInteger("RedstoneType") : 1;
 		this.redstoneType = EnumRedstoneType.TYPES[typeID >= 0 && typeID < EnumRedstoneType.TYPES.length ? typeID : 1];
 		
+		for (int i = 0; i < this.openSides.length; i++) {
+			this.openSides[i] = comp.getByte("ProjectZedMachineSide" + i);
+		}
+		
 		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
 	}
 
@@ -391,6 +437,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.redstoneType == null) this.redstoneType = EnumRedstoneType.LOW;
 		comp.setInteger("RedstoneType", this.redstoneType.ordinal());
 
+		for (int i = 0; i < this.openSides.length; i++) {
+			comp.setByte("ProjectZedMachineSide" + i, this.openSides[i]);
+		}
+		
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
@@ -503,6 +553,61 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public boolean isActiveFromRedstoneSignal() {
 		return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
 				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
+	 */
+	@Override
+	public EnumFrameType getType() {
+		return EnumFrameType.ITEM;
+	}
+	
+	/**
+	 * Sets given direction to given value.
+	 * @param dir = direction to set.
+	 * @param value = value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
+	 */
+	@Override
+	public void setSideValve(ForgeDirection dir, byte value) {
+		openSides[dir.ordinal()] = value;
+	}
+	
+	/**
+	 * Sets the side value after rotating to next value.
+	 * @param dir = direction to test.
+	 */
+	@Override
+	public void setSideValveAndRotate(ForgeDirection dir) {
+		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
+	}
+	
+	/**
+	 * @param dir = direction to test.
+	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
+	 */
+	@Override
+	public byte getSideValve(ForgeDirection dir) {
+		return openSides[dir.ordinal()];
+	}
+	
+	/**
+	 * @param dir = direction to test.
+	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
+	 */
+	@Override
+	public byte getSideValve(int dir) {
+		return openSides[dir];
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
+	 */
+	@Override
+	public byte[] getSidedArray() {
+		return openSides;
 	}
 
 }

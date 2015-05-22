@@ -91,22 +91,11 @@ public class TileEntityIndustrialMetalPress extends AbstractTileEntityMachine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return this.isItemValidForSlot(slot, stack);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		// return side != 1 /*|| side != 1*/ || stack.getItem() == Items.bucket;
-		return slot == 0 || slot == 1;
+		return super.canExtractItem(slot, stack, side) && slot == 1;
 	}
 
 	/*

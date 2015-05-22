@@ -90,9 +90,15 @@ public class LumberMillRecipesRegistry {
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
 		 */
-		if (mapVanilla.size() > 0 && mapVanilla.containsKey(stack) && mapVanilla.get(stack).getItemDamage() == stack.getItemDamage()) {
+		if (mapVanilla.size() > 0 && !mapVanilla.isEmpty()) {
 			flag = true;
-			temp = mapVanilla.get(stack);
+			
+			for (ItemStack itemStack : mapVanilla.keySet()) {
+				if (itemStack.isItemEqual(stack)) {
+					temp = mapVanilla.get(itemStack);
+					break;
+				}
+			}
 		}
 
 		// If found data in vanilla mapping, return now, no need to continue.

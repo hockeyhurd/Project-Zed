@@ -9,6 +9,7 @@ package com.projectzed.mod.handler.message;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -39,6 +40,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	private int fluidStored;
 	
 	private EnumRedstoneType redstoneType;
+	private byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	
 	public MessageTileEntityMachine() {
 	}
@@ -55,6 +57,10 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		if (this.containsFluid) this.fluidStored = ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount();
 		
 		this.redstoneType = te.getRedstoneType() != null ? te.getRedstoneType() : EnumRedstoneType.LOW;
+		
+		for (int i = 0; i < openSides.length; i++) {
+			this.openSides[i] = te.getSideValve(i);
+		}
 	}
 	
 	public void fromBytes(ByteBuf buf) {
@@ -68,6 +74,10 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		if (this.containsFluid) this.fluidStored = buf.readInt();
 		
 		this.redstoneType = EnumRedstoneType.TYPES[buf.readInt()];
+		
+		for (int i = 0; i < openSides.length; i++) {
+			openSides[i] = buf.readByte();
+		}
 	}
 
 	public void toBytes(ByteBuf buf) {
@@ -81,6 +91,10 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		if (this.containsFluid) buf.writeInt(this.fluidStored);
 		
 		buf.writeInt(redstoneType.ordinal());
+		
+		for (byte b : openSides) {
+			buf.writeByte(b);
+		}
 	}
 
 	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
@@ -92,6 +106,10 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
 				((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
 				((AbstractTileEntityMachine) te).setRedstoneType(message.redstoneType);
+				
+				for (int i = 0; i < message.openSides.length; i++) {
+					((AbstractTileEntityMachine) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+				}
 				
 				if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
 			}
@@ -105,6 +123,10 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				AbstractTileEntityMachine te2 = (AbstractTileEntityMachine) te;
 				
 				te2.setRedstoneType(message.redstoneType);
+				
+				for (int i = 0; i < message.openSides.length; i++) {
+					te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+				}
 			}
 		}
 		

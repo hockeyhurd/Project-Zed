@@ -82,19 +82,11 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return this.isItemValidForSlot(slot, stack);
-	}
-
-	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return true;
+		return super.canExtractItem(slot, stack, side) && slot == 1;
 	}
 
 	/* (non-Javadoc)
