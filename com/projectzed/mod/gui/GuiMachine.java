@@ -286,13 +286,16 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 			}
 			
-			/*else if (this.isShiftKeyDown()) {
-				// ProjectZed.logHelper.info(true);
-				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-					if (this.ioButtons[dir.ordinal()] instanceof GuiIOButton) ((GuiIOButton) this.ioButtons[dir.ordinal()]).setStateID((byte) 0);
-					te.setSideValve(dir, (byte) 0);
+			else if (this.isShiftKeyDown()) {
+				int index = 0;
+				
+				for (GuiIOButton ioButton : ioButtons.keySet()) {
+					index = ioButtons.get(ioButton);
+					
+					((GuiIOButton) this.buttonList.get(index)).setStateID((byte) 0);
+					te.setSideValve(ForgeDirection.VALID_DIRECTIONS[index - startIndexIO], (byte) 0);
 				}
-			}*/
+			}
 			
 			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
 		}
