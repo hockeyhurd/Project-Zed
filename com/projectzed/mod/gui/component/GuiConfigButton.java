@@ -11,11 +11,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 
 /**
  * Gui buttons for controlling tabs/widgets.
@@ -23,7 +25,7 @@ import com.hockeyhurd.api.math.Rect;
  * @author hockeyhurd
  * @version May 20, 2015
  */
-public class GuiConfigButton extends GuiButton {
+public class GuiConfigButton extends GuiButton implements IGuiButton {
 
 	protected final Tessellator TESS;
 	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
@@ -35,6 +37,7 @@ public class GuiConfigButton extends GuiButton {
 	protected static final int panelSize = 50;
 	protected boolean active;
 	protected float calc, calc2, dif;
+	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected static final float SIZE = 16f;
 	
 	/**
@@ -52,6 +55,8 @@ public class GuiConfigButton extends GuiButton {
 		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
 		this.rect = rect;
+		this.pos.x = x;
+		this.pos.y = y;
 	}
 
 	/**
@@ -71,6 +76,8 @@ public class GuiConfigButton extends GuiButton {
 		this.stateID = stateID;
 		this.TESS = Tessellator.instance;
 		this.rect = rect;
+		this.pos.x = x;
+		this.pos.y = y;
 	}
 	
 	/*
@@ -160,8 +167,56 @@ public class GuiConfigButton extends GuiButton {
 		return this.y;
 	}
 	
+	public Rect getRect() {
+		return rect;
+	}
+	
 	public boolean isExpanding() {
 		return (this.x != 16 && this.x != rect.max.x) || (this.y != 16 && this.y != rect.max.y);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#getPos()
+	 */
+	@Override
+	public Vector2<Integer> getPos() {
+		return pos;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rect == null) ? 0 : rect.hashCode());
+		result = prime * result + stateID;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		GuiConfigButton other = (GuiConfigButton) obj;
+		if (rect == null) {
+			if (other.rect != null) return false;
+		}
+		else if (!rect.equals(other.rect)) return false;
+		if (stateID != other.stateID) return false;
+		if (x != other.x) return false;
+		if (y != other.y) return false;
+		return true;
 	}
 	
 }

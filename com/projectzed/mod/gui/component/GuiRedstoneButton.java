@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version May 20, 2015
  */
 @SideOnly(Side.CLIENT)
-public class GuiRedstoneButton extends GuiButton {
+public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 
 	protected final Tessellator TESS;
 	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
@@ -37,6 +38,8 @@ public class GuiRedstoneButton extends GuiButton {
 	protected boolean active;
 	protected Vector2<Float> min = Vector2.zero.getVector2f(); 
 	protected Vector2<Float> max = Vector2.zero.getVector2f(); 
+	
+	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected static final float SIZE = 16f;
 	
 	/**
@@ -53,6 +56,8 @@ public class GuiRedstoneButton extends GuiButton {
 		
 		this.type = type;
 		this.TESS = Tessellator.instance;
+		this.pos.x = x;
+		this.pos.y = y;
 	}
 
 	/**
@@ -123,12 +128,31 @@ public class GuiRedstoneButton extends GuiButton {
 		this.type = type;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#isActive()
+	 */
+	@Override
 	public boolean isActive() {
 		return active;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#setActive(boolean)
+	 */
+	@Override
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#getPos()
+	 */
+	@Override
+	public Vector2<Integer> getPos() {
+		return pos;
 	}
 
 	@Override

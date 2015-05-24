@@ -64,6 +64,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	
 	protected HashMap<GuiIOButton, Integer> ioButtons;
 	protected int startIndexIO = 0;
+	protected int guiOffset = 0;
 	protected Waila waila;
 
 	/**
@@ -77,7 +78,8 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
 		this.te = te;
-		this.xSize = 176;
+		this.guiOffset = 0; // 76;
+		this.xSize = 176 + this.guiOffset;
 		this.ySize = 166;
 
 		this.labelList = new ArrayList<IInfoLabel>();
@@ -111,7 +113,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		
+		int xStart = (width - xSize) / 2;
+        int yStart = (height - ySize) / 2;
+        
+		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
@@ -152,6 +158,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.pos = new Vector2<Integer>(guiLeft + 7, guiTop + 61);
 		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17);
 
+		int guiLeft = (width - xSize) / 2;
+		int guiTop = (height - ySize) / 2;
+		
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 		
 		int counter = 0;
@@ -166,13 +175,13 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		if (redstoneButtons == null || redstoneButtons.isEmpty()) {
 			redstoneButtons = new HashMap<GuiRedstoneButton, Integer>();
 			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED), counter++);
-			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW), counter++);	
+			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW), counter++);
 			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH), counter++);
 		}
 		
-		for (GuiConfigButton button : configButtons) {
-			button.setActive(false);
-			this.buttonList.add(button);
+		for (int i = 0; i < configButtons.length; i++) {
+			configButtons[i].setActive(false);
+			this.buttonList.add(configButtons[i]);
 		}
 		
 		for (GuiRedstoneButton button : redstoneButtons.keySet()) {
@@ -229,7 +238,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			for (GuiIOButton ioButton : ioButtons.keySet()) {
 				index = ioButtons.get(ioButton);
 				
-				((GuiIOButton) this.buttonList.get(index)).visible = isActive;
+				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = isActive;
 			}
 			
 		}
@@ -259,7 +268,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			for (GuiIOButton ioButton : ioButtons.keySet()) {
 				index = ioButtons.get(ioButton);
 				
-				((GuiIOButton) this.buttonList.get(index)).visible = false;
+				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = false;
 			}
 		}
 		
@@ -279,7 +288,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		
 		else if (button instanceof GuiIOButton) {
 			if (!this.isShiftKeyDown()) {
-				ForgeDirection dirToSet = getDirectionFromName(button.displayString);
+				ForgeDirection dirToSet = getDirectionFromName(button.displayString);	
 				
 				ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
 				te.setSideValveAndRotate(dirToSet);

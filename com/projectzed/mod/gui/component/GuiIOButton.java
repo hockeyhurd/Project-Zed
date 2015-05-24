@@ -14,6 +14,9 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.mod.ProjectZed;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,13 +29,15 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Dec 7, 2014
  */
 @SideOnly(Side.CLIENT)
-public class GuiIOButton extends GuiButton {
+public class GuiIOButton extends GuiButton implements IGuiButton {
 
 	protected final Tessellator TESS;
 	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected byte stateID;
 	protected final float PIXEL;
 	
+	protected boolean active;
+	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected float calc, calc2, dif;
 
 	/**
@@ -49,6 +54,8 @@ public class GuiIOButton extends GuiButton {
 		
 		this.stateID = state;
 		this.TESS = Tessellator.instance;
+		this.pos.x = x;
+		this.pos.y = y;
 	}
 
 	/**
@@ -67,6 +74,8 @@ public class GuiIOButton extends GuiButton {
 		
 		this.stateID = state;
 		this.TESS = Tessellator.instance;
+		this.pos.x = x;
+		this.pos.y = y;
 	}
 
 	/*
@@ -85,8 +94,10 @@ public class GuiIOButton extends GuiButton {
 			dif = 16f * this.PIXEL; 
 			calc2 = this.width * (this.stateID + 1) * this.PIXEL;
 			
+			ProjectZed.logHelper.info(x, xPosition);
+			
 			this.TESS.startDrawingQuads();
-
+			
 			if (this.stateID == -1) {
 				this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
 				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
@@ -142,6 +153,63 @@ public class GuiIOButton extends GuiButton {
 	 */
 	private byte shiftButtonMatrix() {
 		return (byte) (this.stateID == -1 ? 0 : (this.stateID == 0 ? 1 : -1));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#isActive()
+	 */
+	@Override
+	public boolean isActive() {
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#setActive(boolean)
+	 */
+	@Override
+	public void setActive(boolean active) {
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.gui.component.IGuiButton#getPos()
+	 */
+	@Override
+	public Vector2<Integer> getPos() {
+		return pos;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
+		result = prime * result + stateID;
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		GuiIOButton other = (GuiIOButton) obj;
+		if (pos == null) {
+			if (other.pos != null) return false;
+		}
+		else if (!pos.equals(other.pos)) return false;
+		if (stateID != other.stateID) return false;
+		return true;
 	}
 
 }
