@@ -18,8 +18,8 @@ public class TileEntityLiquiductClear extends TileEntityLiquiductBase {
 
 	public TileEntityLiquiductClear() {
 		super("liquiductClear");
-		this.importRate = 500;
-		this.exportRate = 500;
+		this.importRate = 250;
+		this.exportRate = 250;
 	}
 
 	/*

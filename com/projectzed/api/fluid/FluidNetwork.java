@@ -40,6 +40,9 @@ public class FluidNetwork {
 	private FluidNode masterNode;
 	private final int MAX_IO;
 	
+	private boolean transferring = false;
+	private FluidStack transferredFluid = null;
+	
 	/**
 	 * @param world world to reference.
 	 * @param masterNode master node controlling and calling update functions/methods.
@@ -58,7 +61,7 @@ public class FluidNetwork {
 	 * 
 	 * @param node node to add.
 	 */
-	public void add(FluidNode node) {
+	public synchronized void add(FluidNode node) {
 		if (nodes != null && !nodes.contains(node)) nodes.addLast(node);
 	}
 	
@@ -67,7 +70,7 @@ public class FluidNetwork {
 	 * 
 	 * @param node node to remove.
 	 */
-	public void remove(FluidNode node) {
+	public synchronized void remove(FluidNode node) {
 		if (node == null || !nodes.contains(node)) return;
 		if (masterNode != null && node.equals(masterNode)) {
 			// nodes.removeFirst();
@@ -244,6 +247,8 @@ public class FluidNetwork {
 	 * Main method call for network to update fluid transfer.
 	 */
 	public synchronized void update() {
+		boolean transferring = false;
+		FluidStack transferredFluid = null;
 		Set<FluidNode> sourceNodes = null;
 		Set<FluidNode> acceptorNodes = null;
 		
@@ -356,6 +361,7 @@ public class FluidNetwork {
 										// ProjectZed.logHelper.info("Token amount:", token.getAmount());
 										amount = Math.min(amount, info[i].capacity - fluidAmount);
 										amount = Math.min(amount, token.getAmount());
+										int startAmount = amount;
 										FluidStack temp = new FluidStack(token.getFluid(), amount);
 										
 										if (info[i].fluid != null && info[i].fluid.amount < info[i].capacity && info[i].fluid.getFluid().equals(token.getFluid())) {
@@ -389,6 +395,11 @@ public class FluidNetwork {
 											node.getFluidContainer().drain(token.getDirection(), temp, true);
 										}
 										
+										if (startAmount > amount) {
+											transferring = true;
+											transferredFluid = temp.copy();
+										}
+										
 										if (amount == 0) break;
 									}
 								}
@@ -404,6 +415,23 @@ public class FluidNetwork {
 			
 		}
 		
+		this.transferring = transferring;
+		this.transferredFluid = transferredFluid;
+		
+	}
+	
+	/**
+	 * @return true if network transferred something last tick, else returns false.
+	 */
+	public boolean getTransferringState() {
+		return transferring;
+	}
+	
+	/**
+	 * @return last transferred fluid in network.
+	 */
+	public FluidStack getTransferredFluid() {
+		return transferredFluid;
 	}
 
 	@Override

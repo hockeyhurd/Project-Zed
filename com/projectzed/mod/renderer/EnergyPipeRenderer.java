@@ -39,10 +39,18 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 	private float calc = 11 * PIXEL / 2;
 	private float calc2 = 9 * PIXEL / 2;
-	private int minU = 11;
-	private int maxU = minU + 3;
-	private int minV = 0;
-	private int maxV = minV + 5;
+	private int connectorMinU = 11;
+	private int connectorMaxU = connectorMinU + 3;
+	private int connectorMinV = 0;
+	private int connectorMaxV = connectorMinV + 7;
+	private int connectionMinU = 5;
+	private int connectionMaxU = 10;
+	private int connectionMinV = 0;
+	private int connectionMaxV = 7;
+	private int drawMinU = 0;
+	private int drawMaxU = 5;
+	private int drawMinV = 0;
+	private int drawMaxV = 7;
 
 	/**
 	 * @param color = color to draw.
@@ -147,34 +155,34 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 	 */
 	private void drawConnector(Tessellator tess) {
 		// -z
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, minU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, maxU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1, 1 - calc2, maxU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, minU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 
 		// +z
-		tess.addVertexWithUV(calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1, calc2, maxU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1, calc2, maxU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 
 		// -x
-		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, minU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1, 1 - calc2, maxU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1, calc2, maxU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 
 		// +x
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1, calc2, maxU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, maxU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, minU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 
 		// -y
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, maxU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, maxU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, minV * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, minU * TEXTURE_PIXEL, maxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, 1 - calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc2, 1 - calc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
 	}
 
 	/**
@@ -203,55 +211,55 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 		if (type == 2) drawConnector(tess);
 
 		// -z
-		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
 
 		if (renderInside) {
-			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
 		}
 
 		// +z
-		tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
 
 		if (renderInside) {
-			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV* TEXTURE_PIXEL);
 		}
 
 		// -x
-		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
 
 		if (renderInside) {
-			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1, calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
 		}
 
 		// +x
-		tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+		tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
 
 		if (renderInside) {
-			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1, 1 - calc, 10 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1, calc, 10 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, connectionMinU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, 1 - calc, connectionMaxU * TEXTURE_PIXEL, connectionMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1, calc, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
 		}
 
 		tess.draw();
@@ -287,91 +295,91 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 
 		if (!zRight) {
 			// -Z
-			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
 		if (!zLeft) {
 			// +z
-			tess.addVertexWithUV(calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
 		if (!xLeft) {
 			// -x
-			tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
 		if (!xRight) {
 			// +x
-			tess.addVertexWithUV(1 - calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, calc, calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
 		if (!yBottom) {
 			// -y
-			tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(1 - calc, calc, calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
 		if (!yTop) {
 			// +y
-			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+			tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 
 			if (renderInside) {
-				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, 0 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(calc, 1 - calc, calc, 0 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, calc, 5 * TEXTURE_PIXEL, 0 * TEXTURE_PIXEL);
-				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, 5 * TEXTURE_PIXEL, 5 * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, 1 - calc, drawMinU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(calc, 1 - calc, calc, drawMinU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, calc, drawMaxU * TEXTURE_PIXEL, drawMinV * TEXTURE_PIXEL);
+				tess.addVertexWithUV(1 - calc, 1 - calc, 1 - calc, drawMaxU * TEXTURE_PIXEL, drawMaxV * TEXTURE_PIXEL);
 			}
 		}
 
