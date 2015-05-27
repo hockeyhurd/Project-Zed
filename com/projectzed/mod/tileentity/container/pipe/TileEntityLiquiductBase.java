@@ -644,6 +644,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			// merging networks together if applicable.
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+				if (te == null) continue;
 				
 				if (te instanceof IFluidHandler) {
 					if (te instanceof TileEntityLiquiductBase) {
@@ -667,6 +668,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 						
 						continue;
 					}
+					
+					if (!hasFluidNetwork()) continue;
 					
 					Vector3<Integer> vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
 					List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);

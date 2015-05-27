@@ -61,7 +61,7 @@ public class FluidNetwork {
 	 * 
 	 * @param node node to add.
 	 */
-	public synchronized void add(FluidNode node) {
+	public void add(FluidNode node) {
 		if (nodes != null && !nodes.contains(node)) nodes.addLast(node);
 	}
 	
@@ -70,7 +70,7 @@ public class FluidNetwork {
 	 * 
 	 * @param node node to remove.
 	 */
-	public synchronized void remove(FluidNode node) {
+	public void remove(FluidNode node) {
 		if (node == null || !nodes.contains(node)) return;
 		if (masterNode != null && node.equals(masterNode)) {
 			// nodes.removeFirst();
@@ -256,14 +256,16 @@ public class FluidNetwork {
 			sourceNodes = new HashSet<FluidNode>();
 
 			ListIterator<FluidNode> iter = nodes.listIterator();
+			List<FluidNode> nodesToRemove = new ArrayList<FluidNode>(nodes.size());
 			
 			// find our sources and remove, removed fluid nodes:
 			// for (FluidNode node : nodes) {
 			while (iter.hasNext()) {
 				FluidNode node = iter.next();
 				
-				if (!exists(node) || !node.hasConnections()) {
-					remove(node);
+				if (node == null || !exists(node) || !node.hasConnections()) {
+					// remove(node);
+					nodesToRemove.add(node);
 					continue;
 				}
 
@@ -272,6 +274,14 @@ public class FluidNetwork {
 				node.update();
 
 				if (node.isSourceNode()) sourceNodes.add(node);
+			}
+			
+			if (!nodesToRemove.isEmpty()) {
+				for (FluidNode node : nodesToRemove) {
+					if (nodes.contains(node)) nodes.remove(node);
+				}
+				
+				if (nodes.isEmpty()) return;
 			}
 
 			// if we have sources
