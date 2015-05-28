@@ -21,9 +21,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import org.lwjgl.opengl.GL11;
 
 import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 import com.projectzed.mod.util.Connection;
 
@@ -95,7 +93,7 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 
 		Connection zLeft = canConnect(te.getWorldObj(), te, 2, xx, yy, zz - 1); // north
 		Connection zRight = canConnect(te.getWorldObj(), te, 3, xx, yy, zz + 1); // sound
-
+		
 		// ProjectZed.logHelper.info(xLeft.isConnected());
 		
 		drawPipe(te, xLeft.isConnected(), xRight.isConnected(), yBottom.isConnected(), yTop.isConnected(), zLeft.isConnected(), zRight.isConnected());
@@ -108,7 +106,43 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 		if (zLeft.isConnected()) drawConnection(ForgeDirection.NORTH, zLeft.getType());
 		if (zRight.isConnected()) drawConnection(ForgeDirection.SOUTH, zRight.getType());
 		
-		if (this.renderInside) drawFluid((TileEntityLiquiductBase) te);
+		if (this.renderInside) {
+			if (!((TileEntityLiquiductBase) te).wasTransferredLastTick()) {
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glTranslated(-x, -y, -z);
+				GL11.glPopMatrix();
+				return;
+			}
+			
+			FluidStack fluid = ((TileEntityLiquiductBase) te).getTransferredStack() != null ? ((TileEntityLiquiductBase) te).getTransferredStack().copy() : null;
+			if (fluid == null || fluid.amount == 0) {
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glTranslated(-x, -y, -z);
+				GL11.glPopMatrix();
+				return;
+			}
+			
+			IIcon icon = fluid.getFluid().getStillIcon();
+			if (icon == null) {
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glTranslated(-x, -y, -z);
+				GL11.glPopMatrix();
+				return;
+			}
+			
+			float yLevel = fluid.amount / (float) Math.min(((TileEntityLiquiductBase) te).getMaxFluidImportRate(), ((TileEntityLiquiductBase) te).getMaxFluidExportRate());
+			
+			this.bindTexture(TextureMap.locationBlocksTexture);
+			
+			drawFluid(yLevel, icon);
+			if (xLeft.isConnected()) drawFluidConnection(ForgeDirection.WEST, xLeft.getType(), yLevel, icon);
+			if (xRight.isConnected()) drawFluidConnection(ForgeDirection.EAST, xRight.getType(), yLevel, icon);
+			if (yTop.isConnected()) drawFluidConnection(ForgeDirection.UP, yTop.getType(), yLevel, icon);
+			if (yBottom.isConnected()) drawFluidConnection(ForgeDirection.DOWN, yBottom.getType(), yLevel, icon);
+
+			if (zLeft.isConnected()) drawFluidConnection(ForgeDirection.NORTH, zLeft.getType(), yLevel, icon);
+			if (zRight.isConnected()) drawFluidConnection(ForgeDirection.SOUTH, zRight.getType(), yLevel, icon);
+		}
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glTranslated(-x, -y, -z);
@@ -396,70 +430,37 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 		tess.draw();
 	}
 	
-	private void drawFluid(TileEntityLiquiductBase te) {
-		/*if (te == null || te.getTank() == null) return;
-		
-		FluidStack fluid = te.getTank().getFluid();
-		
-		if (fluid == null) return;
-		
-		IIcon icon = fluid.getFluid().getStillIcon();
-		if (icon == null) return;
-		
-		float yLevel = fluid.amount / (float) te.getTank().getCapacity();*/
-		
-		// TODO: Client has no idea fluid network exists! Send packets through master node?!?
-		if (te == null || !te.hasFluidNetwork()) {
-			// ProjectZed.logHelper.info(te.hasFluidNetwork());
-			return;
-		}
-		
-		FluidNetwork network = te.getNetwork();
-		if (!network.getTransferringState() || network.getTransferredFluid() == null) return;
-		
-		FluidStack fluid = network.getTransferredFluid().copy();
-		if (fluid == null || fluid.amount == 0) return;
-		
-		IIcon icon = fluid.getFluid().getStillIcon();
-		if (icon == null) return;
-		
-		float yLevel = fluid.amount / (float) Math.min(te.getMaxFluidImportRate(), te.getMaxFluidExportRate());
-		
-		if (yLevel < 0f) yLevel = 0f;
-		if (1 - yLevel - 0.01f > calc + 0.01f) yLevel = calc + 0.01f;
-		// ProjectZed.logHelper.info(1 - yLevel - 0.01f, 1 - calc - 0.01f, calc + 0.01f);
-		
-		this.bindTexture(TextureMap.locationBlocksTexture);
+	private void drawFluid(float yLevel, IIcon icon) {
 		Tessellator tess = Tessellator.instance;
 		tess.startDrawingQuads();
 		
 		// zz-
 		tess.setNormal(0f, 0f, -1f);
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMinV());
-		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMinV());
 		
 		// zz+
 		tess.setNormal(0f, 0f, 1f);
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMinV());
 		
 		// xx-
 		tess.setNormal(-1f, 0f, 0f);
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
 		
 		// xx+
 		tess.setNormal(1f, 0f, 0f);
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
-		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, calc + 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMinV());
 		
 		// yy-
 		tess.setNormal(0f, -1f, 0f);
@@ -470,12 +471,69 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 		
 		// yy+
 		tess.setNormal(0f, 1f, 0f);
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
-		tess.addVertexWithUV(calc + 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
-		tess.addVertexWithUV(1 - calc - 0.01f, 1 - yLevel - 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(calc + 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, 1 - calc - 0.01f, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - 0.01f, yLevel - calc - 0.01f, calc + 0.01f, icon.getMaxU(), icon.getMinV());
 		
 		tess.draw();
 	}
 
+	private void drawFluidConnection(ForgeDirection dir, int type, float yLevel, IIcon icon) {
+		Tessellator tess = Tessellator.instance;
+
+		tess.startDrawingQuads();
+
+		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
+		if (dir.equals(ForgeDirection.UP)) {
+		}
+		else if (dir.equals(ForgeDirection.DOWN)) GL11.glRotatef(180, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.SOUTH)) GL11.glRotatef(90, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.NORTH)) GL11.glRotatef(270, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.WEST)) GL11.glRotatef(90, 0, 0, 1);
+		else if (dir.equals(ForgeDirection.EAST)) GL11.glRotatef(270, 0, 0, 1);
+
+		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
+		
+		float offset = 0.01f;
+		
+		// -z
+		tess.addVertexWithUV(1 - calc - offset, 1 - calc - offset, 1 - calc - offset, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - offset, 1, 1 - calc - offset, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + offset, 1, 1 - calc - offset, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + offset, 1 - calc - offset, 1 - calc - offset, icon.getMaxU(), icon.getMinV());
+
+		// +z
+		tess.addVertexWithUV(calc + offset, 1 - calc - offset, calc + offset, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(calc + offset, 1, calc + offset, icon.getMinU(),icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - offset, 1, calc + offset, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - offset, 1 - calc - offset, calc + offset, icon.getMaxU(), icon.getMinV());
+
+		// -x
+		tess.addVertexWithUV(calc + offset, 1 - calc - offset, 1 - calc - offset, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(calc + offset, 1, 1 - calc - offset, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + offset, 1, calc + offset, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(calc + offset, 1 - calc - offset, calc + offset, icon.getMaxU(), icon.getMinV());
+
+		// +x
+		tess.addVertexWithUV(1 - calc - offset, 1 - calc - offset, calc + offset, icon.getMinU(), icon.getMinV());
+		tess.addVertexWithUV(1 - calc - offset, 1, calc + offset, icon.getMinU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - offset, 1, 1 - calc - offset, icon.getMaxU(), icon.getMaxV());
+		tess.addVertexWithUV(1 - calc - offset, 1 - calc - offset, 1 - calc - offset, icon.getMaxU(), icon.getMinV());
+
+		tess.draw();
+
+		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
+		if (dir.equals(ForgeDirection.UP)) {
+		}
+
+		else if (dir.equals(ForgeDirection.DOWN)) GL11.glRotatef(-180, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.SOUTH)) GL11.glRotatef(-90, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.NORTH)) GL11.glRotatef(-270, 1, 0, 0);
+		else if (dir.equals(ForgeDirection.WEST)) GL11.glRotatef(-90, 0, 0, 1);
+		else if (dir.equals(ForgeDirection.EAST)) GL11.glRotatef(-270, 0, 0, 1);
+
+		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
+	}
+	
 }

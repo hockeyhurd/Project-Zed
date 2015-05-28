@@ -27,10 +27,11 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
  */
 public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<MessageTileEntityLiquiduct, IMessage> {
 
-	public TileEntityLiquiductBase te;
-	public int x, y, z;
-	public int fluidAmount;
-	public int fluidID;
+	private TileEntityLiquiductBase te;
+	private int x, y, z;
+	private int fluidAmount;
+	private int fluidID;
+	private boolean wasTransferred;
 	
 	public MessageTileEntityLiquiduct() {
 	}
@@ -43,10 +44,12 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		this.x = te.xCoord;
 		this.y = te.yCoord;
 		this.z = te.zCoord;
-		this.fluidAmount = te.getTank().getFluidAmount();
+		// this.fluidAmount = te.getTank().getFluidAmount();
 		
-		FluidStack fluidStack = te.getTank().getFluid();
+		FluidStack fluidStack = te.wasTransferredLastTick() ? te.getTransferredStack().copy() : null;
 		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluidID() : -1;
+		this.fluidAmount = this.fluidID >= 0 ? fluidStack.amount : 0;
+		this.wasTransferred = te.wasTransferredLastTick();
 	}
 
 	/*
@@ -60,6 +63,7 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		this.z = buf.readInt();
 		this.fluidAmount = buf.readInt();
 		this.fluidID = buf.readInt();
+		this.wasTransferred = buf.readBoolean();
 	}
 
 	/*
@@ -73,6 +77,7 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		buf.writeInt(this.z);
 		buf.writeInt(this.fluidAmount);
 		buf.writeInt(this.fluidID);
+		buf.writeBoolean(this.wasTransferred);
 	}
 	
 	@Override
@@ -83,15 +88,18 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 			TileEntityLiquiductBase te2 = (TileEntityLiquiductBase) te;
 			
 			if (message.fluidID >= 0) {
-				// ProjectZed.logHelper.info(message.fluidID);
+				// ProjectZed.logHelper.info("ID:", message.fluidID, "Amount:", message.fluidAmount);
 				Fluid fluid = FluidRegistry.getFluid(message.fluidID);
 				FluidStack stack = new FluidStack(fluid, message.fluidAmount);
-				// ProjectZed.logHelper.info(te2.getLocalizedFluidName());
 				
-				te2.getTank().setFluid(stack);
+				// te2.getTank().setFluid(stack);
+				
+				te2.setLastTransferredStack(stack != null && stack.amount > 0 ? stack : null);
+				te2.setWasTransferredLastTick(message.wasTransferred);
 			}
 			
-			else te2.getTank().setFluid((FluidStack) null);
+			// else te2.getTank().setFluid((FluidStack) null);
+			else te2.setLastTransferredStack((FluidStack) null);
 		}
 		
 		return null;

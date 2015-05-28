@@ -25,7 +25,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
-import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.FluidNode;
 import com.projectzed.api.fluid.ValveType;
@@ -36,6 +35,9 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing te code for liquiducts.
@@ -53,6 +55,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	
 	protected FluidNetwork network;
 	protected boolean isMaster;
+	protected FluidStack lastStackTransfer;
+	protected boolean transferredLastTick;
 	
 	/**
 	 * @param name
@@ -79,7 +83,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 */
 	@Override
 	public String getLocalizedFluidName() {
-		return getTank().getFluid().getLocalizedName();
+		if (getTank() == null || getTank().getFluid() == null) return "<empty fluid>";
+		
+		String ret = getTank().getFluid().getLocalizedName(); 
+		return ret != null && ret.length() > 0 ? ret : "<empty fluid>";
 	}
 	
 	/*
@@ -145,15 +152,15 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			return;
 		}
 		
-		FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
-		FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		// FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		// FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 
 	protected void exportContents() {
 		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
 		if (this.internalTank.getFluidAmount() == 0) return;
 		
-		FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
+		// FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	/*
@@ -568,6 +575,24 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	public boolean isMaster() {
 		return isMaster;
 	}
+
+	public boolean wasTransferredLastTick() {
+		return transferredLastTick;
+	}
+	
+	public FluidStack getTransferredStack() {
+		return lastStackTransfer;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setLastTransferredStack(FluidStack stack) {
+		this.lastStackTransfer = stack;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setWasTransferredLastTick(boolean value) {
+		this.transferredLastTick = value;
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -689,10 +714,20 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			}
 			
 			// if this was the first node placed, then we must call update here!
-			if (network != null && network.size() > 0) {
+			if (network != null && !network.isEmpty()) {
 				this.isMaster = network.isMasterNode(network.getNodeAt(worldVec()));
 				
 				if (this.isMaster) network.update();
+				
+				if (/*network != null && !network.isEmpty() &&*/ network.getTransferringState()) {
+					this.transferredLastTick = true;
+					this.lastStackTransfer = network.getTransferredFluid().copy();
+				}
+				
+				else {
+					this.transferredLastTick = false;
+					this.lastStackTransfer = null;
+				}
 			}
 			
 			/*if (network != null) {

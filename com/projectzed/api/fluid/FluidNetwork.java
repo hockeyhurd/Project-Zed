@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
@@ -79,14 +78,14 @@ public class FluidNetwork {
 			
 			for (FluidNode n : nodes) {
 				if (n.getFluidContainer() instanceof TileEntityLiquiductBase) {
-					((TileEntityLiquiductBase) n.getFluidContainer()).voidNetwork();
+					// ((TileEntityLiquiductBase) n.getFluidContainer()).voidNetwork();
 					masterNode = n;
 					break;
 				}
 			}
 			 
 			// nodes.addFirst(masterNode);
-			flushNetwork();
+			// flushNetwork();
 		}
 		
 		else nodes.remove(node);
@@ -99,6 +98,13 @@ public class FluidNetwork {
 	 */
 	public int size() {
 		return nodes != null ? nodes.size() : 0;
+	}
+	
+	/**
+	 * @return true if nodes list is null or size is equal to 0, else returns false.
+	 */
+	public boolean isEmpty() {
+		return nodes == null || size() == 0;
 	}
 	
 	/**
@@ -180,7 +186,7 @@ public class FluidNetwork {
 	 * @return true if exists, else returns false.
 	 */
 	private boolean exists(FluidNode node) {
-		if (node == null) return false;
+		if (node == null || node.worldVec() == null) return false;
 		TileEntity te = world.getTileEntity(node.worldVec().x, node.worldVec().y, node.worldVec().z);
 		
 		return te != null && te instanceof IFluidHandler;
@@ -246,26 +252,30 @@ public class FluidNetwork {
 	/**
 	 * Main method call for network to update fluid transfer.
 	 */
-	public synchronized void update() {
-		boolean transferring = false;
-		FluidStack transferredFluid = null;
+	public void update() {
+		boolean transferring = /*this.transferring =*/ false;
+		FluidStack transferredFluid = /*this.transferredFluid =*/ null;
 		Set<FluidNode> sourceNodes = null;
 		Set<FluidNode> acceptorNodes = null;
 		
-		if (nodes != null && nodes.size() > 0) {
+		if (nodes != null && !nodes.isEmpty()) {
 			sourceNodes = new HashSet<FluidNode>();
 
-			ListIterator<FluidNode> iter = nodes.listIterator();
-			List<FluidNode> nodesToRemove = new ArrayList<FluidNode>(nodes.size());
+			// ListIterator<FluidNode> iter = nodes.listIterator();
+			List<Integer> nodesToRemove = new ArrayList<Integer>(nodes.size());
 			
 			// find our sources and remove, removed fluid nodes:
 			// for (FluidNode node : nodes) {
-			while (iter.hasNext()) {
-				FluidNode node = iter.next();
+			// while (iter.hasNext()) {
+			
+			FluidNode node;
+			for (int i = 0; i < nodes.size(); i++) {
+				node = nodes.get(i);
+				// FluidNode node = iter.next();
 				
-				if (node == null || !exists(node) || !node.hasConnections()) {
+				if (!node.equals(masterNode) && (node == null || !exists(node)) /*|| !node.hasConnections()*/) {
 					// remove(node);
-					nodesToRemove.add(node);
+					nodesToRemove.add(i);
 					continue;
 				}
 
@@ -277,8 +287,9 @@ public class FluidNetwork {
 			}
 			
 			if (!nodesToRemove.isEmpty()) {
-				for (FluidNode node : nodesToRemove) {
-					if (nodes.contains(node)) nodes.remove(node);
+				for (int i = 0; i < nodesToRemove.size(); i++) {
+					ProjectZed.logHelper.warn("Removing:", nodes.get((int) nodesToRemove.get(i)));
+					nodes.remove((int) nodesToRemove.get(i));
 				}
 				
 				if (nodes.isEmpty()) return;
@@ -541,7 +552,6 @@ public class FluidNetwork {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + getOuterType().hashCode();
 			result = prime * result + ((dir == null) ? 0 : dir.hashCode());
 			result = prime * result + index;
 			result = prime * result + ((stack == null) ? 0 : stack.hashCode());
@@ -554,7 +564,6 @@ public class FluidNetwork {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			FluidToken other = (FluidToken) obj;
-			if (!getOuterType().equals(other.getOuterType())) return false;
 			if (dir != other.dir) return false;
 			if (index != other.index) return false;
 			if (stack == null) {
@@ -562,10 +571,6 @@ public class FluidNetwork {
 			}
 			else if (!stack.equals(other.stack)) return false;
 			return true;
-		}
-
-		private FluidNetwork getOuterType() {
-			return FluidNetwork.this;
 		}
 	}
 
