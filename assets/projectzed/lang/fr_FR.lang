@@ -26,6 +26,7 @@ tile.industrialLumberMill.name=Scierie industrielle
 tile.industrialMetalPress.name=Presse métallique industrielle
 tile.industrialCentrifuge.name=Centrifugeuse industrielle
 tile.industrialEnergizer.name=Energiseuse industrielle
+tile.industrialLoader.name=Chargeur de parcelle industriel
 tile.energyPipeRed.name=Conduit d'énergie - Rouge
 tile.energyPipeOrange.name=Conduit d'énergie - Orange
 tile.energyPipeClear.name=Conduit d'énergie - Vide
@@ -38,6 +39,7 @@ tile.fluidTankTier1.name=Réservoir à fluide - II
 tile.fluidTankTier2.name=Réservoir à fluide - III
 tile.fluidTankTier3.name=Réservoir à fluide - IV
 tile.liquiductBlue.name=Liquiduc - Bleu
+tile.liquidNode.name=Noeud de liquides
 
 
 // RF STUFF:
@@ -59,6 +61,7 @@ item.screw.name=Tournevis
 item.sheetAluminium.name=Feuille d'aluminium
 item.sheetReinforced.name=Feuille composite renforcé
 item.conductiveCoil.name=Bobine conductrice
+item.electricMotor.name=moteur électrique
 item.gearWooden.name=Mécanisme en bois
 item.gearStone.name=Mécanisme en pierre
 item.gearIron.name=Mécanisme en fer
@@ -73,15 +76,16 @@ item.wrench.name=Clef anglaise
 item.titaniumDrill.name=Foret d'extraction - Titane
 
 // Metals:
-item.dustGold.name=Poussière d'or
-item.dustIron.name=Poussière de fer
-item.dustCoal.name=Poussière de charbon
-item.dustTitanium.name=Poussière de titane
-item.dustCopper.name=Poussière de cuivre
-item.dustNickel.name=Poussière de nickel
-item.dustAluminium.name=Poussière d'aluminium
-item.dustUranium.name=Poussière d'uranium 
+item.dustGold.name=Poudre d'or
+item.dustIron.name=Poudre de fer
+item.dustCoal.name=Poudre de charbon
+item.dustTitanium.name=Poudre de titane
+item.dustCopper.name=Poudre de cuivre
+item.dustNickel.name=Poudre de nickel
+item.dustAluminium.name=Poudre d'aluminium
+item.dustUranium.name=Poudre d'uranium 
 item.enrichedUranium.name=Uranium enrichi
+item.dustMixedAlloy.name=Poudre d'alliage mélangé
 
 item.ingotTitanium.name=Lingot de titane
 item.ingotCopper.name=Lingot de cuivre
