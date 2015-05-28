@@ -8,13 +8,14 @@ package com.projectzed.mod.tileentity.container;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidHandler;
 
-import com.projectzed.api.fluid.FluidNet;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 
 /**
@@ -116,15 +117,64 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 			this.internalTank.setFluid(copy);
 		}
 		
-		FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
-		FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		// FluidNet.importFluidFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		// FluidNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 	
 	protected void exportContents() {
 		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
 		if (this.internalTank.getFluidAmount() == 0) return;
 		
-		FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
+		// FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
+		
+		ForgeDirection exportSide = ForgeDirection.UNKNOWN;
+		
+		for (byte i = 0; i < this.sides.length; i++) {
+			if (this.sides[i] == 1) {
+				exportSide = ForgeDirection.getOrientation(i);
+				break;
+			}
+		}
+		
+		if (exportSide != ForgeDirection.UNKNOWN) {
+			TileEntity te = worldObj.getTileEntity(worldVec().x + exportSide.offsetX, worldVec().y + exportSide.offsetY, worldVec().z + exportSide.offsetZ);
+			
+			if (te != null && te instanceof IFluidHandler) {
+				IFluidHandler tank = (IFluidHandler) te;
+				
+				if (tank.canFill(exportSide.getOpposite(), this.internalTank.getFluid().getFluid())) {
+					FluidStack thisStack = this.getTank().getFluid();
+					int amount = getAmountFromTank(tank, thisStack, ForgeDirection.UP);
+					
+					// if destination tank is empty set to default size.
+					if (amount == 0) amount = this.getMaxFluidExportRate();
+					
+					amount = Math.min(amount, thisStack.amount);
+					amount = Math.min(amount, this.getMaxFluidExportRate());
+					
+					if (amount > 0) {
+						FluidStack sendStack = thisStack.copy();
+						sendStack.amount = amount;
+						
+						amount = sendStack.amount = tank.fill(ForgeDirection.UP, sendStack, false);
+						
+						this.getTank().drain(amount, true);
+						tank.fill(ForgeDirection.UP, sendStack, true);
+					}
+				}
+			}
+		}
+	}
+	
+	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, ForgeDirection dir) {
+		if (tank != null && stack != null && stack.amount > 0 && dir != ForgeDirection.UNKNOWN && tank.getTankInfo(dir) != null &&tank.getTankInfo(dir).length > 0) {
+			for (int i = 0; i < tank.getTankInfo(dir).length; i++) {
+				if (tank.getTankInfo(dir)[i].fluid != null && tank.getTankInfo(dir)[i].fluid.amount > 0
+						&& tank.getTankInfo(dir)[i].fluid.isFluidEqual(stack)) return tank.getTankInfo(dir)[i].fluid.amount; 
+			}
+		}
+		
+		return 0;
 	}
 	
 	/*
@@ -134,8 +184,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	@Override
 	public void updateEntity() {
 		// super.updateEntity();
-		// exportContents();
-		
+		exportContents();
 		
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
 			byte currentMeta = (byte) (worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z) - 1);
