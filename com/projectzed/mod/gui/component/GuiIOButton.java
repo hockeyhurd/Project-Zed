@@ -15,7 +15,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.hockeyhurd.api.math.Vector2;
-import com.projectzed.mod.ProjectZed;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -94,7 +93,7 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 			dif = 16f * this.PIXEL; 
 			calc2 = this.width * (this.stateID + 1) * this.PIXEL;
 			
-			ProjectZed.logHelper.info(x, xPosition);
+			// ProjectZed.logHelper.info(x, xPosition);
 			
 			this.TESS.startDrawingQuads();
 			

@@ -236,6 +236,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			index = 0;
 			
 			for (GuiIOButton ioButton : ioButtons.keySet()) {
+				if (ioButton == null || !ioButtons.containsKey(ioButton)) {
+					ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
+					continue;
+				}
+				
 				index = ioButtons.get(ioButton);
 				
 				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = isActive;
@@ -266,6 +271,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			index = 0;
 			
 			for (GuiIOButton ioButton : ioButtons.keySet()) {
+				if (ioButton == null || !ioButtons.containsKey(ioButton)) {
+					ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
+					continue;
+				}
+				
 				index = ioButtons.get(ioButton);
 				
 				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = false;
@@ -299,6 +309,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				int index = 0;
 				
 				for (GuiIOButton ioButton : ioButtons.keySet()) {
+					if (ioButton == null || !ioButtons.containsKey(ioButton)) {
+						ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
+						continue;
+					}
+					
 					index = ioButtons.get(ioButton);
 					
 					((GuiIOButton) this.buttonList.get(index)).setStateID((byte) 0);

@@ -110,14 +110,18 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 				
 				if (message.slots != null && message.slots.length > 0) {
 					EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
+					ContainerStoneCraftingTable cont = null;
+					
 					if (player != null && player.openContainer != null && player.openContainer instanceof ContainerStoneCraftingTable) {
-						ContainerStoneCraftingTable cont = (ContainerStoneCraftingTable) player.openContainer;
+						cont = (ContainerStoneCraftingTable) player.openContainer;
 						cont.clearCraftingGrid();
 					}
 					
 					for (int i = 0; i < message.slots.length; i++) {
 						te2.setInventorySlotContents(i, message.slots[i]);
 					}
+					
+					if (cont != null) cont.onCraftMatrixChanged(cont.craftMatrix);
 					
 					te2.markDirty();
 				}
@@ -135,6 +139,8 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 						te2.setInventorySlotContents(i, message.slots[i]);
 					}
 				}
+				
+				te2.markDirty();
 			}
 		}
 		
