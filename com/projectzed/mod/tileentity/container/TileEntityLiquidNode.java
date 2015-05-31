@@ -208,7 +208,6 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

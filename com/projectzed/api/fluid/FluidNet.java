@@ -36,8 +36,6 @@ public class FluidNet {
 	private FluidNet() {
 	}
 
-	// TODO: Make this class fully safe in the API (make sure only API things are in here).
-
 	/**
 	 * Main static method used to move fluid from one container to another
 	 * from one place (here).

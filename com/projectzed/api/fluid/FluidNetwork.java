@@ -288,6 +288,7 @@ public class FluidNetwork {
 			
 			if (!nodesToRemove.isEmpty()) {
 				for (int i = 0; i < nodesToRemove.size(); i++) {
+					if (i >= nodes.size()) break;
 					ProjectZed.logHelper.warn("Removing:", nodes.get((int) nodesToRemove.get(i)));
 					nodes.remove((int) nodesToRemove.get(i));
 				}
@@ -321,8 +322,11 @@ public class FluidNetwork {
 								// check all available nodes and: 1, see if its not the same source node, and 2 check if can accept fluid. If so, we add it to acceptorNodes.
 								for (FluidNode fillNode : nodes) {
 									// if (!subNode.equals(node) && subNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) acceptorNodes.add(subNode);
-									if (!fillNode.equals(srcNode)&& info.fluid != null && fillNode.getValveType() != ValveType.OUTPUT && fillNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) {
+									if (!fillNode.equals(srcNode) && info.fluid != null && fillNode.getValveType() != ValveType.OUTPUT
+											&& fillNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) {
 									// if (!fillNode.equals(srcNode)&& info.fluid != null && fillNode.getValveType() == ValveType.INPUT && fillNode.getFluidContainer().canFill(dir, info.fluid.getFluid())) {
+										if (fillNode.containsFluid(info.fluid.getFluid())
+												&& fillNode.getAmountStored(info.fluid.getFluid()) == fillNode.getCapacity(info.fluid.getFluid())) continue;
 										acceptorNodes.add(fillNode);
 									}
 								}
@@ -334,10 +338,7 @@ public class FluidNetwork {
 				
 			}
 			
-			// flushNetwork();
 		}
-		
-		// ProjectZed.logHelper.info(sourceNodes != null ? sourceNodes.size() : 0, acceptorNodes != null ? acceptorNodes.size() : 0);
 		
 		// transfer time!
 		if (sourceNodes != null && !sourceNodes.isEmpty() && acceptorNodes != null && !acceptorNodes.isEmpty()) {
@@ -369,7 +370,6 @@ public class FluidNetwork {
 					}
 
 					int amount = this.MAX_IO;
-					
 					for (FluidNode accNode : acceptorNodes) {
 						if (accNode.getConnections() != null && accNode.getConnections().length > 0 && !node.equals(accNode)) {
 							for (ForgeDirection dir : accNode.getConnections()) {
@@ -421,16 +421,16 @@ public class FluidNetwork {
 											transferredFluid = temp.copy();
 										}
 										
-										if (amount == 0) break;
+										if (amount == 0 && transferring) break;
 									}
 								}
 							}
 							
-							if (amount == 0) break;
+							if (amount == 0 && transferring) break;
 						}
 					}
 					
-					if (amount == 0) continue;
+					if (amount == 0 && transferring) continue;
 				}
 			}
 			

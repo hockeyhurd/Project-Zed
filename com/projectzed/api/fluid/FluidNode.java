@@ -185,7 +185,7 @@ public class FluidNode {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				if (container.canDrain(dir, fluid)) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
-						if (info.fluid.getFluid().equals(fluid)) return info.fluid.amount;
+						if (info.fluid != null && info.fluid.getFluid().equals(fluid)) return info.fluid.amount;
 					}
 				}
 			}
@@ -205,7 +205,7 @@ public class FluidNode {
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				if (container.canDrain(dir, fluid)) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
-						return info.capacity;
+						if (info.fluid != null && info.fluid.getFluid().equals(fluid)) return info.capacity;
 					}
 				}
 			}

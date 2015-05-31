@@ -572,7 +572,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		boolean flag = false;
 		
 		if (!worldObj.isRemote) {
-			// TODO: Verify offsets such that it works past 3x3x3 reaction chamber.
 			// TODO: Remove lazy way of checking for all chamber locks, but will do for now.
 						
 			if (!isSizeValid()) return false;

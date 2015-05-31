@@ -479,6 +479,7 @@ public class FluidPipeRenderer extends TileEntitySpecialRenderer {
 		tess.draw();
 	}
 
+	// TODO: Clean-up/rewrite for yLevel accounting!
 	private void drawFluidConnection(ForgeDirection dir, int type, float yLevel, IIcon icon) {
 		Tessellator tess = Tessellator.instance;
 
