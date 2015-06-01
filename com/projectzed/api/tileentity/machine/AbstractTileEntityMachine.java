@@ -196,11 +196,15 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 							ItemStack destStack = otherInv.getStackInSlot(otherSlot);
 							if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
 							
-							if ((destStack != null && out.isItemEqual(destStack)) || otherInv.isItemValidForSlot(otherSlot, out)) {
+							if (/*(destStack != null && out.isItemEqual(destStack)) ||*/ otherInv.isItemValidForSlot(otherSlot, out)) {
 								
 								if (destStack != null) {
-									amount = Math.min(destStack.getMaxStackSize() - destStack.stackSize, amount);	
-									otherInv.getStackInSlot(otherSlot).stackSize += amount;
+									if (out.isItemEqual(destStack)) {
+										amount = Math.min(destStack.getMaxStackSize() - destStack.stackSize, amount);	
+										otherInv.getStackInSlot(otherSlot).stackSize += amount;
+									}
+									
+									else continue;
 								}
 								
 								else {
@@ -291,9 +295,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			
 			if (this.worldObj.getTotalWorldTime() % 20L == 0) handleSidedIO();
 			
-			if (!isActiveFromRedstoneSignal()) return;
+			// if (!isActiveFromRedstoneSignal()) return;
 			
-			if (this.isBurning() && this.canSmelt()) {
+			if (isActiveFromRedstoneSignal() && this.isBurning() && this.canSmelt()) {
 				this.cookTime++;
 				this.powerMode = true;
 

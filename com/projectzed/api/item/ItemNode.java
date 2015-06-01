@@ -142,15 +142,16 @@ public class ItemNode {
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			current = inv.getStackInSlot(i);
 			if (current == null || current.stackSize == 0) continue;
-			
-			amount = current.getMaxStackSize() - current.stackSize;
-			amount = Math.min(amount, stack.stackSize);
-			amount = Math.min(amount, MAX_XFER);
-			
-			current.stackSize += amount;
-			stack.stackSize -= amount;
-			
-			if (stack.stackSize == 0) return stack = null;
+			else if (current != null && current.isItemEqual(stack)) {
+				amount = current.getMaxStackSize() - current.stackSize;
+				amount = Math.min(amount, stack.stackSize);
+				amount = Math.min(amount, MAX_XFER);
+				
+				current.stackSize += amount;
+				stack.stackSize -= amount;
+				
+				if (stack.stackSize == 0) return stack = null;				
+			}
 		}
 		
 		amount = stack.stackSize;
