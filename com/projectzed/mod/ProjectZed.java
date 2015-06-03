@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraftforge.common.util.EnumHelper;
 
 import com.hockeyhurd.api.math.TimeLapse;
@@ -72,6 +73,7 @@ import com.projectzed.mod.item.ItemFuelRod;
 import com.projectzed.mod.item.ItemGear;
 import com.projectzed.mod.item.ItemMcUReader;
 import com.projectzed.mod.item.ItemScrew;
+import com.projectzed.mod.item.armor.ArmorSetZPlated;
 import com.projectzed.mod.item.metals.ItemDustAluminium;
 import com.projectzed.mod.item.metals.ItemDustCoal;
 import com.projectzed.mod.item.metals.ItemDustCopper;
@@ -192,6 +194,11 @@ public class ProjectZed {
 	public static Item gearGold;
 	public static Item gearDiamond;
 	public static Item gearTitanium;
+	
+	// Armor:
+	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", 100, new int[] { 3, 8, 6, 3 },  25);
+	
+	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
 	
 	// Tools:
 	public static final ToolMaterial drillMat = EnumHelper.addToolMaterial("DRILLING", 4, 1000 + 1, 20.0f, 4.0f, 0);
@@ -374,7 +381,13 @@ public class ProjectZed {
 		gearTitanium = new ItemGear("gearTitanium", assetDir);
 		gearDiamond = new ItemGear("gearDiamond", assetDir);
 		
-		// Tools.
+		// Armor:
+		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, 0).setUnlocalizedName("zPlatedHelmet");
+		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, 1).setUnlocalizedName("zPlatedChestplate");
+		zPlatedLeg = new ArmorSetZPlated(zPlatedMat, 0, 2).setUnlocalizedName("zPlatedLeggings");
+		zPlatedBoot = new ArmorSetZPlated(zPlatedMat, 0, 3).setUnlocalizedName("zPlatedBoots");
+		
+		// Tools:
 		wrench = new ItemWrench("wrench");
 		titaniumDrill = new ItemMiningDrill(drillMat, "titaniumDrill");
 		
