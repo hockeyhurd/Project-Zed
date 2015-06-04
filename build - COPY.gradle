@@ -24,12 +24,12 @@ sourceSets {
 	}
 }
 
-version = "1.1.3"
+version = "1.1.4"
 group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Project-Zed"
 
 minecraft {
-    version = "1.7.10-10.13.2.1347-1.7.10"
+    version = "1.7.10-10.13.3.1428-1.7.10"
     runDir = "eclipse/assets"
 }
 
@@ -47,7 +47,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-	compile files('eclipse/mods/HCoreLib-1.1.22.jar')
+	// compile files('eclipse/mods/HCoreLib-1.1.24.jar')
 	// compile files('NotEnoughItems-1.7.10-1.0.3.74-dev.jar')
 	// compile files('libs/HCoreLib-deobf-1.1.17.jar')
 	// compile files('CoFHCore-[1.7.10]3.0.0B9-71-dev.jar')

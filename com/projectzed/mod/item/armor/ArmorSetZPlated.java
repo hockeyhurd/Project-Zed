@@ -11,13 +11,13 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.hockeyhurd.api.item.armor.AbstractArmor;
 import com.projectzed.mod.ProjectZed;
 
 import cpw.mods.fml.relauncher.Side;
@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Jun 2, 2015
  */
-public class ArmorSetZPlated extends ItemArmor {
+public class ArmorSetZPlated extends AbstractArmor {
 
 	public static final String PATH_MAT = "ZPlated";
 	
@@ -39,7 +39,7 @@ public class ArmorSetZPlated extends ItemArmor {
 	 * @param armorType armor type ordinal.
 	 */
 	public ArmorSetZPlated(ArmorMaterial material, int renderIndex, int armorType) {
-		super(material, renderIndex, armorType);
+		super(material, renderIndex, armorType, ProjectZed.assetDir, PATH_MAT);
 	}
 	
 	/*
@@ -63,10 +63,6 @@ public class ArmorSetZPlated extends ItemArmor {
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
 		itemIcon = reg.registerIcon(ProjectZed.assetDir + getUnlocalizedName().substring(5));
-	}
-	
-	private String getSuffix() {
-		return getUnlocalizedName().substring(PATH_MAT.length());
 	}
 	
 	/*
