@@ -14,7 +14,7 @@ package com.projectzed.api.energy.source;
  */
 public enum EnumColor {
 
-	RED("red"), ORANGE("orange"), CLEAR("clear"), GREEN("green"), BLUE("blue");
+	RED("red"), ORANGE("orange"), CLEAR("clear"), GREEN("green"), GREEN_OPAQUE("green_opaque"), BLUE("blue");
 	
 	private static int counter = 0;
 	private String color;

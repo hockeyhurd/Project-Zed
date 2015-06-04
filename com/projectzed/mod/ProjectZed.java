@@ -30,6 +30,8 @@ import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.block.container.BlockEnergyPipeClear;
 import com.projectzed.mod.block.container.BlockEnergyPipeOrange;
 import com.projectzed.mod.block.container.BlockEnergyPipeRed;
+import com.projectzed.mod.block.container.BlockItemPipeGreen;
+import com.projectzed.mod.block.container.BlockItemPipeGreenOpaque;
 import com.projectzed.mod.block.container.BlockLiquidNode;
 import com.projectzed.mod.block.container.BlockLiquiductBlue;
 import com.projectzed.mod.block.container.BlockLiquiductClear;
@@ -166,6 +168,8 @@ public class ProjectZed {
 	public static Block liquiductBlue;
 	public static Block liquiductClear;
 	public static Block fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
+	public static Block itemPipeGreen;
+	public static Block itemPipeGreenOpaque;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -348,6 +352,8 @@ public class ProjectZed {
 		fluidTankTier1 = new BlockTankTier1(Material.rock);
 		fluidTankTier2 = new BlockTankTier2(Material.rock);
 		fluidTankTier3 = new BlockTankTier3(Material.rock);
+		itemPipeGreen = new BlockItemPipeGreen(Material.rock);
+		itemPipeGreenOpaque = new BlockItemPipeGreenOpaque(Material.rock);
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 

@@ -155,15 +155,18 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			if (te != null && te instanceof IInventory) { 
 				otherInv = (IInventory) te;
 				
+				// input relative to machine.
 				if (openSides[dir.ordinal()] == -1) {
 					
 					for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+						// stack from other inventory to pull.
 						ItemStack invIn = otherInv.getStackInSlot(otherSlot);
 						if (invIn == null || invIn.stackSize == 0) continue;
 						
 						for (int thisSlot = 0; thisSlot < this.getSizeInvenotry(); thisSlot++) {
+							// itemstack currently in the 'input' slot.
 							in = this.getStackInSlot(thisSlot);
-							boolean hasStack = in != null && in.stackSize > 0 && in.stackSize < in.getMaxStackSize();
+							boolean hasStack = in != null && in.stackSize > 0 && in.stackSize <= in.getMaxStackSize();
 							
 							if (isItemValidForSlot(thisSlot, invIn) && (!hasStack || invIn.isItemEqual(in))) {
 								int amount = invIn.stackSize;
@@ -185,6 +188,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					
 				}
 				
+				// output relative to machine.
 				else if (openSides[dir.ordinal()] == 1) {
 					for (int thisSlot = 0; thisSlot < this.getSizeInventory(); thisSlot++) {
 						out = this.getStackInSlot(thisSlot);

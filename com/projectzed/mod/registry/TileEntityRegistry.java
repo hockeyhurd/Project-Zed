@@ -28,6 +28,8 @@ import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreen;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreenOpaque;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductClear;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
@@ -135,6 +137,12 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityLiquidNode.class, "liquiductNode");
 		reg.idMap.put(TileEntityLiquidNode.class, getNextID());
+		
+		reg.map.put(TileEntityItemPipeGreen.class, "itemPipeGreen");
+		reg.idMap.put(TileEntityItemPipeGreen.class, getNextID());
+		
+		reg.map.put(TileEntityItemPipeGreenOpaque.class, "itemPipeGreenOpaque");
+		reg.idMap.put(TileEntityItemPipeGreenOpaque.class, getNextID());
 		
 		reg.map.put(TileEntityReactorGlass.class, "nuclearReactorGlass");
 		reg.idMap.put(TileEntityReactorGlass.class, getNextID());

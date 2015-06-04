@@ -8,6 +8,7 @@ package com.projectzed.mod.handler;
 
 import static com.hockeyhurd.api.util.NumberFormatter.format;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -24,6 +25,7 @@ import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.block.BlockAtomicBomb;
 import com.projectzed.mod.block.container.AbstractBlockEnergyPipe;
+import com.projectzed.mod.block.container.AbstractBlockItemPipe;
 import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
@@ -104,6 +106,10 @@ public class ItemHoverEventHandler {
 					contF = (TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity();
 					// amount = ((TileEntityLiquiductBase) ((AbstractBlockLiquiduct) b).getTileEntity()).getMaxFluidExportRate();
 					amount = contF.getMaxFluidExportRate();
+				}
+				
+				else if (b instanceof AbstractBlockItemPipe && ((AbstractBlockItemPipe) b).getTileEntity() instanceof IInventory) {
+					// TODO: Add item info?
 				}
 				
 				else {
