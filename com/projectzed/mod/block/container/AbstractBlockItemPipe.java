@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
@@ -57,6 +58,7 @@ public abstract class AbstractBlockItemPipe extends AbstractBlockPipe {
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
 	 */
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return !this.opaque ? ClientProxy.itemPipeGreen : ClientProxy.itemPipeGreenOpaque;
 	}
@@ -90,12 +92,12 @@ public abstract class AbstractBlockItemPipe extends AbstractBlockPipe {
 			// 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(0) != null;
-			boolean down = pipe.getConnection(1) != null;
-			boolean north = pipe.getConnection(2) != null;
-			boolean east = pipe.getConnection(3) != null;
-			boolean south = pipe.getConnection(4) != null;
-			boolean west = pipe.getConnection(5) != null;
+			boolean up = pipe.getConnection(ForgeDirection.UP.ordinal()) != null;
+			boolean down = pipe.getConnection(ForgeDirection.DOWN.ordinal()) != null;
+			boolean north = pipe.getConnection(ForgeDirection.NORTH.ordinal()) != null;
+			boolean east = pipe.getConnection(ForgeDirection.EAST.ordinal()) != null;
+			boolean south = pipe.getConnection(ForgeDirection.SOUTH.ordinal()) != null;
+			boolean west = pipe.getConnection(ForgeDirection.WEST.ordinal()) != null;
 
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);

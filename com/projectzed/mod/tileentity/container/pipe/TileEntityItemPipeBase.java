@@ -9,7 +9,6 @@ package com.projectzed.mod.tileentity.container.pipe;
 import java.util.HashMap;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -72,31 +71,24 @@ public class TileEntityItemPipeBase extends AbstractTileEntityPipe implements IC
 		TileEntity te = null;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
-			if (te != null && te instanceof TileEntityItemPipeBase && ((TileEntityItemPipeBase) te).getColor() == getColor()) {
-				ProjectZed.logHelper.info(dir.name(), connections[dir.ordinal()]);
-				connections[dir.ordinal()] = dir;
-				continue;
-			}
 			
-			if (te == null || !(te instanceof IInventory) || ((IInventory) te).getSizeInventory() == 0) continue;
-			
-			// do special checks for modular frame machines:
-			if (te instanceof IModularFrame && ((IModularFrame) te).getType() == EnumFrameType.ITEM) {
-				connections[dir.ordinal()] = ((IModularFrame) te).getSideValve(dir) != 0 ? dir : null;
-			}
-			
+			if (te == null) connections[dir.ordinal()] = null;
 			else {
-				// if is an ISidedInventory:
-				if (te instanceof ISidedInventory) {
-					connections[dir.ordinal()] = ((ISidedInventory) te).getAccessibleSlotsFromSide(dir.ordinal()) != null
-							&& ((ISidedInventory) te).getAccessibleSlotsFromSide(dir.ordinal()).length > 0 ? dir : null;
+				if (te instanceof TileEntityItemPipeBase) {
+					if (((TileEntityItemPipeBase) te).getColor() == getColor()) connections[dir.ordinal()] = dir;
 				}
 				
-				// else normal IInventory:
-				else connections[dir.ordinal()] = dir;
+				else if (te instanceof IModularFrame && ((IModularFrame) te).getType() == EnumFrameType.ITEM) {
+					if (((IModularFrame) te).getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[dir.ordinal()] = ForgeDirection.UP;
+				}
+				
+				else if (te instanceof IInventory && ((IInventory) te).getSizeInventory() > 0) connections[dir.ordinal()] = dir;
+				
+				else connections[dir.ordinal()] = null;
 			}
 			
 		}
+		
 	}
 
 	/*

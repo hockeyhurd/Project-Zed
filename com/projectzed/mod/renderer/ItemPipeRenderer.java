@@ -176,6 +176,8 @@ public class ItemPipeRenderer extends TileEntitySpecialRenderer {
 
 				return new Connection(flag, type);
 			}
+			
+			else if (cont != null && cont.getSizeInventory() == 0) return new Connection(flag, type);
 
 			flag = true;
 			type = 2;
