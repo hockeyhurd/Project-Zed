@@ -26,7 +26,6 @@ import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumRedstoneType;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.component.GuiConfigButton;
 import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
@@ -165,7 +164,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		// if new list, 'create' new list object.
 		if (buttons == null) buttons = new LinkedList<IGuiButton>();
 		
-		// if list has cached buttons, clear it for new init.
+		// if list has cached buttons, clear it for new init. we do this because some buttons depend upon player facing ForgeDirection.
 		if (!buttons.isEmpty()) buttons.clear();
 		
 		GuiConfigButton sidedIOButton = new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(60, 60), 0xffff0000), EnumConfigType.SIDED_IO);
@@ -271,15 +270,17 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 					if (((GuiRedstoneButton) this.buttonList.get(i)).getType() != this.redstoneType) ((GuiRedstoneButton) this.buttonList.get(i)).setActive(false);
 					else ((GuiRedstoneButton) this.buttonList.get(i)).setActive(true);
 				}
+				
+				te.setRedstoneType(redstoneType);
 			}
 			
 			else if (button instanceof GuiIOButton) {
 				if (!this.isShiftKeyDown()) {
 					ForgeDirection dirToSet = getDirectionFromName(button.displayString);
 
-					ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
+					// ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
 					te.setSideValveAndRotate(dirToSet);
-					ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
+					// ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 				}
 
 				else if (this.isShiftKeyDown()) {
