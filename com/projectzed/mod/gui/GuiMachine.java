@@ -36,6 +36,8 @@ import com.projectzed.mod.gui.component.IGuiButton;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
 import com.projectzed.mod.gui.component.PowerLabel;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -260,6 +262,43 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				
 			}
 			
+			else if (button instanceof GuiRedstoneButton) {
+				this.redstoneType = ((GuiRedstoneButton) button).getType();
+				
+				for (int i = 0; i < this.buttonList.size(); i++) {
+					if (!(this.buttonList.get(i) instanceof GuiRedstoneButton)) continue;
+					
+					if (((GuiRedstoneButton) this.buttonList.get(i)).getType() != this.redstoneType) ((GuiRedstoneButton) this.buttonList.get(i)).setActive(false);
+					else ((GuiRedstoneButton) this.buttonList.get(i)).setActive(true);
+				}
+			}
+			
+			else if (button instanceof GuiIOButton) {
+				if (!this.isShiftKeyDown()) {
+					ForgeDirection dirToSet = getDirectionFromName(button.displayString);
+
+					ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
+					te.setSideValveAndRotate(dirToSet);
+					ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
+				}
+
+				else if (this.isShiftKeyDown()) {
+					int index = 0;
+
+					for (int i = 0; i < this.buttonList.size(); i++) {
+						if (this.buttonList.get(i) instanceof GuiIOButton) {
+							((GuiIOButton) this.buttonList.get(i)).setStateID((byte) 0);
+						}
+					}
+
+					for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+						te.setSideValve(dir, (byte) 0);
+					}
+
+				}
+			}
+			
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
 		}
 		
 		else return;
@@ -314,16 +353,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
 		}
 		
-		if (!this.buttonList.isEmpty() && !this.buttons.isEmpty() && this.buttonList.size() >= this.buttons.size()) {
-			ProjectZed.logHelper.severe("buttonListSize:", this.buttonList.size());
-			ProjectZed.logHelper.severe("buttonsSize:", this.buttons.size());
-			
-			// synchronize my linked button list to 'global' button list.
-			for (int i = 0; i < this.buttons.size() && i < this.buttonList.size(); i++) {
-				if (this.buttonList.get(i) instanceof IGuiButton) this.buttons.add(i, (IGuiButton) this.buttonList.get(i));
-			}
-		}
-		
 	}
 	
 	/**
@@ -337,63 +366,63 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	private void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
 		
 		if (dir == ForgeDirection.SOUTH) {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
 		}
 
 		else if (dir == ForgeDirection.NORTH) {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 
 		else if (dir == ForgeDirection.EAST) {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 		}
 
 		else if (dir == ForgeDirection.WEST) {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
 		}
 
 		else if (dir == ForgeDirection.DOWN) {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 
 		else {
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
-			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 		
 	}
