@@ -93,8 +93,9 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot != 0;
+		return slot > 3 * 3 + 1;
 	}
 
 	/*
@@ -102,8 +103,15 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
+	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		int[] slots = new int[this.slots.length - (3 * 3 + 1)];
+		
+		for (int i = 0; i < slots.length; i++) {
+			slots[i] = (3 * 3 + 1) + i;
+		}
+		
+		return slots;
 	}
 
 	/*
@@ -111,8 +119,9 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return false;
+		return isItemValidForSlot(slot, stack);
 	}
 
 	/*
@@ -120,10 +129,20 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
+	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return false;
+		return slot > 3 * 3 + 1;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.minecraft.tileentity.TileEntity#canUpdate()
+	 */
+	@Override
+	public boolean canUpdate() {
+		return false;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

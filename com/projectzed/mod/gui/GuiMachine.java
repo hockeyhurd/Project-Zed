@@ -7,7 +7,7 @@
 package com.projectzed.mod.gui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -29,13 +29,13 @@ import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerMachine;
 import com.projectzed.mod.gui.component.GuiConfigButton;
+import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
 import com.projectzed.mod.gui.component.GuiIOButton;
 import com.projectzed.mod.gui.component.GuiRedstoneButton;
+import com.projectzed.mod.gui.component.IGuiButton;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
 import com.projectzed.mod.gui.component.PowerLabel;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -58,13 +58,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	protected List<IInfoLabel> labelList;
 	
 	// button controls:
-	protected GuiConfigButton[] configButtons;
-	protected HashMap<GuiRedstoneButton, Integer> redstoneButtons;
+	protected LinkedList<IGuiButton> buttons;
 	protected EnumRedstoneType redstoneType;
 	
-	protected HashMap<GuiIOButton, Integer> ioButtons;
-	protected int startIndexIO = 0;
-	protected int guiOffset = 0;
 	protected Waila waila;
 
 	/**
@@ -78,8 +74,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
 		this.te = te;
-		this.guiOffset = 0; // 76;
-		this.xSize = 176 + this.guiOffset;
+		this.xSize = 176;
 		this.ySize = 166;
 
 		this.labelList = new ArrayList<IInfoLabel>();
@@ -165,46 +160,46 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		
 		int counter = 0;
 		
-		if (configButtons == null || configButtons.length == 0) {
-			configButtons = new GuiConfigButton[] {
-					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(60, 60), 0xffff0000)),
-					new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 35), 0xff0000ff)), 
-			};
-		}
+		// if new list, 'create' new list object.
+		if (buttons == null) buttons = new LinkedList<IGuiButton>();
 		
-		if (redstoneButtons == null || redstoneButtons.isEmpty()) {
-			redstoneButtons = new HashMap<GuiRedstoneButton, Integer>();
-			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED), counter++);
-			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW), counter++);
-			redstoneButtons.put(new GuiRedstoneButton(counter, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH), counter++);
-		}
+		// if list has cached buttons, clear it for new init.
+		if (!buttons.isEmpty()) buttons.clear();
 		
-		for (int i = 0; i < configButtons.length; i++) {
-			configButtons[i].setActive(false);
-			this.buttonList.add(configButtons[i]);
-		}
+		GuiConfigButton sidedIOButton = new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16, null, (byte) 0, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16), new Vector2<Integer>(60, 60), 0xffff0000), EnumConfigType.SIDED_IO);
+		sidedIOButton.setActive(false);
 		
-		for (GuiRedstoneButton button : redstoneButtons.keySet()) {
-			if (button.getType() != this.te.getRedstoneType()) button.setActive(false);
-			else if (button.getType() == this.te.getRedstoneType()) button.setActive(true);
-
-			button.visible = false;
-			this.buttonList.add(button);
+		GuiConfigButton redstonToggleButton = new GuiConfigButton(counter++, guiLeft - 16, guiTop + 16 + 20, null, (byte) 1, new Rect<Integer>(new Vector2<Integer>(guiLeft - 16, guiTop + 16 + 20), new Vector2<Integer>(75, 35), 0xff0000ff), EnumConfigType.REDSTONE);
+		redstonToggleButton.setActive(false);
+		
+		buttons.addLast(sidedIOButton);
+		buttons.addLast(redstonToggleButton); 
+		
+		GuiRedstoneButton[] redstoneButtons = new GuiRedstoneButton[] {
+			new GuiRedstoneButton(counter++, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED),
+			new GuiRedstoneButton(counter++, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW),
+			new GuiRedstoneButton(counter++, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH)
+		};
+		
+		for (int i = 0; i < redstoneButtons.length; i++) {
+			if (redstoneButtons[i].getType() != this.te.getRedstoneType()) redstoneButtons[i].setActive(false);
+			else redstoneButtons[i].setActive(true);
+			
+			redstoneButtons[i].visible = false;
+			buttons.addLast(redstoneButtons[i]);
 		}
 		
 		waila.finder(false);
 		
-		startIndexIO = counter;
-		
-		if (ioButtons == null || ioButtons.isEmpty()) ioButtons = new HashMap<GuiIOButton, Integer>();
-		
 		getLayoutFromFacingDirection(getFacingDirection(waila.getSideHit()), counter, guiLeft - 72, guiTop + 38);
 		
-		if (ioButtons != null && !ioButtons.isEmpty()) {
-			for (GuiIOButton b : ioButtons.keySet()) {
-				b.visible = false;
-				this.buttonList.add(b);
-			}
+		IGuiButton current;
+		
+		for (int i = 0; i < buttons.size(); i++) {
+			current = buttons.get(i);
+			if (!(current instanceof GuiConfigButton)) ((GuiButton) current).visible = false;
+			
+			if (current instanceof GuiButton) this.buttonList.add(current);
 		}
 		
 	}
@@ -213,122 +208,61 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public void actionPerformed(GuiButton button) {
 		boolean isActive = false;
 		
-		if (button.id == 0) {
-			ProjectZed.logHelper.info("button.id:", button.id);
-			isActive = ((GuiConfigButton) this.buttonList.get(button.id)).isActive();
-			
-			for (int i = 0; i < configButtons.length; i++) {
-				if (button.id == i) continue;
-				((GuiConfigButton) this.buttonList.get(i)).setActive(isActive);
-				((GuiConfigButton) this.buttonList.get(i)).visible = !((GuiConfigButton) this.buttonList.get(i)).visible;
-			}
-			
-			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
-			
-			int index = 0;
-			
-			for (GuiRedstoneButton redButton : redstoneButtons.keySet()) {
-				index = redstoneButtons.get(redButton);
-				
-				((GuiRedstoneButton) this.buttonList.get(index)).visible = false;
-			}
-			
-			index = 0;
-			
-			for (GuiIOButton ioButton : ioButtons.keySet()) {
-				if (ioButton == null || !ioButtons.containsKey(ioButton)) {
-					ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
-					continue;
-				}
-				
-				index = ioButtons.get(ioButton);
-				
-				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = isActive;
-			}
-			
-		}
-			
-		else if (button.id == 1) {
-			ProjectZed.logHelper.info("button.id:", button.id);
-			isActive = ((GuiConfigButton) this.buttonList.get(button.id)).isActive();
-			
-			for (int i = 0; i < configButtons.length; i++) {
-				if (button.id == i) continue;
-				((GuiConfigButton) this.buttonList.get(i)).setActive(isActive);
-				((GuiConfigButton) this.buttonList.get(i)).visible = !((GuiConfigButton) this.buttonList.get(i)).visible;
-			}
-			
-			((GuiConfigButton) this.buttonList.get(button.id)).setActive(isActive);
-			
-			int index = 0;
-			
-			for (GuiRedstoneButton redButton : redstoneButtons.keySet()) {
-				index = redstoneButtons.get(redButton);
-				
-				((GuiRedstoneButton) this.buttonList.get(index)).visible = isActive;
-			}
-			
-			index = 0;
-			
-			for (GuiIOButton ioButton : ioButtons.keySet()) {
-				if (ioButton == null || !ioButtons.containsKey(ioButton)) {
-					ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
-					continue;
-				}
-				
-				index = ioButtons.get(ioButton);
-				
-				if (index >= 0 && this.buttonList.get(index) instanceof GuiIOButton) ((GuiIOButton) this.buttonList.get(index)).visible = false;
-			}
-		}
+		// ProjectZed.logHelper.info("button.id:", button.id);
 		
-		else if (button instanceof GuiRedstoneButton) {
-			if (redstoneType == ((GuiRedstoneButton) button).getType()) return;
-			else redstoneType = ((GuiRedstoneButton) button).getType();
+		if (button instanceof IGuiButton) {
 			
-			te.setRedstoneType(redstoneType);
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
-
-			for (Object b : this.buttonList) {
-				if (!(b instanceof GuiRedstoneButton)) continue;
-				if (((GuiRedstoneButton) b).getType() != redstoneType) ((GuiRedstoneButton) b).setActive(false);
-				else ((GuiRedstoneButton) b).setActive(true);
-			}
-		}
-		
-		else if (button instanceof GuiIOButton) {
-			if (!this.isShiftKeyDown()) {
-				ForgeDirection dirToSet = getDirectionFromName(button.displayString);	
+			if (button instanceof GuiConfigButton) {
 				
-				ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
-				te.setSideValveAndRotate(dirToSet);
-				ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
-			}
-			
-			else if (this.isShiftKeyDown()) {
-				int index = 0;
+				boolean activeState = ((IGuiButton) button).isActive();
+				EnumConfigType configType = ((GuiConfigButton) button).getConfigType();
 				
-				for (GuiIOButton ioButton : ioButtons.keySet()) {
-					if (ioButton == null || !ioButtons.containsKey(ioButton)) {
-						ProjectZed.logHelper.warn("An error has occured where getting IO buttons has failed!");
-						continue;
+				for (int i = 0; i < buttonList.size(); i++) {
+					if (!(buttonList.get(i) instanceof IGuiButton)) continue;
+					if (i != button.id) {
+						if (!(buttonList.get(i) instanceof GuiConfigButton)) {
+							((IGuiButton) buttonList.get(i)).setActive(!activeState);
+							((GuiButton) buttonList.get(i)).visible = !activeState;
+						}
+						
+						else ((IGuiButton) buttonList.get(i)).setActive(false);
 					}
 					
-					index = ioButtons.get(ioButton);
-					
-					((GuiIOButton) this.buttonList.get(index)).setStateID((byte) 0);
-					te.setSideValve(ForgeDirection.VALID_DIRECTIONS[index - startIndexIO], (byte) 0);
 				}
+					
+					
+				if (configType == EnumConfigType.SIDED_IO) {
+					for (int i = 0; i < buttonList.size(); i++) {
+						if (buttonList.get(i) instanceof GuiConfigButton) continue;
+
+						if (buttonList.get(i) instanceof GuiIOButton) {
+							((GuiIOButton) buttonList.get(i)).visible = activeState;
+						}
+
+						else ((GuiButton) buttonList.get(i)).visible = false;
+					}
+				}
+
+				else if (configType == EnumConfigType.REDSTONE) {
+					for (int i = 0; i < buttonList.size(); i++) {
+						if (buttonList.get(i) instanceof GuiConfigButton) continue;
+
+						if (buttonList.get(i) instanceof GuiRedstoneButton) {
+							((GuiRedstoneButton) buttonList.get(i)).visible = activeState;
+							
+							if (((GuiRedstoneButton) buttonList.get(i)).getType() == this.redstoneType) ((GuiRedstoneButton) buttonList.get(i)).setActive(true);
+							else ((GuiRedstoneButton) buttonList.get(i)).setActive(false); // ensure all else are set to false!
+						}
+
+						else ((GuiButton) buttonList.get(i)).visible = false;
+					}
+				}
+				
 			}
 			
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
 		}
 		
-		else {
-			ProjectZed.logHelper.info("button.id:", button.id);
-		}
-		
-		// ProjectZed.logHelper.info("button.id:", button.id);
+		else return;
 	}
 	
 	/*
@@ -380,6 +314,16 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
 		}
 		
+		if (!this.buttonList.isEmpty() && !this.buttons.isEmpty() && this.buttonList.size() >= this.buttons.size()) {
+			ProjectZed.logHelper.severe("buttonListSize:", this.buttonList.size());
+			ProjectZed.logHelper.severe("buttonsSize:", this.buttons.size());
+			
+			// synchronize my linked button list to 'global' button list.
+			for (int i = 0; i < this.buttons.size() && i < this.buttonList.size(); i++) {
+				if (this.buttonList.get(i) instanceof IGuiButton) this.buttons.add(i, (IGuiButton) this.buttonList.get(i));
+			}
+		}
+		
 	}
 	
 	/**
@@ -393,63 +337,63 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	private void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
 		
 		if (dir == ForgeDirection.SOUTH) {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
 		}
 
 		else if (dir == ForgeDirection.NORTH) {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 
 		else if (dir == ForgeDirection.EAST) {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 		}
 
 		else if (dir == ForgeDirection.WEST) {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
 		}
 
 		else if (dir == ForgeDirection.DOWN) {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 
 		else {
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
 
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)), index++);
-			ioButtons.put(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)), index++);
-			ioButtons.put(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)), index++);
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+			buttons.addLast(new GuiIOButton(index, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
+			buttons.addLast(new GuiIOButton(index, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
 		}
 		
 	}

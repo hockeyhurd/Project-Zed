@@ -40,13 +40,19 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected static final float SIZE = 16f;
 	
+	public enum EnumConfigType {
+		SIDED_IO, REDSTONE
+	}
+	
+	protected EnumConfigType type;
+	
 	/**
 	 * @param id
 	 * @param x
 	 * @param y
 	 * @param text
 	 */
-	public GuiConfigButton(int id, int x, int y, String text, byte stateID, Rect<Integer> rect) {
+	public GuiConfigButton(int id, int x, int y, String text, byte stateID, Rect<Integer> rect, EnumConfigType type) {
 		super(id, x, y, text);
 		this.width = 16;
 		this.height = 16;
@@ -57,6 +63,7 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		this.rect = rect;
 		this.pos.x = x;
 		this.pos.y = y;
+		this.type = type;
 	}
 
 	/**
@@ -67,7 +74,7 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID, Rect<Integer> rect) {
+	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID, Rect<Integer> rect, EnumConfigType type) {
 		super(id, x, y, 16, 16, text);
 		this.width = 16;
 		this.height = 16;
@@ -78,6 +85,14 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		this.rect = rect;
 		this.pos.x = x;
 		this.pos.y = y;
+		this.type = type;
+	}
+	
+	/**
+	 * @return type of config button.
+	 */
+	public EnumConfigType getConfigType() {
+		return this.type;
 	}
 	
 	/*
