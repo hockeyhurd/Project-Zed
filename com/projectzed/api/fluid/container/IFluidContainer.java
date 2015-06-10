@@ -115,4 +115,11 @@ public interface IFluidContainer extends IFluidHandler {
 	 */
 	FluidNetwork getNetwork();
 	
+	/**
+	 * Method allows 'masters' to set fluid network object to fluid container.
+	 * 
+	 * @param network network to set.
+	 */
+	void setFluidNetwork(FluidNetwork network);
+	
 }

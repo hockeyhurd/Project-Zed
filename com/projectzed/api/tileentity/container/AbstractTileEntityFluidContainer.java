@@ -420,29 +420,58 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#canBeSourceNode()
+	 */
 	@Override
 	public boolean canBeSourceNode() {
 		return false;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#canBeMaster()
+	 */
 	@Override
 	public boolean canBeMaster() {
 		return false;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#isMaster()
+	 */
 	@Override
 	public boolean isMaster() {
 		return isMaster;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#hasFluidNetwork()
+	 */
 	@Override
 	public boolean hasFluidNetwork() {
 		return network != null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#getNetwork()
+	 */
 	@Override
 	public FluidNetwork getNetwork() {
 		return network;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setFluidNetwork(com.projectzed.api.fluid.FluidNetwork)
+	 */
+	@Override
+	public void setFluidNetwork(FluidNetwork network) {
+		this.network = network;
 	}
 
 }

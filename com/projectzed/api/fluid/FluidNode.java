@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.fluid.container.IFluidContainer;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
 
 /**
@@ -343,8 +342,10 @@ public class FluidNode {
 		if (hasFluidNetwork()) {
 			FluidNode[] surrounding = network.getSurroundingNodes(this);
 			if (surrounding == null || surrounding.length == 0) {
-				ProjectZed.logHelper.severe("Error finding surrounding fluid nodes!");
-				network.remove(this);
+				// ProjectZed.logHelper.severe("Error finding surrounding fluid nodes!");
+				
+				// make sure not only node in network!
+				if (network.size() > 1) network.remove(this);
 				return;
 			}
 			
