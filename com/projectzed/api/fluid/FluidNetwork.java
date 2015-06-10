@@ -415,10 +415,11 @@ public class FluidNetwork {
 											accNode.getFluidContainer().fill(dir, temp, true);
 											node.getFluidContainer().drain(token.getDirection(), temp, true);
 										}
-										
+
 										if (startAmount > amount) {
 											transferring = true;
 											transferredFluid = temp.copy();
+											transferredFluid.amount = startAmount - Math.abs(amount);
 										}
 										
 										if (amount == 0 && transferring) break;
