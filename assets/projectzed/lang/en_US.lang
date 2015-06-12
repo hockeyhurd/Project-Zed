@@ -39,6 +39,7 @@ tile.fluidTankTier1.name=Fluid Tank - II
 tile.fluidTankTier2.name=Fluid Tank - III
 tile.fluidTankTier3.name=Fluid Tank - IV
 tile.liquiductBlue.name=Liquiduct - Blue
+tile.liquiductClear.name=Liquiduct - Clear
 tile.liquidNode.name=Liquid Node
 
 
