@@ -449,6 +449,15 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	
 	/*
 	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setMaster(boolean)
+	 */
+	@Override
+	public void setMaster(boolean master) {
+		this.isMaster = master;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see com.projectzed.api.fluid.container.IFluidContainer#hasFluidNetwork()
 	 */
 	@Override
