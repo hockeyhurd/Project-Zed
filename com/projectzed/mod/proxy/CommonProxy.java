@@ -33,13 +33,14 @@ import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import com.projectzed.mod.registry.CraftingRegistry;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
-import com.projectzed.mod.registry.DrillSetRegistry;
 import com.projectzed.mod.registry.FurnaceRecipeRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
 import com.projectzed.mod.registry.MetalPressRecipesRegistry;
 import com.projectzed.mod.registry.PZEntityRegistry;
 import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.registry.tools.ChainsawSetRegistry;
+import com.projectzed.mod.registry.tools.DrillSetRegistry;
 import com.projectzed.mod.util.OutputUtil;
 import com.projectzed.mod.util.Reference;
 
@@ -198,7 +199,11 @@ public class CommonProxy {
 		LumberMillRecipesRegistry.init();
 		MetalPressRecipesRegistry.init();
 		CentrifugeRecipeRegistry.init();
-		DrillSetRegistry.init();
+		DrillSetRegistry.instance().init();
+		ChainsawSetRegistry.instance().init();
+		
+		ProjectZed.logHelper.info("[1] Boob warning:", DrillSetRegistry.instance().getSet() == null);
+		ProjectZed.logHelper.info("[2] Boob warning:", ChainsawSetRegistry.instance().getSet() == null);
 	}
 	
 	private void registerEventHandlers() {

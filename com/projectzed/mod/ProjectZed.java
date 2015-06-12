@@ -93,6 +93,7 @@ import com.projectzed.mod.item.metals.ItemIngotUranium;
 import com.projectzed.mod.item.metals.ItemMixedAlloy;
 import com.projectzed.mod.item.metals.ItemSheetAluminium;
 import com.projectzed.mod.item.metals.ItemSheetReinforced;
+import com.projectzed.mod.item.tools.ItemChainsaw;
 import com.projectzed.mod.item.tools.ItemMiningDrill;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.proxy.CommonProxy;
@@ -205,10 +206,11 @@ public class ProjectZed {
 	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
 	
 	// Tools:
-	public static final ToolMaterial drillMat = EnumHelper.addToolMaterial("DRILLING", 4, 1000 + 1, 20.0f, 4.0f, 0);
+	public static final ToolMaterial pzToolMat = EnumHelper.addToolMaterial("PZTOOLS", 5, 1000 + 1, 20.0f, 4.0f, 0);
 	
 	public static Item wrench;
 	public static Item titaniumDrill;
+	public static Item titaniumChainsaw;
 	
 	// Metals:
 	public static Item dustGold;
@@ -395,7 +397,8 @@ public class ProjectZed {
 		
 		// Tools:
 		wrench = new ItemWrench("wrench");
-		titaniumDrill = new ItemMiningDrill(drillMat, "titaniumDrill");
+		titaniumDrill = new ItemMiningDrill(pzToolMat, "titaniumDrill");
+		titaniumChainsaw = new ItemChainsaw(pzToolMat, "titaniumChainsaw");
 		
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);

@@ -138,7 +138,6 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 			itemStack.setItemDamage(0);
 			
 			if (this.slots[1] == null) this.slots[1] = itemStack.copy();
-			
 			else if (this.slots[1].isItemEqual(itemStack) && this.slots[1].getItemDamage() == 0) slots[1].stackSize += itemStack.stackSize;
 
 			this.slots[0].stackSize--;

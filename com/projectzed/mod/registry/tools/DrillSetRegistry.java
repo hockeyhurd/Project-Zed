@@ -4,7 +4,7 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.registry;
+package com.projectzed.mod.registry.tools;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 import com.google.common.collect.Sets;
+import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 
 /**
  * Class containing code for drills material set.
@@ -21,9 +22,11 @@ import com.google.common.collect.Sets;
  * @author hockeyhurd
  * @version Mar 30, 2015
  */
-public class DrillSetRegistry {
+public class DrillSetRegistry implements IToolSetRegistry {
 	
-	public static Set set;
+	private static final DrillSetRegistry reg = new DrillSetRegistry();
+	
+	private static Set set;
 	public static final Material[] mats = new Material[] {
 		Material.rock,	
 		Material.iron,	
@@ -39,9 +42,18 @@ public class DrillSetRegistry {
 	}
 	
 	/**
-	 * Method initialize block set.
+	 * @return instance of this registry.
 	 */
-	public static void init() {
+	public static IToolSetRegistry instance() {
+		return reg;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#init()
+	 */
+	@Override
+	public void init() {
 		Iterator iter = Block.blockRegistry.iterator();
 		Set<Block> temp = new HashSet<Block>();
 		
@@ -53,23 +65,39 @@ public class DrillSetRegistry {
 		set = Sets.newHashSet(temp.toArray(new Block[temp.size()]));
 	}
 	
-	/**
-	 * Checks if block is acceptable as a material.
-	 * 
-	 * @param b block to reference.
-	 * @return true if acceptable, else returns false.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#getSet()
 	 */
-	public static boolean matContains(Block b) {
+	@Override
+	public Set getSet() {
+		return set;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#setContainsBlock(net.minecraft.block.Block)
+	 */
+	@Override
+	public boolean setContainsBlock(Block block) {
+		return set.contains(block);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#matContains(net.minecraft.block.Block)
+	 */
+	@Override
+	public boolean matContains(Block b) {
 		return matContains(b.getMaterial());
 	}
 	
-	/**
-	 * Checks if material is acceptable.
-	 * 
-	 * @param mat material to reference.
-	 * @return true if acceptable, else returns false.
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#matContains(net.minecraft.block.material.Material)
 	 */
-	public static boolean matContains(Material mat) {
+	@Override
+	public boolean matContains(Material mat) {
 		if (mats == null || mats.length == 0) return false;
 		
 		for (Material m : mats) {

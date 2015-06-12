@@ -74,6 +74,7 @@ item.gearTitanium.name=Titanium Gear
 // Tools:
 item.wrench.name=Crescent Wrench
 item.titaniumDrill.name=Mining Drill - Titanium
+item.titaniumChainsaw.name=Chainsaw - Titanium
 
 // Metals:
 item.dustGold.name=Gold Dust
