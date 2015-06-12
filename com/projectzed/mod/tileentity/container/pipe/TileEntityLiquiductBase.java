@@ -524,6 +524,15 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		return isMaster;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setMaster(boolean)
+	 */
+	@Override
+	public void setMaster(boolean master) {
+		this.isMaster = master;
+	}
+	
 	public boolean wasTransferredLastTick() {
 		return transferredLastTick;
 	}
@@ -560,6 +569,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		return network;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setFluidNetwork(com.projectzed.api.fluid.FluidNetwork)
+	 */
 	@Override
 	public void setFluidNetwork(FluidNetwork network) {
 		this.network = network;
@@ -570,11 +583,11 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * Method used to void all fluid nodes in the network if this is the master.
 	 */
 	public void voidNetwork() {
-		if (network != null && network.size() > 0 && network.isMasterNode(network.getNodeAt(worldVec()))) {
+		if (network != null && !network.isEmpty() && isMaster) {
 			for (FluidNode node : network.getNodes()) {
-				if (node.getFluidContainer() instanceof TileEntityLiquiductBase) {
-					TileEntityLiquiductBase te = (TileEntityLiquiductBase) node.getFluidContainer();
-					te.network = null;
+				if (node.getFluidContainer() instanceof IFluidContainer) {
+					IFluidContainer cont = (IFluidContainer) node.getIFluidContainer();
+					cont.setFluidNetwork(null);
 				}
 			}
 		}
@@ -628,10 +641,11 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 				// not master, contact TileEntity and obtain/add to fluid network this node.
 				else {
 					// ProjectZed.logHelper.info("Still waiting for hadNetworkNBT, returning..");
+					if (this.masterVec == null) return;
 					
 					IFluidContainer master = (IFluidContainer) worldObj.getTileEntity(this.masterVec.x, this.masterVec.y, this.masterVec.z);
 					
-					if (master.hasFluidNetwork()) {
+					if (master != null && master.hasFluidNetwork()) {
 						this.network = master.getNetwork();
 						this.network.add(new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
 						
@@ -723,7 +737,9 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			
 			// if this was the first node placed, then we must call update here!
 			if (network != null && !network.isEmpty()) {
-				this.isMaster = network.isMasterNode(network.getNodeAt(worldVec()));
+				
+				// if not master, check if we are now the 'master'.
+				/*if (!this.isMaster) */this.isMaster = network.isMasterNode(network.getNodeAt(worldVec()));
 				
 				if (this.isMaster) network.update();
 				

@@ -106,6 +106,13 @@ public interface IFluidContainer extends IFluidHandler {
 	boolean isMaster();
 
 	/**
+	 * Sets whether is master or not.
+	 *  
+	 * @param master value to set.
+	 */
+	void setMaster(boolean master);
+	
+	/**
 	 * @return if this container/tank has a fluid network.
 	 */
 	boolean hasFluidNetwork();

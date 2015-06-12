@@ -22,8 +22,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 
 /**
  * Fluid Network new and improved as of 5/14/15.
@@ -72,13 +72,12 @@ public class FluidNetwork {
 	public void remove(FluidNode node) {
 		if (node == null || !nodes.contains(node)) return;
 		if (masterNode != null && node.equals(masterNode)) {
-			// nodes.removeFirst();
-			// masterNode = node;
+			masterNode.getIFluidContainer().setMaster(false); // removing master, notify said tileentity.
 			masterNode = null;
 			
 			for (FluidNode n : nodes) {
-				if (n.getFluidContainer() instanceof TileEntityLiquiductBase) {
-					// ((TileEntityLiquiductBase) n.getFluidContainer()).voidNetwork();
+				// if (n.getFluidContainer() instanceof TileEntityLiquiductBase) {
+				if (n.getFluidContainer() instanceof IFluidContainer && n.getIFluidContainer().canBeMaster()) {
 					masterNode = n;
 					break;
 				}
