@@ -39,6 +39,7 @@ tile.fluidTankTier1.name=Réservoir à fluide - II
 tile.fluidTankTier2.name=Réservoir à fluide - III
 tile.fluidTankTier3.name=Réservoir à fluide - IV
 tile.liquiductBlue.name=Liquiduc - Bleu
+tile.liquiductClear.name=Liquiduc - Clair
 tile.liquidNode.name=Noeud de liquides
 
 
@@ -74,6 +75,7 @@ item.gearTitanium.name=Mécanisme en titane
 // Tools:
 item.wrench.name=Clef anglaise
 item.titaniumDrill.name=Foret d'extraction - Titane
+item.titaniumChainsaw.name=Tronçonneuse - Titane
 
 // Metals:
 item.dustGold.name=Poudre d'or
