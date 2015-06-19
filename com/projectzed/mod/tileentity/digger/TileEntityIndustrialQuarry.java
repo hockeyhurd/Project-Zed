@@ -4,29 +4,18 @@
 * PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along 
 * with Project-Zed. If not, see <http://www.gnu.org/licenses/>
 */
-package com.projectzed.mod.tileentity.container.pipe;
-
-import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.mod.util.Reference;
+package com.projectzed.mod.tileentity.digger;
 
 /**
- * Class used to create more specific instance of base class
- * in which this class inherits from.
+ * Class for industrialQuarry.
  * 
  * @author hockeyhurd
- * @version Nov 13, 2014
+ * @version Jun 18, 2015
  */
-public class TileEntityEnergyPipeOrange extends TileEntityEnergyPipeBase {
+public class TileEntityIndustrialQuarry extends TileEntityQuarryBase {
 
-	public TileEntityEnergyPipeOrange() {
-		super();
-		this.maxPowerStorage *= Reference.Constants.TIER2_ENERGY_PIPE_MULTIPLIER;
-		this.importRate *= Reference.Constants.TIER2_ENERGY_PIPE_MULTIPLIER;
-		this.exportRate *= Reference.Constants.TIER2_ENERGY_PIPE_MULTIPLIER;
+	public TileEntityIndustrialQuarry() {
+		super("industrialQuarry");
 	}
-	
-	public EnumColor getColor() {
-		return EnumColor.ORANGE;
-	}
-	
+
 }

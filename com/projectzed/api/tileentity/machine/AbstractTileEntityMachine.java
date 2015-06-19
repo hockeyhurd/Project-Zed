@@ -333,21 +333,25 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	}
 
 	/** Max allowed capacity */
+	@Override
 	public void setMaxStorage(int max) {
 		this.maxStorage = max;
 	}
 
 	/** Get the max capacity */
+	@Override
 	public int getMaxStorage() {
 		return this.maxStorage;
 	}
 
 	/** Set the amount of energy stored. */
+	@Override
 	public void setEnergyStored(int amount) {
 		this.stored = amount;
 	}
 
 	/** Get the amount currently stored. */
+	@Override
 	public int getEnergyStored() {
 		return this.stored;
 	}
@@ -357,6 +361,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
+	@Override
 	public int getMaxImportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
@@ -366,6 +371,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
+	@Override
 	public int getMaxExportRate() {
 		return 0;
 	}
@@ -374,6 +380,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
+	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		return 0;
 	}
@@ -382,6 +389,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
 	 */
+	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
 			if (this.stored + amount <= this.maxStorage) this.stored += amount;
@@ -400,6 +408,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
+	@Override
 	public void setLastReceivedDirection(ForgeDirection dir) {
 		this.lastReceivedDir = dir;
 	}
@@ -408,6 +417,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
+	@Override
 	public ForgeDirection getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
@@ -417,6 +427,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.machine.IEnergyMachine#setEnergyBurnRate(int)
 	 */
+	@Override
 	public void setEnergyBurnRate(int val) {
 		this.energyBurnRate = val;
 	}
@@ -426,6 +437,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.machine.IEnergyMachine#getEnergyBurnRate()
 	 */
+	@Override
 	public int getEnergyBurnRate() {
 		return this.energyBurnRate;
 	}
@@ -435,6 +447,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.machine.IEnergyMachine#setBurning(boolean)
 	 */
+	@Override
 	public void setPowerMode(boolean val) {
 		this.powerMode = val;
 	}
@@ -444,6 +457,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.machine.IEnergyMachine#isBurning()
 	 */
+	@Override
 	public boolean isPoweredOn() {
 		return this.powerMode;
 	}
@@ -453,6 +467,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.machine.IEnergyMachine#burnEnergy()
 	 */
+	@Override
 	public void burnEnergy() {
 		if (isPoweredOn() && this.cookTime > 0) this.stored -= this.energyBurnRate;
 		// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));

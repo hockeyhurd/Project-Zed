@@ -42,6 +42,7 @@ import com.projectzed.mod.block.container.BlockTankTier0;
 import com.projectzed.mod.block.container.BlockTankTier1;
 import com.projectzed.mod.block.container.BlockTankTier2;
 import com.projectzed.mod.block.container.BlockTankTier3;
+import com.projectzed.mod.block.container.digger.BlockIndustrialQuarry;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
 import com.projectzed.mod.block.generator.BlockSolarArray;
@@ -171,6 +172,9 @@ public class ProjectZed {
 	public static Block fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	public static Block itemPipeGreen;
 	public static Block itemPipeGreenOpaque;
+	
+	// Diggers:
+	public static Block industrialQuarry;
 	
 	// RF STUFF:
 	public static Block bridgeMcUToRF, bridgeRFToMcU;
@@ -356,6 +360,9 @@ public class ProjectZed {
 		fluidTankTier3 = new BlockTankTier3(Material.rock);
 		itemPipeGreen = new BlockItemPipeGreen(Material.rock);
 		itemPipeGreenOpaque = new BlockItemPipeGreenOpaque(Material.rock);
+		
+		// Diggers:
+		industrialQuarry = new BlockIndustrialQuarry(Material.rock);
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 

@@ -124,6 +124,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	protected void exportContents() {
 		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
 		if (this.internalTank.getFluidAmount() == 0) return;
+		if (this.internalTank.getFluid() == null || this.internalTank.getFluid().getFluid() == null) return;
 		
 		// FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
 		
@@ -144,7 +145,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 				
 				if (tank.canFill(exportSide.getOpposite(), this.internalTank.getFluid().getFluid())) {
 					FluidStack thisStack = this.getTank().getFluid();
-					int amount = getAmountFromTank(tank, thisStack, ForgeDirection.UP);
+					int amount = getAmountFromTank(tank, thisStack, exportSide.getOpposite());
 					
 					// if destination tank is empty set to default size.
 					if (amount == 0) amount = this.getMaxFluidExportRate();
@@ -156,10 +157,10 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 						FluidStack sendStack = thisStack.copy();
 						sendStack.amount = amount;
 						
-						amount = sendStack.amount = tank.fill(ForgeDirection.UP, sendStack, false);
+						amount = sendStack.amount = tank.fill(exportSide.getOpposite(), sendStack, false);
 						
 						this.getTank().drain(amount, true);
-						tank.fill(ForgeDirection.UP, sendStack, true);
+						tank.fill(exportSide.getOpposite(), sendStack, true);
 					}
 				}
 			}
@@ -332,6 +333,15 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		}
 		
 		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getRotationMatrix()
+	 */
+	@Override
+	public byte[] getRotationMatrix() {
+		return new byte[] { 1, 2, 3, 4, 5, 6 };
 	}
 
 }

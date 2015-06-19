@@ -8,7 +8,7 @@ package com.projectzed.mod.registry;
 
 import static com.projectzed.mod.ProjectZed.*;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -33,8 +33,8 @@ public final class CraftingRegistry {
 	private static CraftingRegistry reg = new CraftingRegistry();
 	
 	private CraftingRegistry() {
-		shapelessList = new ArrayList<ShapelessOreRecipe>();
-		shapedList = new ArrayList<ShapedOreRecipe>();
+		shapelessList = new LinkedList<ShapelessOreRecipe>();
+		shapedList = new LinkedList<ShapedOreRecipe>();
 	}
 	
 	/**

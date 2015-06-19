@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
 import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.mod.util.Reference;
 
 /**
  * 
@@ -17,9 +18,9 @@ public class TileEntityEnergyPipeClear extends TileEntityEnergyPipeBase {
 
 	public TileEntityEnergyPipeClear() {
 		super();
-		this.maxPowerStorage *= 8;
-		this.importRate *= 8;
-		this.exportRate *= 8;
+		this.maxPowerStorage *= Reference.Constants.TIER3_ENERGY_PIPE_MULTIPLIER;
+		this.importRate *= Reference.Constants.TIER3_ENERGY_PIPE_MULTIPLIER;
+		this.exportRate *= Reference.Constants.TIER3_ENERGY_PIPE_MULTIPLIER;
 	}
 	
 	public EnumColor getColor() {

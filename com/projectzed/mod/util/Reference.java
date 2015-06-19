@@ -64,6 +64,9 @@ public class Reference extends AbstractReference {
 		// public static final int BASE_PIPE_TRANSFER_RATE = 20;
 		public static final int BASE_PIPE_TRANSFER_RATE = 320 * 5;
 		
+		public static final int TIER2_ENERGY_PIPE_MULTIPLIER = 2;
+		public static final int TIER3_ENERGY_PIPE_MULTIPLIER = 8;
+		
 		/** Base item use rate for powered items. */ 
 		public static final int BASE_ITEM_USE_RATE = 10;
 		

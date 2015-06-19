@@ -150,7 +150,7 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 */
 	@Override
 	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityEnergyBankBase te = new TileEntityEnergyBankBase();
+		TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 
