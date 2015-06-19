@@ -7,6 +7,7 @@
 package com.projectzed.mod.handler;
 
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
+import com.projectzed.mod.handler.message.MessageTileEntityDigger;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
@@ -50,6 +51,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.CLIENT);
 	}
 	
 	public static int getNextID() {

@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.projectzed.mod.container.ContainerCentrifuge;
+import com.projectzed.mod.container.ContainerDigger;
 import com.projectzed.mod.container.ContainerEnergyContainer;
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.container.ContainerGenerator;
@@ -20,6 +21,7 @@ import com.projectzed.mod.container.ContainerNuclearIOPort;
 import com.projectzed.mod.container.ContainerRFBridge;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.gui.GuiCentrifuge;
+import com.projectzed.mod.gui.GuiDigger;
 import com.projectzed.mod.gui.GuiEnergyContainer;
 import com.projectzed.mod.gui.GuiFabricationTable;
 import com.projectzed.mod.gui.GuiGenerator;
@@ -32,6 +34,7 @@ import com.projectzed.mod.gui.GuiStoneCraftingTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -75,6 +78,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityEnergyBankBase) return new ContainerEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
 
 		else if (te instanceof TileEntityNuclearIOPort) return new ContainerNuclearIOPort(player.inventory, (TileEntityNuclearIOPort) te);
+		else if (te instanceof TileEntityIndustrialQuarry) return new ContainerDigger(player.inventory, (TileEntityIndustrialQuarry) te);
 		
 		return null;
 	}
@@ -99,6 +103,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityEnergyBankBase) return new GuiEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
 		
 		else if (te instanceof TileEntityNuclearIOPort) return new GuiNuclearIOPort(player.inventory, (TileEntityNuclearIOPort) te);
+		else if (te instanceof TileEntityIndustrialQuarry) return new GuiDigger(player.inventory, (TileEntityIndustrialQuarry) te);
 
 		return null;
 	}

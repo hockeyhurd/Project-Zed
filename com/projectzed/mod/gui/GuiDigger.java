@@ -26,6 +26,7 @@ import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumRedstoneType;
+import com.projectzed.mod.container.ContainerDigger;
 import com.projectzed.mod.gui.component.GuiConfigButton;
 import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
 import com.projectzed.mod.gui.component.GuiIOButton;
@@ -35,6 +36,7 @@ import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
 import com.projectzed.mod.gui.component.PowerLabel;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityDigger;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
