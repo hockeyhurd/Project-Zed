@@ -49,7 +49,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Jun 18, 2015
  */
 @SideOnly(Side.CLIENT)
-public class GuiDigger extends GuiContainer implements IInfoContainer {
+public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 
 	public ResourceLocation texture;
 	protected AbstractTileEntityDigger te;
@@ -64,6 +64,8 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 	
 	public GuiDigger(InventoryPlayer inv, AbstractTileEntityDigger te) {
 		super(new ContainerDigger(inv, te));
+		this.texture = getResourceTexture();
+		if (this.texture == null) this.texture = new ResourceLocation("projectzed", "textures/gui/GuiDefault.png");
 		
 		this.te = te;
 		this.xSize = 176;
@@ -76,6 +78,8 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 		
 		waila = new Waila(null, player.worldObj, player, null, 0);
 	}
+	
+	protected abstract ResourceLocation getResourceTexture();
 
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
@@ -326,7 +330,7 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param posY = position y to start drawing button.
 	 * @return gui button array for side player is currently facing.
 	 */
-	private void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
+	protected void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
 		
 		if (dir == ForgeDirection.SOUTH) {
 			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
@@ -396,7 +400,7 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param side = side to get.
 	 * @return opposite direction of side 'side'.
 	 */
-	private ForgeDirection getFacingDirection(int side) {
+	protected ForgeDirection getFacingDirection(int side) {
 		return side >= 0 && side < ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.VALID_DIRECTIONS[side].getOpposite() : ForgeDirection.UNKNOWN;
 	}
 	
@@ -406,7 +410,7 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param name = name of side.
 	 * @return direction associated by button's name.
 	 */
-	private ForgeDirection getDirectionFromName(String name) {
+	protected ForgeDirection getDirectionFromName(String name) {
 		ForgeDirection dir = ForgeDirection.UNKNOWN;
 		
 		if (name.equalsIgnoreCase("n")) dir = ForgeDirection.NORTH;
@@ -425,7 +429,7 @@ public class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param dir = direction to get.
 	 * @return value of the 'valve' on side specified.
 	 */
-	private byte getSideValueFromTE(ForgeDirection dir) {
+	protected byte getSideValueFromTE(ForgeDirection dir) {
 		return te instanceof AbstractTileEntityDigger ? ((AbstractTileEntityDigger) te).getSideValve(dir) : 0;
 	}
 	

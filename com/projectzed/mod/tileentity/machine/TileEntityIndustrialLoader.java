@@ -16,7 +16,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
@@ -141,6 +141,8 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setByte("ChunkRadii", this.radii);
+		
+		unloadChunk();
 	}
 	
 	/*
@@ -216,7 +218,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		if (ticket != null) {
 			this.heldChunk = ticket;
 			
-			Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+			Vector3<Integer> vec = new Vector3<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
 			
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {
@@ -236,7 +238,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			
 			this.heldChunk = newTicket;
 			
-			Vector4<Integer> vec = new Vector4<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+			Vector3<Integer> vec = new Vector3<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
 			
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {

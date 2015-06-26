@@ -18,8 +18,17 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
  */
 public class ConfigHandler extends AbstractConfigHandler {
 
+	// general:
 	private static boolean debugMode;
 	private static boolean updateCheck;
+	private static int maxQuarrySize;
+	
+	// ore gen
+	private static boolean genTitanium;
+	private static boolean genNickel;
+	private static boolean genAluminium;
+	private static boolean genCopper;
+	private static boolean genUranium;
 	
 	/**
 	 * @param event = event.
@@ -35,8 +44,17 @@ public class ConfigHandler extends AbstractConfigHandler {
 	public void handleConfiguration() {
 		this.loadConfig();
 		
+		// general:
 		this.updateCheck = this.getSuggestedConfig().getBoolean("update-check", "General", true, "Ability to turn off update checking.");
 		this.debugMode = this.getSuggestedConfig().getBoolean("debug-mode toggle,", "General", false, "Allows displaying of debugging info!");
+		this.maxQuarrySize = this.getSuggestedConfig().getInt("max quarry size", "General", 128, 3, 256, "Sets the max-size alloted for quarries to be.");
+		
+		// ore:
+		this.genTitanium = this.getSuggestedConfig().getBoolean("ore titanium", "World Gen", true, "Toggle for generating titanium");
+		this.genNickel = this.getSuggestedConfig().getBoolean("ore nickel", "World Gen", true, "Toggle for generating nickel");
+		this.genAluminium = this.getSuggestedConfig().getBoolean("ore aluminium", "World Gen", true, "Toggle for generating aluminium");
+		this.genCopper = this.getSuggestedConfig().getBoolean("ore copper", "World Gen", true, "Toggle for generating copper");
+		this.genUranium = this.getSuggestedConfig().getBoolean("ore uranium", "World Gen", true, "Toggle for generating uranium");
 		
 		this.saveConfig();
 	}
@@ -54,6 +72,48 @@ public class ConfigHandler extends AbstractConfigHandler {
 	 */
 	public static boolean allowUpdating() {
 		return updateCheck;
+	}
+	
+	/**
+	 * @return get max quarry size.
+	 */
+	public static int getMaxQuarrySize() {
+		return maxQuarrySize;
+	}
+	
+	/**
+	 * @return genTitanium flag
+	 */
+	public static boolean genOreTitanium() {
+		return genTitanium;
+	}
+	
+	/**
+	 * @return genNickel flag
+	 */
+	public static boolean genOreNickel() {
+		return genNickel;
+	}
+	
+	/**
+	 * @return genAluminium flag
+	 */
+	public static boolean genOreAluminium() {
+		return genAluminium;
+	}
+	
+	/**
+	 * @return genCopper flag
+	 */
+	public static boolean genOreCopper() {
+		return genCopper;
+	}
+	
+	/**
+	 * @return genUranium flag
+	 */
+	public static boolean genOreUranium() {
+		return genUranium;
 	}
 
 }

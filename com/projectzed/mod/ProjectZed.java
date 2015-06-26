@@ -24,6 +24,7 @@ import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.block.BlockNuclearControlPort;
 import com.projectzed.mod.block.BlockNuclearReactantCore;
 import com.projectzed.mod.block.BlockNuclearReactorGlass;
+import com.projectzed.mod.block.BlockQuarryMarker;
 import com.projectzed.mod.block.BlockThickenedGlass;
 import com.projectzed.mod.block.BlockWickedClearGlass;
 import com.projectzed.mod.block.container.BlockEnergyCell;
@@ -138,6 +139,7 @@ public class ProjectZed {
 	public static Block machineContainer;
 	public static Block thickenedGlass;
 	public static Block wickedClearGlass;
+	public static Block quarryMarker;
 	public static Block atomicBomb;
 	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
@@ -314,6 +316,7 @@ public class ProjectZed {
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
 		wickedClearGlass = new BlockWickedClearGlass();
+		quarryMarker = new BlockQuarryMarker();
 		nuclearReactorGlass = new BlockNuclearReactorGlass();
 		atomicBomb = new BlockAtomicBomb();
 		nuclearChamberWall = new BlockNuclearChamberWall();
@@ -437,11 +440,11 @@ public class ProjectZed {
 		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
 		
 		// Worldgen:
-		worldgenTitanium = new OreWorldgen(oreTitanium, 7, 4, 8, 8, 24);
-		worldgenNickel = new OreWorldgen(oreNickel, 6, 4, 6, 10, 30);
-		worldgenAluminium = new OreWorldgen(oreAluminium, 8, 4, 8, 10, 64);
-		worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
-		worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
+		if (configHandler.genOreTitanium()) worldgenTitanium = new OreWorldgen(oreTitanium, 7, 4, 8, 8, 24);
+		if (configHandler.genOreNickel()) worldgenNickel = new OreWorldgen(oreNickel, 6, 4, 6, 10, 30);
+		if (configHandler.genOreAluminium()) worldgenAluminium = new OreWorldgen(oreAluminium, 8, 4, 8, 10, 64);
+		if (configHandler.genOreCopper()) worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
+		if (configHandler.genOreUranium()) worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
 	}
 
 }

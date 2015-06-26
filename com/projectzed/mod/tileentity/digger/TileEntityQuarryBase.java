@@ -11,13 +11,17 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumFilterType;
 import com.projectzed.api.util.IItemFilterComponent;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.BlockQuarryMarker;
 
 /**
  * Base class for all quarries.
@@ -37,16 +41,10 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	public TileEntityQuarryBase(String name) {
 		super(name);
 		
+		this.energyBurnRate = 1024;
+				
 		this.filterStacks = new ArrayList<ItemStack>(filterMaxSize);
 		this.itemFilterType = EnumFilterType.WHITELIST;
-	}
-	
-	public Rect<Integer> getQuarryRect() {
-		return quarryRect;
-	}
-	
-	public void setQuarryRect(Rect<Integer> quarryRect) {
-		this.quarryRect = quarryRect;
 	}
 
 	/* (non-Javadoc)
@@ -108,36 +106,72 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	}
 	
 	protected void doQuarryWork() {
-		if (quarryRect == null) return;
+		// if (currentMineVec != null) ProjectZed.logHelper.info(currentMineVec.toString());
+		// if (quarryRect != null) ProjectZed.logHelper.info(quarryRect.getArea());
 		
-		if (currentTickTime > 0) currentTickTime--;
-		else {
-			if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord, quarryRect.min.y);
-			if (bh == null) bh = new BlockHelper(worldObj);
-			
-			if (worldObj.getTileEntity(currentMineVec.x, currentMineVec.y, currentMineVec.z) != null) {
-				incrementMineVec();
-				return;
-			}
-			
-			Block currentBlock = bh.getBlock(currentMineVec);
-			int metaData = bh.getBlockMetaData(currentMineVec);
-			
-			if (currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
-				List<ItemStack> dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
+		if (quarryRect == null || quarryRect.getArea() < 25d) {
+
+			Block currentBlock;
+			Vector2<Integer>[] markerCons;
+			Vector3<Integer> currentVec = new Vector3<Integer>();
+			for (int i = 2; i < ForgeDirection.VALID_DIRECTIONS.length; i++) {
+				currentVec.x = worldVec().x + ForgeDirection.getOrientation(i).offsetX;
+				currentVec.y = worldVec().y;
+				currentVec.z = worldVec().z + ForgeDirection.getOrientation(i).offsetZ;
 				
-				if (dropsList != null && !dropsList.isEmpty()) {
-					
-					for (int i = 0; i < dropsList.size(); i++) {
-						this.addItemStackToSlots(dropsList.get(i));
+				currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
+				
+				if (currentBlock != null && currentBlock == ProjectZed.quarryMarker) {
+					markerCons = ((BlockQuarryMarker) currentBlock).getBounds(worldObj, currentVec);
+					if (markerCons != null && markerCons.length == 4) {
+						quarryRect = new Rect<Integer>(markerCons[0], markerCons[3]);
+						return;
 					}
 				}
 			}
-			
-			incrementMineVec();
-			
-			// reset tick timer:
-			currentTickTime = waitTime;
+		}
+		
+		else {
+			if (currentTickTime > 0) currentTickTime--;
+			else {
+				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord, quarryRect.min.y);
+				if (bh == null) bh = new BlockHelper(worldObj);
+				
+				if (worldObj.getTileEntity(currentMineVec.x, currentMineVec.y, currentMineVec.z) != null) {
+					incrementMineVec();
+					return;
+				}
+				
+				Block currentBlock = bh.getBlock(currentMineVec);
+				int metaData = bh.getBlockMetaData(currentMineVec);
+				
+				if (currentBlock != ProjectZed.quarryMarker && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) != -1f) {
+					List<ItemStack> dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
+					
+					// TODO: FIX quarrying/picking up of drops.
+					if (dropsList != null && !dropsList.isEmpty()) {
+	
+						boolean result = false;
+						for (int i = 0; i < dropsList.size(); i++) {
+							result = this.addItemStackToSlots(dropsList.get(i), true);
+							if (!result) return;
+						}
+						
+						if (result) {
+							for (int i = 0; i < dropsList.size(); i++) {
+								this.addItemStackToSlots(dropsList.get(i), false);
+							}
+							
+							bh.setBlockToAir(currentMineVec);
+						}
+					}
+				}
+				
+				incrementMineVec();
+				
+				// reset tick timer:
+				currentTickTime = waitTime;
+			}
 		}
 	}
 	

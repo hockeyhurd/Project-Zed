@@ -121,11 +121,11 @@ public class CommonProxy {
 	}
 	
 	private void registerWorldgen() {
-		GameRegistry.registerWorldGenerator(ProjectZed.worldgenTitanium, 1);
-		GameRegistry.registerWorldGenerator(ProjectZed.worldgenNickel, 1);
-		GameRegistry.registerWorldGenerator(ProjectZed.worldgenAluminium, 1);
-		GameRegistry.registerWorldGenerator(ProjectZed.worldgenCopper, 1);
-		GameRegistry.registerWorldGenerator(ProjectZed.worldgenUranium, 1);
+		if (ProjectZed.worldgenTitanium != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenTitanium, 1);
+		if (ProjectZed.worldgenNickel != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenNickel, 1);
+		if (ProjectZed.worldgenAluminium != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenAluminium, 1);
+		if (ProjectZed.worldgenCopper != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenCopper, 1);
+		if (ProjectZed.worldgenUranium != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenUranium, 1);
 	}
 	
 	private void registerEntities() {
@@ -201,9 +201,6 @@ public class CommonProxy {
 		CentrifugeRecipeRegistry.init();
 		DrillSetRegistry.instance().init();
 		ChainsawSetRegistry.instance().init();
-		
-		ProjectZed.logHelper.info("[1] Boob warning:", DrillSetRegistry.instance().getSet() == null);
-		ProjectZed.logHelper.info("[2] Boob warning:", ChainsawSetRegistry.instance().getSet() == null);
 	}
 	
 	private void registerEventHandlers() {

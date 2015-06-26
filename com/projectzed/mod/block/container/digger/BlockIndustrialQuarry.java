@@ -55,6 +55,14 @@ public class BlockIndustrialQuarry extends AbstractBlockContainer {
 			return true;
 		}
 	}
+	
+	/*@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, x, y, z, e, stack);
+		
+		if (!world.isRemote) {
+		}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)

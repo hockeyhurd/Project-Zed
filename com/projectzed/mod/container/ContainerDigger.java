@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
 
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
@@ -34,13 +35,11 @@ public class ContainerDigger extends Container {
 	}
 
 	private void addSlots(InventoryPlayer inv, AbstractTileEntityDigger te) {
-		int offset = 0;
 		if (this.NUM_SLOTS > 0) {
-			offset = 32;
 			
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 9; x++) {
-					this.addSlotToContainer(new Slot(te, x + y * 9, 8 + x * 18, 32 + 53 + y * 18));
+					this.addSlotToContainer(new SlotFurnace(inv.player, te, x + y * 9, 8 + x * 18, 1 + 53 + y * 18));
 				}
 			}
 		}
@@ -48,13 +47,13 @@ public class ContainerDigger extends Container {
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, 8 + x * 18, offset + 32 + 84 + y * 18));
+				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, 8 + x * 18, 32 + 84 + y * 18));
 			}
 		}
 
 		// Adds the player hotbar slots to the gui.
 		for (int i = 0; i < 9; i++) {
-			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, offset + 32 + 142)); // 198
+			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 32 + 142)); // 198
 		}
 	}
 	
@@ -98,7 +97,7 @@ public class ContainerDigger extends Container {
 			if (index < te.getSizeInvenotry()) {
 				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
 			}
-			
+			// TODO: fix this or DIE!! 
 			else {
 				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
 			}

@@ -24,6 +24,8 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.api.util.IRedstoneComponent;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityDigger;
 import com.projectzed.mod.util.Reference;
 
 /**
@@ -51,8 +53,17 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public AbstractTileEntityDigger(String name) {
 		super(name);
 		this.maxPowerStorage = (int) 1e6;
+		this.energyBurnRate = 256; 
 	}
 
+	public Rect<Integer> getQuarryRect() {
+		return quarryRect;
+	}
+	
+	public void setQuarryRect(Rect<Integer> quarryRect) {
+		this.quarryRect = quarryRect;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()
@@ -312,6 +323,13 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	@Override
 	protected abstract void exportContents();
 	
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		
+		if (!worldObj.isRemote) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityDigger(this));
+	}
+	
 	/**
 	 * Method handler for pushing/pulling itemstacks to and from neighboring inventories.
 	 */
@@ -407,7 +425,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		}
 	}
 	
-	protected void addItemStackToSlots(ItemStack stack) {
+	protected boolean addItemStackToSlots(ItemStack stack, boolean simulate) {
 		if (stack != null && stack.stackSize > 0 && this.slots != null && this.slots.length > 0) {
 			
 			ItemStack current;
@@ -416,12 +434,12 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 			for (int i = 0; i < this.slots.length; i++) {
 				current = this.slots[i];
 				
-				if (current.isItemEqual(stack) && current.stackSize < current.getMaxStackSize()) {
+				if (current != null && current.isItemEqual(stack) && current.stackSize < current.getMaxStackSize()) {
 					int amount = current.getMaxStackSize() - current.stackSize;
-					current.stackSize += amount;
+					if (!simulate) current.stackSize += amount;
 					stack.stackSize -= amount;
 					
-					if (stack != null && stack.stackSize == 0) return;
+					if (stack != null && stack.stackSize == 0) return true;
 				}
 			}
 			
@@ -431,12 +449,14 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 					current = this.slots[i];
 					
 					if (current == null || current.stackSize == 0) {
-						this.slots[i] = stack;
-						return;
+						if (!simulate) this.slots[i] = stack;
+						return true;
 					}
 				}
 			}
 		}
+		
+		return false;
 	}
 
 	/*
@@ -445,46 +465,66 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public Packet getDescriptionPacket() {
-		// TODO Auto-generated method stub
-		return null;
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		
-		int qX0 = comp.getInteger("QuarryMinX");
-		int qY0 = comp.getInteger("QuarryMinY");
-		
-		int qX1 = comp.getInteger("QuarryMaxX");
-		int qY1= comp.getInteger("QuarryMaxY");
-		
-		quarryRect = new Rect<Integer>(new Vector2<Integer>(qX0, qY0), new Vector2<Integer>(qX1, qY1));
-		
 		currentMineVec = Vector3.zero.getVector3i();
 		
-		currentMineVec.x = comp.getInteger("CurrentMineVecX");
-		currentMineVec.y = comp.getInteger("CurrentMineVecY");
-		currentMineVec.z = comp.getInteger("CurrentMineVecZ");
+		if (comp.getBoolean("HasQuarryRect")) {
+			int qX0 = comp.getInteger("QuarryMinX");
+			int qY0 = comp.getInteger("QuarryMinY");
+			
+			int qX1 = comp.getInteger("QuarryMaxX");
+			int qY1= comp.getInteger("QuarryMaxY");
+			
+			quarryRect = new Rect<Integer>(new Vector2<Integer>(qX0, qY0), new Vector2<Integer>(qX1, qY1));
+		
+			currentMineVec.x = comp.getInteger("CurrentMineVecX");
+			currentMineVec.y = comp.getInteger("CurrentMineVecY");
+			currentMineVec.z = comp.getInteger("CurrentMineVecZ");
+		}
 		
 		currentTickTime = comp.getInteger("CurrentTickTime");
+		
+		int typeID = comp.hasKey("RedstoneType") ? comp.getInteger("RedstoneType") : 1;
+		this.redstoneType = EnumRedstoneType.TYPES[typeID >= 0 && typeID < EnumRedstoneType.TYPES.length ? typeID : 1];
+		
+		for (int i = 0; i < this.openSides.length; i++) {
+			this.openSides[i] = comp.getByte("ProjectZedDiggerSide" + i);
+		}
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		
-		comp.setInteger("QuarryMinX", quarryRect.min.x);
-		comp.setInteger("QuarryMinY", quarryRect.min.y);
+		comp.setBoolean("HasQuarryRect", quarryRect != null);
+		if (quarryRect != null) {
+			comp.setInteger("QuarryMinX", quarryRect.min.x);
+			comp.setInteger("QuarryMinY", quarryRect.min.y);
+			
+			comp.setInteger("QuarryMaxX", quarryRect.max.x);
+			comp.setInteger("QuarryMaxY", quarryRect.max.y);
 		
-		comp.setInteger("QuarryMaxX", quarryRect.max.x);
-		comp.setInteger("QuarryMaxY", quarryRect.max.y);
-		
-		comp.setInteger("CurrentMineVecX", currentMineVec.x);
-		comp.setInteger("CurrentMineVecY", currentMineVec.y);
-		comp.setInteger("CurrentMineVecZ", currentMineVec.z);
+			if (currentMineVec == null) currentMineVec = Vector3.zero.getVector3i();
+			
+			comp.setInteger("CurrentMineVecX", currentMineVec.x);
+			comp.setInteger("CurrentMineVecY", currentMineVec.y);
+			comp.setInteger("CurrentMineVecZ", currentMineVec.z);
+		}
 		
 		comp.setInteger("CurrentTickTime", currentTickTime);
+		
+		if (this.redstoneType == null) this.redstoneType = EnumRedstoneType.LOW;
+		comp.setInteger("RedstoneType", this.redstoneType.ordinal());
+
+		for (int i = 0; i < this.openSides.length; i++) {
+			comp.setByte("ProjectZedDiggerSide" + i, this.openSides[i]);
+		}
 	}
 
 }

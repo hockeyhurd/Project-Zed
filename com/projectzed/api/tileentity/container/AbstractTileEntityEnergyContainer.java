@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IWrenchable;
 
@@ -177,10 +178,27 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	
 	/**
 	 * Method to be defined controlling mechanism for exporting energy only (for now).
-	 * <br>Set to deprecated since 12/3/14 as mostly unuse and maybe removed later.
 	 */
-	@Deprecated
 	protected abstract void exportContents(); 
+	
+	/**
+	 * Method used to transfer power from one te to another.
+	 */
+	public void transferPower() {
+		if (this.getWorldObj().isRemote) return;
+		
+		if (this.storedPower >= this.maxPowerStorage) {
+			this.storedPower = this.maxPowerStorage;
+			// return;
+		}
+
+		int x = this.xCoord;
+		int y = this.yCoord;
+		int z = this.zCoord;
+		
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -195,6 +213,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	public void updateEntity() {
+		transferPower();
 		importContents();
 		exportContents();
 		
