@@ -57,8 +57,10 @@ public class GuiQuarry extends GuiDigger {
 	
 	@Override
 	public void initGui() {
-		super.initGui();
-
+		this.mc.thePlayer.openContainer = this.inventorySlots;
+        this.guiLeft = (this.width - this.xSize) / 2;
+        this.guiTop = (this.height - this.ySize) / 2;
+		
 		this.mouseVec = Vector2.zero;
 		this.pos = new Vector2<Integer>(guiLeft + 7, guiTop + 61 + 32);
 		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17 + 32);

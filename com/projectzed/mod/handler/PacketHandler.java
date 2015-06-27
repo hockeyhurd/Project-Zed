@@ -52,6 +52,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.SERVER);
 	}
 	
 	public static int getNextID() {

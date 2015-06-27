@@ -37,8 +37,9 @@ import com.projectzed.mod.util.Reference;
 public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyContainer implements IEnergyMachine, IModularFrame, IRedstoneComponent {
 	
 	protected int energyBurnRate;
-	protected int waitTime = 20;
+	protected int waitTime = 10;
 	protected int currentTickTime;
+	protected boolean isDone;
 	
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
@@ -260,7 +261,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot == 1 && openSides[side] == 1;
+		return slot >= 0 && slot < slots.length && openSides[side] == 1;
 	}
 
 	/*
@@ -428,28 +429,31 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	protected boolean addItemStackToSlots(ItemStack stack, boolean simulate) {
 		if (stack != null && stack.stackSize > 0 && this.slots != null && this.slots.length > 0) {
 			
+			ItemStack copy = stack.copy();
 			ItemStack current;
 			
 			// first pass, try merge:
 			for (int i = 0; i < this.slots.length; i++) {
 				current = this.slots[i];
 				
-				if (current != null && current.isItemEqual(stack) && current.stackSize < current.getMaxStackSize()) {
+				if (current != null && current.isItemEqual(copy) && current.stackSize < current.getMaxStackSize()) {
 					int amount = current.getMaxStackSize() - current.stackSize;
-					if (!simulate) current.stackSize += amount;
-					stack.stackSize -= amount;
-					
-					if (stack != null && stack.stackSize == 0) return true;
+					amount = Math.min(amount, copy.stackSize);
+					// if (!simulate) current.stackSize += amount;
+					if (!simulate) this.slots[i].stackSize += amount;
+					copy.stackSize -= amount;
+				
+					if (copy == null || copy.stackSize == 0) return true;
 				}
 			}
-			
+
 			// second pass, place remaining into inventory:
-			if (stack != null && stack.stackSize > 0) {
+			if (copy != null && copy.stackSize > 0) {
 				for (int i = 0; i < this.slots.length; i++) {
 					current = this.slots[i];
 					
 					if (current == null || current.stackSize == 0) {
-						if (!simulate) this.slots[i] = stack;
+						if (!simulate) this.slots[i] = copy;
 						return true;
 					}
 				}
@@ -472,6 +476,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
 		
+		isDone = comp.getBoolean("IsQuarryDone");
 		currentMineVec = Vector3.zero.getVector3i();
 		
 		if (comp.getBoolean("HasQuarryRect")) {
@@ -502,6 +507,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		
+		comp.setBoolean("IsQuarryDone", isDone);
 		comp.setBoolean("HasQuarryRect", quarryRect != null);
 		if (quarryRect != null) {
 			comp.setInteger("QuarryMinX", quarryRect.min.x);

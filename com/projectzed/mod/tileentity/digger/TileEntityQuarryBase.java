@@ -96,7 +96,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		if (!worldObj.isRemote) {
 			
 			// everything that updates every tick:
-			doQuarryWork();
+			if (!this.isDone && isActiveFromRedstoneSignal() && this.storedPower - this.energyBurnRate >= 0) doQuarryWork();
 			
 			// everything that gets called once per second.
 			if (worldObj.getTotalWorldTime() % 20L == 0) {
@@ -124,6 +124,11 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				if (currentBlock != null && currentBlock == ProjectZed.quarryMarker) {
 					markerCons = ((BlockQuarryMarker) currentBlock).getBounds(worldObj, currentVec);
 					if (markerCons != null && markerCons.length == 4) {
+						markerCons[0].x++;
+						markerCons[0].y++;
+						markerCons[3].x--;
+						markerCons[3].y--;
+						
 						quarryRect = new Rect<Integer>(markerCons[0], markerCons[3]);
 						return;
 					}
@@ -134,7 +139,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		else {
 			if (currentTickTime > 0) currentTickTime--;
 			else {
-				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord, quarryRect.min.y);
+				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord - 1, quarryRect.min.y);
 				if (bh == null) bh = new BlockHelper(worldObj);
 				
 				if (worldObj.getTileEntity(currentMineVec.x, currentMineVec.y, currentMineVec.z) != null) {
@@ -147,14 +152,16 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				
 				if (currentBlock != ProjectZed.quarryMarker && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) != -1f) {
 					List<ItemStack> dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
-					
-					// TODO: FIX quarrying/picking up of drops.
+
 					if (dropsList != null && !dropsList.isEmpty()) {
 	
 						boolean result = false;
 						for (int i = 0; i < dropsList.size(); i++) {
 							result = this.addItemStackToSlots(dropsList.get(i), true);
-							if (!result) return;
+							if (!result) {
+								ProjectZed.logHelper.info("I returned false!");
+								return;
+							}
 						}
 						
 						if (result) {
@@ -166,7 +173,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 						}
 					}
 				}
-				
+
 				incrementMineVec();
 				
 				// reset tick timer:
@@ -177,23 +184,26 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	
 	protected void incrementMineVec() {
 		if (currentMineVec != null && quarryRect != null) {
+			this.storedPower -= this.energyBurnRate;
+			
 			if (currentMineVec.x < quarryRect.max.x) {
 				currentMineVec.x++;
 			}
 			
-			else if (currentMineVec.x == quarryRect.max.x) {
+			else /*if (currentMineVec.x == quarryRect.max.x)*/ {
 				currentMineVec.x = quarryRect.min.x;
 				
 				if (currentMineVec.z < quarryRect.max.y) {
 					currentMineVec.z++;
-					currentMineVec.x = quarryRect.min.x;
+					// currentMineVec.x = quarryRect.min.x;
 				}
 				
-				else if (currentMineVec.z == quarryRect.max.y) {
-					currentMineVec.x = quarryRect.min.x;
+				else /*if (currentMineVec.z == quarryRect.max.y)*/ {
+					// currentMineVec.x = quarryRect.min.x;
 					currentMineVec.z = quarryRect.min.y;
 					
 					if (currentMineVec.y > 1) currentMineVec.y--;
+					else this.isDone = true;
 				}
 			}
 		}
