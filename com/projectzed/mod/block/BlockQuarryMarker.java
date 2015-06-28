@@ -138,6 +138,13 @@ public class BlockQuarryMarker extends BlockTorch {
 		}
 	}
 	
+	/**
+	 * Function to get boundary of quarry markers.
+	 * 
+	 * @param world world object to reference.
+	 * @param localVec vector of this quarry marker to reference in world.
+	 * @return array of vector2's as boundary markers.
+	 */
 	public Vector2<Integer>[] getBounds(World world, Vector3<Integer> localVec) {
 		final int len = ProjectZed.configHandler.getMaxQuarrySize();
 

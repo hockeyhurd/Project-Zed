@@ -41,7 +41,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	public TileEntityQuarryBase(String name) {
 		super(name);
 		
-		this.energyBurnRate = 1024;
+		this.energyBurnRate = 512;
 				
 		this.filterStacks = new ArrayList<ItemStack>(filterMaxSize);
 		this.itemFilterType = EnumFilterType.WHITELIST;
@@ -105,6 +105,9 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		}
 	}
 	
+	/**
+	 * Method to handle quarry work.
+	 */
 	protected void doQuarryWork() {
 		// if (currentMineVec != null) ProjectZed.logHelper.info(currentMineVec.toString());
 		// if (quarryRect != null) ProjectZed.logHelper.info(quarryRect.getArea());
@@ -182,6 +185,9 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		}
 	}
 	
+	/**
+	 * Method to increment quarry mining vector.
+	 */
 	protected void incrementMineVec() {
 		if (currentMineVec != null && quarryRect != null) {
 			this.storedPower -= this.energyBurnRate;

@@ -12,6 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -166,7 +167,10 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	protected void consumeFuel() {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
-			else this.slots[0].stackSize--;
+			else {
+				if (this.slots[0].getItem() instanceof ItemBucket) this.slots[0] = new ItemStack(Items.bucket, 1);
+				else this.slots[0].stackSize--;
+			}
 			if (this.slots[0].stackSize <= 0) this.slots[0] = (ItemStack) null;
 		}
 	}

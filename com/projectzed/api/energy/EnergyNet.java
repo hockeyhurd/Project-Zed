@@ -71,7 +71,7 @@ public class EnergyNet {
 				if (sides[dir.ordinal()] && dir != lastDir) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					
-					if (sideDep && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
+					if (sideDep && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate());
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());

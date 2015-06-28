@@ -3,6 +3,9 @@ tile.machineContainer.name=Machine Container Frame
 tile.fabricationTable.name=Fabrication Table
 tile.thickenedGlass.name=Thickened Glass
 tile.wickedClearGlass.name=Ye' Wicked Clear Glass
+tile.quarryMarker.name=Quarry Marker
+
+// Nuclear stuff:
 tile.atomicBomb.name=Atomic Bomb
 tile.nuclearChamberWall.name=Reactant Chamber Wall
 tile.nuclearChamberLock.name=Reactant Chamber Lock
@@ -27,6 +30,7 @@ tile.industrialMetalPress.name=Industrial Metal Press
 tile.industrialCentrifuge.name=Industrial Centrifuge
 tile.industrialEnergizer.name=Industrial Energizer
 tile.industrialLoader.name=Industrial Chunk Loader
+tile.industrialQuarry.name=Industrial Quarry
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
@@ -71,6 +75,12 @@ item.gearAluminium.name=Aluminium Gear
 item.gearGold.name=Gold Gear
 item.gearDiamond.name=Diamond Gear
 item.gearTitanium.name=Titanium Gear
+
+// Armor:
+item.zPlatedHelmet.name=zPlated Helmet
+item.zPlatedChestplate.name=zPlated Chestplate
+item.zPlatedLeggings.name=zPlated Leggings
+item.zPlatedBoots.name=zPlated Boots
 
 // Tools:
 item.wrench.name=Crescent Wrench
