@@ -6,49 +6,21 @@
 */
 package com.projectzed.mod.handler;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import com.projectzed.mod.container.ContainerCentrifuge;
-import com.projectzed.mod.container.ContainerDigger;
-import com.projectzed.mod.container.ContainerEnergyContainer;
-import com.projectzed.mod.container.ContainerFabricationTable;
-import com.projectzed.mod.container.ContainerGenerator;
-import com.projectzed.mod.container.ContainerLoader;
-import com.projectzed.mod.container.ContainerMachine;
-import com.projectzed.mod.container.ContainerNuclearIOPort;
-import com.projectzed.mod.container.ContainerRFBridge;
-import com.projectzed.mod.container.ContainerStoneCraftingTable;
-import com.projectzed.mod.gui.GuiCentrifuge;
-import com.projectzed.mod.gui.GuiEnergyContainer;
-import com.projectzed.mod.gui.GuiFabricationTable;
-import com.projectzed.mod.gui.GuiGenerator;
-import com.projectzed.mod.gui.GuiLoader;
-import com.projectzed.mod.gui.GuiMachine;
-import com.projectzed.mod.gui.GuiNuclearController;
-import com.projectzed.mod.gui.GuiNuclearIOPort;
-import com.projectzed.mod.gui.GuiQuarry;
-import com.projectzed.mod.gui.GuiRFBridge;
-import com.projectzed.mod.gui.GuiStoneCraftingTable;
+import com.projectzed.mod.container.*;
+import com.projectzed.mod.gui.*;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
+import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
-import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
-import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
-
+import com.projectzed.mod.tileentity.machine.*;
 import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * Class container for handling all gui or container requests.
@@ -64,6 +36,7 @@ public class GuiHandler implements IGuiHandler {
 
 		if (te instanceof TileEntitySolarArray) return new ContainerGenerator(player.inventory, (TileEntitySolarArray) te);
 		else if (te instanceof TileEntityFurnaceGenerator) return new ContainerGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
+		else if (te instanceof TileEntityLavaGenerator) return new ContainerGenerator(player.inventory, (TileEntityLavaGenerator) te);
 		else if (te instanceof TileEntityNuclearController) return new ContainerGenerator(player.inventory, (TileEntityNuclearController) te);
 		else if (te instanceof TileEntityIndustrialFurnace) return new ContainerMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new ContainerMachine(player.inventory, (TileEntityIndustrialCrusher) te);
@@ -89,6 +62,7 @@ public class GuiHandler implements IGuiHandler {
 
 		if (te instanceof TileEntitySolarArray) return new GuiGenerator(player.inventory, (TileEntitySolarArray) te);
 		else if (te instanceof TileEntityFurnaceGenerator) return new GuiGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
+		else if (te instanceof TileEntityLavaGenerator) return new GuiGenerator(player.inventory, (TileEntityLavaGenerator) te);
 		else if (te instanceof TileEntityNuclearController) return new GuiNuclearController(player.inventory, (TileEntityNuclearController) te);
 		else if (te instanceof TileEntityIndustrialFurnace) return new GuiMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new GuiMachine(player.inventory, (TileEntityIndustrialCrusher) te);

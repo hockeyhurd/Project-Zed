@@ -6,46 +6,21 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-
-import net.minecraft.tileentity.TileEntity;
-
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier2;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
-import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearPowerPort;
-import com.projectzed.mod.tileentity.container.TileEntityReactantCore;
-import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreen;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreenOpaque;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductClear;
+import com.projectzed.mod.tileentity.container.*;
+import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
+import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialFurnace;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
-import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
-import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
+import com.projectzed.mod.tileentity.machine.*;
 import com.projectzed.mod.util.ModsLoadedHelper;
+import net.minecraft.tileentity.TileEntity;
+
+import java.util.HashMap;
 
 /**
  * Class container for all registered tile enties in this mod.
@@ -70,6 +45,9 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityFurnaceGenerator.class, "furnaceGenTileEntity");
 		reg.idMap.put(TileEntityFurnaceGenerator.class, getNextID());
+
+		reg.map.put(TileEntityLavaGenerator.class, "lavaGenTileEntity");
+		reg.idMap.put(TileEntityLavaGenerator.class, getNextID());
 		
 		reg.map.put(TileEntityNuclearController.class, "nuclearControllerTileEntity");
 		reg.idMap.put(TileEntityNuclearController.class, getNextID());

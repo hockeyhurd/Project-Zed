@@ -6,26 +6,16 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import com.projectzed.api.energy.source.EnumType;
+import com.projectzed.api.energy.source.Source;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.projectzed.api.energy.source.EnumType;
-import com.projectzed.api.energy.source.Source;
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Class containing te code for furnace generator.
@@ -49,7 +39,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	 */
 	@Override
 	public int getSizeInventory() {
-		return 1;
+		return this.slots.length;
 	}
 
 	/*
@@ -141,22 +131,22 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air) {
 				Block block = Block.getBlockFromItem(item);
 
-				if (block == Blocks.wooden_slab) return 150 / 4 + 1; 
+				if (block == Blocks.wooden_slab) return 150 / 4;
 
-				if (block.getMaterial() == Material.wood) return 300 / 4 + 1; 
+				if (block.getMaterial() == Material.wood) return 300 / 4;
 
-				if (block == Blocks.coal_block) return 16000 / 4 + 1;
+				if (block == Blocks.coal_block) return 16000 / 4;
 			}
 
-			if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200 / 4 + 1;
-			if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200 / 4 + 1;
-			if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200 / 4 + 1;
-			if (item == Items.stick) return 100 / 4 + 1;
-			if (item == Items.coal) return 1600 / 4 + 1;
-			if (item == Items.lava_bucket) return 20000 / 4 + 1;
-			if (item == Item.getItemFromBlock(Blocks.sapling)) return 100 / 4 + 1;
-			if (item == Items.blaze_rod) return 2400 / 4 + 1;
-			return GameRegistry.getFuelValue(stack) / 4 + 1;
+			if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
+			if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
+			if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
+			if (item == Items.stick) return 100 / 4;
+			if (item == Items.coal) return 1600 / 4;
+			if (item == Items.lava_bucket) return 20000 / 4;
+			if (item == Item.getItemFromBlock(Blocks.sapling)) return 100 / 4;
+			if (item == Items.blaze_rod) return 2400 / 4;
+			return GameRegistry.getFuelValue(stack) / 4;
 		}
 	}
 
@@ -183,10 +173,12 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 
 	@Override
 	public void updateEntity() {
+		super.updateEntity();
+
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			if (this.slots[0] != null && isFuel()) {
 				if (this.burnTime == 0) {
-					this.burnTime = getItemBurnTime(this.slots[0]);
+					this.burnTime = getItemBurnTime(this.slots[0]) + 1;
 					if (this.stored < this.maxStored) consumeFuel();
 				}
 			}
@@ -194,9 +186,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 			if (this.burnTime > 0) this.burnTime--;
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
-			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
-		super.updateEntity();
 	}
 
 	/*

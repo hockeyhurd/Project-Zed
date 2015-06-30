@@ -6,6 +6,11 @@
 */
 package com.projectzed.api.block;
 
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -17,13 +22,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class used to easily generator and normalize any generator.
@@ -37,6 +35,7 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 	protected String name;
 	
 	/** Icons per side of block */
+	@SideOnly(Side.CLIENT)
 	protected IIcon top, base, front;
 
 	/**
@@ -95,14 +94,22 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 	 * @param z = z-position.
 	 */
 	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
-		int metaData = world.getBlockMetadata(x, y, z);
-		TileEntity tileentity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		// keepInventory = true;
 
-		world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+		if (tileEntity != null && tileEntity instanceof AbstractTileEntityGenerator) {
 
-		if (tileentity != null) {
-			tileentity.validate();
-			world.setTileEntity(x, y, z, tileentity);
+			world.markBlockForUpdate(x, y, z);
+			/*this.active = active;
+			int metaData = world.getBlockMetadata(x, y, z);
+
+			world.setBlock(x, y, z, getBlockInstance());
+
+			keepInventory = false;
+			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+
+			tileEntity.validate();
+			world.setTileEntity(x, y, z, tileEntity);*/
 		}
 	}
 

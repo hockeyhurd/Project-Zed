@@ -6,22 +6,19 @@
 */
 package com.projectzed.mod.block.generator;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.util.WorldUtils;
-
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 /**
  * 
@@ -61,7 +58,7 @@ public class BlockFurnaceGenerator extends AbstractBlockGenerator {
 
 		else {
 			TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
+			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityFurnaceGenerator.class), world, x, y, z);
 			return true;
 		}
 	}
