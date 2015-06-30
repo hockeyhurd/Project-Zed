@@ -6,11 +6,10 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.item.ItemStack;
-
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.registry.LumberMillRecipesRegistry;
+import net.minecraft.item.ItemStack;
 
 /**
  * Class containing te code for industrialLumberMill.
@@ -84,7 +83,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return side == 0 ? this.slotRight : this.slotTop;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : null;
 	}
 
 	/*

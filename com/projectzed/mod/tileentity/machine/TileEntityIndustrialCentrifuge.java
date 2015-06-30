@@ -6,24 +6,18 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
 
 /**
  * Class containing code for industrialCentrifuge.
@@ -105,6 +99,10 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 			1
 		};
 
+		this.slotInput = new int[] {
+			0, 1
+		};
+
 		this.slotBottom = new int[] {
 			2
 		};
@@ -127,7 +125,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return side == 0 ? this.slotRight : this.slotTop;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotInput : null;
 	}
 
 	/*

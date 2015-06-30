@@ -6,19 +6,18 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyStorage;
-
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing te code for RF Bridge.
@@ -35,7 +34,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
-		this.maxPowerStorage /= 2;
+		this.maxPowerStorage *= 2;
 		this.importRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;
 		// this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE / 2 * 4;
 		this.exportRate = Reference.Constants.BASE_PIPE_TRANSFER_RATE * 4;

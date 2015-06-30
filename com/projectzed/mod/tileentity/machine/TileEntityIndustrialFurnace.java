@@ -6,11 +6,10 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 
 /**
  * 
@@ -80,7 +79,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return side == 0 ? this.slotRight : this.slotTop;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : null;
 	}
 
 	/*

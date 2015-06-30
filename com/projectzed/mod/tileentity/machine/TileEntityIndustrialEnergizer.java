@@ -6,11 +6,10 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import net.minecraft.item.ItemStack;
-
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import net.minecraft.item.ItemStack;
 
 /**
  * TileEntity code for industrialEnergizer.
@@ -78,7 +77,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return new int[] { 0, 1, 2, 3, 4, 5 };
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : null;
 	}
 
 	/* (non-Javadoc)
