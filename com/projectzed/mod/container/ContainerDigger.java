@@ -6,14 +6,13 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 
 /**
  * Generalized class for digger machines' container.
@@ -34,16 +33,22 @@ public class ContainerDigger extends Container {
 		addSlots(inv, te);
 	}
 
-	private void addSlots(InventoryPlayer inv, AbstractTileEntityDigger te) {
+	/**
+	 * Method to add slots to this container.
+	 *
+	 * @param inv player's inventory to reference.
+	 * @param te te to reference.
+	 */
+	protected void addSlots(InventoryPlayer inv, AbstractTileEntityDigger te) {
 		if (this.NUM_SLOTS > 0) {
-			
+
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 9; x++) {
 					this.addSlotToContainer(new SlotFurnace(inv.player, te, x + y * 9, 8 + x * 18, 1 + 53 + y * 18));
 				}
 			}
 		}
-		
+
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {

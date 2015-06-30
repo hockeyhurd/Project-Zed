@@ -12,7 +12,6 @@ import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 import com.projectzed.mod.util.Connection;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -22,7 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -128,7 +126,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer {
 			if (cont instanceof IModularFrame) {
 				if (cont != null) {
 					if (((IModularFrame) cont).getType() == EnumFrameType.POWER
-							&& ((IModularFrame) cont).getSideValve(ForgeDirection.getOrientation(index).getOpposite()) != 0)
+							&& ((IModularFrame) cont).getSideValve(ForgeDirection.getOrientation(index).getOpposite()) == 0)
 						return new Connection(flag, type); 
 					flag = true;
 					type = 2;

@@ -29,6 +29,10 @@ public class ConfigHandler extends AbstractConfigHandler {
 	private static boolean genAluminium;
 	private static boolean genCopper;
 	private static boolean genUranium;
+
+	// Upgrade components:
+	private static float burnRateModifier;
+	private static float effRateModifier;
 	
 	/**
 	 * @param event = event.
@@ -55,6 +59,14 @@ public class ConfigHandler extends AbstractConfigHandler {
 		this.genAluminium = this.getSuggestedConfig().getBoolean("ore aluminium", "World Gen", true, "Toggle for generating aluminium");
 		this.genCopper = this.getSuggestedConfig().getBoolean("ore copper", "World Gen", true, "Toggle for generating copper");
 		this.genUranium = this.getSuggestedConfig().getBoolean("ore uranium", "World Gen", true, "Toggle for generating uranium");
+
+		// Upgrade components:
+		this.burnRateModifier = this.getSuggestedConfig()
+				.getFloat("energy burn rate modifier (compounded per upgrade)", "Upgrade Components", 1.5f, 1.0f, 100.0f,
+						"each upgrade compounds by this burn rate");
+		this.effRateModifier = this.getSuggestedConfig()
+				.getFloat("machine efficiency rate modifier (compounded per upgrade)", "Upgrade Components", 0.75f, 0.1f, 1.0f,
+						"each upgrade compounds by this efficiency rate");
 		
 		this.saveConfig();
 	}
@@ -114,6 +126,20 @@ public class ConfigHandler extends AbstractConfigHandler {
 	 */
 	public static boolean genOreUranium() {
 		return genUranium;
+	}
+
+	/**
+	 * @return burn rate modifier.
+	 */
+	public static float getBurnRateModifier() {
+		return burnRateModifier;
+	}
+
+	/**
+	 * @return efficiency rate modifier.
+	 */
+	public static float getEffRateModifier() {
+		return effRateModifier;
 	}
 
 }

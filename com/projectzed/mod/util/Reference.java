@@ -88,7 +88,7 @@ public class Reference extends AbstractReference {
 		
 		/** Base unit for transfer rate of all things fluid. */
 		public static final int BASE_FLUID_TRANSFER_RATE = 100;
-		
+
 		private Constants() {
 		}
 		
