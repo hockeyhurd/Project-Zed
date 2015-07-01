@@ -77,7 +77,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : null;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : new int[0];
 	}
 
 	/* (non-Javadoc)

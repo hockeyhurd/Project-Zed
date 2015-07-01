@@ -99,16 +99,19 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 		boolean flag1 = false;
 
 		if (this.worldObj != null && !this.worldObj.isRemote) {
-			if (this.internalTank.getFluid() != null && this.internalTank.getFluidAmount() >= consumationAmount) {
-				if (this.burnTime == 0) {
-					// this.burnTime = getItemBurnTime(this.slots[0]);
-					this.burnTime = 20 * 5 + 1;
-					if (this.stored < this.maxStored) consumeFuel();
-					flag1 = true;
-				}
-			}
 
-			if (this.burnTime > 0) this.burnTime--;
+			if (getEnergyStored() + source.getEffectiveSize() <= maxStored) {
+				if (internalTank.getFluid() != null && internalTank.getFluidAmount() >= consumationAmount) {
+					if (this.burnTime == 0) {
+						// this.burnTime = getItemBurnTime(this.slots[0]);
+						this.burnTime = 20 * 5 + 1;
+						if (this.stored < this.maxStored) consumeFuel();
+						flag1 = true;
+					}
+				}
+
+				if (this.burnTime > 0) this.burnTime--;
+			}
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
 

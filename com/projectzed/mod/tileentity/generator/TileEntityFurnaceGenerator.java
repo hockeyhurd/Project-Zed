@@ -178,14 +178,17 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		super.updateEntity();
 
 		if (this.worldObj != null && !this.worldObj.isRemote) {
-			if (this.slots[0] != null && isFuel()) {
-				if (this.burnTime == 0) {
-					this.burnTime = getItemBurnTime(this.slots[0]) + 1;
-					if (this.stored < this.maxStored) consumeFuel();
-				}
-			}
 
-			if (this.burnTime > 0) this.burnTime--;
+			if (getEnergyStored() + source.getEffectiveSize() <= maxStored) {
+				if (this.slots[0] != null && isFuel()) {
+					if (this.burnTime == 0) {
+						this.burnTime = getItemBurnTime(this.slots[0]) + 1;
+						if (this.stored < this.maxStored) consumeFuel();
+					}
+				}
+
+				if (this.burnTime > 0) this.burnTime--;
+			}
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
 

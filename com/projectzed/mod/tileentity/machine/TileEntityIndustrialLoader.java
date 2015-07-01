@@ -6,6 +6,12 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.util.IChunkLoadable;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -15,13 +21,6 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.api.util.IChunkLoadable;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 
 /**
  * Class containing tileentity code for industrialLoader.
@@ -101,7 +100,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		return new int[0];
 	}
 
 	/*

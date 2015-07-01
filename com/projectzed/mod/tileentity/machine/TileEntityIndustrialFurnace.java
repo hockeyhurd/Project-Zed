@@ -79,7 +79,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : null;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : new int[0];
 	}
 
 	/*

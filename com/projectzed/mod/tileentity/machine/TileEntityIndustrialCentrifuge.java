@@ -125,7 +125,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotInput : null;
+		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotInput : new int[0];
 	}
 
 	/*
@@ -411,7 +411,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @return localized name of fluid in the tank.
 	 */
 	public String getLocalizedFluidName() {
-		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ? this.internalTank.getFluid().getFluid().getLocalizedName() : null; 
+		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ? this.internalTank.getFluid().getFluid().getLocalizedName() : null;
 	}
 	
 }
