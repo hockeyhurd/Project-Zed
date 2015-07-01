@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.gui.component;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
+import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.mod.util.Reference;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.EnumChatFormatting;
-
-import com.hockeyhurd.api.math.Vector2;
-import com.projectzed.mod.util.Reference;
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for custom fluid info label.
@@ -53,7 +52,7 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		String text0 = EnumChatFormatting.AQUA + "Stored: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.FLUID_UNIT;
 		
 		float percent = ((Number) this.stored).floatValue() / ((Number) this.max).floatValue() * 100.0f;
-		String text1 =  String.format("%.2f%%", percent); 
+		String text1 =  String.format("%.2f%%", percent);
 		
 		if (list.size() == 0) {
 			list.add(text0);
@@ -97,7 +96,7 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;
-		
+
 		this.stored = stored;
 		this.max = max;
 	}

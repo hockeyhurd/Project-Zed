@@ -19,6 +19,8 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.HashMap;
+
 /**
  * Class containing code for industrialCentrifuge.
  * 
@@ -257,7 +259,29 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityCentrifuge(this));
 	}
-	
+
+	@Override
+	public HashMap<String, Number> dataToSave() {
+		HashMap<String, Number> data = super.dataToSave();
+
+		int id, amount;
+		FluidStack fluidStack =  this.getTank().getFluid();
+		if (fluidStack == null || fluidStack.getFluid() == null) {
+			id = -1;
+			amount = 0;
+		}
+
+		else {
+			id = fluidStack.getFluidID();
+			amount = fluidStack.amount;
+		}
+
+		data.put("FluidID", id);
+		data.put("FluidAmount", amount);
+
+		return data;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()

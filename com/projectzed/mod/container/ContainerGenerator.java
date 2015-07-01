@@ -6,16 +6,14 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class used as generic container for most/all generators.
@@ -29,10 +27,18 @@ public class ContainerGenerator extends Container {
 	private int stored;
 	private boolean powerMode;
 	private final int NUM_SLOTS;
+	private int xOffset, yOffset;
 
 	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
+		this(inv, te, 0, 0);
+	}
+
+	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te, int xOffset, int yOffset) {
 		this.te = te;
 		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+
 		addSlots(inv, te);
 	}
 
@@ -49,13 +55,13 @@ public class ContainerGenerator extends Container {
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, 8 + x * 18, 84 + y * 18));
+				this.addSlotToContainer(new Slot(inv, (x + y * 9) + 9, xOffset + 8 + x * 18, yOffset + 84 + y * 18));
 			}
 		}
 
 		// Adds the player hotbar slots to the gui.
 		for (int i = 0; i < 9; i++) {
-			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 142)); // 198
+			this.addSlotToContainer(new Slot(inv, i, xOffset + 8 + i * 18, yOffset + 142)); // 198
 		}
 	}
 

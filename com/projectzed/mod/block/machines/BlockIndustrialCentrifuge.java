@@ -6,25 +6,25 @@
 */
 package com.projectzed.mod.block.machines;
 
+import com.projectzed.api.block.AbstractBlockMachine;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-
-import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing block code for industrialCentrifuge.
@@ -125,10 +125,27 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 
 		return false;
 	}
-	
+
 	protected void openGui(World world, EntityPlayer player, int x, int y, int z) {
 		FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class),
 				world, x, y, z);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, x, y, z, e, stack);
+
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+
+			TileEntityIndustrialCentrifuge te = (TileEntityIndustrialCentrifuge) world.getTileEntity(x, y, z);
+
+			int id = (int) comp.getFloat("FluidID");
+			int amount = (int) comp.getFloat("FluidAmount");
+			if (id < 0 || amount == 0) return;
+
+			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
+		}
 	}
 
 }

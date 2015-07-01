@@ -62,7 +62,7 @@ public class GuiHandler implements IGuiHandler {
 
 		if (te instanceof TileEntitySolarArray) return new GuiGenerator(player.inventory, (TileEntitySolarArray) te);
 		else if (te instanceof TileEntityFurnaceGenerator) return new GuiGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
-		else if (te instanceof TileEntityLavaGenerator) return new GuiGenerator(player.inventory, (TileEntityLavaGenerator) te);
+		else if (te instanceof TileEntityLavaGenerator) return new GuiLavaGen(player.inventory, (TileEntityLavaGenerator) te);
 		else if (te instanceof TileEntityNuclearController) return new GuiNuclearController(player.inventory, (TileEntityNuclearController) te);
 		else if (te instanceof TileEntityIndustrialFurnace) return new GuiMachine(player.inventory, (TileEntityIndustrialFurnace) te);
 		else if (te instanceof TileEntityIndustrialCrusher) return new GuiMachine(player.inventory, (TileEntityIndustrialCrusher) te);

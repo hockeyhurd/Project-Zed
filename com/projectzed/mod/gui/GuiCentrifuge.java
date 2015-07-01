@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
 import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Class containing gui code for industrial centrifuge.
@@ -67,7 +66,7 @@ public class GuiCentrifuge extends GuiMachine {
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		super.drawGuiContainerBackgroundLayer(f, x, y);
 
-		float progressWater = (float) ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
+		float progressWater =  ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
 		progressWater = 39f - progressWater;
 		int v = 0 - (int) progressWater;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 39);

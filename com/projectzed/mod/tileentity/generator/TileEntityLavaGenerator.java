@@ -23,6 +23,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
 /**
+ * TileEntity class for lavaGen.
+ *
  * @author hockeyhurd
  * @version 6/30/2015.
  */
@@ -33,6 +35,9 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 
 	private int MAX_FLUID_STORAGE = 16000;
 	private FluidTank internalTank;
+
+	// Fluid networking:
+	protected FluidNetwork network;
 
 	public TileEntityLavaGenerator() {
 		super("lavaGen");
@@ -99,13 +104,14 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 		boolean flag1 = false;
 
 		if (this.worldObj != null && !this.worldObj.isRemote) {
+			// ProjectZed.logHelper.info("internalTank.getFluidAmount()", internalTank.getFluidAmount());
 
 			if (getEnergyStored() + source.getEffectiveSize() <= maxStored) {
 				if (internalTank.getFluid() != null && internalTank.getFluidAmount() >= consumationAmount) {
 					if (this.burnTime == 0) {
 						// this.burnTime = getItemBurnTime(this.slots[0]);
 						this.burnTime = 20 * 5 + 1;
-						if (this.stored < this.maxStored) consumeFuel();
+						/*if (this.stored < this.maxStored) */consumeFuel();
 						flag1 = true;
 					}
 				}
@@ -166,12 +172,12 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 
 	@Override
 	public int getFluidID() {
-		return 0;
+		return getTank().getFluid() != null ? getTank().getFluid().getFluidID() : -1;
 	}
 
 	@Override
 	public int getMaxFluidImportRate() {
-		return 0;
+		return 1000;
 	}
 
 	@Override
@@ -201,22 +207,21 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 
 	@Override
 	public void setMaster(boolean master) {
-
 	}
 
 	@Override
 	public boolean hasFluidNetwork() {
-		return false;
+		return network != null;
 	}
 
 	@Override
 	public FluidNetwork getNetwork() {
-		return null;
+		return network;
 	}
 
 	@Override
 	public void setFluidNetwork(FluidNetwork network) {
-
+		this.network = network;
 	}
 
 	@Override

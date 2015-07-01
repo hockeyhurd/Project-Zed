@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -14,6 +15,8 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * TileEntity message handler for packets.
@@ -30,7 +33,12 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	
 	public byte tier;
 	public boolean tierable;
-	
+
+	public boolean hasFluidTank;
+	public int fluidID;
+	public int fluidAmount;
+
+	@Deprecated
 	public MessageTileEntityGenerator() {
 	}
 	
@@ -44,8 +52,15 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		
 		this.tierable = te instanceof TileEntitySolarArray;
 		if (this.tierable) this.tier = ((TileEntitySolarArray) te).getTier();
+
+		if (te instanceof IFluidContainer) {
+			hasFluidTank = true;
+			fluidID = ((IFluidContainer) te).getFluidID();
+			fluidAmount = ((IFluidContainer) te).getTank().getFluidAmount();
+		}
 	}
-	
+
+	@Override
 	public void fromBytes(ByteBuf buf) {
 		this.x = buf.readInt();
 		this.y = buf.readInt();
@@ -55,8 +70,13 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		
 		this.tierable = buf.readBoolean();
 		if (this.tierable) this.tier = buf.readByte();
+
+		this.hasFluidTank = buf.readBoolean();
+		this.fluidID = buf.readInt();
+		this.fluidAmount = buf.readInt();
 	}
 
+	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(x);
 		buf.writeInt(y);
@@ -66,8 +86,13 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		
 		buf.writeBoolean(tierable);
 		if (this.tierable) buf.writeByte(tier);
+
+		buf.writeBoolean(hasFluidTank);
+		buf.writeInt(fluidID);
+		buf.writeInt(fluidAmount);
 	}
 
+	@Override
 	public IMessage onMessage(MessageTileEntityGenerator message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		
@@ -76,6 +101,15 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);
 			
 			if (te instanceof TileEntitySolarArray && message.tierable) ((TileEntitySolarArray) te).setTier(message.tier);
+
+			if (te instanceof IFluidContainer && message.hasFluidTank) {
+				FluidStack fluidStack = null;
+
+				if (message.fluidID >= 0 && message.fluidAmount >= 0)
+					fluidStack = new FluidStack(FluidRegistry.getFluid(message.fluidID), message.fluidAmount);
+
+				((IFluidContainer) te).getTank().setFluid(fluidStack);
+			}
 		}
 		
 		return null;

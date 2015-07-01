@@ -6,28 +6,25 @@
 */
 package com.projectzed.mod.gui;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.gui.component.IInfoContainer;
 import com.projectzed.mod.gui.component.IInfoLabel;
 import com.projectzed.mod.gui.component.PowerLabel;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Generic class for gui's of generators.
@@ -40,6 +37,8 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 
 	protected ResourceLocation texture;
 	protected AbstractTileEntityGenerator te;
+	protected int xOffset = 0;
+	protected int yOffset = 0;
 	private String stringToDraw;
 
 	protected Vector2<Integer> mouseVec, pos, minMax;
@@ -53,8 +52,28 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	public GuiGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te) {
 		super(new ContainerGenerator(inv, te));
 		this.te = te;
-		this.xSize = 176;
-		this.ySize = 166;
+		this.xSize = 176 + xOffset;
+		this.ySize = 166 + yOffset;
+		int slots = this.te.getSizeInventory();
+
+		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic" + slots + ".png");
+		this.labelList = new ArrayList<IInfoLabel>();
+
+		this.stored = this.te.getEnergyStored();
+		this.maxStorage = this.te.getMaxStorage();
+		this.genRate = te.getSource().getEffectiveSize();
+	}
+
+	/**
+	 * @param container
+	 * @param inv
+	 * @param te
+	 */
+	public GuiGenerator(ContainerGenerator container, InventoryPlayer inv, AbstractTileEntityGenerator te) {
+		super(container);
+		this.te = te;
+		this.xSize = 176 + xOffset;
+		this.ySize = 166 + yOffset;
 		int slots = this.te.getSizeInventory();
 
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic" + slots + ".png");
@@ -66,10 +85,10 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#
-	 * drawGuiContainerForegroundLayer(int, int)
-	 */
+		 * (non-Javadoc)
+		 * @see net.minecraft.client.gui.inventory.GuiContainer#
+		 * drawGuiContainerForegroundLayer(int, int)
+		 */
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
@@ -92,8 +111,8 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
+		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
+		this.drawTexturedModalRect(guiLeft + 7 + xOffset, guiTop + 61 + yOffset, 0, 170 + yOffset, (int) progress, 17);
 	}
 
 	/*
@@ -119,11 +138,11 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	public void updateScreen() {
 		super.updateScreen();
 
-		this.pos.x = guiLeft + 7;
-		this.pos.y = guiTop + 61;
+		this.pos.x = guiLeft + 7 + xOffset;
+		this.pos.y = guiTop + 61 + yOffset;
 
-		this.minMax.x = guiLeft + 7 + 162;
-		this.minMax.y = guiTop + 61 + 17;
+		this.minMax.x = guiLeft + 7 + 162 + xOffset;
+		this.minMax.y = guiTop + 61 + 17 + yOffset;
 
 		if (this.te != null) {
 			this.stored = this.te.getEnergyStored();
@@ -146,8 +165,8 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 		super.initGui();
 
 		this.mouseVec = Vector2.zero;
-		this.pos = new Vector2<Integer>(guiLeft + 7, guiTop + 61);
-		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162, guiTop + 61 + 17);
+		this.pos = new Vector2<Integer>(guiLeft + 7 + xOffset, guiTop + 61 + yOffset);
+		this.minMax = new Vector2<Integer>(guiLeft + 7 + 162 + xOffset, guiTop + 61 + 17 + yOffset);
 
 		this.labelList.add(new PowerLabel<Integer>(this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage(), true));
 	}
