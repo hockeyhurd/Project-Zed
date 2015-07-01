@@ -6,11 +6,11 @@
 */
 package com.projectzed.mod.registry;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.item.Item;
+
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class used for initializing and containing all items that are registered for this mod.
@@ -25,8 +25,8 @@ public final class ItemRegistry {
 	private static ItemRegistry reg = new ItemRegistry();
 	
 	private ItemRegistry() {
-		items = new ArrayList<Item>();
-		itemOres = new ArrayList<Item>();
+		items = new LinkedList<Item>();
+		itemOres = new LinkedList<Item>();
 	}
 	
 	/**
@@ -43,7 +43,8 @@ public final class ItemRegistry {
 					Item item = (Item) f.get(mainClass); // cast object to a item.
 					if (item != null) {
 						reg.items.add(item); // add block to list if not null.
-						if (item.getUnlocalizedName().toLowerCase().contains("ingot") || item.getUnlocalizedName().toLowerCase().contains("dust")) reg.itemOres.add(item);
+						if (item.getUnlocalizedName().toLowerCase().contains("ingot") || item.getUnlocalizedName().toLowerCase().contains("dust")
+								|| item.getUnlocalizedName().toLowerCase().contains("nugget")) reg.itemOres.add(item);
 					}
 				}
 			}

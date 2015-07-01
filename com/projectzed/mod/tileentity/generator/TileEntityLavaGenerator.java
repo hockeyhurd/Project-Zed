@@ -15,6 +15,8 @@ import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.block.generator.BlockLavaGenerator;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -109,6 +111,8 @@ public class TileEntityLavaGenerator extends AbstractTileEntityGenerator impleme
 			if (this.burnTime > 0) this.burnTime--;
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
+
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 
 			if (flag != this.stored > 0) flag1 = true;
 		}

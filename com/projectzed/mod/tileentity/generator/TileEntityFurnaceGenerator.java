@@ -9,6 +9,8 @@ package com.projectzed.mod.tileentity.generator;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -186,6 +188,8 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 			if (this.burnTime > 0) this.burnTime--;
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
+
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}
 	}
 

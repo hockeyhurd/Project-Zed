@@ -6,11 +6,11 @@
 */
 package com.projectzed.mod.registry;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
+
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class used for initializing and containing all blocks that are registered for this mod.
@@ -25,8 +25,8 @@ public final class BlockRegistry {
 	private static BlockRegistry reg = new BlockRegistry();
 
 	private BlockRegistry() {
-		blocks = new ArrayList<Block>();
-		blockOres = new ArrayList<Block>();
+		blocks = new LinkedList<Block>();
+		blockOres = new LinkedList<Block>();
 	}
 
 	/**

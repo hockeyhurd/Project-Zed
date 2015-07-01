@@ -133,6 +133,7 @@ public class ProjectZed {
 	public static Item sheetReinforced;
 	public static Item conductiveCoil;
 	public static Item electricMotor;
+	public static Item photoviolicCell;
 	public static Item gearWooden;
 	public static Item gearStone;
 	public static Item gearIron;
@@ -172,6 +173,13 @@ public class ProjectZed {
 	public static Item ingotAluminium;
 	public static Item ingotUranium;
 	public static Item mixedAlloy;
+
+	public static Item nuggetIron;
+	public static Item nuggetAluminium;
+	public static Item nuggetCopper;
+	public static Item nuggetNickel;
+	public static Item nuggetTitanium;
+	public static Item nuggetUranium;
 
 	public static Block blockTitanium;
 	public static Block blockCopper;
@@ -326,6 +334,7 @@ public class ProjectZed {
 		sheetReinforced = new ItemSheetReinforced("sheetReinforced", assetDir);
 		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);	
 		electricMotor = new ItemElectricMotor("electricMotor", assetDir);
+		photoviolicCell = new ItemPhotoviolicCell("photoviolicCell", assetDir);
 		gearWooden = new ItemGear("gearWooden", assetDir);
 		gearStone = new ItemGear("gearStone", assetDir);
 		gearIron = new ItemGear("gearIron", assetDir);
@@ -358,7 +367,14 @@ public class ProjectZed {
 		dustUranium = new ItemDustUranium("dustUranium", assetDir, false);
 		enrichedUranium = new ItemDustUranium("enrichedUranium", assetDir, true);
 		dustMixedAlloy = new ItemDustMixedAlloy("dustMixedAlloy", assetDir);
-		
+
+		nuggetIron = new ItemNuggetIron("nuggetIron", assetDir);
+		nuggetAluminium = new ItemNuggetAluminium("nuggetAluminium", assetDir);
+		nuggetCopper = new ItemNuggetCopper("nuggetCopper", assetDir);
+		nuggetNickel = new ItemNuggetNickel("nuggetNickel", assetDir);
+		nuggetTitanium = new ItemNuggetTitanium("nuggetTitanium", assetDir);
+		nuggetUranium = new ItemNuggetUranium("nuggetUranium", assetDir);
+
 		ingotTitanium = new ItemIngotTitanium("ingotTitanium", assetDir);
 		ingotCopper = new ItemIngotCopper("ingotCopper", assetDir);
 		ingotNickel = new ItemIngotNickel("ingotNickel", assetDir);

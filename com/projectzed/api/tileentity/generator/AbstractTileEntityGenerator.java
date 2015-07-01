@@ -6,11 +6,6 @@
 */
 package com.projectzed.api.tileentity.generator;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
@@ -19,6 +14,10 @@ import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -289,7 +288,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		transferPower();
 		
 		// If server side and every '1' second, send packet message to all clients.
-		if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+		// if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		this.markDirty();
 		super.updateEntity();
 	}
