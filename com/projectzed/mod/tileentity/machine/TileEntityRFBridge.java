@@ -31,6 +31,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 	public int storedRF;
 	private int importRateRF, exportRateRF;
 	private boolean flip = false;
+	public static final int conversionCost = 0x19; // 25
 
 	public TileEntityRFBridge() {
 		super("bridgeRF");
@@ -101,7 +102,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getAccessibleSlotsFromSide(int)
 	 */
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		return new int[0];
 	}
 
 	/*
@@ -277,7 +278,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 			if (this.storedRF > 0 && this.storedPower < this.maxPowerStorage) {
 				
 				int difference = Math.min(this.importRate, this.maxPowerStorage - this.storedPower);
-				int differenceRF = Math.min(this.exportRateRF, Reference.Constants.getRFFromMcU(difference, 15));
+				int differenceRF = Math.min(this.exportRateRF, Reference.Constants.getRFFromMcU(difference, conversionCost));
 				
 				if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
 					this.storedRF -= differenceRF;
@@ -286,7 +287,7 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 				
 				else {
 					differenceRF = Math.min(differenceRF, this.storedRF);
-					difference = Math.min(difference, Reference.Constants.getMcUFromRF(differenceRF, 15));
+					difference = Math.min(difference, Reference.Constants.getMcUFromRF(differenceRF, conversionCost));
 					
 					if (this.storedRF - differenceRF >= 0 && this.storedPower + difference <= this.maxPowerStorage) {
 						this.storedRF -= differenceRF;

@@ -6,8 +6,13 @@
 */
 package com.projectzed.mod.item.tools;
 
-import java.util.Map.Entry;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.api.util.BlockHelper;
+import com.projectzed.api.tileentity.IWrenchable;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.WorldUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,14 +24,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockHelper;
-import com.projectzed.api.tileentity.IWrenchable;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.WorldUtils;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Map.Entry;
 
 /**
  * Class containing code for the main wrenching tool.
@@ -37,8 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemWrench extends Item {
 
 	private final String NAME;
-	private BlockHelper bh;
-	
+
 	/**
 	 * @param name name of wrench.
 	 */
@@ -68,8 +65,8 @@ public class ItemWrench extends Item {
 		boolean used = false;
 		
 		if (!world.isRemote) {
-			if (bh == null) bh = new BlockHelper(world, player);
-			
+			BlockHelper bh = new BlockHelper(world, player);
+
 			Vector3<Integer> vecClick = new Vector3<Integer>(x, y, z);
 			Block b = bh.getBlock(vecClick.x, vecClick.y, vecClick.z); 
 			TileEntity te = world.getTileEntity(vecClick.x, vecClick.y, vecClick.z);

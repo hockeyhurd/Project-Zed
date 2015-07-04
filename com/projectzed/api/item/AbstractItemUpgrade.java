@@ -43,7 +43,7 @@ public class AbstractItemUpgrade extends AbstractItemMetalic implements IUpgrade
 	public float operationSpeedRelativeToSize(int stackSize, float originalTickTime) {
 		float ret = (float) (Math.pow(ProjectZed.configHandler.getEffRateModifier(), stackSize) + originalTickTime);
 
-		if (ret < 1f) ret = 1f; // clamp minium number of operations is 1 per tick.
+		if (ret < 1f) ret = 1f; // clamp minimum number of operations is 1 per tick.
 
 		return ret;
 	}
