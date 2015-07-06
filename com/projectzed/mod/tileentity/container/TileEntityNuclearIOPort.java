@@ -6,9 +6,12 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.HashMap;
-import java.util.List;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.tileentity.IMultiBlockable;
+import com.projectzed.api.tileentity.IWrenchable;
+import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.block.container.BlockNuclearIOPort;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -16,12 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.tileentity.IMultiBlockable;
-import com.projectzed.api.tileentity.IWrenchable;
-import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.block.container.BlockNuclearIOPort;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class containing tileentity code for nuclearIOPort.
@@ -105,7 +104,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return new int[] { 0, 1, 2, 4, 5 };
+		return new int[] { 0, 1 };
 	}
 	
 	/*
@@ -114,7 +113,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		if (slot != 1 || stack == null) return false;
+		if (slot != 0 || stack == null) return false;
 		return stack.getItem() == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage();
 	}
 	

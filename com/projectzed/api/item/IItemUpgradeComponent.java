@@ -9,14 +9,20 @@
 
 package com.projectzed.api.item;
 
+import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+
 /**
  * Interface for upgrade components that are primarily used in
  * altering machine behavior.
+ * <br><bold>NOTE: </bold> This interface is intended to be implemented on the item
+ * side of things.
  *
  * @author hockeyhurd
  * @version 6/29/2015.
  */
-public interface IUpgradeComponent {
+public interface IItemUpgradeComponent {
 
 	/**
 	 * @return max number of upgrades or stack size.
@@ -40,5 +46,32 @@ public interface IUpgradeComponent {
 	 * @return operation speed or number of ticks.
 	 */
 	float operationSpeedRelativeToSize(int stackSize, float originalTickTime);
+
+	/**
+	 * Function to get effect on machines.
+	 *
+	 * @param te tileentity to reference.
+	 * @param simulate set to true to simulate actions, else false to perform changes.
+	 * @return true if successful/allowed to use said upgrade, else returns false.
+	 */
+	boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate);
+
+	/**
+	 * Function to get effect on generators.
+	 *
+	 * @param te tileentity to reference.
+	 * @param simulate set to true to simulate actions, else false to perform changes.
+	 * @return true if successful/allowed to use said upgrade, else returns false.
+	 */
+	boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate);
+
+	/**
+	 * Function to get effect on diggers.
+	 *
+	 * @param te tileentity to reference.
+	 * @param simulate set to true to simulate actions, else false to perform changes.
+	 * @return true if successful/allowed to use said upgrade, else returns false.
+	 */
+	boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate);
 
 }

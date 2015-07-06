@@ -6,6 +6,22 @@
 */
 package com.projectzed.api.tileentity.digger;
 
+import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.api.util.BlockHelper;
+import com.projectzed.api.energy.machine.IEnergyMachine;
+import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.item.IItemUpgradeComponent;
+import com.projectzed.api.tileentity.IModularFrame;
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.api.util.EnumRedstoneType;
+import com.projectzed.api.util.IRedstoneComponent;
+import com.projectzed.api.util.IUpgradeComponent;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityDigger;
+import com.projectzed.mod.util.Reference;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,20 +29,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockHelper;
-import com.projectzed.api.energy.machine.IEnergyMachine;
-import com.projectzed.api.energy.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
-import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.api.util.EnumRedstoneType;
-import com.projectzed.api.util.IRedstoneComponent;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityDigger;
-import com.projectzed.mod.util.Reference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class for creating 'digger' machines (quarries, pumps, etc., .. ).
@@ -34,15 +38,17 @@ import com.projectzed.mod.util.Reference;
  * @author hockeyhurd
  * @version Jun 18, 2015
  */
-public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyContainer implements IEnergyMachine, IModularFrame, IRedstoneComponent {
+public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyContainer implements IEnergyMachine, IModularFrame, IRedstoneComponent,
+		IUpgradeComponent {
 	
 	protected int energyBurnRate;
-	protected int waitTime = 10;
+	protected int waitTime = 20;
 	protected int currentTickTime;
 	protected boolean isDone;
 	
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
+	protected ItemStack[] upgradeSlots;
 	
 	protected Rect<Integer> quarryRect;
 	protected Vector3<Integer> currentMineVec;
@@ -54,7 +60,9 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public AbstractTileEntityDigger(String name) {
 		super(name);
 		this.maxPowerStorage = (int) 1e6;
-		this.energyBurnRate = 256; 
+		this.energyBurnRate = 0x100; // 256
+
+		this.upgradeSlots = new ItemStack[0x4];
 	}
 
 	public Rect<Integer> getQuarryRect() {
@@ -147,6 +155,32 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return openSides[dir];
 	}
 
+	@Override
+	public ItemStack[] getUpgradeSlots() {
+		return upgradeSlots;
+	}
+
+	@Override
+	public ItemStack[] getCurrentUpgrades() {
+		List<ItemStack> list = new ArrayList<ItemStack>(getSizeUpgradeSlots());
+
+		for (int i = 0; i < getSizeUpgradeSlots(); i++) {
+			if (upgradeSlots[i] != null && upgradeSlots[i].stackSize > 0) list.add(upgradeSlots[i].copy());
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
+	}
+
+	@Override
+	public int getSizeUpgradeSlots() {
+		return upgradeSlots.length;
+	}
+
+	@Override
+	public boolean canInsertItemUpgrade(IItemUpgradeComponent component, ItemStack stack) {
+		return component.effectOnDiggers(this, true) && component.maxSize() >= stack.stackSize;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
@@ -198,7 +232,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public void burnEnergy() {
-		if (isPoweredOn() && this.currentTickTime == 0) this.storedPower -= this.energyBurnRate;
+		if (isPoweredOn() && currentTickTime == 0 && storedPower - energyBurnRate >= 0) storedPower -= energyBurnRate;
 	}
 
 	/*
@@ -207,6 +241,14 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public abstract int getSizeInventory();
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if (slot < this.slots.length) this.slots[slot] = stack;
+		else this.upgradeSlots[slot - this.slots.length] = stack;
+
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -335,10 +377,9 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 * Method handler for pushing/pulling itemstacks to and from neighboring inventories.
 	 */
 	protected void handleItemSidedIO() {
-		TileEntity te = null;
-		IInventory otherInv = null;
-		ItemStack in = null;
-		ItemStack out = null;
+		TileEntity te;
+		IInventory otherInv;
+		ItemStack out;
 		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);

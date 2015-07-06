@@ -6,15 +6,6 @@
 */
 package com.projectzed.mod.gui;
 
-import java.util.LinkedList;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
@@ -24,9 +15,15 @@ import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
 import com.projectzed.mod.gui.component.GuiRedstoneButton;
 import com.projectzed.mod.gui.component.IGuiButton;
 import com.projectzed.mod.gui.component.PowerLabel;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.LinkedList;
 
 /**
  * Gui for all quarries.
@@ -128,6 +125,8 @@ public class GuiQuarry extends GuiDigger {
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 32, 0, 170 + 32, (int) progress, 17);
+
+		upgradePanel.renderContainer(f, x, y);
 	}
 
 	@Override

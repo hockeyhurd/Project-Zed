@@ -10,6 +10,9 @@
 package com.projectzed.mod.item.upgrades;
 
 import com.projectzed.api.item.AbstractItemUpgrade;
+import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 
 /**
  * Item class for silkTouchUpgrade.
@@ -24,6 +27,32 @@ public class ItemUpgradeSilkTouch extends AbstractItemUpgrade {
 	 */
 	public ItemUpgradeSilkTouch(String name) {
 		super(name);
+		this.maxStackSize = 1;
+	}
+
+	@Override
+	public float energyBurnRateRelativeToSize(int stackSize, float originalRate) {
+		return originalRate * 2f;
+	}
+
+	@Override
+	public float operationSpeedRelativeToSize(int stackSize, float originalTickTime) {
+		return originalTickTime;
+	}
+
+	@Override
+	public boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate) {
+		return false;
+	}
+
+	@Override
+	public boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate) {
+		return false;
+	}
+
+	@Override
+	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
+		return true;
 	}
 
 }

@@ -6,10 +6,7 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,7 +14,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.projectzed.mod.ProjectZed;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class containing code for initializing the crusher's smelting recipe list.
@@ -58,6 +57,7 @@ public class CrusherRecipesRegistry {
 		mapVanilla.put(new ItemStack(Items.blaze_rod, 1), new ItemStack(Items.blaze_powder, 6));
 		mapVanilla.put(new ItemStack(Blocks.cobblestone, 1), new ItemStack(Blocks.gravel, 1));
 		mapVanilla.put(new ItemStack(Blocks.gravel, 1), new ItemStack(Blocks.sand, 1));
+		mapVanilla.put(new ItemStack(Blocks.glowstone, 1), new ItemStack(Items.glowstone_dust, 4));
 
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");

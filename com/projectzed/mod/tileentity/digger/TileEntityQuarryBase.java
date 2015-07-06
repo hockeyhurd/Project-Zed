@@ -6,13 +6,6 @@
 */
 package com.projectzed.mod.tileentity.digger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
@@ -22,6 +15,12 @@ import com.projectzed.api.util.EnumFilterType;
 import com.projectzed.api.util.IItemFilterComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for all quarries.
@@ -32,7 +31,7 @@ import com.projectzed.mod.block.BlockQuarryMarker;
 public class TileEntityQuarryBase extends AbstractTileEntityDigger implements IItemFilterComponent {
 
 	protected List<ItemStack> filterStacks;
-	protected int filterMaxSize = 3 * 3;
+	protected int filterMaxSize = 0; // 3 * 3;
 	protected EnumFilterType itemFilterType;
 	
 	/**
@@ -41,7 +40,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	public TileEntityQuarryBase(String name) {
 		super(name);
 		
-		this.energyBurnRate = 512;
+		this.energyBurnRate = 0x200; // 512
 				
 		this.filterStacks = new ArrayList<ItemStack>(filterMaxSize);
 		this.itemFilterType = EnumFilterType.WHITELIST;
@@ -52,7 +51,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	public int getSizeInventory() {
-		return 2 * 9 + filterMaxSize;
+		return this.slots.length;
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +59,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	protected void initContentsArray() {
-		this.slots = new ItemStack[getSizeInventory()];
+		this.slots = new ItemStack[2 * 9 + filterMaxSize];
 	}
 
 	/* (non-Javadoc)

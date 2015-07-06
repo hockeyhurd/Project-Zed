@@ -10,6 +10,9 @@
 package com.projectzed.mod.item.upgrades;
 
 import com.projectzed.api.item.AbstractItemUpgrade;
+import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 
 /**
  * Item class for overclockerUpgrade.
@@ -24,6 +27,21 @@ public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
 	 */
 	public ItemUpgradeOverclocker(String name) {
 		super(name);
+	}
+
+	@Override
+	public boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate) {
+		return true;
+	}
+
+	@Override
+	public boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate) {
+		return true;
+	}
+
+	@Override
+	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
+		return true;
 	}
 
 }

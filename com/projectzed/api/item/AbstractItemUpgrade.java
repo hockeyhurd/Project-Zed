@@ -10,6 +10,9 @@
 package com.projectzed.api.item;
 
 import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -18,7 +21,10 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version 6/29/2015.
  */
-public class AbstractItemUpgrade extends AbstractItemMetalic implements IUpgradeComponent {
+public abstract class AbstractItemUpgrade extends AbstractItemMetalic implements IItemUpgradeComponent {
+
+	protected float burnRateModifier;
+	protected float effRateModifier;
 
 	/**
 	 * @param name name of upgrade component.
@@ -27,6 +33,9 @@ public class AbstractItemUpgrade extends AbstractItemMetalic implements IUpgrade
 		super(name, ProjectZed.assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxStackSize(0x10); // 16
+
+		this.burnRateModifier = ProjectZed.configHandler.getBurnRateModifier();
+		this.effRateModifier = ProjectZed.configHandler.getEffRateModifier();
 	}
 
 	@Override
@@ -36,15 +45,25 @@ public class AbstractItemUpgrade extends AbstractItemMetalic implements IUpgrade
 
 	@Override
 	public float energyBurnRateRelativeToSize(int stackSize, float originalRate) {
-		return (float) ((10f * Math.pow(ProjectZed.configHandler.getBurnRateModifier(), stackSize)) + originalRate);
+		return stackSize > 0 ? (float) ((10f * Math.pow(burnRateModifier, stackSize)) + originalRate) : originalRate;
 	}
 
 	@Override
 	public float operationSpeedRelativeToSize(int stackSize, float originalTickTime) {
-		float ret = (float) (Math.pow(ProjectZed.configHandler.getEffRateModifier(), stackSize) + originalTickTime);
+		float ret = stackSize > 0 ? (float) (Math.pow(effRateModifier, stackSize) + originalTickTime) : 1.0f;
 
 		if (ret < 1f) ret = 1f; // clamp minimum number of operations is 1 per tick.
 
 		return ret;
 	}
+
+	@Override
+	public abstract boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate);
+
+	@Override
+	public abstract boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate);
+
+	@Override
+	public abstract boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate);
+
 }
