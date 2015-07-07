@@ -48,8 +48,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
-	protected ItemStack[] upgradeSlots;
-	
+
 	protected Rect<Integer> quarryRect;
 	protected Vector3<Integer> currentMineVec;
 	protected BlockHelper bh;
@@ -61,8 +60,6 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		super(name);
 		this.maxPowerStorage = (int) 1e6;
 		this.energyBurnRate = 0x100; // 256
-
-		this.upgradeSlots = new ItemStack[0x4];
 	}
 
 	public Rect<Integer> getQuarryRect() {
@@ -157,14 +154,22 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 
 	@Override
 	public ItemStack[] getUpgradeSlots() {
-		return upgradeSlots;
+		List<ItemStack> list = new ArrayList<ItemStack>(getSizeUpgradeSlots());
+
+		for (int i = slots.length - getSizeUpgradeSlots(); i < slots.length; i++) {
+			list.add(slots[i]);
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
 	}
 
 	@Override
 	public ItemStack[] getCurrentUpgrades() {
 		List<ItemStack> list = new ArrayList<ItemStack>(getSizeUpgradeSlots());
 
-		for (int i = 0; i < getSizeUpgradeSlots(); i++) {
+		ItemStack[] upgradeSlots = getUpgradeSlots();
+
+		for (int i = 0; i < upgradeSlots.length; i++) {
 			if (upgradeSlots[i] != null && upgradeSlots[i].stackSize > 0) list.add(upgradeSlots[i].copy());
 		}
 
@@ -173,7 +178,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 
 	@Override
 	public int getSizeUpgradeSlots() {
-		return upgradeSlots.length;
+		return 0x4;
 	}
 
 	@Override
@@ -240,12 +245,13 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getSizeInventory()
 	 */
 	@Override
-	public abstract int getSizeInventory();
+	public int getSizeInventory() {
+		return slots != null ? slots.length : 0;
+	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
-		if (slot < this.slots.length) this.slots[slot] = stack;
-		else this.upgradeSlots[slot - this.slots.length] = stack;
+		this.slots[slot] = stack;
 
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
 	}
@@ -294,7 +300,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return false;
+		return slot >= slots.length - getSizeUpgradeSlots() && slot < slots.length ? isItemValidForSlot(slot, stack) : false;
 	}
 
 	/*
@@ -303,7 +309,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot >= 0 && slot < slots.length && openSides[side] == 1;
+		return slot >= 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
 	}
 
 	/*
@@ -422,7 +428,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 				
 				// output relative to machine.
 				if (openSides[dir.ordinal()] == 1) {
-					for (int thisSlot = 0; thisSlot < this.getSizeInventory(); thisSlot++) {
+					for (int thisSlot = 0; thisSlot < this.getSizeInventory() - this.getSizeUpgradeSlots(); thisSlot++) {
 						out = this.getStackInSlot(thisSlot);
 						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
 						
@@ -474,7 +480,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 			ItemStack current;
 			
 			// first pass, try merge:
-			for (int i = 0; i < this.slots.length; i++) {
+			for (int i = 0; i < this.slots.length - this.getSizeUpgradeSlots(); i++) {
 				current = this.slots[i];
 				
 				if (current != null && current.isItemEqual(copy) && current.stackSize < current.getMaxStackSize()) {

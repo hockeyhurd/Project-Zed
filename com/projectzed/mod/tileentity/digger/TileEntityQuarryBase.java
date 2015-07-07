@@ -10,6 +10,7 @@ import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockHelper;
+import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumFilterType;
 import com.projectzed.api.util.IItemFilterComponent;
@@ -47,19 +48,11 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	}
 
 	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#getSizeInventory()
-	 */
-	@Override
-	public int getSizeInventory() {
-		return this.slots.length;
-	}
-
-	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#initContentsArray()
 	 */
 	@Override
 	protected void initContentsArray() {
-		this.slots = new ItemStack[2 * 9 + filterMaxSize];
+		this.slots = new ItemStack[2 * 9 + filterMaxSize + getSizeUpgradeSlots()];
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +60,8 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return false;
+		return slot >= getSizeInventory() - getSizeUpgradeSlots() && slot < getSizeInventory() && stack.getItem() instanceof IItemUpgradeComponent
+				&& canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +69,15 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return new int[] { 0, 1, 2, 3, 4, 5 };
+		if (openSides[side] == 0) return new int[0];
+
+		int[] ret = new int[getSizeInventory() - getSizeUpgradeSlots() - filterMaxSize];
+
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = i;
+		}
+
+		return ret;
 	}
 
 	/* (non-Javadoc)

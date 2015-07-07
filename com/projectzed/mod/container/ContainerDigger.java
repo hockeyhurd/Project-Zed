@@ -41,21 +41,18 @@ public class ContainerDigger extends Container {
 	 */
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityDigger te) {
 
-		int slotCounter = 0;
-
-		if (this.NUM_SLOTS > 0) {
+		if (this.NUM_SLOTS - te.getSizeUpgradeSlots() > 0) {
 
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 9; x++) {
 					this.addSlotToContainer(new SlotFurnace(inv.player, te, x + y * 9, 8 + x * 18, 1 + 53 + y * 18));
-					slotCounter++;
 				}
 			}
 		}
 
 		// add upgrade slots last!
 		for (int i = 0; i < te.getSizeUpgradeSlots(); i++) {
-			this.addSlotToContainer(new Slot(te, slotCounter++, 176 + 8, 8 + i * 18));
+			this.addSlotToContainer(new Slot(te, this.NUM_SLOTS - te.getSizeUpgradeSlots() + i, 176 + 8, 8 + i * 18));
 		}
 
 		// Adds the player inventory to furnace's gui.
@@ -96,7 +93,7 @@ public class ContainerDigger extends Container {
 		super.detectAndSendChanges();
 		this.stored = this.te.getEnergyStored();
 	}
-	
+
 	/**
 	 * Player shift-clicking a slot.
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)

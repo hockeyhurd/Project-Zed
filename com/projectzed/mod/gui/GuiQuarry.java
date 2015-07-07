@@ -40,7 +40,7 @@ public class GuiQuarry extends GuiDigger {
 	 */
 	public GuiQuarry(InventoryPlayer inv, AbstractTileEntityDigger te) {
 		super(inv, te);
-		this.xSize = 176;
+		this.xSize = 176 + upgradeXOffset;
 		this.ySize = 198;
 	}
 
@@ -121,7 +121,7 @@ public class GuiQuarry extends GuiDigger {
 		int xStart = (width - xSize) / 2;
         int yStart = (height - ySize) / 2;
         
-		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize - upgradeXOffset, ySize);
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 32, 0, 170 + 32, (int) progress, 17);

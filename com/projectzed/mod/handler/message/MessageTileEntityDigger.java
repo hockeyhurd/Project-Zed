@@ -6,21 +6,19 @@
 */
 package com.projectzed.mod.handler.message;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumRedstoneType;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class used to send messages to/from client and server for all digger based machines.
@@ -41,7 +39,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 	
 	protected EnumRedstoneType redstoneType;
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
-	
+
 	public MessageTileEntityDigger() {
 	}
 
@@ -95,7 +93,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		if (ctx.side == Side.CLIENT) {
 			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 			
-			if (te instanceof AbstractTileEntityDigger) {
+			if (te != null && te instanceof AbstractTileEntityDigger) {
 				((AbstractTileEntityDigger) te).setEnergyStored(message.stored);
 				((AbstractTileEntityDigger) te).setPowerMode(message.powerMode);
 				((AbstractTileEntityDigger) te).setRedstoneType(message.redstoneType);
@@ -103,6 +101,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				for (int i = 0; i < message.openSides.length; i++) {
 					((AbstractTileEntityDigger) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 				}
+
 			}
 		}
 		
@@ -118,6 +117,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				for (int i = 0; i < message.openSides.length; i++) {
 					te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 				}
+
 			}
 		}
 		

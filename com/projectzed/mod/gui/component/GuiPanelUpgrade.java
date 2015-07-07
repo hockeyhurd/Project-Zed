@@ -13,7 +13,6 @@ import com.hockeyhurd.api.math.Vector2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -27,7 +26,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiPanelUpgrade {
 
-	private final Gui gui;
 	private final ResourceLocation texture;
 	private int numSlots;
 	public Vector2<Double> location, thisSize;
@@ -35,12 +33,11 @@ public class GuiPanelUpgrade {
 	private final Tessellator TESS;
 	private final double calcX, calcY;
 
-	public GuiPanelUpgrade(Gui gui, Vector2<Double> location) {
-		this(gui, location, new Vector2<Double>(32d, 86d), 4);
+	public GuiPanelUpgrade(Vector2<Double> location) {
+		this(location, new Vector2<Double>(32d, 86d), 4);
 	}
 
-	public GuiPanelUpgrade(Gui gui, Vector2<Double> location, Vector2<Double> thisSize, int numSlots) {
-		this.gui = gui;
+	public GuiPanelUpgrade(Vector2<Double> location, Vector2<Double> thisSize, int numSlots) {
 		this.location = location;
 		this.thisSize = thisSize;
 		this.numSlots = numSlots;

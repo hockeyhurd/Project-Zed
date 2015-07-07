@@ -53,6 +53,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 
 	protected Waila waila;
 	protected GuiPanelUpgrade upgradePanel;
+	protected int upgradeXOffset = 0x20;
 	
 	public GuiDigger(InventoryPlayer inv, AbstractTileEntityDigger te) {
 		super(new ContainerDigger(inv, te));
@@ -60,7 +61,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		if (this.texture == null) this.texture = new ResourceLocation("projectzed", "textures/gui/GuiDefault.png");
 		
 		this.te = te;
-		this.xSize = 176;
+		this.xSize = 176 + upgradeXOffset;
 		this.ySize = 166;
 		
 		this.labelList = new ArrayList<IInfoLabel>();
@@ -69,7 +70,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
 		
 		waila = new Waila(null, player.worldObj, player, null, 0);
-		upgradePanel = new GuiPanelUpgrade(this, new Vector2<Double>((double) guiLeft + xSize, (double) guiTop));
+		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
 	}
 	
 	protected abstract ResourceLocation getResourceTexture();
@@ -89,12 +90,13 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		int xStart = (width - xSize) / 2;
         int yStart = (height - ySize) / 2;
         
-		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize - upgradeXOffset, ySize);
 
 		float progress =  ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 
 		upgradePanel.renderContainer(f, x, y);
+
 	}
 
 	@Override
@@ -315,7 +317,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
 		}
 
-		upgradePanel.location.x = (double) (guiLeft + xSize);
+		upgradePanel.location.x = (double) (guiLeft + xSize - upgradeXOffset);
 		upgradePanel.location.y = (double) guiTop;
 
 	}
