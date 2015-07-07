@@ -13,6 +13,13 @@ import com.projectzed.api.item.AbstractItemUpgrade;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Item class for overclockerUpgrade.
@@ -42,6 +49,13 @@ public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
 	@Override
 	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
 		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		list.add("Decreases machine processing time by " + (ProjectZed.configHandler.getEffRateModifier() * 100f) + "%.");
+		list.add("Increases power usage by " + (ProjectZed.configHandler.getBurnRateModifier() * 100f) + "%.");
 	}
 
 }

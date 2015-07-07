@@ -12,6 +12,12 @@ package com.projectzed.api.item;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Interface for upgrade components that are primarily used in
@@ -73,5 +79,17 @@ public interface IItemUpgradeComponent {
 	 * @return true if successful/allowed to use said upgrade, else returns false.
 	 */
 	boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate);
+
+	/**
+	 * Method enforced in this interface that on the client side should
+	 * force the item to contain additional item info.
+	 *
+	 * @param stack ItemStack to reference.
+	 * @param player player viewing information.
+	 * @param list list of info to be contained.
+	 * @param par4 additional boolean flag.
+	 */
+	@SideOnly(Side.CLIENT)
+	void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4);
 
 }

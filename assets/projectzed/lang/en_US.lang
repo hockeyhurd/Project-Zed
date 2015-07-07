@@ -77,6 +77,8 @@ item.gearAluminium.name=Aluminium Gear
 item.gearGold.name=Gold Gear
 item.gearDiamond.name=Diamond Gear
 item.gearTitanium.name=Titanium Gear
+item.overclockerUpgrade.name=Overclocker Upgrade
+item.silkTouchUpgrade.name=Silk Touch Upgrade
 
 // Armor:
 item.zPlatedHelmet.name=zPlated Helmet

@@ -13,6 +13,12 @@ import com.projectzed.api.item.AbstractItemUpgrade;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Item class for silkTouchUpgrade.
@@ -53,6 +59,12 @@ public class ItemUpgradeSilkTouch extends AbstractItemUpgrade {
 	@Override
 	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
 		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		list.add("Increases power usage by 2x original burn rate.");
 	}
 
 }

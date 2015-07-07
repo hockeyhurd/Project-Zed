@@ -14,6 +14,12 @@ import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Abstract class providing basis for item upgrade component(s).
@@ -65,5 +71,9 @@ public abstract class AbstractItemUpgrade extends AbstractItemMetalic implements
 
 	@Override
 	public abstract boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate);
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public abstract void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4);
 
 }

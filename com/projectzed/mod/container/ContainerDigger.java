@@ -7,6 +7,7 @@
 package com.projectzed.mod.container;
 
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
+import com.projectzed.mod.container.slots.SlotUpgrade;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -52,7 +53,7 @@ public class ContainerDigger extends Container {
 
 		// add upgrade slots last!
 		for (int i = 0; i < te.getSizeUpgradeSlots(); i++) {
-			this.addSlotToContainer(new Slot(te, this.NUM_SLOTS - te.getSizeUpgradeSlots() + i, 176 + 8, 8 + i * 18));
+			this.addSlotToContainer(new SlotUpgrade(te, this.NUM_SLOTS - te.getSizeUpgradeSlots() + i, 176 + 8, 8 + i * 18));
 		}
 
 		// Adds the player inventory to furnace's gui.
