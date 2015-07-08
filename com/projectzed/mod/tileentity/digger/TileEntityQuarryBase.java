@@ -16,6 +16,7 @@ import com.projectzed.api.util.EnumFilterType;
 import com.projectzed.api.util.IItemFilterComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
+import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -34,6 +35,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	protected List<ItemStack> filterStacks;
 	protected int filterMaxSize = 0; // 3 * 3;
 	protected EnumFilterType itemFilterType;
+	protected boolean isSilkTouch = false;
 	
 	/**
 	 * @param name name of quarry as required by parent class.
@@ -41,7 +43,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	public TileEntityQuarryBase(String name) {
 		super(name);
 		
-		this.energyBurnRate = 0x200; // 512
+		this.originalEnergyBurnRate = this.energyBurnRate = 0x200; // 512
 				
 		this.filterStacks = new ArrayList<ItemStack>(filterMaxSize);
 		this.itemFilterType = EnumFilterType.WHITELIST;
@@ -85,8 +87,34 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	protected void importContents() {
-		// TODO Auto-generated method stub
+		if (!worldObj.isRemote) {
+			if (worldObj.getTotalWorldTime() % 20L == 0) {
+				// ProjectZed.logHelper.info("energyBurnRate:", energyBurnRate);
 
+				ItemStack[] upgrades = getCurrentUpgrades();
+				if (upgrades.length > 0) {
+
+					float max = Float.MIN_VALUE;
+					IItemUpgradeComponent comp;
+
+					for (ItemStack stack : upgrades) {
+						if (stack != null && stack.stackSize > 0) {
+							comp = ((IItemUpgradeComponent) stack.getItem());
+							if (!isSilkTouch && comp instanceof ItemUpgradeSilkTouch) isSilkTouch = true;
+
+							max = Math.max(max, comp.energyBurnRateRelativeToSize(stack.stackSize, originalEnergyBurnRate));
+						}
+					}
+
+					energyBurnRate = (int) Math.max(Math.ceil(max), originalEnergyBurnRate);
+				}
+
+				else {
+					isSilkTouch = false;
+					energyBurnRate = originalEnergyBurnRate;
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -155,7 +183,13 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				int metaData = bh.getBlockMetaData(currentMineVec);
 				
 				if (currentBlock != ProjectZed.quarryMarker && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) != -1f) {
-					List<ItemStack> dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
+					List<ItemStack> dropsList;
+
+					if (!isSilkTouch) dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
+					else {
+						dropsList = new ArrayList<ItemStack>(1);
+						dropsList.add(new ItemStack(currentBlock, 1));
+					}
 
 					if (dropsList != null && !dropsList.isEmpty()) {
 	

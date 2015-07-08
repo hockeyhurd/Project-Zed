@@ -48,7 +48,7 @@ public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
 
 	@Override
 	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
-		return true;
+		return false;
 	}
 
 	@Override

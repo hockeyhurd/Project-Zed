@@ -40,7 +40,8 @@ import java.util.List;
  */
 public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyContainer implements IEnergyMachine, IModularFrame, IRedstoneComponent,
 		IUpgradeComponent {
-	
+
+	protected int originalEnergyBurnRate;
 	protected int energyBurnRate;
 	protected int waitTime = 20;
 	protected int currentTickTime;
@@ -59,7 +60,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public AbstractTileEntityDigger(String name) {
 		super(name);
 		this.maxPowerStorage = (int) 1e6;
-		this.energyBurnRate = 0x100; // 256
+		this.originalEnergyBurnRate = this.energyBurnRate = 0x100; // 256
 	}
 
 	public Rect<Integer> getQuarryRect() {
@@ -170,7 +171,25 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		ItemStack[] upgradeSlots = getUpgradeSlots();
 
 		for (int i = 0; i < upgradeSlots.length; i++) {
-			if (upgradeSlots[i] != null && upgradeSlots[i].stackSize > 0) list.add(upgradeSlots[i].copy());
+			if (upgradeSlots[i] != null && upgradeSlots[i].stackSize > 0) {
+
+				if (!list.isEmpty()) {
+					boolean added = false;
+
+					for (ItemStack stack : list) {
+						if (stack.isItemEqual(upgradeSlots[i])) {
+							stack.stackSize += upgradeSlots[i].stackSize;
+							if (stack.stackSize > stack.getMaxStackSize()) stack.stackSize = stack.getMaxStackSize();
+							added = true;
+							break;
+						}
+					}
+
+					if (!added) list.add(upgradeSlots[i].copy());
+				}
+
+				else list.add(upgradeSlots[i].copy());
+			}
 		}
 
 		return list.toArray(new ItemStack[list.size()]);
