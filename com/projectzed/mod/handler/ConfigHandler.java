@@ -19,20 +19,20 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 public class ConfigHandler extends AbstractConfigHandler {
 
 	// general:
-	private static boolean debugMode;
-	private static boolean updateCheck;
-	private static int maxQuarrySize;
+	private boolean debugMode;
+	private boolean updateCheck;
+	private int maxQuarrySize;
 	
 	// ore gen
-	private static boolean genTitanium;
-	private static boolean genNickel;
-	private static boolean genAluminium;
-	private static boolean genCopper;
-	private static boolean genUranium;
+	private boolean genTitanium;
+	private boolean genNickel;
+	private boolean genAluminium;
+	private boolean genCopper;
+	private boolean genUranium;
 
 	// Upgrade components:
-	private static float burnRateModifier;
-	private static float effRateModifier;
+	private float burnRateModifier;
+	private float effRateModifier;
 	
 	/**
 	 * @param event = event.
@@ -74,7 +74,7 @@ public class ConfigHandler extends AbstractConfigHandler {
 	/**
 	 * Function returns whether debug mode is allowed.
 	 */
-	public static boolean isDebugMode() {
+	public boolean isDebugMode() {
 		return debugMode;
 	}
 	
@@ -82,63 +82,63 @@ public class ConfigHandler extends AbstractConfigHandler {
 	 * Function returns whether we are allowed to check for updates.
 	 * @return
 	 */
-	public static boolean allowUpdating() {
+	public boolean allowUpdating() {
 		return updateCheck;
 	}
 	
 	/**
 	 * @return get max quarry size.
 	 */
-	public static int getMaxQuarrySize() {
+	public int getMaxQuarrySize() {
 		return maxQuarrySize;
 	}
 	
 	/**
 	 * @return genTitanium flag
 	 */
-	public static boolean genOreTitanium() {
+	public boolean genOreTitanium() {
 		return genTitanium;
 	}
 	
 	/**
 	 * @return genNickel flag
 	 */
-	public static boolean genOreNickel() {
+	public boolean genOreNickel() {
 		return genNickel;
 	}
 	
 	/**
 	 * @return genAluminium flag
 	 */
-	public static boolean genOreAluminium() {
+	public boolean genOreAluminium() {
 		return genAluminium;
 	}
 	
 	/**
 	 * @return genCopper flag
 	 */
-	public static boolean genOreCopper() {
+	public boolean genOreCopper() {
 		return genCopper;
 	}
 	
 	/**
 	 * @return genUranium flag
 	 */
-	public static boolean genOreUranium() {
+	public boolean genOreUranium() {
 		return genUranium;
 	}
 
 	/**
 	 * @return burn rate modifier.
 	 */
-	public static float getBurnRateModifier() {
+	public float getBurnRateModifier() {
 		return burnRateModifier;
 	}
 
 	/**
 	 * @return efficiency rate modifier.
 	 */
-	public static float getEffRateModifier() {
+	public float getEffRateModifier() {
 		return effRateModifier;
 	}
 

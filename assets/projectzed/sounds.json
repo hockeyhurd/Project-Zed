@@ -1,9 +1,19 @@
 {
     "industrialMetalPressSound": {
-        "catagory": "master",
+        "catagory": "ambient",
         "sounds": [
             {
                 "name": "industrialMetalPressSound",
+                "stream": false
+            }
+        ]
+    },
+
+    "industrialEnergizerSound": {
+        "catagory": "ambient",
+        "sounds": [
+            {
+                "name": "industrialEnergizerSound",
                 "stream": false
             }
         ]

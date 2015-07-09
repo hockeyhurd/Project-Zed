@@ -114,7 +114,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		if (slot != 0 || stack == null) return false;
-		return stack.getItem() == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage();
+		return stack.getItem() == ProjectZed.fullFuelRod || stack.getItemDamage() < stack.getMaxDamage();
 	}
 	
 	/*
@@ -132,7 +132,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return /*this.getBlockMetadata() == 2 &&*/ slot == 2;
+		return /*this.getBlockMetadata() == 2 &&*/ slot == 1;
 	}
 	
 	/**
@@ -163,8 +163,10 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	
 	/**
 	 * Method used to consume fuel in given slot.
+	 *
+	 * @param ouputPort port to send empty fuel cell to if applicable.
 	 */
-	public void consumeFuel() {
+	public void consumeFuel(TileEntityNuclearIOPort ouputPort) {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
 			else {
@@ -175,20 +177,29 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 				}
 				
 				else {
-					this.slots[0] = (ItemStack) null;
-					this.slots[1] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
+					this.slots[0] = null;
+
+					if (ouputPort == null) this.slots[1] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
+					else ouputPort.setInventorySlotContents(1, new ItemStack(ProjectZed.emptyFuelRod, 1, 0));
 				}
 			}
 		}
 	}
-	
-	public boolean runCycle() {
+
+	/**
+	 * Function to run a cycle of consuming fuel and setting/resetting applicable data values.
+	 *
+	 * @param ouputPort port to send resulting data to if applicable.
+	 * @return true if successful, else returns false.
+	 */
+	public boolean runCycle(TileEntityNuclearIOPort ouputPort) {
 		boolean flag = false;
 		
 		if (this.slots[0] != null && isFuel()) {
 			if (this.burnTime == 0) {
 				this.burnTime = getItemBurnTime(this.slots[0]);
-				consumeFuel();
+				consumeFuel(ouputPort);
+				flag = true;
 			}
 		}
 		

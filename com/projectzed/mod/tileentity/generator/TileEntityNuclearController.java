@@ -6,18 +6,6 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
@@ -32,6 +20,17 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.util.HeatLogic;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class used to calculate and generate power through
@@ -55,7 +54,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private HashMap<Block, Integer> mbMap;
 	private HashMap<Block, List<Vector3<Integer>>> mbMapVec;
 	private HashMap<Fluid, Boolean> fluidMap;
-	private TileEntityNuclearIOPort inputPort;
+	private TileEntityNuclearIOPort inputPort, outputPort;
 	private HeatLogic heatLogic;
 	
 	public TileEntityNuclearController() {
@@ -242,6 +241,29 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		return te;
 	}
+
+	/**
+	 * Gets the 'first' ouput nuclear io part in mapping.
+	 *
+	 * @return nuclear io port object if found, else returns false.
+	 */
+	private TileEntityNuclearIOPort getOutputDataFromIO() {
+		TileEntityNuclearIOPort te = null;
+
+		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearIOPort)) {
+
+			for (Vector3<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
+				byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+
+				if (meta == 2 && worldObj.getTileEntity(vec.x, vec.y, vec.z) instanceof  TileEntityNuclearIOPort) {
+					te = (TileEntityNuclearIOPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					break;
+				}
+			}
+		}
+
+		return te;
+	}
 	
 	/**
 	 * Checks and consumes input port fuel.
@@ -252,7 +274,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	public boolean checksAndConsumations(boolean controlPort) {
 		boolean flag = false;
 		
-		if (inputPort != null) flag = poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle();
+		if (inputPort != null) flag = poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle(outputPort);
 		
 		return flag;
 	}
@@ -269,7 +291,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (this.worldObj.getTotalWorldTime() % 20L == 0) {
 				inputPort = getInputDataFromIO();
 				if (inputPort == null) return;
-				
+
+				outputPort = getOutputDataFromIO();
+
 				poweredLastUpdate = canProducePower();
 			}
 
@@ -405,7 +429,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		boolean flag = true;
 		
-		int counter = 0;
 		IMultiBlockable tile;
 		for (Block b : ref.keySet()) {
 			if (ref.containsKey(b) && refVec.containsKey(b)) {
