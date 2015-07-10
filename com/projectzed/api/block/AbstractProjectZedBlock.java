@@ -8,14 +8,16 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 
 /**
+ * Basic block creating through this abstract class.
+ *
  * @author hockeyhurd
  * @version 3/3/2015.
  */
-public class ProjectZedBlock extends Block {
+public abstract class AbstractProjectZedBlock extends Block {
 
 	public final String NAME;
 
-	public ProjectZedBlock(Material mat, String name) {
+	public AbstractProjectZedBlock(Material mat, String name) {
 		super(mat);
 		this.NAME = name;
 		this.setBlockName(name);

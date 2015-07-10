@@ -78,6 +78,14 @@ public class ProjectZed {
 	public static Block wickedClearGlass;
 	public static Block quarryMarker;
 	public static Block atomicBomb;
+
+	public static Block stoneBricksDefault, stoneBricksDefaultStairs;
+	public static Block stoneBricksWide, stoneBricksWideStairs;
+	public static Block stoneBricksRed, stoneBricksRedStairs;
+	public static Block stoneBricksBlue, stoneBricksBlueStairs;
+	public static Block stoneBricksGreen, stoneBricksGreenStairs;
+	public static Block stoneBricksPurple, stoneBricksPurpleStairs;
+
 	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
@@ -267,6 +275,21 @@ public class ProjectZed {
 		quarryMarker = new BlockQuarryMarker();
 		nuclearReactorGlass = new BlockNuclearReactorGlass();
 		atomicBomb = new BlockAtomicBomb();
+
+		stoneBricksDefault = new BlockStoneBricks("stoneBricksDefault");
+		stoneBricksWide = new BlockStoneBricks("stoneBricksWide");
+		stoneBricksRed = new BlockStoneBricks("stoneBricksRed");
+		stoneBricksBlue = new BlockStoneBricks("stoneBricksBlue");
+		stoneBricksGreen = new BlockStoneBricks("stoneBricksGreen");
+		stoneBricksPurple = new BlockStoneBricks("stoneBricksPurple");
+
+		stoneBricksDefaultStairs = new BlockStairsMaker(stoneBricksDefault);
+		stoneBricksWideStairs = new BlockStairsMaker(stoneBricksWide);
+		stoneBricksRedStairs = new BlockStairsMaker(stoneBricksRed);
+		stoneBricksBlueStairs = new BlockStairsMaker(stoneBricksBlue);
+		stoneBricksGreenStairs = new BlockStairsMaker(stoneBricksGreen);
+		stoneBricksPurpleStairs = new BlockStairsMaker(stoneBricksPurple);
+
 		nuclearChamberWall = new BlockNuclearChamberWall();
 		nuclearChamberLock = new BlockNuclearChamberLock();
 		nuclearReactantCore = new BlockNuclearReactantCore();

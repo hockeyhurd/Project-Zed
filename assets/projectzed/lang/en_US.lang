@@ -5,6 +5,20 @@ tile.thickenedGlass.name=Thickened Glass
 tile.wickedClearGlass.name=Ye' Wicked Clear Glass
 tile.quarryMarker.name=Quarry Marker
 
+tile.stoneBricksDefault.name=Bricks of Stone
+tile.stoneBricksWide.name=Bricks of Stone - Wide
+tile.stoneBricksRed.name=Bricks of Stone - Red
+tile.stoneBricksBlue.name=Bricks of Stone - Blue
+tile.stoneBricksGreen.name=Bricks of Stone - Green
+tile.stoneBricksPurple.name=Bricks of Stone - Purple
+
+tile.stoneBricksDefaultStairs.name=Bricks of Stone Stairs
+tile.stoneBricksWideStairs.name=Bricks of Stone Stairs - Wide
+tile.stoneBricksRedStairs.name=Bricks of Stone Stairs - Red
+tile.stoneBricksBlueStairs.name=Bricks of Stone Stairs - Blue
+tile.stoneBricksGreenStairs.name=Bricks of Stone Stairs - Green
+tile.stoneBricksPurpleStairs.name=Bricks of Stone Stairs - Purple
+
 // Nuclear stuff:
 tile.atomicBomb.name=Atomic Bomb
 tile.nuclearChamberWall.name=Reactant Chamber Wall
