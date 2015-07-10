@@ -6,11 +6,19 @@
 */
 package com.projectzed.mod.proxy;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-
+import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
+import com.hockeyhurd.api.handler.UpdateHandler;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.*;
+import com.projectzed.mod.registry.*;
+import com.projectzed.mod.registry.tools.ChainsawSetRegistry;
+import com.projectzed.mod.registry.tools.DrillSetRegistry;
+import com.projectzed.mod.util.OutputUtil;
+import com.projectzed.mod.util.Reference;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -20,34 +28,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
-import com.hockeyhurd.api.handler.UpdateHandler;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.CraftingEventHandler;
-import com.projectzed.mod.handler.GuiHandler;
-import com.projectzed.mod.handler.ItemHoverEventHandler;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.PlayerEventHandler;
-import com.projectzed.mod.handler.WorldChunkHandler;
-import com.projectzed.mod.registry.BlockRegistry;
-import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
-import com.projectzed.mod.registry.CraftingRegistry;
-import com.projectzed.mod.registry.CrusherRecipesRegistry;
-import com.projectzed.mod.registry.FurnaceRecipeRegistry;
-import com.projectzed.mod.registry.ItemRegistry;
-import com.projectzed.mod.registry.LumberMillRecipesRegistry;
-import com.projectzed.mod.registry.MetalPressRecipesRegistry;
-import com.projectzed.mod.registry.PZEntityRegistry;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.registry.tools.ChainsawSetRegistry;
-import com.projectzed.mod.registry.tools.DrillSetRegistry;
-import com.projectzed.mod.util.OutputUtil;
-import com.projectzed.mod.util.Reference;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Common proxy for both client and server.
@@ -111,7 +95,20 @@ public class CommonProxy {
 		for (Item i : ItemRegistry.instance().getItemOres()) {
 			if (i != null) OreDictionary.registerOre(ItemRegistry.instance().getBlockName(i), i);
 		}
-		
+
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksDefault);
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksWide);
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksRed);
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksBlue);
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksGreen);
+		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksPurple);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksDefaultStairs);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksWideStairs);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksRedStairs);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksBlueStairs);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksGreenStairs);
+		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksPurpleStairs);
+
 		OreDictionary.registerOre("plateAluminium", ProjectZed.sheetAluminium);
 		OreDictionary.registerOre("plateAluminum", ProjectZed.sheetAluminium);
 		OreDictionary.registerOre("plateReinforced", ProjectZed.sheetReinforced);

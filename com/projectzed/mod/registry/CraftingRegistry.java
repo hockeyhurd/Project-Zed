@@ -89,6 +89,13 @@ public final class CraftingRegistry {
 		reg.shapelessList.add(createShapelessRecipe(screw, 27, "ingotIron", "ingotIron", "ingotIron"));
 		reg.shapelessList.add(createShapelessRecipe(sheetAluminium, 1, "ingotAluminium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 		reg.shapelessList.add(createShapelessRecipe(mixedAlloy, 2, "ingotIron", "ingotCopper", "ingotTitanium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
+
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefault, 1, "stoneBricks", Items.water_bucket));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefaultStairs, 1, "stoneBricksStairs", Items.water_bucket));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksRedStairs, 1, "stoneBricksStairs", "dyeRed"));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksBlueStairs, 1, "stoneBricksStairs", "dyeBlue"));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksGreenStairs, 1, "stoneBricksStairs", "dyeGreen"));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksPurpleStairs, 1, "stoneBricksStairs", "dyePurple"));
 	}
 	
 	/**
@@ -132,7 +139,21 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(wickedClearGlass, 8, "xxx", "x x", "xxx", 'x', thickenedGlass));
 		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminium", 'x', Blocks.redstone_torch));
 		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminum", 'x', Blocks.redstone_torch));
-		
+
+		reg.shapedList.add(createShapedRecipe(stoneBricksDefault, 8, "xxx", "x x", "xxx", 'x', Blocks.stonebrick));
+		reg.shapedList.add(createShapedRecipe(stoneBricksWide, 8, "xx", 'x', stoneBricksDefault));
+		reg.shapedList.add(createShapedRecipe(stoneBricksRed, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeRed"));
+		reg.shapedList.add(createShapedRecipe(stoneBricksBlue, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeBlue"));
+		reg.shapedList.add(createShapedRecipe(stoneBricksGreen, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeGreen"));
+		reg.shapedList.add(createShapedRecipe(stoneBricksPurple, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyePurple"));
+
+		reg.shapedList.add(createShapedRecipe(stoneBricksDefaultStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksDefault));
+		reg.shapedList.add(createShapedRecipe(stoneBricksWideStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksWide));
+		reg.shapedList.add(createShapedRecipe(stoneBricksRedStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksRed));
+		reg.shapedList.add(createShapedRecipe(stoneBricksBlueStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksBlue));
+		reg.shapedList.add(createShapedRecipe(stoneBricksGreenStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksGreen));
+		reg.shapedList.add(createShapedRecipe(stoneBricksPurpleStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksPurple));
+
 		// non-machine tileentities:
 		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 3, "xyx", "zzz", "xyx", 'x', "ingotIron", 'y', "dustCopper", 'z', energyPipeRed));

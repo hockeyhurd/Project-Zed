@@ -37,7 +37,6 @@ public class BlockStairsMaker extends BlockStairs {
 		boolean flag = false;
 		for (char c : rawName.toCharArray()) {
 			if (c != ' ' && c != '.') {
-				// if (flag) c = String.valueOf(c).toUpperCase().charAt(0);
 				newName += c;
 				flag = false;
 			}
