@@ -26,10 +26,10 @@ public interface IItemChargeable {
 	void setStored(ItemStack stack, int amount);
 	
 	/** Adds and returns total of said itemstack. */
-	int addPower(ItemStack stack, int amount);
+	int addPower(ItemStack stack, int amount, boolean simulate);
 	
 	/** Subtracts and returns total of said itemstack. */
-	int subtractPower(ItemStack stack, int amount);
+	int subtractPower(ItemStack stack, int amount, boolean simulate);
 
 	/** Gets the max charge rate of the item. */
 	int getChargeRate();

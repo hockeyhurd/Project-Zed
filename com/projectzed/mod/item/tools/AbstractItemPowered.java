@@ -6,22 +6,23 @@
 */
 package com.projectzed.mod.item.tools;
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraft.util.EnumChatFormatting;
-
+import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.util.Reference.Constants;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Abstract class for creating chargeable item tools.
@@ -55,6 +56,11 @@ public abstract class AbstractItemPowered extends ItemTool implements IItemCharg
 	public AbstractItemPowered(ToolMaterial mat, String name, int capacity, int chargeRate, IToolSetRegistry reg) {
 		super(2.0f, mat, reg.getSet());
 		this.name = name;
+
+		// energies stuff:
+		this.capacity = capacity;
+		this.chargeRate = chargeRate;
+
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.canRepair = false;
@@ -62,10 +68,6 @@ public abstract class AbstractItemPowered extends ItemTool implements IItemCharg
 		this.setMaxDamage(capacity / 10);
 		
 		this.reg = reg;
-		
-		// energies stuff:
-		this.capacity = capacity;
-		this.chargeRate = chargeRate;
 	}
 	
 	/*
@@ -85,8 +87,8 @@ public abstract class AbstractItemPowered extends ItemTool implements IItemCharg
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + (this.capacity - stack.getItemDamage() * 10) + " McU");
-		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + (this.capacity) + " McU");
+		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
+		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
 	}
 	
 	/*
@@ -115,87 +117,83 @@ public abstract class AbstractItemPowered extends ItemTool implements IItemCharg
 	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
 		return stack.getItemDamage() > stack.getMaxDamage();
 	}
-	
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase e) {
+		if ((double)block.getBlockHardness(world, x, y, z) != 0.0d) {
+			if (stack.getItemDamage() + 1 <= stack.getMaxDamage()) stack.damageItem(1, e);
+		}
+
+		return true;
+	}
+
 	// start energy related things:
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#getCapacity()
-	 */
+
 	@Override
 	public int getCapacity() {
-		return this.capacity;
+		return capacity;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#getStored(net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public int getStored(ItemStack stack) {
-		if (stack.getItem() != this) return 0;
-		return this.capacity - stack.getItemDamage();
+		if (stack == null || stack.getItem() != this) return 0;
+		return capacity - (stack.getItemDamage() * chargeRate);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#setStored(net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public void setStored(ItemStack stack, int amount) {
-		if (stack.getItem() != this || amount < 0 || amount > this.capacity) return;
-		stack.setItemDamage(amount);
+		if (stack == null || stack.getItem() != this || amount < 0 || amount > this.capacity) return;
+
+		// int progress = (int) Math.floor(amount / (double) capacity * chargeRate);
+		int progress = (capacity - amount) / chargeRate;
+		ProjectZed.logHelper.info("Progress:", progress);
+
+		stack.setItemDamage(/*capacity -*/ progress);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#addPower(net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public int addPower(ItemStack stack, int amount) {
-		if (stack.getItem() != this || amount == 0) return 0;
-		
-		int current = this.capacity - stack.getItemDamage();
-		int ret = 0;
-		if (current + amount >= 0 && current + amount <= this.capacity) {
-			ret = current + amount; 
-			// stack.setItemDamage(ret); 
-		}
-		
-		else {
-			amount = this.capacity - current;
+	public int addPower(ItemStack stack, int amount, boolean simulate) {
+		if (stack == null || stack.getItem() != this || amount == 0) return 0;
+
+		amount = Math.max(amount, chargeRate);
+		int current = getStored(stack);
+		int ret;
+
+		if (current + amount >= 0 && current + amount <= capacity) {
 			ret = current + amount;
-			// stack.setItemDamage(ret / 10);
+
+			if (!simulate) setStored(stack, ret);
 		}
-		
+
+		else {
+			amount = capacity - current;
+			ret = current + amount;
+
+			if (!simulate) setStored(stack, ret);
+		}
+
 		return ret;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#subtractPower(net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public int subtractPower(ItemStack stack, int amount) {
-		if (stack.getItem() != this || amount == 0) return 0;
-		
-		int current = this.capacity - stack.getItemDamage();
-		if (current - amount >= 0 && current - amount <= this.capacity) {
+	public int subtractPower(ItemStack stack, int amount, boolean simulate) {
+		if (stack == null || stack.getItem() != this || amount == 0) return 0;
+
+		int current = getStored(stack);
+		if (current - amount >= 0 && current - amount <= capacity) {
 			int ret = current - amount;
-			stack.setItemDamage(ret);
+
+			if (!simulate) setStored(stack, ret);
+
 			return ret;
 		}
-		
+
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.IItemChargeable#getChargeRate()
-	 */
 	@Override
 	public int getChargeRate() {
-		return this.chargeRate;
+		return chargeRate;
 	}
 	
 }
