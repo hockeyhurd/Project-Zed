@@ -17,7 +17,7 @@ import com.hockeyhurd.api.util.AbstractReference;
 public class Reference extends AbstractReference {
 
 	/** Current build number. */
-	public static final short BUILD = 12;
+	public static final short BUILD = 13;
 	
 	/** Current version with included build number. */
 	public static final String VERSION = "v1.1." + BUILD;
@@ -29,7 +29,10 @@ public class Reference extends AbstractReference {
 	// public static final String MOD_URL = "http://73.17.180.186:8080/downloads/" + MOD_NAME.toLowerCase() + "/versions/Project-Zed-alpha-1.1.";
 	// public static final String MOD_URL = "https://dl.dropboxusercontent.com/u/276611945/Minecraft/mods/" + MOD_NAME.toLowerCase() + "/versions/Project-Zed-alpha-1.1.";
 	public static final String MOD_URL = "https://dl.dropboxusercontent.com/u/276611945/minecraft/mods/" + MOD_NAME.toLowerCase() + "/version.txt";
-	
+
+	/** Not required but is available. NOTE: if not using it, set to null! */
+	public static final String CHANGELOG_URL = "https://dl.dropboxusercontent.com/u/276611945/minecraft/mods/" + MOD_NAME.toLowerCase() + "/changelog.txt";
+
 	/**
 	 * Closed constructor, may not be init outside of this class.
 	 */

@@ -6,16 +6,14 @@
 */
 package com.projectzed.mod.gui.component;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
+import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.mod.util.Reference;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.EnumChatFormatting;
-
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.math.Vector4;
-import com.projectzed.mod.util.Reference;
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for custom power info label.
@@ -33,8 +31,6 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	
 	/**
 	 * See constructor below for more info.
-	 * @see com.projectzed.mod.gui.component.PowerLabel#PowerLabel(Vector4, Vector4, Object, Object, boolean)
-	 * 
 	 * @param pos = x, y coordinate of label boundary.
 	 * @param minMax = width, height of label boundary.
 	 * @param stored = amount stored at start.
@@ -67,7 +63,9 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = EnumChatFormatting.GREEN + "Power: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
+		String text0 =
+				EnumChatFormatting.GREEN + "Power: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max)
+						+ " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
 		
 		float percent = ((Number)(this.stored)).floatValue() / ((Number)(this.max)).floatValue() * 100.0f;
 		String text1 = String.format("%.2f%%", percent);

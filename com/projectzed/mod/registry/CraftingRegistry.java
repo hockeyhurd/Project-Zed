@@ -112,6 +112,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(dustMixedAlloy, 2, "xxx", "yyy", "zzz", 'x', "dustIron", 'y', "dustCopper", 'z', "dustTitanium"));
+		reg.shapedList.add(createShapedRecipe(silkTouchUpgrade, 1, "sds", "rar", 'a', "plateAluminium", 'd', Items.diamond_pickaxe, 'r', Items.redstone, 's', Items.string));
 		
 		// tools:
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
