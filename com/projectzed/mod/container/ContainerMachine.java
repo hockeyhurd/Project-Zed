@@ -6,6 +6,10 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.container.slots.SlotUpgrade;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -13,11 +17,6 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Generic container class for most machines.
@@ -60,17 +59,24 @@ public class ContainerMachine extends Container {
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
 		
-		if (this.NUM_SLOTS == 1) this.addSlotToContainer(new Slot(te, 0, 79, 21));
+		if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 1) this.addSlotToContainer(new Slot(te, 0, 79, 21));
 		
-		else if (this.NUM_SLOTS == 2) {
+		else if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 2) {
 			this.addSlotToContainer(new Slot(te, 0, 41, 21));
 			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 		}
 		
-		else if (this.NUM_SLOTS == 3) {
+		else if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 3) {
 			this.addSlotToContainer(new Slot(te, 0, 30, 21));
 			this.addSlotToContainer(new Slot(te, 2, 55, 21));
 			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+		}
+
+		if (te.getSizeUpgradeSlots() > 0) {
+			// add upgrade slots last!
+			for (int i = 0; i < te.getSizeUpgradeSlots(); i++) {
+				this.addSlotToContainer(new SlotUpgrade(te, this.NUM_SLOTS - te.getSizeUpgradeSlots() + i, 176 + 8, 8 + i * 18));
+			}
 		}
 
 		// Adds the player inventory to furnace's gui.

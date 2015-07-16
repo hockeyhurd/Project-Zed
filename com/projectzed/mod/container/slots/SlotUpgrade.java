@@ -30,9 +30,8 @@ public class SlotUpgrade extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		return stack != null && stack.getItem() instanceof IItemUpgradeComponent && inventory instanceof IUpgradeComponent ?
-				((IUpgradeComponent) inventory).canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack) :
-				false;
+		return stack != null && stack.getItem() instanceof IItemUpgradeComponent && inventory instanceof IUpgradeComponent &&
+				((IUpgradeComponent) inventory).canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
 	}
 
 	@Override

@@ -25,7 +25,6 @@ public class GuiCentrifuge extends GuiMachine {
 
 	private int waterStored;
 	private TileEntityIndustrialCentrifuge te2;
-	private GuiButton[] buttons;
 	private byte amount = 1;
 
 	private Vector2<Integer> pos2, minMax2;
@@ -51,7 +50,7 @@ public class GuiCentrifuge extends GuiMachine {
 		super.drawGuiContainerForegroundLayer(x, y);
 		
 		String name = amount < 10 ? " " + amount : "" + amount;
-		int xPos = this.xSize / 3 - this.fontRendererObj.getStringWidth(name) / 2;
+		int xPos = this.xSize / 4 - this.fontRendererObj.getStringWidth(name) / 2 + (upgradeXOffset / 5);
 		int yPos = this.ySize / 3 - this.fontRendererObj.getStringWidth(name) / 2;
 		this.fontRendererObj.drawString(name, xPos, yPos, 4210752);
 	}
@@ -87,16 +86,13 @@ public class GuiCentrifuge extends GuiMachine {
 
 		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity()));
 		
-		this.buttons = new GuiButton[] {
 			// new GuiButton(0, guiLeft + 25, guiTop + 42, 20, 20, "-"),
-			new GuiButton(0, guiLeft + 38, guiTop + 49, 12, 12, "-"),
-			new GuiButton(1, guiLeft + 69, guiTop + 49, 12, 12, "+"),
-		};
+		GuiButton guiButton0 = new GuiButton(super.buttons.size() + 0, guiLeft + 38, guiTop + 49, 12, 12, "-");
+		GuiButton guiButton1 = new GuiButton(super.buttons.size() + 1, guiLeft + 69, guiTop + 49, 12, 12, "+");
 
-		for (GuiButton b : this.buttons) {
-			this.buttonList.add(b);
-		}
-		
+		this.buttonList.add(guiButton0);
+		this.buttonList.add(guiButton1);
+
 		this.amount = this.te2.getCraftingAmount();
 	}
 
@@ -125,21 +121,21 @@ public class GuiCentrifuge extends GuiMachine {
 	 */
 	@Override
 	public void actionPerformed(GuiButton button) {
-		if (button.id >= 0 && button.id < this.buttons.length) {
-			// ProjectZed.logHelper.info("Button ID:\t" + button.id);
-			if (button.id == 0) {
-				if (!this.isShiftKeyDown() && amount - 1 >= 1) amount--;
-				else if (this.isShiftKeyDown() && amount > 1) amount = 1;
-			}
-			
-			else if (button.id == 1) {
-				if (!this.isShiftKeyDown() && amount + 1 <= 10) amount++;
-				else if (this.isShiftKeyDown() && amount < 10) amount = 10;
-			}
-			
-			this.te2.setCraftingAmount(amount);
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityCentrifuge(te2));
+		// ProjectZed.logHelper.info("Button ID:", button.id);
+		if (button.id == this.buttonList.size() - 2) {
+			if (!this.isShiftKeyDown() && amount - 1 >= 1) amount--;
+			else if (this.isShiftKeyDown() && amount > 1) amount = 1;
 		}
+
+		else if (button.id == this.buttonList.size() - 1) {
+			if (!this.isShiftKeyDown() && amount + 1 <= 10) amount++;
+			else if (this.isShiftKeyDown() && amount < 10) amount = 10;
+		}
+
+		else super.actionPerformed(button);
+
+		this.te2.setCraftingAmount(amount);
+		PacketHandler.INSTANCE.sendToServer(new MessageTileEntityCentrifuge(te2));
 	}
 
 }

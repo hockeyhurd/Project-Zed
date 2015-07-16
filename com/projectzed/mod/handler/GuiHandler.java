@@ -11,6 +11,7 @@ import com.projectzed.mod.gui.*;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;

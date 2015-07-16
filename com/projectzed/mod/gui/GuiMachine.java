@@ -6,10 +6,19 @@
 */
 package com.projectzed.mod.gui;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
+import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.api.util.Waila;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.EnumRedstoneType;
+import com.projectzed.mod.container.ContainerMachine;
+import com.projectzed.mod.gui.component.*;
+import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityMachine;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -18,29 +27,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.util.Waila;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.api.util.EnumRedstoneType;
-import com.projectzed.mod.container.ContainerMachine;
-import com.projectzed.mod.gui.component.GuiConfigButton;
-import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
-import com.projectzed.mod.gui.component.GuiIOButton;
-import com.projectzed.mod.gui.component.GuiRedstoneButton;
-import com.projectzed.mod.gui.component.IGuiButton;
-import com.projectzed.mod.gui.component.IInfoContainer;
-import com.projectzed.mod.gui.component.IInfoLabel;
-import com.projectzed.mod.gui.component.PowerLabel;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityMachine;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class containing gui code for all machines.
@@ -61,8 +52,10 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	// button controls:
 	protected LinkedList<IGuiButton> buttons;
 	protected EnumRedstoneType redstoneType;
-	
+
 	protected Waila waila;
+	protected GuiPanelUpgrade upgradePanel;
+	protected int upgradeXOffset;
 
 	/**
 	 * @param inv
@@ -70,12 +63,14 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
-		if (te.getSizeInvenotry() == 1) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
-		else if (te.getSizeInvenotry() == 2) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
+		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
 		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
+		upgradeXOffset = te.getSizeInventory() > 0 ? 0x20 : 0x0;
+
 		this.te = te;
-		this.xSize = 176;
+		this.xSize = 176 + upgradeXOffset;
 		this.ySize = 166;
 
 		this.labelList = new ArrayList<IInfoLabel>();
@@ -84,6 +79,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
 		
 		waila = new Waila(null, player.worldObj, player, null, 0);
+		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
 	}
 
 	/*
@@ -95,7 +91,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
-		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
+		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2 - (upgradeXOffset / 2), 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory",
 		// new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -113,7 +109,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		int xStart = (width - xSize) / 2;
         int yStart = (height - ySize) / 2;
         
-		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize - upgradeXOffset, ySize);
 
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
@@ -122,8 +118,11 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			int i1 = 0;
 			if (this.te.isPoweredOn() && this.te.cookTime > 0) {
 				i1 = this.te.getCookProgressScaled(24);
+				// ProjectZed.logHelper.info(i1);
 				this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
 			}
+
+			upgradePanel.renderContainer(f, x, y);
 		}
 	}
 
@@ -353,6 +352,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
 		}
+
+		upgradePanel.location.x = (double) (guiLeft + xSize - upgradeXOffset);
+		upgradePanel.location.y = (double) guiTop;
 		
 	}
 	

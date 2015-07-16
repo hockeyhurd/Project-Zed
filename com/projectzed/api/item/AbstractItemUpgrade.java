@@ -56,7 +56,7 @@ public abstract class AbstractItemUpgrade extends AbstractItemMetalic implements
 
 	@Override
 	public float operationSpeedRelativeToSize(int stackSize, float originalTickTime) {
-		float ret = stackSize > 0 ? (float) (Math.pow(effRateModifier, stackSize) + originalTickTime) : 1.0f;
+		float ret = stackSize > 0 ? (float) (Math.pow(effRateModifier, stackSize) * originalTickTime) : 1.0f;
 
 		if (ret < 1f) ret = 1f; // clamp minimum number of operations is 1 per tick.
 

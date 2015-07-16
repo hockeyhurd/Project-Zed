@@ -113,6 +113,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(dustMixedAlloy, 2, "xxx", "yyy", "zzz", 'x', "dustIron", 'y', "dustCopper", 'z', "dustTitanium"));
 		reg.shapedList.add(createShapedRecipe(silkTouchUpgrade, 1, "sds", "rar", 'a', "plateAluminium", 'd', Items.diamond_pickaxe, 'r', Items.redstone, 's', Items.string));
+		reg.shapedList.add(createShapedRecipe(overclockerUpgrade, 2, "mrm", "rar", "mcm", 'a', "plateAluminium", 'c', conductiveCoil, 'm', "mixedAlloy", 'r', Items.redstone));
 		
 		// tools:
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
@@ -135,7 +136,8 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(ingotTitanium, 1, "xxx", "xxx", "xxx", 'x', "nuggetTitanium"));
 		reg.shapedList.add(createShapedRecipe(ingotUranium, 1, "xxx", "xxx", "xxx", 'x', "nuggetUranium"));
 
-		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "xyx", 'x', Blocks.chest, 'y', Blocks.crafting_table));
+		reg.shapedList.add(createShapedRecipe(stoneCraftingTable, 1, "xx", "xx", 'x', "cobblestone"));
+		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "tst", "xyx", "tst", 'x', Blocks.chest, 'y', stoneCraftingTable, 's', screw, 't', "stone"));
 		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(wickedClearGlass, 8, "xxx", "x x", "xxx", 'x', thickenedGlass));
 		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminium", 'x', Blocks.redstone_torch));

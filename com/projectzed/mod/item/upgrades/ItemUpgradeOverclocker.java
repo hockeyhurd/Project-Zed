@@ -14,6 +14,7 @@ import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +39,7 @@ public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
 
 	@Override
 	public boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate) {
-		return true;
+		return !(te instanceof TileEntityIndustrialEnergizer);
 	}
 
 	@Override

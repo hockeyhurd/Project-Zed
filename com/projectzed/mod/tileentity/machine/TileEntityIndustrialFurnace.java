@@ -20,7 +20,6 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 
 	public TileEntityIndustrialFurnace() {
 		super("industrialFurnace");
-		this.slots = new ItemStack[2];
 	}
 
 	/*
@@ -29,7 +28,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
 	 */
 	public int getSizeInventory() {
-		return 2;
+		return slots.length;
 	}
 
 	/*
@@ -47,7 +46,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
 	 */
 	protected void initContentsArray() {
-		this.slots = new ItemStack[2];
+		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
 	/*
@@ -70,7 +69,7 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 1 ? false : true;
+		return slot != 1 && super.isItemValidForSlot(slot, stack);
 	}
 
 	/*

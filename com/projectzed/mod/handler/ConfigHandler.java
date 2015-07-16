@@ -65,7 +65,7 @@ public class ConfigHandler extends AbstractConfigHandler {
 				.getFloat("energy burn rate modifier (compounded per upgrade)", "Upgrade Components", 1.5f, 1.0f, 100.0f,
 						"each upgrade compounds by this burn rate");
 		this.effRateModifier = this.getSuggestedConfig()
-				.getFloat("machine efficiency rate modifier (compounded per upgrade)", "Upgrade Components", 0.75f, 0.1f, 1.0f,
+				.getFloat("machine efficiency rate modifier (compounded per upgrade)", "Upgrade Components", 0.85f, 0.1f, 1.0f,
 						"each upgrade compounds by this efficiency rate");
 		
 		this.saveConfig();

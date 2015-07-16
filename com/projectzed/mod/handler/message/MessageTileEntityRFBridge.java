@@ -6,15 +6,13 @@
 */
 package com.projectzed.mod.handler.message;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
-
-import com.projectzed.mod.tileentity.machine.TileEntityRFBridge;
-
+import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Class containing messaging code for rf bridge te.

@@ -35,7 +35,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	
 	public TileEntityIndustrialCentrifuge() {
 		super("industrialCentrifuge");
-		this.slots = new ItemStack[3];
 		this.internalTank = new FluidTank(this.MAX_WATER_STORAGE);
 	}
 	
@@ -64,7 +63,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public int getSizeInventory() {
-		return 3;
+		return slots.length;
 	}
 
 	/*
@@ -84,7 +83,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	protected void initContentsArray() {
-		this.slots = new ItemStack[3];
+		this.slots = new ItemStack[3 + getSizeUpgradeSlots()];
 	}
 
 	/*
@@ -117,7 +116,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 1 || slot == 2;
+		return slot != 2 && super.isItemValidForSlot(slot, stack);
 	}
 
 	/*

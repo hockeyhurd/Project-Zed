@@ -11,13 +11,11 @@ import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.IWrenchable;
-import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.api.util.EnumRedstoneType;
-import com.projectzed.api.util.IRedstoneComponent;
-import com.projectzed.api.util.Sound;
+import com.projectzed.api.util.*;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
@@ -35,7 +33,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Generic abstracted class containing base code for all machines.
@@ -43,12 +43,14 @@ import java.util.HashMap;
  * @author hockeyhurd
  * @version Oct 22, 2014
  */
-public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IModularFrame, IRedstoneComponent, IWrenchable {
+public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneric implements IEnergyMachine, IModularFrame, IRedstoneComponent,
+		IUpgradeComponent, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotInput, slotRight;
 
 	protected int maxStorage = 50000;
 	protected int stored;
+	protected int originalEnergyBurnRate;
 	protected int energyBurnRate;
 	protected boolean powerMode;
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
@@ -56,9 +58,12 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public int cookTime;
 	public static int defaultCookTime = 200;
 	public int scaledTime = (defaultCookTime / 10) * 5;
-	
+	public int originalScaledTime = scaledTime;
+
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
+
+	protected ItemStack[] lastTickUpgrades;
 
 	/**
 	 * @param name name of machine.
@@ -66,7 +71,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public AbstractTileEntityMachine(String name) {
 		super();
 		setCustomName("container." + name);
-		this.energyBurnRate = Reference.Constants.BASE_MACH_USAGE;
+		this.originalEnergyBurnRate = this.energyBurnRate = Reference.Constants.BASE_MACH_USAGE;
 	}
 
 	/*
@@ -111,14 +116,32 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
-	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		if (stack == null || stack.stackSize == 0) return false;
+
+		if (stack.getItem() instanceof IItemUpgradeComponent) return canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
+		return true;
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) {
+		if (openSides[side] == 0) return new int[0];
+
+		int[] ret = new int[getSizeInventory() - getSizeUpgradeSlots()];
+
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = i;
+		}
+
+		return ret;
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -264,12 +287,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			// return;
 		}
 
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-		
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 
 	/*
@@ -287,6 +306,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	public void updateEntity() {
+		calculateDataFromUpgrades();
 		transferPower();
 		boolean flag = this.stored > 0;
 		boolean flag1 = false;
@@ -437,7 +457,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	@Override
 	public int getEnergyBurnRate() {
-		return this.energyBurnRate;
+		return energyBurnRate;
 	}
 
 	/*
@@ -469,6 +489,64 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public void burnEnergy() {
 		if (isPoweredOn() && this.cookTime > 0) this.stored -= this.energyBurnRate;
 		// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
+	}
+
+	/**
+	 * Method used to calculate data from upgrades.
+	 */
+	protected void calculateDataFromUpgrades() {
+		// checks once per second or every 20th tick for updating upgrade info.
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 && getSizeUpgradeSlots() > 0) {
+			ItemStack[] upgrades = getCurrentUpgrades();
+
+			if (upgrades.length > 0) {
+
+				if (lastTickUpgrades != null && lastTickUpgrades.length > 0 && lastTickUpgrades.length == upgrades.length) {
+					boolean isSame = true;
+
+					for (int i = 0; i < lastTickUpgrades.length; i++) {
+						if (!ItemStack.areItemStacksEqual(lastTickUpgrades[i], upgrades[i])) {
+							isSame = false;
+							break;
+						}
+					}
+
+					if (isSame) return;
+				}
+
+				else {
+					lastTickUpgrades = new ItemStack[upgrades.length];
+
+					for (int i = 0; i < upgrades.length; i++) {
+						lastTickUpgrades[i] = upgrades[i];
+					}
+				}
+
+				float mostEff = Float.MAX_VALUE;
+				float maxPower = Float.MIN_VALUE;
+				IItemUpgradeComponent comp;
+
+				for (ItemStack stack : upgrades) {
+					if (stack != null && stack.stackSize > 0) {
+						comp = ((IItemUpgradeComponent) stack.getItem());
+
+						mostEff = Math.min(mostEff, comp.operationSpeedRelativeToSize(stack.stackSize, originalScaledTime));
+						maxPower = Math.max(maxPower, comp.energyBurnRateRelativeToSize(stack.stackSize, originalEnergyBurnRate));
+					}
+				}
+
+				scaledTime = (int) Math.min(Math.ceil(mostEff), originalScaledTime);
+
+				if (scaledTime < 1) scaledTime = 1;
+
+				energyBurnRate = (int) Math.max(Math.ceil(maxPower), originalEnergyBurnRate);
+			}
+
+			else {
+				scaledTime = originalScaledTime;
+				energyBurnRate = originalEnergyBurnRate;
+			}
+		}
 	}
 	
 	/** Abstract function to get sound to play. If not applicable, set to null. */
@@ -682,6 +760,57 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	@Override
 	public byte[] getSidedArray() {
 		return openSides;
+	}
+
+	@Override
+	public ItemStack[] getUpgradeSlots() {
+		List<ItemStack> list = new ArrayList<ItemStack>(getSizeUpgradeSlots());
+
+		for (int i = slots.length - getSizeUpgradeSlots(); i < slots.length; i++) {
+			list.add(slots[i]);
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
+	}
+
+	@Override
+	public ItemStack[] getCurrentUpgrades() {
+		List<ItemStack> list = new ArrayList<ItemStack>(getSizeUpgradeSlots());
+
+		ItemStack[] upgradeSlots = getUpgradeSlots();
+
+		for (int i = 0; i < upgradeSlots.length; i++) {
+			if (upgradeSlots[i] != null && upgradeSlots[i].stackSize > 0) {
+				if (!list.isEmpty()) {
+					boolean added = false;
+
+					for (ItemStack stack : list) {
+						if (stack.isItemEqual(upgradeSlots[i])) {
+							stack.stackSize += upgradeSlots[i].stackSize;
+							if (stack.stackSize > stack.getMaxStackSize()) stack.stackSize = stack.getMaxStackSize();
+							added = true;
+							break;
+						}
+					}
+
+					if (!added) list.add(upgradeSlots[i].copy());
+				}
+
+				else list.add(upgradeSlots[i].copy());
+			}
+		}
+
+		return list.toArray(new ItemStack[list.size()]);
+	}
+
+	@Override
+	public int getSizeUpgradeSlots() {
+		return 0x4;
+	}
+
+	@Override
+	public boolean canInsertItemUpgrade(IItemUpgradeComponent component, ItemStack stack) {
+		return component.effectOnMachines(this, true) && component.maxSize() >= stack.stackSize;
 	}
 
 }

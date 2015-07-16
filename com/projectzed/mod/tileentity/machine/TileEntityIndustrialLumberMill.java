@@ -19,12 +19,8 @@ import net.minecraft.item.ItemStack;
  */
 public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 
-	/**
-	 * @param name
-	 */
 	public TileEntityIndustrialLumberMill() {
 		super("industrialLumberMill");
-		this.slots = new ItemStack[2];
 	}
 
 	/*
@@ -33,7 +29,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
 	 */
 	public int getSizeInventory() {
-		return 2;
+		return slots.length;
 	}
 
 	/*
@@ -51,7 +47,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
 	 */
 	protected void initContentsArray() {
-		this.slots = new ItemStack[2];
+		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
 	/*
@@ -74,7 +70,7 @@ public class TileEntityIndustrialLumberMill extends AbstractTileEntityMachine {
 	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 1 ? false : true;
+		return slot != 1 && super.isItemValidForSlot(slot, stack);
 	}
 
 	/*

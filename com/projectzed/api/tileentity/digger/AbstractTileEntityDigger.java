@@ -319,7 +319,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return slot >= slots.length - getSizeUpgradeSlots() && slot < slots.length ? isItemValidForSlot(slot, stack) : false;
+		return slot >= slots.length - getSizeUpgradeSlots() && slot < slots.length &&isItemValidForSlot(slot, stack);
 	}
 
 	/*

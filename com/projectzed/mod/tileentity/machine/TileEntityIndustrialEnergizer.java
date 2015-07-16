@@ -44,7 +44,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	protected void initContentsArray() {
-		this.slots = new ItemStack[2];
+		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
 	/* (non-Javadoc)
@@ -69,7 +69,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 1 && isItemValid(stack);
+		return slot != 1 && isItemValid(stack);
 	}
 
 	/* (non-Javadoc)

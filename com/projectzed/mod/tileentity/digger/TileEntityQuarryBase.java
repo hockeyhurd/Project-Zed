@@ -62,8 +62,8 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot >= getSizeInventory() - getSizeUpgradeSlots() && slot < getSizeInventory() && stack.getItem() instanceof IItemUpgradeComponent
-				&& canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
+		return stack != null && stack.stackSize > 0 && slot >= getSizeInventory() - getSizeUpgradeSlots() && slot < getSizeInventory() && stack
+				.getItem() instanceof IItemUpgradeComponent && canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
 	}
 
 	/* (non-Javadoc)
