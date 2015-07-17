@@ -6,44 +6,16 @@
 */
 package com.projectzed.mod.proxy;
 
-import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
-
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.renderer.EnergyBankItemRenderer;
-import com.projectzed.mod.renderer.EnergyBankRenderer;
-import com.projectzed.mod.renderer.EnergyPipeItemRenderer;
-import com.projectzed.mod.renderer.EnergyPipeRenderer;
-import com.projectzed.mod.renderer.FluidPipeItemRenderer;
-import com.projectzed.mod.renderer.FluidPipeRenderer;
-import com.projectzed.mod.renderer.FluidTankItemRenderer;
-import com.projectzed.mod.renderer.FluidTankRenderer;
-import com.projectzed.mod.renderer.ItemPipeItemRenderer;
-import com.projectzed.mod.renderer.ItemPipeRenderer;
-import com.projectzed.mod.renderer.ReactorGlassItemRenderer;
-import com.projectzed.mod.renderer.ReactorGlassRenderer;
-import com.projectzed.mod.renderer.ThickenedGlassItemRenderer;
-import com.projectzed.mod.renderer.ThickenedGlassRenderer;
-import com.projectzed.mod.renderer.WickedClearGlassItemRenderer;
-import com.projectzed.mod.renderer.WickedClearGlassRenderer;
+import com.projectzed.mod.renderer.*;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier1;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier2;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
-import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreen;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreenOpaque;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBlue;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductClear;
-
+import com.projectzed.mod.tileentity.container.*;
+import com.projectzed.mod.tileentity.container.pipe.*;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 /**
  * Client proxy for client related registering only!
@@ -64,7 +36,7 @@ public class ClientProxy extends CommonProxy {
 	public static int thickenedGlass;
 	public static int wickedClearGlass;
 	public static int reactorGlass;
-	
+
 	/**
 	 * Default Constructor.
 	 */
@@ -93,7 +65,7 @@ public class ClientProxy extends CommonProxy {
 		thickenedGlass = RenderingRegistry.getNextAvailableRenderId();
 		wickedClearGlass = RenderingRegistry.getNextAvailableRenderId();
 		reactorGlass = RenderingRegistry.getNextAvailableRenderId();
-		
+
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
@@ -108,7 +80,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer((byte) 3));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorGlass.class, new ReactorGlassRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWickedClearGlass.class, new WickedClearGlassRenderer());
-		
+
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeClear), new EnergyPipeItemRenderer(ProjectZed.energyPipeClear.getBlockTextureFromSide(0), true));

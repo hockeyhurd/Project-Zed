@@ -1,6 +1,7 @@
 // Blocks:
 tile.machineContainer.name=Machine Container Frame
 tile.fabricationTable.name=Fabrication Table
+tile.stoneCraftingTable.name=Stone Crafting Table
 tile.thickenedGlass.name=Thickened Glass
 tile.wickedClearGlass.name=Ye' Wicked Clear Glass
 tile.quarryMarker.name=Quarry Marker

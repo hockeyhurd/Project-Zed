@@ -6,17 +6,14 @@
 */
 package com.projectzed.mod.tileentity;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 /**
  * TileEntity code for Fabrication Table.
@@ -141,51 +138,6 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	@Override
 	public boolean canUpdate() {
 		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
-		NBTTagList tagList = comp.getTagList("Items", 10);
-		this.slots = new ItemStack[this.getSizeInvenotry()];
-
-		for (int i = 0; i < tagList.tagCount(); i++) {
-			NBTTagCompound temp = tagList.getCompoundTagAt(i);
-			byte b0 = temp.getByte("Slot");
-
-			if (b0 >= 0 && b0 < this.slots.length) this.slots[b0] = ItemStack.loadItemStackFromNBT(temp);
-		}
-
-		if (comp.hasKey("CustomName", 8)) this.customName = comp.getString("CustomName");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
-		NBTTagList tagList = comp.getTagList("Items", 10);
-
-		for (int i = 0; i < this.slots.length; i++) {
-			if (this.slots[i] != null) {
-				NBTTagCompound temp = new NBTTagCompound();
-				temp.setByte("Slot", (byte) i);
-				this.slots[i].writeToNBT(temp);
-				tagList.appendTag(temp);
-			}
-		}
-
-		comp.setTag("Items", tagList);
-
-		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
 	/*

@@ -6,22 +6,20 @@
 */
 package com.projectzed.mod.handler.message;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * 
@@ -32,7 +30,7 @@ import cpw.mods.fml.relauncher.Side;
 public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHandler<MessageTileEntityStoneCraftingTable, IMessage> {
 
 	private TileEntityStoneCraftingTable te;
-	private Vector4<Integer> vec;
+	private Vector3<Integer> vec;
 	private int numSlots;
 	private ItemStack[] slots;
 	private byte buttonHit;
@@ -47,7 +45,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	
 	public MessageTileEntityStoneCraftingTable(TileEntityStoneCraftingTable te, byte buttonHit) {
 		this.te = te;
-		this.vec = new Vector4<Integer>(te.xCoord, te.yCoord, te.zCoord); 
+		this.vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
 		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInvenotry();
 		this.slots = new ItemStack[numSlots];
@@ -71,7 +69,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		if (this.vec == null) this.vec = new Vector4<Integer>();
+		if (this.vec == null) this.vec = new Vector3<Integer>();
 		
 		this.vec.x = buf.readInt();
 		this.vec.y = buf.readInt();

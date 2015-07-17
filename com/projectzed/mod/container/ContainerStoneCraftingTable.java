@@ -87,15 +87,8 @@ public class ContainerStoneCraftingTable extends Container {
 	 */
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (this.craftMatrix != null) {
-			this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
-
-			this.craftMatrix.markDirty();
-		}
-		
-		// super.onCraftMatrixChanged(inv);
-		detectAndSendChanges();
-		// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityStoneCraftingTable(this.te));
+		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		super.onCraftMatrixChanged(inv);
 	}
 	
 	/*
@@ -104,12 +97,6 @@ public class ContainerStoneCraftingTable extends Container {
 	 */
 	@Override
 	public void detectAndSendChanges() {
-		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
-			this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
-			// ((ICrafting) this.craftMatrix).sendSlotContents(this, i, this.craftMatrix.getStackInSlot(i));
-			// ((ICrafting)this.crafters.get(j)).sendSlotContents(this, i, itemstack1);
-		}
-		
 		super.detectAndSendChanges();
 	}
 	
@@ -144,11 +131,11 @@ public class ContainerStoneCraftingTable extends Container {
 	 */
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		/*for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
 		}
-		
-		this.onCraftMatrixChanged(this.craftMatrix);*/
+
+		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/**

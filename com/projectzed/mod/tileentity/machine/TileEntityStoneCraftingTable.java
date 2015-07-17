@@ -6,14 +6,13 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 
 /**
  * Class containing tileentity code for 
@@ -40,7 +39,7 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	 */
 	@Override
 	public int getInventoryStackLimit() {
-		return 64;
+		return 0x40;
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +54,7 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	 */
 	@Override
 	protected void initSlotsArray() {
-		this.slots = new ItemStack[3 * 3];
+		this.slots = new ItemStack[3 * 3 + 1];
 	}
 
 	/* (non-Javadoc)
@@ -79,7 +78,7 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		return new int[0];
 	}
 
 	/* (non-Javadoc)
@@ -106,7 +105,12 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	public void updateEntity() {
 		super.updateEntity();
 		
-		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityStoneCraftingTable(this));
+		// if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityStoneCraftingTable(this));
+	}
+
+	@Override
+	public boolean canUpdate() {
+		return false;
 	}
 	
 	/*
