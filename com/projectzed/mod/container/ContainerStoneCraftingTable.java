@@ -42,6 +42,13 @@ public class ContainerStoneCraftingTable extends Container {
 	}
 
 	/**
+	 * @return tileentity in this container.
+	 */
+	public TileEntityStoneCraftingTable getTE() {
+		return te;
+	}
+
+	/**
 	 * Adds all slots, player and container.
 	 * @param inv inventory.
 	 * @param te tile entity object.

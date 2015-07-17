@@ -136,7 +136,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(ingotTitanium, 1, "xxx", "xxx", "xxx", 'x', "nuggetTitanium"));
 		reg.shapedList.add(createShapedRecipe(ingotUranium, 1, "xxx", "xxx", "xxx", 'x', "nuggetUranium"));
 
-		reg.shapedList.add(createShapedRecipe(stoneCraftingTable, 1, "xx", "xx", 'x', "stone"));
+		reg.shapedList.add(createShapedRecipe(stoneCraftingTable, 1, "xx", "xx", 'x', "stoneBricks"));
 		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "tst", "xyx", "tst", 'x', Blocks.chest, 'y', stoneCraftingTable, 's', screw, 't', "stone"));
 		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(wickedClearGlass, 8, "xxx", "x x", "xxx", 'x', thickenedGlass));
