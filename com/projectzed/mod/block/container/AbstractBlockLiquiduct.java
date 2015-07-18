@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -95,12 +94,12 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			// 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(ForgeDirection.UP.ordinal()) != null;
-			boolean down = pipe.getConnection(ForgeDirection.DOWN.ordinal()) != null;
-			boolean north = pipe.getConnection(ForgeDirection.NORTH.ordinal()) != null;
-			boolean east = pipe.getConnection(ForgeDirection.EAST.ordinal()) != null;
-			boolean south = pipe.getConnection(ForgeDirection.SOUTH.ordinal()) != null;
-			boolean west = pipe.getConnection(ForgeDirection.WEST.ordinal()) != null;
+			boolean up = pipe.getConnection(0) != null;
+			boolean down = pipe.getConnection(1) != null;
+			boolean north = pipe.getConnection(2)!= null;
+			boolean east = pipe.getConnection(3) != null;
+			boolean south = pipe.getConnection(4) != null;
+			boolean west = pipe.getConnection(5) != null;
 
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
@@ -133,12 +132,12 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(ForgeDirection.UP.ordinal()) != null;
-			boolean down = pipe.getConnection(ForgeDirection.DOWN.ordinal()) != null;
-			boolean north = pipe.getConnection(ForgeDirection.NORTH.ordinal()) != null;
-			boolean east = pipe.getConnection(ForgeDirection.EAST.ordinal()) != null;
-			boolean south = pipe.getConnection(ForgeDirection.SOUTH.ordinal()) != null;
-			boolean west = pipe.getConnection(ForgeDirection.WEST.ordinal()) != null;
+			boolean up = pipe.getConnection(0) != null;
+			boolean down = pipe.getConnection(1) != null;
+			boolean north = pipe.getConnection(2)!= null;
+			boolean east = pipe.getConnection(3) != null;
+			boolean south = pipe.getConnection(4) != null;
+			boolean west = pipe.getConnection(5) != null;
 
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
