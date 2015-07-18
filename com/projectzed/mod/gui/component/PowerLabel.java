@@ -25,7 +25,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 
 	private Vector2<Integer> mouseVec, pos, minMax;
 	private boolean useMCU;
-	private N stored, max;
+	private N stored, lastStored, max;
 	private List<String> list;
 	private boolean visible;
 	
@@ -50,7 +50,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	public PowerLabel(Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max, boolean useMCU) {
 		this.pos = pos;
 		this.minMax = minMax;
-		this.stored = stored;
+		this.stored = lastStored = stored;
 		this.max = max;
 		this.useMCU = useMCU;
 		
@@ -66,18 +66,27 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 		String text0 =
 				EnumChatFormatting.GREEN + "Power: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max)
 						+ " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
+
+		int lastStored = ((Number) this.lastStored).intValue();
+		int stored = ((Number) this.stored).intValue();
+		int max = ((Number) this.max).intValue();
+
+		int dif =  lastStored != stored ? stored - lastStored : lastStored - max;
+		String text1 = EnumChatFormatting.GREEN + "Usage: " + EnumChatFormatting.WHITE + format((Number) dif) + " McU / t";
 		
 		float percent = ((Number)(this.stored)).floatValue() / ((Number)(this.max)).floatValue() * 100.0f;
-		String text1 = String.format("%.2f%%", percent);
+		String text2 = String.format("%.2f%%", percent);
 		
 		if (list.size() == 0) {
 			list.add(text0);
 			list.add(text1);
+			list.add(text2);
 		}
 		
 		else {
 			list.set(0, text0);
 			list.set(1, text1);
+			list.set(2, text2);
 		}
 		return list;
 	}
@@ -95,6 +104,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * (non-Javadoc)
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#isVisible(int, int, int, int, int, int, boolean)
 	 */
+	@Override
 	public boolean isVisible(boolean ignoreMouse) {
 		if (ignoreMouse) return (visible = ignoreMouse);
 		else {
@@ -112,7 +122,8 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;
-		
+
+		this.lastStored = this.stored;
 		this.stored = stored;
 		this.max = max;
 	}
