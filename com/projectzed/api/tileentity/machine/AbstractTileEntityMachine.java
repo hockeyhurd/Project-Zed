@@ -158,7 +158,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot == 1 && openSides[side] == 1;
+		return slot > 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
 	}
 	
 	/**
@@ -169,22 +169,23 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		IInventory otherInv = null;
 		ItemStack in = null;
 		ItemStack out = null;
-		
+
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
 			
 			if (te != null && te instanceof IInventory) { 
 				otherInv = (IInventory) te;
+				final int upgradeOffset = te instanceof IUpgradeComponent ? ((IUpgradeComponent) te).getSizeUpgradeSlots() : 0;
 				
 				// input relative to machine.
 				if (openSides[dir.ordinal()] == -1) {
 					
-					for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+					for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory() - upgradeOffset; otherSlot++) {
 						// stack from other inventory to pull.
 						ItemStack invIn = otherInv.getStackInSlot(otherSlot);
 						if (invIn == null || invIn.stackSize == 0) continue;
 						
-						for (int thisSlot = 0; thisSlot < this.getSizeInvenotry(); thisSlot++) {
+						for (int thisSlot = 0; thisSlot < this.getSizeInvenotry() - getSizeUpgradeSlots(); thisSlot++) {
 							// itemstack currently in the 'input' slot.
 							in = this.getStackInSlot(thisSlot);
 							boolean hasStack = in != null && in.stackSize > 0 && in.stackSize <= in.getMaxStackSize();
@@ -211,13 +212,13 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				
 				// output relative to machine.
 				else if (openSides[dir.ordinal()] == 1) {
-					for (int thisSlot = 0; thisSlot < this.getSizeInventory(); thisSlot++) {
+					for (int thisSlot = 0; thisSlot < this.getSizeInventory() - getSizeUpgradeSlots(); thisSlot++) {
 						out = this.getStackInSlot(thisSlot);
 						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
 						
 						int amount = out.stackSize;
 						
-						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory() - upgradeOffset; otherSlot++) {
 							ItemStack destStack = otherInv.getStackInSlot(otherSlot);
 							if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
 							

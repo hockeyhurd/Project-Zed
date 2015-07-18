@@ -68,7 +68,7 @@ public class HeatLogic {
 		
 		if (this.heat - heat * this.resistance >= 0) {
 			if (!simulate) {
-				this.heat -= Math.ceil(heat * this.resistance);
+				this.heat -= Math.floor(heat * this.resistance);
 				return this.heat;
 			}
 
@@ -76,7 +76,7 @@ public class HeatLogic {
 		}
 		
 		else {
-			int rem = (int) Math.ceil(heat * this.resistance);
+			int rem = (int) Math.floor(heat * this.resistance);
 			if (!simulate) {
 				this.heat = 0;
 				return  this.heat;

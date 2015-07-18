@@ -411,6 +411,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 			
 			if (te != null && te instanceof IInventory) { 
 				otherInv = (IInventory) te;
+				final int upgradeOffset = te instanceof IUpgradeComponent ? ((IUpgradeComponent) te).getSizeUpgradeSlots() : 0;
 				
 				// input relative to machine.
 				/*if (openSides[dir.ordinal()] == -1) {
@@ -453,7 +454,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 						
 						int amount = out.stackSize;
 						
-						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory(); otherSlot++) {
+						for (int otherSlot = 0; otherSlot < otherInv.getSizeInventory() - upgradeOffset; otherSlot++) {
 							ItemStack destStack = otherInv.getStackInSlot(otherSlot);
 							if (destStack != null && destStack.stackSize == destStack.getMaxStackSize()) continue;
 							

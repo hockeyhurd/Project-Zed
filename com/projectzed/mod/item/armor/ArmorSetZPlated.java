@@ -184,7 +184,7 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 
 		// int progress = (int) Math.floor(amount / (double) capacity * chargeRate);
 		int progress = (capacity - amount) / chargeRate;
-		ProjectZed.logHelper.info("Progress:", progress);
+		// ProjectZed.logHelper.info("Progress:", progress);
 
 		stack.setItemDamage(/*capacity -*/ progress);
 	}

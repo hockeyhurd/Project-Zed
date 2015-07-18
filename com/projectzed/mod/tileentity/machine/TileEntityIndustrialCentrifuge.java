@@ -136,7 +136,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return super.canExtractItem(slot, stack, side) && slot == 1;
+		return slot > 1 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
 	}
 
 	/*
