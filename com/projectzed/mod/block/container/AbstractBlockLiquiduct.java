@@ -7,6 +7,14 @@
 
 package com.projectzed.mod.block.container;
 
+import com.projectzed.api.block.AbstractBlockPipe;
+import com.projectzed.api.energy.source.EnumColor;
+import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.proxy.ClientProxy;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,18 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import com.projectzed.api.block.AbstractBlockPipe;
-import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.proxy.ClientProxy;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Abstract block class for liquiducts.
@@ -39,7 +38,6 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 	
 	/**
 	 * @param material
-	 * @param assetDir
 	 * @param name
 	 */
 	public AbstractBlockLiquiduct(Material material, String name, EnumColor color) {
@@ -82,9 +80,8 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 	 */
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
-	
-	/*
-	 * (non-Javadoc)
+
+	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getSelectedBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
 	 */
 	@Override
@@ -94,26 +91,27 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 
 		// Check if block exists.
 		if (pipe != null) {
-			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
+			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL /
+			// 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(0) != null;
-			boolean down = pipe.getConnection(1) != null;
-			boolean north = pipe.getConnection(2)!= null;
-			boolean east = pipe.getConnection(3) != null;
-			boolean south = pipe.getConnection(4) != null;
-			boolean west = pipe.getConnection(5) != null;
-			
+			boolean up = pipe.getConnection(ForgeDirection.UP.ordinal()) != null;
+			boolean down = pipe.getConnection(ForgeDirection.DOWN.ordinal()) != null;
+			boolean north = pipe.getConnection(ForgeDirection.NORTH.ordinal()) != null;
+			boolean east = pipe.getConnection(ForgeDirection.EAST.ordinal()) != null;
+			boolean south = pipe.getConnection(ForgeDirection.SOUTH.ordinal()) != null;
+			boolean west = pipe.getConnection(ForgeDirection.WEST.ordinal()) != null;
+
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
 			float minY = CALC - (down ? CALC : 0);
 			float minZ = CALC - (north ? CALC : 0);
-			
+
 			// Calculate max values.
 			float maxX = 1 - CALC + (east ? CALC : 0);
 			float maxY = 1 - CALC + (up ? CALC : 0);
 			float maxZ = 1 - CALC + (south ? CALC : 0);
-			
+
 			// Set bounds after calculations completed.
 			this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
 		}
@@ -135,23 +133,23 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(0) != null;
-			boolean down = pipe.getConnection(1) != null;
-			boolean north = pipe.getConnection(2)!= null;
-			boolean east = pipe.getConnection(3) != null;
-			boolean south = pipe.getConnection(4) != null;
-			boolean west = pipe.getConnection(5) != null;
-			
+			boolean up = pipe.getConnection(ForgeDirection.UP.ordinal()) != null;
+			boolean down = pipe.getConnection(ForgeDirection.DOWN.ordinal()) != null;
+			boolean north = pipe.getConnection(ForgeDirection.NORTH.ordinal()) != null;
+			boolean east = pipe.getConnection(ForgeDirection.EAST.ordinal()) != null;
+			boolean south = pipe.getConnection(ForgeDirection.SOUTH.ordinal()) != null;
+			boolean west = pipe.getConnection(ForgeDirection.WEST.ordinal()) != null;
+
 			// Calculate min values.
 			float minX = CALC - (west ? CALC : 0);
 			float minY = CALC - (down ? CALC : 0);
 			float minZ = CALC - (north ? CALC : 0);
-			
+
 			// Calculate max values.
 			float maxX = 1 - CALC + (east ? CALC : 0);
 			float maxY = 1 - CALC + (up ? CALC : 0);
 			float maxZ = 1 - CALC + (south ? CALC : 0);
-			
+
 			// Set bounds after calculations completed.
 			this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
 		}
