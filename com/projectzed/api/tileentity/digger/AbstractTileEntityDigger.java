@@ -22,6 +22,8 @@ import com.projectzed.api.util.IUpgradeComponent;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityDigger;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -54,6 +56,8 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	protected Vector3<Integer> currentMineVec;
 	protected BlockHelper bh;
 
+	protected Material[] blackList;
+
 	/**
 	 * @param name name of digger machine as required by parent class.
 	 */
@@ -61,26 +65,98 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		super(name);
 		this.maxPowerStorage = (int) 1e6;
 		this.originalEnergyBurnRate = this.energyBurnRate = 0x100; // 256
+
+		initBlackList();
 	}
 
+	/**
+	 * @return quarry rectanlge.
+	 */
 	public Rect<Integer> getQuarryRect() {
 		return quarryRect;
 	}
-	
+
+	/**
+	 * Set this quarry rectangle to specified rectangle.
+	 *
+	 * @param quarryRect rectangle to set.
+	 */
 	public void setQuarryRect(Rect<Integer> quarryRect) {
 		this.quarryRect = quarryRect;
 	}
 
+	/**
+	 * @return if quarry is done.
+	 */
 	public boolean isDone() {
 		return isDone;
 	}
 
+	/**
+	 * @return copy of current mineing vector, else can return null.
+	 */
 	public Vector3<Integer> getCurrentMineVec() {
 		return currentMineVec != null ? currentMineVec.copy() : null;
 	}
 
 	public void setCurrentMineVec(Vector3<Integer> vec) {
 		this.currentMineVec = vec;
+	}
+
+	/**
+	 * Method to ensure initialization of black listed materials.
+	 */
+	protected abstract void initBlackList();
+
+	/**
+	 * Adds specified material to internal black list.
+	 *
+	 * @param material material to add.
+	 */
+	public void addToBlackList(final Material material) {
+		if (material != null) {
+			if (blackList == null || blackList.length == 0) {
+				blackList = new Material[1];
+				blackList[0] = material;
+			}
+
+			else {
+				Material[] clone = new Material[blackList.length];
+
+				for (int i = 0; i < blackList.length; i++) {
+					clone[i] = blackList[i];
+				}
+
+				blackList = new Material[clone.length + 1];
+
+				for (int i = 0; i < clone.length; i++) {
+					blackList[i] = clone[i];
+				}
+
+				blackList[clone.length] = material;
+			}
+		}
+	}
+
+	/**
+	 * Checks to see if given material has been black listed.
+	 *
+	 * @param material material to check.
+	 * @return true if blacklisted, else returns false.
+	 */
+	public boolean blackListContains(final Material material, final boolean checkForLiquid) {
+		if (blackList != null && blackList.length > 0 && material != null) {
+
+			if (checkForLiquid && (material.isLiquid() || material instanceof MaterialLiquid)) return true;
+
+			for (int i = 0; i < blackList.length; i++) {
+				if (blackList[i] != null) {
+					if (blackList[i].equals(material)) return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/*

@@ -18,7 +18,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
 import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -56,6 +56,13 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2 * 9 + filterMaxSize + getSizeUpgradeSlots()];
+	}
+
+	@Override
+	protected void initBlackList() {
+		this.blackList = new Material[] {
+			Material.air, Material.lava, Material.water, Material.plants, Material.vine, Material.web
+		};
 	}
 
 	/* (non-Javadoc)
@@ -189,8 +196,9 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				
 				Block currentBlock = bh.getBlock(currentMineVec);
 				int metaData = bh.getBlockMetaData(currentMineVec);
-				
-				if (currentBlock != ProjectZed.quarryMarker && currentBlock != Blocks.air && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
+
+				ProjectZed.logHelper.info("current mat:", currentBlock.getMaterial(), blackListContains(currentBlock.getMaterial(), true));
+				if (currentBlock != ProjectZed.quarryMarker && !blackListContains(currentBlock.getMaterial(), true) && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
 					List<ItemStack> dropsList;
 
 					if (!isSilkTouch) dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
