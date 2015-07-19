@@ -7,6 +7,7 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumRedstoneType;
@@ -32,8 +33,8 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 	protected int x, y, z;
 	protected int stored;
 	protected boolean powerMode;
-	
-	// TODO: Implement these in messaging.
+
+	protected boolean isDigging;
 	protected Vector3<Integer> mineVec;
 	protected Rect<Integer> quarryRect;
 	
@@ -56,6 +57,11 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		for (int i = 0; i < openSides.length; i++) {
 			this.openSides[i] = te.getSideValve(i);
 		}
+
+		this.quarryRect = te.getQuarryRect();
+		this.mineVec = te.getCurrentMineVec();
+
+		this.isDigging = this.quarryRect != null && this.mineVec != null;
 	}
 
 	@Override
@@ -70,6 +76,24 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		
 		for (int i = 0; i < openSides.length; i++) {
 			openSides[i] = buf.readByte();
+		}
+
+		this.isDigging = buf.readBoolean();
+
+		if (this.isDigging) {
+			int mx = buf.readInt();
+			int my = buf.readInt();
+			int mz = buf.readInt();
+
+			this.mineVec = new Vector3<Integer>(mx, my, mz);
+
+			int q0x = buf.readInt();
+			int q0y = buf.readInt();
+
+			int q1x = buf.readInt();
+			int q1y = buf.readInt();
+
+			this.quarryRect = new Rect<Integer>(new Vector2<Integer>(q0x, q0y), new Vector2<Integer>(q1x, q1y));
 		}
 	}
 
@@ -86,6 +110,18 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		for (byte b : openSides) {
 			buf.writeByte(b);
 		}
+
+		buf.writeBoolean(isDigging);
+
+		if (isDigging) {
+			buf.writeInt(mineVec.x);
+			buf.writeInt(mineVec.y);
+			buf.writeInt(mineVec.z);
+			buf.writeInt(quarryRect.min.x);
+			buf.writeInt(quarryRect.min.y);
+			buf.writeInt(quarryRect.max.x);
+			buf.writeInt(quarryRect.max.y);
+		}
 	}
 	
 	@Override
@@ -97,7 +133,12 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				((AbstractTileEntityDigger) te).setEnergyStored(message.stored);
 				((AbstractTileEntityDigger) te).setPowerMode(message.powerMode);
 				((AbstractTileEntityDigger) te).setRedstoneType(message.redstoneType);
-				
+
+				if (message.isDigging) {
+					((AbstractTileEntityDigger) te).setCurrentMineVec(message.mineVec);
+					((AbstractTileEntityDigger) te).setQuarryRect(message.quarryRect);
+				}
+
 				for (int i = 0; i < message.openSides.length; i++) {
 					((AbstractTileEntityDigger) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 				}
@@ -113,7 +154,12 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				AbstractTileEntityDigger te2 = (AbstractTileEntityDigger) te;
 				
 				te2.setRedstoneType(message.redstoneType);
-				
+
+				if (message.isDigging) {
+					te2.setCurrentMineVec(message.mineVec);
+					te2.setQuarryRect(message.quarryRect);
+				}
+
 				for (int i = 0; i < message.openSides.length; i++) {
 					te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 				}

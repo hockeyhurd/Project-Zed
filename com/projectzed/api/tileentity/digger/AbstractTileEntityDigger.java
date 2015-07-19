@@ -70,7 +70,19 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	public void setQuarryRect(Rect<Integer> quarryRect) {
 		this.quarryRect = quarryRect;
 	}
-	
+
+	public boolean isDone() {
+		return isDone;
+	}
+
+	public Vector3<Integer> getCurrentMineVec() {
+		return currentMineVec != null ? currentMineVec.copy() : null;
+	}
+
+	public void setCurrentMineVec(Vector3<Integer> vec) {
+		this.currentMineVec = vec;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()

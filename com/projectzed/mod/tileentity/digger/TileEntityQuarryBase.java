@@ -18,6 +18,7 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
 import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -125,12 +126,19 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		if (!worldObj.isRemote) {
 			
 			// everything that updates every tick:
-			if (!this.isDone && isActiveFromRedstoneSignal() && this.storedPower - this.energyBurnRate >= 0) doQuarryWork();
-			
+			if (!this.isDone && isActiveFromRedstoneSignal() && this.storedPower - this.energyBurnRate >= 0) {
+				doQuarryWork();
+			}
+
 			// everything that gets called once per second.
 			if (worldObj.getTotalWorldTime() % 20L == 0) {
 				handleItemSidedIO();
 			}
+		}
+
+		if (quarryRect != null && currentMineVec != null) {
+			worldObj.spawnParticle("smoke", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
+			worldObj.spawnParticle("flame", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
 		}
 	}
 	
@@ -182,7 +190,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				Block currentBlock = bh.getBlock(currentMineVec);
 				int metaData = bh.getBlockMetaData(currentMineVec);
 				
-				if (currentBlock != ProjectZed.quarryMarker && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) != -1f) {
+				if (currentBlock != ProjectZed.quarryMarker && currentBlock != Blocks.air && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
 					List<ItemStack> dropsList;
 
 					if (!isSilkTouch) dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
@@ -195,6 +203,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	
 						boolean result = false;
 						for (int i = 0; i < dropsList.size(); i++) {
+							if (dropsList.get(i) == null || dropsList.get(i).getItem() == null || dropsList.get(i).stackSize == 0) return;
 							result = this.addItemStackToSlots(dropsList.get(i), true);
 							if (!result) {
 								ProjectZed.logHelper.info("I returned false!");

@@ -6,17 +6,16 @@
 */
 package com.projectzed.mod.block.container.digger;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
+import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
-
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 /**
  * Class for industrialQuarry.
@@ -51,7 +50,11 @@ public class BlockIndustrialQuarry extends AbstractBlockContainer {
 		
 		else {
 			TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialQuarry.class), world, x, y, z);
+			if (te != null) {
+				FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialQuarry.class), world, x, y, z);
+				player.addChatComponentMessage(new ChatHelper().comp("is done: " + te.isDone()));
+			}
+
 			return true;
 		}
 	}
