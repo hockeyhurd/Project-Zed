@@ -6,13 +6,9 @@
 */
 package com.projectzed.api.fluid;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,9 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.fluid.container.IFluidContainer;
-import com.projectzed.mod.ProjectZed;
+import java.util.*;
 
 /**
  * Fluid Network new and improved as of 5/14/15.
@@ -35,10 +29,11 @@ import com.projectzed.mod.ProjectZed;
 public class FluidNetwork {
 
 	private final World world;
-	private LinkedList<FluidNode> nodes;
+	private LinkedList<FluidNode> nodes, lastUpdateNodes;
 	private FluidNode masterNode;
 	private final int MAX_IO;
-	
+
+	private boolean markUpdate = false;
 	private boolean transferring = false;
 	private FluidStack transferredFluid = null;
 	
@@ -51,6 +46,8 @@ public class FluidNetwork {
 		nodes = new LinkedList<FluidNode>();
 		this.masterNode = masterNode;
 		nodes.addLast(masterNode);
+
+		lastUpdateNodes = (LinkedList<FluidNode>) nodes.clone();
 		
 		this.MAX_IO = Math.min(masterNode.getIFluidContainer().getMaxFluidExportRate(), masterNode.getIFluidContainer().getMaxFluidImportRate());
 	}
@@ -88,6 +85,8 @@ public class FluidNetwork {
 		}
 		
 		else nodes.remove(node);
+
+		markUpdate = true;
 	}
 	
 	/**
@@ -247,11 +246,21 @@ public class FluidNetwork {
 		
 		return new FluidNode[list.size()];
 	}
+
+	// TODO: Implement this method and check each node has more than 1 connection and/or has a 'path' to master node.
+	private void detectChanges() {
+		markUpdate = false;
+	}
 	
 	/**
 	 * Main method call for network to update fluid transfer.
 	 */
 	public void update() {
+		if (markUpdate) {
+			detectChanges();
+			return;
+		}
+
 		boolean transferring = /*this.transferring =*/ false;
 		FluidStack transferredFluid = /*this.transferredFluid =*/ null;
 		Set<FluidNode> sourceNodes = null;

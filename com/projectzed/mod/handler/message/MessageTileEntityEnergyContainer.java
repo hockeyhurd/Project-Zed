@@ -6,18 +6,17 @@
 */
 package com.projectzed.mod.handler.message;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing creation of message to be sent from either side.
@@ -32,6 +31,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 	public int stored;
 	public int maxStorage;
 	public int maxImportRate, maxExportRate;
+	public ForgeDirection lastReceivedDir;
 
 	// Energy cell specific.
 	public boolean isEnergyCell;
@@ -52,6 +52,8 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.maxStorage = cont.getMaxStorage();
 		this.maxImportRate = cont.getMaxImportRate();
 		this.maxExportRate = cont.getMaxExportRate();
+
+		this.lastReceivedDir = cont instanceof TileEntityEnergyPipeBase ? ((TileEntityEnergyPipeBase) te).getLastReceivedDirection() : ForgeDirection.UNKNOWN;
 
 		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;
@@ -77,6 +79,9 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.maxExportRate = buf.readInt();
 		this.isEnergyCell = buf.readBoolean();
 
+		byte dir = buf.readByte();
+		this.lastReceivedDir = dir == ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.UNKNOWN : ForgeDirection.VALID_DIRECTIONS[dir];
+
 		if (isEnergyCell) {
 			for (int i = 0; i < openSides.length; i++) {
 				openSides[i] = buf.readByte();
@@ -97,6 +102,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		buf.writeInt(maxImportRate);
 		buf.writeInt(maxExportRate);
 		buf.writeBoolean(isEnergyCell);
+		buf.writeByte(lastReceivedDir.ordinal());
 
 		if (isEnergyCell) {
 			for (byte b : openSides) {
@@ -120,19 +126,25 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 						((TileEntityEnergyBankBase) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 					}
 				}
+
+				if (te instanceof TileEntityEnergyPipeBase) ((TileEntityEnergyPipeBase) te).setLastReceivedDirection(message.lastReceivedDir);
 			}
 		}
 		
 		else if (ctx.side == Side.SERVER && message.isEnergyCell) {
 			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-			
-			if (tileEntity != null && tileEntity instanceof TileEntityEnergyBankBase) {
-				TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) tileEntity;
-				
-				if (te != null) {
+
+			if (tileEntity != null) {
+				if (tileEntity instanceof TileEntityEnergyBankBase) {
+					TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) tileEntity;
+
 					for (int i = 0; i < message.openSides.length; i++) {
 						te.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 					}
+				}
+
+				else if (tileEntity instanceof TileEntityEnergyPipeBase) {
+					((TileEntityEnergyPipeBase) tileEntity).setLastReceivedDirection(message.lastReceivedDir);
 				}
 			}
 		}

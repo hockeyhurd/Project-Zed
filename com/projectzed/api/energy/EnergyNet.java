@@ -6,15 +6,14 @@
 */
 package com.projectzed.api.energy;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumFrameType;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing code for how energy is to transfer from 
@@ -75,14 +74,15 @@ public class EnergyNet {
 					
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate());
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());
-					
+
 					if (count > 1) amount /= count;
-					
+
 					if (amount > 0 && cont.getEnergyStored() > 0) {
 						if (colorDep && cont instanceof IColorComponent && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
 
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
-						cont.setLastReceivedDirection(dir.getOpposite());
+						// cont.setLastReceivedDirection(dir.getOpposite());
+						sourceCont.setLastReceivedDirection(dir);
 					}
 					
 				}
