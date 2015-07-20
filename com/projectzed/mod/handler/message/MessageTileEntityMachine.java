@@ -6,22 +6,20 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.EnumRedstoneType;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.api.util.EnumRedstoneType;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 
 /**
  * 
@@ -113,7 +111,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				for (int i = 0; i < message.openSides.length; i++) {
 					((AbstractTileEntityMachine) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
 				}
-				
+
 				if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
 			}
 		}

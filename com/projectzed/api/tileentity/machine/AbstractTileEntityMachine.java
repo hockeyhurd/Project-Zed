@@ -429,7 +429,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	@Override
 	public void setLastReceivedDirection(ForgeDirection dir) {
-		this.lastReceivedDir = dir;
+		// this.lastReceivedDir = dir;
 	}
 	
 	/*
@@ -725,6 +725,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	@Override
 	public void setSideValve(ForgeDirection dir, byte value) {
 		openSides[dir.ordinal()] = value;
+
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		markDirty();
 	}
 	
 	/**
@@ -734,6 +737,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	@Override
 	public void setSideValveAndRotate(ForgeDirection dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
+
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		markDirty();
 	}
 	
 	/**
