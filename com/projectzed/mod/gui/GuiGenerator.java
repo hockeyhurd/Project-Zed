@@ -151,7 +151,7 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 					&& this.stored + this.te.getSource().getEffectiveSize() <= this.maxStorage ? this.te.getSource().getEffectiveSize() : 0;
 
 			if (getComponents() != null && getComponents().size() > 0) {
-				getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
+				getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, new Integer[] { this.te.getEnergyStored(), this.te.getMaxStorage(), te.getSource().getEffectiveSize() });
 			}
 		}
 	}

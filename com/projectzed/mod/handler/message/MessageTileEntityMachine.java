@@ -30,7 +30,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 
 	private AbstractTileEntityMachine te;
 	private int x, y, z;
-	private int stored;
+	private int stored, energyBurnRate;
 	private int scaledCookTime;
 	private boolean powerMode;
 	
@@ -49,6 +49,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
+		this.energyBurnRate = te.getEnergyBurnRate();
 		this.scaledCookTime = te.scaledTime;
 		this.powerMode = te.isPoweredOn();
 		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
@@ -67,6 +68,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.energyBurnRate = buf.readInt();
 		this.scaledCookTime = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		this.containsFluid = buf.readBoolean();
@@ -85,6 +87,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeInt(energyBurnRate);
 		buf.writeInt(scaledCookTime);
 		buf.writeBoolean(powerMode);
 		buf.writeBoolean(containsFluid);
@@ -104,6 +107,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 			
 			if (te instanceof AbstractTileEntityMachine) {
 				((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
+				((AbstractTileEntityMachine) te).setEnergyBurnRate(message.energyBurnRate);
 				((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
 				((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
 				((AbstractTileEntityMachine) te).setRedstoneType(message.redstoneType);
@@ -122,7 +126,11 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 			
 			if (world != null && te != null && te instanceof AbstractTileEntityMachine) {
 				AbstractTileEntityMachine te2 = (AbstractTileEntityMachine) te;
-				
+
+				te2.setEnergyStored(message.stored);
+				te2.setEnergyBurnRate(message.energyBurnRate);
+				te2.setPowerMode(message.powerMode);
+				te2.scaledTime = message.energyBurnRate;
 				te2.setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {

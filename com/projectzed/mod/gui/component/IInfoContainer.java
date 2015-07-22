@@ -17,17 +17,18 @@ import java.util.List;
 public interface IInfoContainer {
 
 	/** Method inherited from given gui's parent class. */
-	public void drawScreen(int x, int y, float f);	
+	void drawScreen(int x, int y, float f);
 	
 	/** Ensure components are init here. */
-	public void initGui();
+	void initGui();
 	
 	/** List to contain all components. */
 	List<IInfoLabel> getComponents();
-	
+
+	/** Function should return current visible component dependent on mouse location. */
 	IInfoLabel visibleComp();
 	
 	/** Method to ensure data is being updated. */
-	public void updateScreen();
+	void updateScreen();
 	
 }

@@ -32,6 +32,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 	protected AbstractTileEntityDigger te;
 	protected int x, y, z;
 	protected int stored;
+	protected int energyBurnRate;
 	protected boolean powerMode;
 
 	protected boolean isDigging;
@@ -50,6 +51,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.stored = te.getEnergyStored();
+		this.energyBurnRate = te.getEnergyBurnRate();
 		this.powerMode = te.isPoweredOn();
 		
 		this.redstoneType = te.getRedstoneType() != null ? te.getRedstoneType() : EnumRedstoneType.LOW;
@@ -70,6 +72,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		this.y = buf.readInt();
 		this.z = buf.readInt();
 		this.stored = buf.readInt();
+		this.energyBurnRate = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		
 		this.redstoneType = EnumRedstoneType.TYPES[buf.readInt()];
@@ -103,6 +106,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(stored);
+		buf.writeInt(energyBurnRate);
 		buf.writeBoolean(powerMode);
 		
 		buf.writeInt(redstoneType.ordinal());
@@ -131,6 +135,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 			
 			if (te != null && te instanceof AbstractTileEntityDigger) {
 				((AbstractTileEntityDigger) te).setEnergyStored(message.stored);
+				((AbstractTileEntityDigger) te).setEnergyBurnRate(message.energyBurnRate);
 				((AbstractTileEntityDigger) te).setPowerMode(message.powerMode);
 				((AbstractTileEntityDigger) te).setRedstoneType(message.redstoneType);
 
@@ -152,7 +157,10 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 			
 			if (world != null && te != null && te instanceof AbstractTileEntityDigger) {
 				AbstractTileEntityDigger te2 = (AbstractTileEntityDigger) te;
-				
+
+				te2.setEnergyStored(message.stored);
+				te2.setEnergyBurnRate(message.energyBurnRate);
+				te2.setPowerMode(message.powerMode);
 				te2.setRedstoneType(message.redstoneType);
 
 				if (message.isDigging) {

@@ -111,7 +111,7 @@ public class GuiCentrifuge extends GuiMachine {
 		this.minMax2.y = guiTop + 17 + 41;
 
 		if (getComponents() != null && getComponents().size() > 1) {
-			getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity());
+			getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, new Integer[] { this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity(), te2.getEnergyBurnRate() });
 		}
 	}
 	

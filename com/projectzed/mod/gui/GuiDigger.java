@@ -314,7 +314,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		this.minMax.y = guiTop + 61 + 17;
 
 		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
-			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
+			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, new Integer[] { this.te.getEnergyStored(), this.te.getMaxStorage(), te.getEnergyBurnRate() });
 		}
 
 		upgradePanel.location.x = (double) (guiLeft + xSize - upgradeXOffset);

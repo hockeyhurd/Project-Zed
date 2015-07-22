@@ -92,13 +92,13 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
 	@Override
-	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
+	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N[] data) {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;
 
-		this.stored = stored;
-		this.max = max;
+		this.stored = data[0];
+		this.max = data[1];
 	}
 
 }

@@ -178,8 +178,8 @@ public class GuiRFBridge extends GuiContainer implements IInfoContainer {
 		
 		if (this.te != null && getComponents() != null && getComponents().size() > 0) {
 			if (this.te != null && getComponents() != null && getComponents().size() > 0) {
-				getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, this.te.getEnergyStored(), this.te.getMaxStorage());
-				getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, this.te.storedRF, this.te.getMaxEnergyStored());
+				getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, new Integer[] { this.te.getEnergyStored(), this.te.getMaxStorage() });
+				getComponents().get(1).update(this.mouseVec, this.pos2, this.minMax2, new Integer[] { this.te.storedRF, this.te.getMaxEnergyStored() });
 			}
 		}
 	}

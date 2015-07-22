@@ -197,7 +197,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 				Block currentBlock = bh.getBlock(currentMineVec);
 				int metaData = bh.getBlockMetaData(currentMineVec);
 
-				ProjectZed.logHelper.info("current mat:", currentBlock.getMaterial(), blackListContains(currentBlock.getMaterial(), true));
+				// ProjectZed.logHelper.info("current mat:", currentBlock.getMaterial(), blackListContains(currentBlock.getMaterial(), true));
 				if (currentBlock != ProjectZed.quarryMarker && !blackListContains(currentBlock.getMaterial(), true) && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
 					List<ItemStack> dropsList;
 

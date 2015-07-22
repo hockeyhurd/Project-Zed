@@ -25,10 +25,11 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 
 	private Vector2<Integer> mouseVec, pos, minMax;
 	private boolean useMCU;
-	private N stored, lastStored, max;
-	private List<String> list;
+	private N stored, lastStored, max, burnGenRate;
 	private boolean visible;
-	
+	private boolean hasUsage;
+	private List<String> list;
+
 	/**
 	 * See constructor below for more info.
 	 * @param pos = x, y coordinate of label boundary.
@@ -67,26 +68,42 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 				EnumChatFormatting.GREEN + "Power: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max)
 						+ " " + (this.useMCU ? Reference.Constants.ENERGY_UNIT : Reference.Constants.RF_ENERGY_UNIT);
 
-		int lastStored = ((Number) this.lastStored).intValue();
-		int stored = ((Number) this.stored).intValue();
-		int max = ((Number) this.max).intValue();
 
-		int dif =  lastStored != stored ? stored - lastStored : lastStored - max;
-		String text1 = EnumChatFormatting.GREEN + "Usage: " + EnumChatFormatting.WHITE + format((Number) dif) + " McU / t";
-		
+		String text1 = "";
+
+		if (hasUsage) {
+			int lastStored = ((Number) this.lastStored).intValue();
+			int stored = ((Number) this.stored).intValue();
+			int max = ((Number) this.max).intValue();
+
+			// int dif = lastStored != stored ? stored - lastStored : lastStored - max;
+			int dif = stored - lastStored;
+
+			boolean neg = dif < 0;
+
+			int burnGenRate = Math.round(((Number) this.burnGenRate).floatValue());
+
+			if (neg) dif = Math.min(Math.abs(dif), burnGenRate);
+			else if (dif != 0) dif = Math.max(Math.abs(dif), burnGenRate);
+
+			if (neg /*&& dif < 0*/) dif = -dif;
+
+			text1 = EnumChatFormatting.GREEN + "Usage: " + EnumChatFormatting.WHITE + format((Integer) dif) + " McU / t";
+		}
+
 		float percent = ((Number)(this.stored)).floatValue() / ((Number)(this.max)).floatValue() * 100.0f;
 		String text2 = String.format("%.2f%%", percent);
 		
 		if (list.size() == 0) {
 			list.add(text0);
-			list.add(text1);
+			if (hasUsage) list.add(text1);
 			list.add(text2);
 		}
 		
 		else {
 			list.set(0, text0);
-			list.set(1, text1);
-			list.set(2, text2);
+			if (hasUsage) list.set(1, text1);
+			list.set(hasUsage ? 2 : 1, text2);
 		}
 		return list;
 	}
@@ -118,14 +135,16 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
 	 */
 	@Override
-	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
+	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N[] data) {
 		this.mouseVec = mouseVec;
 		this.pos = pos;
 		this.minMax = minMax;
 
 		this.lastStored = this.stored;
-		this.stored = stored;
-		this.max = max;
+		this.stored = data[0];
+		this.max = data[1];
+		this.burnGenRate = data.length >= 3 ? data[2] : (N) (Number) 0;
+		this.hasUsage = ((Number) this.burnGenRate).floatValue() != 0f;
 	}
 
 }

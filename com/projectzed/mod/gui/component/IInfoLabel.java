@@ -6,11 +6,9 @@
 */
 package com.projectzed.mod.gui.component;
 
-import java.util.List;
-
 import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.math.Vector4;
+
+import java.util.List;
 
 /**
  * Interface for gui labels.
@@ -21,15 +19,15 @@ import com.hockeyhurd.api.math.Vector4;
 public interface IInfoLabel<N> {
 
 	/** Get label to display to user. */
-	public List<String> getLabel();
+	List<String> getLabel();
 	
 	/** Get effective percent full of storage. */
-	public float getPercent();
+	float getPercent();
 	
 	/** Function to determine if label can be shown */
-	public boolean isVisible(boolean ignoreMouse);
-	
+	boolean isVisible(boolean ignoreMouse);
+
 	/** Handles update appropriate values. */
-	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max);
+	void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N[] data);
 	
 }

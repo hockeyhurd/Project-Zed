@@ -76,8 +76,9 @@ public class GuiLavaGen extends GuiGenerator {
 		this.minMax2.y = guiTop + 17 + 61;
 
 		if (getComponents() != null && getComponents().size() > 1) {
-			getComponents().get(1).update(mouseVec, pos2, minMax2, ((TileEntityLavaGenerator) te).getTank().getFluidAmount(),
-					((TileEntityLavaGenerator) te).getTank().getCapacity());
+			getComponents().get(1).update(mouseVec, pos2, minMax2, new Integer[] { ((TileEntityLavaGenerator) te).getTank().getFluidAmount(),
+					((TileEntityLavaGenerator) te).getTank().getCapacity()
+			});
 		}
 	}
 

@@ -82,7 +82,7 @@ public class EnergyNet {
 
 						sourceCont.addPower(cont, cont.requestPower(sourceCont, amount));
 						// cont.setLastReceivedDirection(dir.getOpposite());
-						sourceCont.setLastReceivedDirection(dir);
+						// sourceCont.setLastReceivedDirection(dir);
 					}
 					
 				}
