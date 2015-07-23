@@ -95,7 +95,7 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 			
 			AbstractTileEntityEnergyContainer te = (AbstractTileEntityEnergyContainer) world.getTileEntity(x, y, z);
-			te.readFromNBT(comp);
+			te.readNBT(comp);
 		}
 	}
 	

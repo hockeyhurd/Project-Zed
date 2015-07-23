@@ -552,14 +552,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	/** Abstract function to get sound to play. If not applicable, set to null. */
 	public abstract Sound getSound();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.cookTime = comp.getShort("CookTime");
 		this.stored = comp.getInteger("ProjectZedPowerStored");
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
@@ -574,14 +569,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (comp.hasKey("CustomName")) this.customName = comp.getString("CustomName");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setShort("CookTime", (short) this.cookTime);
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);

@@ -102,25 +102,7 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 			
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
-			te.readFromNBT(comp);
-
-			/*int id = (int) comp.getFloat("Fluid ID");
-			int amount = (int) comp.getFloat("Fluid Amount");
-			
-			if (id < 0 || amount == 0) return;
-			
-			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
-			
-			if (te.getSizeInvenotry() > 0) {
-				NBTTagList tagList = comp.getTagList("Items", 10);
-
-				for (int i = 0; i < tagList.tagCount(); i++) {
-					NBTTagCompound temp = (NBTTagCompound) tagList.getCompoundTagAt(i);
-					byte b0 = temp.getByte("Slot");
-
-					if (b0 >= 0 && b0 < te.getSizeInvenotry()) te.setInventorySlotContents(b0, ItemStack.loadItemStackFromNBT(temp));
-				}
-			}*/
+			te.readNBT(comp);
 		}
 	}
 	

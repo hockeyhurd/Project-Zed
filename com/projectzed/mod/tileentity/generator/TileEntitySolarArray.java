@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Class used for creating a new tile entity in the form of a solar array.
@@ -140,24 +139,16 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 		super.updateEntity();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		byte tier = comp.getByte("ProjectZedSolarArrayTier");
 		this.tier = tier >= 0 && tier < this.TIER_MODIFIER.length ? tier : 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setByte("ProjectZedSolarArrayTier", this.tier);
 	}
 

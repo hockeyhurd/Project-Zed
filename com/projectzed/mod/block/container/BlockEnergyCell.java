@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing block code for energy bank cell.
@@ -143,10 +142,11 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
+			te.readNBT(comp);
 
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			/*for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				te.setSideValve(dir, comp.getByte(dir.name()));
-			}
+			}*/
 		}
 	}
 

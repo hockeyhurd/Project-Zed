@@ -142,12 +142,13 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 			NBTTagCompound comp = stack.stackTagCompound;
 
 			TileEntityIndustrialCentrifuge te = (TileEntityIndustrialCentrifuge) world.getTileEntity(x, y, z);
+			te.readNBT(comp);
 
-			int id = (int) comp.getFloat("FluidID");
+			/*int id = (int) comp.getFloat("FluidID");
 			int amount = (int) comp.getFloat("FluidAmount");
 			if (id < 0 || amount == 0) return;
 
-			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
+			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));*/
 		}
 	}
 

@@ -132,8 +132,13 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * Handles loading and reading data from memory. <br>
 	 * NOTE: This method should be overridden as necessary.
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
+		readNBT(comp);
+	}
+
+	public void readNBT(NBTTagCompound comp) {
 		this.slots = new ItemStack[this.getSizeInvenotry()];
 		NBTTagList tagList = comp.getTagList("Items", 10);
 
@@ -151,9 +156,13 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * Handles saving and writing to memory. <br>
 	 * NOTE: This method should be overridden as necessary.
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
+		saveNBT(comp);
+	}
 
+	public void saveNBT(NBTTagCompound comp) {
 		if (this.slots != null && this.slots.length > 0) {
 			NBTTagList tagList = comp.getTagList("Items", 10);
 

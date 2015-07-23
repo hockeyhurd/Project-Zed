@@ -94,13 +94,9 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		// multiblock stuffs:
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
@@ -112,12 +108,10 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
+
 		// multiblock stuffs:
 		comp.setBoolean("ProjectZedIsMaster", isMaster);
 		comp.setBoolean("ProjectZedHasMaster", hasMaster);

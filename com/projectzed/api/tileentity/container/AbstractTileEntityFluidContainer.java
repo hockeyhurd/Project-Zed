@@ -313,27 +313,15 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		super.updateEntity();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net
-	 * .minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.internalTank.readFromNBT(comp);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net
-	 * .minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		this.internalTank.writeToNBT(comp);
 	}
 

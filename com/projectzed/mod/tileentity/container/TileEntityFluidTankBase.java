@@ -6,6 +6,14 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.tileentity.IModularFrame;
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import com.projectzed.api.util.EnumFrameType;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
+import com.projectzed.mod.util.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,15 +24,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.PacketHandler;
-import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
-import com.projectzed.mod.util.Reference;
 
 /**
  * Class containing code for te fluid tank.
@@ -287,12 +286,8 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFluidTank(this));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
+	public void readNBT(NBTTagCompound comp) {
 		// Make sure the tier from nbt is acceptable.
 		byte tier = comp.getByte("ProjectZedFluidTankTier");
 		this.tier = tier >= 0 && tier < this.TIER_SIZE.length ? tier : 0;
@@ -302,22 +297,18 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 			this.openSides[i] = comp.getByte("ProjectZedFluidTankSide" + i);
 		}
 
-		super.readFromNBT(comp);
+		super.readNBT(comp);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public void saveNBT(NBTTagCompound comp) {
 		comp.setByte("ProjectZedFluidTankTier", this.tier);
 		
 		for (int i = 0; i < this.openSides.length; i++) {
 			comp.setByte("ProjectZedFluidTankSide" + i, this.openSides[i]);
 		}
 		
-		super.writeToNBT(comp);
+		super.saveNBT(comp);
 	}
 	
 	/*

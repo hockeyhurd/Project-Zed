@@ -450,23 +450,15 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		super.updateEntity();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	@Override
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.storedRF = comp.getInteger("ProjectZedRF");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	@Override
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
 

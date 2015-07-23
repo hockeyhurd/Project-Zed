@@ -9,6 +9,7 @@ package com.projectzed.api.tileentity;
 import com.hockeyhurd.api.math.Vector3;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 /**
@@ -51,6 +52,20 @@ public interface IWrenchable {
 	 * @return true if can be saved else returns false (voids stored data).
 	 */
 	boolean canSaveDataOnPickup();
+
+	/**
+	 * Method used to read nbt data.
+	 *
+	 * @param comp compound to reference.
+	 */
+	void readNBT(NBTTagCompound comp);
+
+	/**
+	 * Method to write to nbt data.
+	 *
+	 * @param comp compound to reference.
+	 */
+	void saveNBT(NBTTagCompound comp);
 
 	/**
 	 * Function to get world coordinates of wrenchable tileentity.

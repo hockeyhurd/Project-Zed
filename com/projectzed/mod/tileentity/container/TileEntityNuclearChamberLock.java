@@ -6,16 +6,15 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberLock;
+import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
 
 /**
  * Class containing code for nuclear chamber lock TE.
@@ -87,13 +86,9 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		((BlockNuclearChamberLock) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		// multiblock stuffs:
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
@@ -105,12 +100,10 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
+
 		// multiblock stuffs:
 		comp.setBoolean("ProjectZedIsMaster", isMaster);
 		comp.setBoolean("ProjectZedHasMaster", hasMaster);

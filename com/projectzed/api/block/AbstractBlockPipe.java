@@ -101,7 +101,7 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 
 			AbstractTileEntityPipe te = (AbstractTileEntityPipe) world.getTileEntity(x, y, z);
-			te.readFromNBT(comp);
+			te.readNBT(comp);
 		}
 	}
 

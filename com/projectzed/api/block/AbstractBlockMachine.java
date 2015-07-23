@@ -212,7 +212,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-			te.readFromNBT(comp);
+			te.readNBT(comp);
 		}
 	}
 

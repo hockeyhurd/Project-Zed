@@ -289,6 +289,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
+	@Override
 	public void updateEntity() {
 		generatePower();
 		transferPower();
@@ -299,25 +300,17 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		super.updateEntity();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	@Override
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
 		this.stored = size >= 0 && size <= this.maxStored ? size : 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	@Override
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 	}

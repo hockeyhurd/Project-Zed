@@ -90,7 +90,7 @@ public class ItemWrench extends Item {
 					NBTTagCompound comp = itemToDrop.stackTagCompound;
 					if (comp == null) comp = new NBTTagCompound();
 
-					te.writeToNBT(comp);
+					wrench.saveNBT(comp);
 					
 					itemToDrop.stackTagCompound = comp;
 					bh.setBlockToAir(vecClick);

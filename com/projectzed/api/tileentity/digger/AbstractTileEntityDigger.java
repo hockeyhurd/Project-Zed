@@ -624,18 +624,14 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		isDone = comp.getBoolean("IsQuarryDone");
 		currentMineVec = Vector3.zero.getVector3i();
@@ -665,8 +661,8 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		
 		comp.setBoolean("IsQuarryDone", isDone);
 		comp.setBoolean("HasQuarryRect", quarryRect != null);

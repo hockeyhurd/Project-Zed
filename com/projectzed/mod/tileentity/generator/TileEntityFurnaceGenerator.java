@@ -196,26 +196,16 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		int time = comp.getInteger("ProjectZedBurnTime");
 		this.burnTime = time > 0 ? time : 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setInteger("ProjectZedBurnTime", this.burnTime);
 	}
 

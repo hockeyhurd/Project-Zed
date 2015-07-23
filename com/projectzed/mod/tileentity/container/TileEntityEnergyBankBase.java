@@ -302,38 +302,34 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
+	public void readNBT(NBTTagCompound comp) {
 		
 		// Make sure the tier from nbt is acceptable.
 		byte tier = comp.getByte("ProjectZedEnergyBankTier");
 		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
 		if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier];
-		
+
+		this.openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+
 		for (int i = 0; i < this.openSides.length; i++) {
 			this.openSides[i] = comp.getByte("ProjectZedEnergyBankSide" + i);
 		}
 		
-		super.readFromNBT(comp);
+		super.readNBT(comp);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public void saveNBT(NBTTagCompound comp) {
 		comp.setByte("ProjectZedEnergyBankTier", this.tier);
+
+		if (this.openSides == null) this.openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 		
 		for (int i = 0; i < this.openSides.length; i++) {
 			comp.setByte("ProjectZedEnergyBankSide" + i, this.openSides[i]);
 		}
 		
-		super.writeToNBT(comp);
+		super.saveNBT(comp);
 	}
 
 }

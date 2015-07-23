@@ -6,15 +6,14 @@
 */
 package com.projectzed.api.tileentity.container;
 
-import java.util.List;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IMultiBlockable;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.api.tileentity.IMultiBlockable;
+import java.util.List;
 
 /**
  * Framework for nuclear chamber components.
@@ -225,8 +224,8 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		// multiblock stuffs:
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
@@ -238,13 +237,9 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		
 		// multiblock stuffs:
 		comp.setBoolean("ProjectZedIsMaster", isMaster);

@@ -113,7 +113,7 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
-			te.readFromNBT(comp);
+			te.readNBT(comp);
 		}
 	}
 	

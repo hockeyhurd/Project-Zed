@@ -218,25 +218,17 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		super.updateEntity();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) { 
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
 		this.storedPower =  size >= 0 && size <= this.maxPowerStorage ? size : 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}

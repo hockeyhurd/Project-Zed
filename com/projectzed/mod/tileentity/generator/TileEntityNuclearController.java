@@ -316,13 +316,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		byte dir = comp.getByte("ProjectZedNuclearDir");
 		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
@@ -343,13 +339,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 
 		comp.setByte("ProjectZedNuclearDir", this.placeDir);
 		comp.setByte("ProjectZedNuclearRel", this.rel);

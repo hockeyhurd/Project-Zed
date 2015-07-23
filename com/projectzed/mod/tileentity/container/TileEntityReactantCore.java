@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
 
 /**
  * TE class object for nuclearReactantCore.
@@ -24,9 +23,6 @@ import com.projectzed.mod.ProjectZed;
  */
 public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 
-	/**
-	 * @param name
-	 */
 	public TileEntityReactantCore() {
 		super("nuclearReactantCore");
 	}
@@ -83,13 +79,9 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 		this.masterVec = Vector3.zero.getVector3i();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		// multiblock stuffs:
 		isMaster = comp.getBoolean("ProjectZedIsMaster");
@@ -101,12 +93,10 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
+
 		// multiblock stuffs:
 		comp.setBoolean("ProjectZedIsMaster", isMaster);
 		comp.setBoolean("ProjectZedHasMaster", hasMaster);

@@ -218,25 +218,17 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		return this.burnTime;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		
 		this.meta = comp.getByte("ProjectZedNuclearIOPortMeta");
 		this.burnTime = comp.getInteger("ProjectZedNuclearBurnTime");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 
 		comp.setByte("ProjectZedNuclearIOPortMeta", this.meta);
 		comp.setInteger("ProjectZedNuclearBurnTime", this.burnTime);
