@@ -124,6 +124,8 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
 					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, x, y, z);
+
+				else return false;
 			}
 
 			return true;

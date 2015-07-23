@@ -6,18 +6,17 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.util.WorldUtils;
+import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TE class for nuclearChamberWall.
@@ -29,9 +28,6 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 
 	public List<IMultiBlockable> subList;
 	
-	/**
-	 * @param name
-	 */
 	public TileEntityNuclearChamberWall() {
 		super("nuclearChamberWall");
 	}

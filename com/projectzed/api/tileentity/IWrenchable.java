@@ -24,9 +24,9 @@ public interface IWrenchable {
 	 * Helper function to get how the tileentity as a block should be rotated.
 	 * <br><bold>NOTE:</bold> This function can be nullified if 'canRotateTE' is set to false.
 	 * 
-	 * @return byte array containing rotation matrix data.
+	 * @return byte containing new meta data after being rotated.
 	 */
-	byte[] getRotationMatrix(byte facingDir);
+	byte getRotatedMeta(byte facingDir, byte currentMeta);
 	
 	/**
 	 * Function to get whether this te can be rotated or not.

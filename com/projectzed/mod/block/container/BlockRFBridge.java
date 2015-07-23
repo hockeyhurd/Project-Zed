@@ -76,6 +76,8 @@ public class BlockRFBridge extends AbstractBlockContainer {
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
 					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityRFBridge.class), world, x, y, z);
+
+				else return false;
 			}
 
 			return true;

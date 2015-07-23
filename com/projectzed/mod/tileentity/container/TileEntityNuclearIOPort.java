@@ -316,8 +316,8 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix(byte facingDir) {
-		return new byte[] { 1, 2 };
+	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
+		return (byte) (currentMeta == 1 ? 2 : 1);
 	}
 
 	/*

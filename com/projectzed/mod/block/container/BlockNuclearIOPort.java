@@ -128,9 +128,12 @@ public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements
 
 		else {
 			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(x, y, z);
-			if (te != null)
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearIOPort.class), world, x, y, z);
+			if (te != null) {
+				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench)) FMLNetworkHandler
+						.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearIOPort.class), world, x, y, z);
+
+				else return false;
+			}
 			
 			return true;
 		}

@@ -56,6 +56,8 @@ public class BlockIndustrialLumberMill extends AbstractBlockMachine {
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
 					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLumberMill.class), world, x, y, z);
+
+				else return false;
 			}
 
 			return true;

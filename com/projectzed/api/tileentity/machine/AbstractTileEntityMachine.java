@@ -619,8 +619,12 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix(byte facingDir) {
-		return new byte[] { 2, 5, 3, 4 };
+	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
+		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
+
+		byte ret = (byte) ForgeDirection.getOrientation(facingDir).getOpposite().ordinal();
+
+		return ret == currentMeta ? facingDir : ret;
 	}
 
 	/*

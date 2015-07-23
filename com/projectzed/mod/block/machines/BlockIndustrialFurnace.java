@@ -62,6 +62,8 @@ public class BlockIndustrialFurnace extends AbstractBlockMachine {
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
 					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialFurnace.class), world, x, y, z);
+
+				else return false;
 			}
 			return true;
 		}

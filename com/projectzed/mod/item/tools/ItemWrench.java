@@ -68,7 +68,7 @@ public class ItemWrench extends Item {
 			Vector3<Integer> vecClick = new Vector3<Integer>(x, y, z);
 			Block b = bh.getBlock(vecClick.x, vecClick.y, vecClick.z); 
 			TileEntity te = world.getTileEntity(vecClick.x, vecClick.y, vecClick.z);
-			
+
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrench = (IWrenchable) te;
 
@@ -77,12 +77,10 @@ public class ItemWrench extends Item {
 
 				byte facingDir = (byte) waila.getSideHit();
 
-				ProjectZed.logHelper.info("facingDir", facingDir);
-				
 				if (wrench.canRotateTE() && !player.isSneaking()) {
 					used = true;
 					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
-					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(facingDir), meta), 2);
+					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, wrench.getRotatedMeta(facingDir, (byte) meta), 2);
 				}
 
 				else if (player.isSneaking() && wrench.canSaveDataOnPickup()) {
@@ -106,21 +104,6 @@ public class ItemWrench extends Item {
 		
 		player.swingItem();
 		return used;
-	}
-	
-	private byte rotateBlock(byte[] rotMatrix, int meta) {
-		byte newMeta = 0;
-		
-		for (int i = 0; i < rotMatrix.length; i++) {
-			if (meta == rotMatrix[i]) {
-				if (i + 1 < rotMatrix.length) newMeta = rotMatrix[i + 1];
-				else newMeta = rotMatrix[0];
-				
-				break;
-			}
-		}
-		
-		return newMeta;
 	}
 
 }

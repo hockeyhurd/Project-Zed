@@ -172,8 +172,8 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix(byte facingDir) {
-		return null;
+	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
+		return currentMeta;
 	}
 	
 	/*
