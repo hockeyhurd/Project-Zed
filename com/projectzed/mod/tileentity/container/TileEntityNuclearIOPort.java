@@ -19,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -317,7 +316,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return new byte[] { 1, 2 };
 	}
 
@@ -345,28 +344,6 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-		
-		data.put("Meta", this.meta);
-		
-		return data;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
-	 */
-	@Override
-	public ItemStack[] stacksToSave() {
-		return this.slots;
 	}
 
 }

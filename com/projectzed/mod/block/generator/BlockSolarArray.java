@@ -6,6 +6,14 @@
 */
 package com.projectzed.mod.block.generator;
 
+import com.projectzed.api.block.AbstractBlockGenerator;
+import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
@@ -17,16 +25,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
-import com.projectzed.api.block.AbstractBlockGenerator;
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing solar block array.

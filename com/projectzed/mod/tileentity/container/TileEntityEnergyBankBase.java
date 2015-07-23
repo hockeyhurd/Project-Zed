@@ -6,16 +6,6 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.HashMap;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -23,6 +13,12 @@ import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing code for energy bank. <br>
@@ -256,19 +252,6 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 */
 	@Override
 	protected void importContents() {
-		if (this.getWorldObj().isRemote) return;
-
-		if (this.storedPower >= this.maxPowerStorage) {
-			this.storedPower = this.maxPowerStorage;
-			// return; // Should be safe to comment this out.
-		}
-
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
 	}
 
 	/*
@@ -351,21 +334,6 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		}
 		
 		super.writeToNBT(comp);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = super.dataToSave();
-
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			data.put(dir.name(), getSideValve(dir));
-		}
-
-		return data;
 	}
 
 }

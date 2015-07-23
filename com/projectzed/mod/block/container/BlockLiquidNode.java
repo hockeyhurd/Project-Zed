@@ -6,6 +6,14 @@
 */
 package com.projectzed.mod.block.container;
 
+import com.hockeyhurd.api.util.Waila;
+import com.projectzed.api.block.AbstractBlockFluidContainer;
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,18 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-
-import com.hockeyhurd.api.util.Waila;
-import com.projectzed.api.block.AbstractBlockFluidContainer;
-import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block code for liquid node.
@@ -115,15 +111,9 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 		
 		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
 			NBTTagCompound comp = stack.stackTagCompound;
-			
+
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
-			
-			int id = (int) comp.getFloat("Fluid ID");
-			int amount = (int) comp.getFloat("Fluid Amount");
-			
-			if (id < 0 || amount == 0) return;
-			
-			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
+			te.readFromNBT(comp);
 		}
 	}
 	

@@ -6,8 +6,10 @@
 */
 package com.projectzed.api.block;
 
-import java.util.Random;
-
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -16,18 +18,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
-import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.mod.ProjectZed;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 
 /**
  * Class containing neccessary abstract code for fluid containers (block).
@@ -107,8 +102,9 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 			NBTTagCompound comp = stack.stackTagCompound;
 			
 			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(x, y, z);
-			
-			int id = (int) comp.getFloat("Fluid ID");
+			te.readFromNBT(comp);
+
+			/*int id = (int) comp.getFloat("Fluid ID");
 			int amount = (int) comp.getFloat("Fluid Amount");
 			
 			if (id < 0 || amount == 0) return;
@@ -124,7 +120,7 @@ public abstract class AbstractBlockFluidContainer extends BlockContainer {
 
 					if (b0 >= 0 && b0 < te.getSizeInvenotry()) te.setInventorySlotContents(b0, ItemStack.loadItemStackFromNBT(temp));
 				}
-			}
+			}*/
 		}
 	}
 	

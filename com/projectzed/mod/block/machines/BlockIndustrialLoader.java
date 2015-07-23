@@ -6,20 +6,19 @@
 */
 package com.projectzed.mod.block.machines;
 
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for industrialLoader.
@@ -58,9 +57,10 @@ public class BlockIndustrialLoader extends BlockContainer {
 
 		else {
 			TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
-			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y, z);
+			if (te != null) {
+				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y, z);
+			}
 			return true;
 		}
 	}

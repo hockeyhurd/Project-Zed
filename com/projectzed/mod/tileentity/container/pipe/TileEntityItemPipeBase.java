@@ -6,19 +6,15 @@
 */
 package com.projectzed.mod.tileentity.container.pipe;
 
-import java.util.HashMap;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.util.EnumFrameType;
-import com.projectzed.mod.ProjectZed;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * 
@@ -89,16 +85,6 @@ public class TileEntityItemPipeBase extends AbstractTileEntityPipe implements IC
 			
 		}
 		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

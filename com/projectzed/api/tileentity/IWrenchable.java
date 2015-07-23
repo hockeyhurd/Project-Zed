@@ -6,13 +6,10 @@
 */
 package com.projectzed.api.tileentity;
 
-import java.util.HashMap;
-
+import com.hockeyhurd.api.math.Vector3;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
-import com.hockeyhurd.api.math.Vector3;
 
 /**
  * Interface for all tileentities that can be wrenched.
@@ -29,7 +26,7 @@ public interface IWrenchable {
 	 * 
 	 * @return byte array containing rotation matrix data.
 	 */
-	byte[] getRotationMatrix();
+	byte[] getRotationMatrix(byte facingDir);
 	
 	/**
 	 * Function to get whether this te can be rotated or not.
@@ -54,21 +51,7 @@ public interface IWrenchable {
 	 * @return true if can be saved else returns false (voids stored data).
 	 */
 	boolean canSaveDataOnPickup();
-	
-	/**
-	 * Function to get name(s) and value(s) to save from te.
-	 * 
-	 * @return mapping to save.
-	 */
-	HashMap<String, Number> dataToSave();
-	
-	/**
-	 * Function to get itemstacks to save to nbt.
-	 * 
-	 * @return itemstack array.
-	 */
-	ItemStack[] stacksToSave();
-	
+
 	/**
 	 * Function to get world coordinates of wrenchable tileentity.
 	 * 

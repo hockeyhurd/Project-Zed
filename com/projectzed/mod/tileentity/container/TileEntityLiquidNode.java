@@ -6,17 +6,12 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidHandler;
-
-import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import net.minecraftforge.fluids.*;
 
 /**
  * TileEntity code for liquidNode.
@@ -30,9 +25,6 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	byte[] sides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	private byte cachedMeta;
 	
-	/**
-	 * @param name
-	 */
 	public TileEntityLiquidNode() {
 		super("liquidNode");
 		this.maxFluidStorage = 1000;
@@ -340,7 +332,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return new byte[] { 1, 2, 3, 4, 5, 6 };
 	}
 

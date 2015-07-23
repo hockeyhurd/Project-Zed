@@ -6,17 +6,16 @@
 */
 package com.projectzed.mod.block.machines;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
-
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 /**
  * Block code for industrialEnergizer.
@@ -55,9 +54,10 @@ public class BlockIndustrialEnergizer extends AbstractBlockMachine {
 
 		else {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-			// if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
-			// world, x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialEnergizer.class), world, x, y, z);
+			if (te != null) {
+				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialEnergizer.class), world, x, y, z);
+			}
 			return true;
 		}
 	}

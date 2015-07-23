@@ -8,6 +8,7 @@ package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockHelper;
+import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
@@ -20,11 +21,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
-import java.util.Map.Entry;
 
 /**
  * Class containing code for the main wrenching tool.
@@ -73,41 +71,28 @@ public class ItemWrench extends Item {
 			
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrench = (IWrenchable) te;
+
+				Waila waila = new Waila(stack, world, player, null, 0);
+				waila.finder(false);
+
+				byte facingDir = (byte) waila.getSideHit();
+
+				ProjectZed.logHelper.info("facingDir", facingDir);
 				
 				if (wrench.canRotateTE() && !player.isSneaking()) {
 					used = true;
 					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
-					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(), meta), 2);
+					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, rotateBlock(wrench.getRotationMatrix(facingDir), meta), 2);
 				}
 
-				else if (player.isSneaking() && wrench.canSaveDataOnPickup() && wrench.dataToSave() != null && wrench.dataToSave().size() > 0) {
+				else if (player.isSneaking() && wrench.canSaveDataOnPickup()) {
 					used = true;
 					
 					ItemStack itemToDrop = new ItemStack(b, 1);
 					NBTTagCompound comp = itemToDrop.stackTagCompound;
 					if (comp == null) comp = new NBTTagCompound();
-					
-					float buffer = 0.0f;
-					for (Entry<String, Number> e : wrench.dataToSave().entrySet()) {
-						buffer = e.getValue().floatValue();
-						comp.setFloat(e.getKey(), buffer);
-					}
-					
-					if (wrench.stacksToSave() != null && wrench.stacksToSave().length > 0) {
-						System.out.println(wrench.stacksToSave()[0]);
 
-						NBTTagList tagList = comp.getTagList("Items", 10);
-
-						for (int i = 0; i < wrench.stacksToSave().length; i++) {
-							if (wrench.stacksToSave()[i] != null) {
-								NBTTagCompound temp = new NBTTagCompound();
-								temp.setByte("Slot", (byte) i);
-								wrench.stacksToSave()[i].writeToNBT(temp);
-								tagList.appendTag(temp);
-							}
-						}
-						
-					}
+					te.writeToNBT(comp);
 					
 					itemToDrop.stackTagCompound = comp;
 					bh.setBlockToAir(vecClick);

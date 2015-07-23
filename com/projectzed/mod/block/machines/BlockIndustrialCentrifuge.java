@@ -9,6 +9,7 @@ package com.projectzed.mod.block.machines;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -34,9 +35,6 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  */
 public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 
-	/**
-	 * @param name
-	 */
 	public BlockIndustrialCentrifuge() {
 		super("industrialCentrifuge");
 		this.setCreativeTab(ProjectZed.modCreativeTab);
@@ -97,7 +95,7 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 						else if (player instanceof EntityPlayerMP) ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
 					}
 
-					ProjectZed.logHelper.info("Stored: " + ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount());
+					// ProjectZed.logHelper.info("Stored: " + ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount());
 
 			}
 		}
@@ -127,8 +125,10 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 	}
 
 	protected void openGui(World world, EntityPlayer player, int x, int y, int z) {
-		FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class),
-				world, x, y, z);
+		if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench)) {
+			FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class), world, x, y, z);
+		}
 	}
 
 	@Override

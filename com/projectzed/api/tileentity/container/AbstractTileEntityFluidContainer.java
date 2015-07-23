@@ -6,24 +6,17 @@
 */
 package com.projectzed.api.tileentity.container;
 
-import java.util.HashMap;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.fluid.FluidNetwork;
+import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.api.tileentity.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.fluid.FluidNetwork;
-import com.projectzed.api.fluid.container.IFluidContainer;
-import com.projectzed.api.tileentity.IWrenchable;
+import net.minecraftforge.fluids.*;
 
 /**
  * Class containing generalized abstraction code for any te container that uses
@@ -356,7 +349,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return new byte[] { 2, 5, 3, 4 };
 	}
 
@@ -384,31 +377,6 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-		
-		int id = -1;
-		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().getFluidID();
-		
-		data.put("Fluid Amount", this.internalTank.getFluidAmount());
-		data.put("Fluid ID", id);
-		return data;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
-	 */
-	@Override
-	public ItemStack[] stacksToSave() {
-		return this.slots;
 	}
 
 	/*

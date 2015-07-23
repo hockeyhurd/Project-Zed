@@ -6,16 +6,6 @@
 */
 package com.projectzed.mod.block.generator;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.projectzed.api.block.AbstractBlockGenerator;
@@ -27,10 +17,18 @@ import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.util.WorldUtils;
-
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 
 /**
  * Class containing code for nuclear controller, main hub for multi-block structure and used as main source of 'power generation', particle effects,
@@ -113,7 +111,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		else {
 			TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
 			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class), world, x, y, z);
-			
+
 			return true;
 		}
 	}

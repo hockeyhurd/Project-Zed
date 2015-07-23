@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -285,7 +284,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
-			// return;
+			return;
 		}
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
@@ -620,7 +619,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return new byte[] { 2, 5, 3, 4 };
 	}
 
@@ -650,27 +649,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-		data.put("ProjectZedPowerStored", this.stored);
-		
-		return data;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
-	 */
-	@Override
-	public ItemStack[] stacksToSave() {
-		return this.slots;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()

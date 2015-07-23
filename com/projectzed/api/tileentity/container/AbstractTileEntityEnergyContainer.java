@@ -6,19 +6,16 @@
 */
 package com.projectzed.api.tileentity.container;
 
-import java.util.HashMap;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.energy.EnergyNet;
+import com.projectzed.api.energy.storage.IEnergyContainer;
+import com.projectzed.api.tileentity.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.energy.EnergyNet;
-import com.projectzed.api.energy.storage.IEnergyContainer;
-import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Class containing generic abstractions for all containers.
@@ -186,24 +183,21 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 */
 	public void transferPower() {
 		if (this.getWorldObj().isRemote) return;
-		
+
 		if (this.storedPower >= this.maxPowerStorage) {
 			this.storedPower = this.maxPowerStorage;
-			// return;
+			return;
 		}
 
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-		
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
+	@Override
 	public Vector3<Integer> worldVec() {
 		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
@@ -212,6 +206,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
+	@Override
 	public void updateEntity() {
 		transferPower();
 		importContents();
@@ -258,7 +253,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return new byte[] { 2, 5, 3, 4 };
 	}
 
@@ -286,29 +281,6 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-		data.put("ProjectZedPowerStored", this.storedPower);
-
-		// TODO: Implement saving of items!
-		
-		return data;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
-	 */
-	@Override
-	public ItemStack[] stacksToSave() {
-		return this.slots;
 	}
 
 }

@@ -7,21 +7,6 @@
 
 package com.projectzed.mod.tileentity.container.pipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
@@ -33,9 +18,16 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class containing te code for liquiducts.
@@ -308,21 +300,6 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-
-		int id = -1;
-		if (this.internalTank.getFluid() != null) id = this.internalTank.getFluid().getFluidID();
-		data.put("Fluid Amount", this.internalTank.getFluidAmount());
-		data.put("Fluid ID", id);
-		return data;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)

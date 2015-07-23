@@ -6,20 +6,21 @@
 */
 package com.projectzed.api.block;
 
+import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.proxy.ClientProxy;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-
-import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.proxy.ClientProxy;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing necessary abstractions for a generic pipe.
@@ -92,6 +93,16 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	@Override
 	public TileEntity createTileEntity(World world, int id) {
 		return getTileEntity();
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
+			NBTTagCompound comp = stack.stackTagCompound;
+
+			AbstractTileEntityPipe te = (AbstractTileEntityPipe) world.getTileEntity(x, y, z);
+			te.readFromNBT(comp);
+		}
 	}
 
 	/*

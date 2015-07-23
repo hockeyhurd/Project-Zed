@@ -6,12 +6,6 @@
 */
 package com.projectzed.mod.tileentity.container.pipe;
 
-import java.util.HashMap;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
@@ -22,6 +16,9 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing code for energy pipe;
@@ -237,14 +234,13 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	protected void importContents() {
 		if (this.getWorldObj().isRemote) return;
 		
-		if (this.storedPower >= this.maxPowerStorage) this.storedPower = this.maxPowerStorage;
+		if (this.storedPower >= this.maxPowerStorage) {
+			this.storedPower = this.maxPowerStorage;
+			return;
+		}
 
-		int x = this.xCoord;
-		int y = this.yCoord;
-		int z = this.zCoord;
-
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, x, y, z, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, x, y, z, lastReceivedDir);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 		
 		// We don't need to send to client every tick! Once/sec. or so should suffice. (no gui)
 		if (this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
@@ -330,17 +326,6 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#dataToSave()
-	 */
-	@Override
-	public HashMap<String, Number> dataToSave() {
-		HashMap<String, Number> data = new HashMap<String, Number>();
-		data.put("ProjectZedPowerStored", this.storedPower);
-		return data;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)

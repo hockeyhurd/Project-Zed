@@ -6,15 +6,12 @@
 */
 package com.projectzed.api.tileentity.container;
 
-import java.util.HashMap;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.tileentity.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.tileentity.IWrenchable;
 
 /**
  * Generic class used for creating new te pipes for transport.
@@ -175,7 +172,7 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte[] getRotationMatrix() {
+	public byte[] getRotationMatrix(byte facingDir) {
 		return null;
 	}
 	
@@ -205,19 +202,4 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#dataToSave()
-	 */
-	@Override
-	public abstract HashMap<String, Number> dataToSave();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#stacksToSave()
-	 */
-	@Override
-	public ItemStack[] stacksToSave() {
-		return null;
-	}
 }

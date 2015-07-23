@@ -9,6 +9,7 @@ package com.projectzed.mod.block.container;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -72,7 +73,11 @@ public class BlockRFBridge extends AbstractBlockContainer {
 
 		else {
 			TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityRFBridge.class), world, x, y, z);
+			if (te != null) {
+				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityRFBridge.class), world, x, y, z);
+			}
+
 			return true;
 		}
 	}
