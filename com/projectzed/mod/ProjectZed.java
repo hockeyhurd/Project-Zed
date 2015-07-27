@@ -27,6 +27,7 @@ import com.projectzed.mod.item.metals.*;
 import com.projectzed.mod.item.tools.ItemChainsaw;
 import com.projectzed.mod.item.tools.ItemMiningDrill;
 import com.projectzed.mod.item.tools.ItemWrench;
+import com.projectzed.mod.item.upgrades.ItemUpgradeEfficiency;
 import com.projectzed.mod.item.upgrades.ItemUpgradeOverclocker;
 import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import com.projectzed.mod.proxy.CommonProxy;
@@ -154,6 +155,7 @@ public class ProjectZed {
 	public static Item gearTitanium;
 	public static Item overclockerUpgrade;
 	public static Item silkTouchUpgrade;
+	public static Item efficiencyUpgrade;
 
 	// Armor:
 	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", 100, new int[] { 3, 8, 6, 3 },  25);
@@ -373,6 +375,7 @@ public class ProjectZed {
 		gearDiamond = new ItemGear("gearDiamond", assetDir);
 		overclockerUpgrade = new ItemUpgradeOverclocker("overclockerUpgrade");
 		silkTouchUpgrade = new ItemUpgradeSilkTouch("silkTouchUpgrade");
+		efficiencyUpgrade = new ItemUpgradeEfficiency("efficiencyUpgrade");
 		
 		// Armor:
 		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, 0).setUnlocalizedName("zPlatedHelmet");

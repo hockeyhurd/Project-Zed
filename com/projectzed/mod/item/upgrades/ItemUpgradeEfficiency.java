@@ -13,57 +13,63 @@ import com.projectzed.api.item.AbstractItemUpgrade;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 /**
- * Item class for overclockerUpgrade.
+ * Class for efficiencyUpgrade.
  *
  * @author hockeyhurd
- * @version 7/4/2015.
+ * @version 7/24/2015.
  */
-public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
+public class ItemUpgradeEfficiency extends AbstractItemUpgrade {
 
 	/**
 	 * @param name name of upgrade component.
 	 */
-	public ItemUpgradeOverclocker(String name) {
+	public ItemUpgradeEfficiency(String name) {
 		super(name);
-		this.maxStackSize = 0xc;
+		this.setMaxStackSize(0x4);
+	}
+
+	@Override
+	public float energyBurnRateRelativeToSize(int stackSize, float originalRate) {
+		if (stackSize == 0) return originalRate;
+		if (stackSize == 1) return originalRate * 2f;
+
+		for (int i = 0; i < stackSize; i++) {
+			originalRate *= 2f;
+		}
+
+		return originalRate;
 	}
 
 	@Override
 	public boolean effectOnMachines(AbstractTileEntityMachine te, boolean simulate) {
-		return !(te instanceof TileEntityIndustrialEnergizer);
-	}
-
-	@Override
-	public boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate) {
-		return true;
-	}
-
-	@Override
-	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	protected void addInfo(ItemStack stack, EntityPlayer player, List list) {
-		list.add("Decreases machine processing time by " + (ProjectZed.configHandler.getEffRateModifier() * 100f) + "%.");
-		list.add("Increases power usage by " + (ProjectZed.configHandler.getBurnRateModifier() * 100f) + "%.");
+	public boolean effectOnGenerators(AbstractTileEntityGenerator te, boolean simulate) {
+		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
+		if (!simulate) te.setWaitTime(te.getWaitTime() / 2);
+		return true;
+	}
+
+	@Override
+	protected void addInfo(ItemStack stack, EntityPlayer player, List list) {
+		list.add("Doubles digging speed!");
+	}
+
+	@Override
 	protected int addShiftInfo(ItemStack stack, EntityPlayer player, List list, boolean simulate) {
-		return 0;
+		return 0x0;
 	}
 
 }

@@ -16,7 +16,6 @@ import com.projectzed.api.util.EnumFilterType;
 import com.projectzed.api.util.IItemFilterComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
-import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
@@ -36,8 +35,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	protected List<ItemStack> filterStacks;
 	protected int filterMaxSize = 0; // 3 * 3;
 	protected EnumFilterType itemFilterType;
-	protected boolean isSilkTouch = false;
-	
+
 	/**
 	 * @param name name of quarry as required by parent class.
 	 */
@@ -99,28 +97,38 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 			if (worldObj.getTotalWorldTime() % 20L == 0) {
 				// ProjectZed.logHelper.info("energyBurnRate:", energyBurnRate);
 
-				ItemStack[] upgrades = getCurrentUpgrades();
-				if (upgrades.length > 0) {
+				isSilkTouch = false;
+				waitTime = originalWaitTime;
+				energyBurnRate = originalEnergyBurnRate;
 
-					float max = Float.MIN_VALUE;
-					IItemUpgradeComponent comp;
+				if (!isDone()) {
 
-					for (ItemStack stack : upgrades) {
-						if (stack != null && stack.stackSize > 0) {
-							comp = ((IItemUpgradeComponent) stack.getItem());
-							if (!isSilkTouch && comp instanceof ItemUpgradeSilkTouch) isSilkTouch = true;
+					ItemStack[] upgrades = getCurrentUpgrades();
+					if (upgrades.length > 0) {
 
-							max = Math.max(max, comp.energyBurnRateRelativeToSize(stack.stackSize, originalEnergyBurnRate));
+						float max = Float.MIN_VALUE;
+						IItemUpgradeComponent comp;
+
+						for (ItemStack stack : upgrades) {
+							if (stack != null && stack.stackSize > 0) {
+								comp = ((IItemUpgradeComponent) stack.getItem());
+								if (!comp.effectOnDiggers(this, true)) continue;
+								else {
+									for (int i = 0; i < Math.min(stack.stackSize, comp.maxSize()); i++) {
+										comp.effectOnDiggers(this, false);
+									}
+								}
+
+								// if (!isSilkTouch && comp instanceof ItemUpgradeSilkTouch) isSilkTouch = true;
+
+								max = Math.max(max, comp.energyBurnRateRelativeToSize(stack.stackSize, originalEnergyBurnRate));
+							}
 						}
+
+						energyBurnRate = (int) Math.max(Math.ceil(max), originalEnergyBurnRate);
 					}
-
-					energyBurnRate = (int) Math.max(Math.ceil(max), originalEnergyBurnRate);
 				}
 
-				else {
-					isSilkTouch = false;
-					energyBurnRate = originalEnergyBurnRate;
-				}
 			}
 		}
 	}

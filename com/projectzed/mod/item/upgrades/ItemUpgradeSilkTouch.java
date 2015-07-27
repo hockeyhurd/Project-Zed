@@ -58,13 +58,21 @@ public class ItemUpgradeSilkTouch extends AbstractItemUpgrade {
 
 	@Override
 	public boolean effectOnDiggers(AbstractTileEntityDigger te, boolean simulate) {
+		if (!simulate) te.setSilkTouch(true);
 		return true;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+	protected void addInfo(ItemStack stack, EntityPlayer player, List list) {
 		list.add("Increases power usage by 2x original burn rate.");
 	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	protected int addShiftInfo(ItemStack stack, EntityPlayer player, List list, boolean simulate) {
+		return 0;
+	}
+
 
 }

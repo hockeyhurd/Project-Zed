@@ -6,19 +6,17 @@
 */
 package com.projectzed.mod.item;
 
-import java.util.List;
-
+import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
-import com.projectzed.mod.ProjectZed;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 
 /**
  * Class containing code for nuclear fuel rods.
@@ -52,9 +50,10 @@ public class ItemFuelRod extends AbstractItemMetalic {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister reg) {
-		itemIcon = reg.registerIcon(this.assetDir + name);
+		if (isEmpty) itemIcon = reg.registerIcon(this.assetDir + name);
 		
-		if (!isEmpty) {
+		// if (!isEmpty) {
+		else {
 			for (int i = 0; i < icons.length; i++) {
 				icons[i] = reg.registerIcon(this.assetDir + name + "_" + i);
 			}

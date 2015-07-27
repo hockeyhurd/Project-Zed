@@ -46,8 +46,10 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	protected int originalEnergyBurnRate;
 	protected int energyBurnRate;
 	protected int waitTime = 20;
+	protected final int originalWaitTime = waitTime;
 	protected int currentTickTime;
 	protected boolean isDone;
+	protected boolean isSilkTouch = false;
 	
 	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
 	protected EnumRedstoneType redstoneType;
@@ -101,6 +103,22 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 
 	public void setCurrentMineVec(Vector3<Integer> vec) {
 		this.currentMineVec = vec;
+	}
+
+	public void setSilkTouch(final boolean value) {
+		this.isSilkTouch = value;
+	}
+
+	public boolean hasSilkTouch() {
+		return isSilkTouch;
+	}
+
+	public void setWaitTime(int waitTime) {
+		this.waitTime = waitTime;
+	}
+
+	public int getWaitTime() {
+		return waitTime;
 	}
 
 	/**
