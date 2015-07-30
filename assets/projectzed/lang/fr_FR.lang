@@ -1,8 +1,26 @@
 // Blocks:
 tile.machineContainer.name=Cadre de conteneur de machine
 tile.fabricationTable.name=Table de fabrication
+tile.stoneCraftingTable.name=Table de fabrication de pierre
 tile.thickenedGlass.name=Verre épaissi
 tile.wickedClearGlass.name=L'abject verre clair
+tile.quarryMarker.name=Marqueur de carrière
+
+tile.stoneBricksDefault.name=Briques de pierre
+tile.stoneBricksWide.name=Briques de pierre - Plein
+tile.stoneBricksRed.name=Briques de pierre - Rouge
+tile.stoneBricksBlue.name=Briques de pierre - Bleu
+tile.stoneBricksGreen.name=Briques de pierre - Vert
+tile.stoneBricksPurple.name=Briques de pierre - Violet
+
+tile.stoneBricksDefaultStairs.name=Escaliers de briques de pierre
+tile.stoneBricksWideStairs.name=Escaliers de briques de pierre - Plein
+tile.stoneBricksRedStairs.name=Escaliers de briques de pierre - Rouge
+tile.stoneBricksBlueStairs.name=Escaliers de briques de pierre - Bleu
+tile.stoneBricksGreenStairs.name=Escaliers de briques de pierre - Vert
+tile.stoneBricksPurpleStairs.name=Escaliers de briques de pierre - Violet
+
+// Nuclear stuff:
 tile.atomicBomb.name=Bombe atomique
 tile.nuclearChamberWall.name=Mur de chambre de réactif
 tile.nuclearChamberLock.name=Verrou de chambre de réactif
@@ -18,6 +36,7 @@ tile.solarArray1.name=Panneau solaire - BT
 tile.solarArray2.name=Panneau solaire - MT
 tile.solarArray3.name=Panneau solaire - HT
 tile.furnaceGen.name=Générateur de four
+tile.lavaGen.name=Générateur de lave
 tile.nuclearControllerFission.name=Contrôleur de fission
 tile.nuclearControllerFusion.name=Contrôleur de fusion
 tile.industrialFurnace.name=Four industriel
@@ -27,6 +46,7 @@ tile.industrialMetalPress.name=Presse métallique industrielle
 tile.industrialCentrifuge.name=Centrifugeuse industrielle
 tile.industrialEnergizer.name=Energiseuse industrielle
 tile.industrialLoader.name=Chargeur de parcelle industriel
+tile.industrialQuarry.name=Carrière industrielle
 tile.energyPipeRed.name=Conduit d'énergie - Rouge
 tile.energyPipeOrange.name=Conduit d'énergie - Orange
 tile.energyPipeClear.name=Conduit d'énergie - Vide
@@ -39,7 +59,7 @@ tile.fluidTankTier1.name=Réservoir à fluide - II
 tile.fluidTankTier2.name=Réservoir à fluide - III
 tile.fluidTankTier3.name=Réservoir à fluide - IV
 tile.liquiductBlue.name=Liquiduc - Bleu
-tile.liquiductClear.name=Liquiduc - Clair
+tile.liquiductClear.name=Liquiduc - Vide
 tile.liquidNode.name=Noeud de liquides
 
 
@@ -62,15 +82,25 @@ item.screw.name=Tournevis
 item.sheetAluminium.name=Feuille d'aluminium
 item.sheetReinforced.name=Feuille composite renforcé
 item.conductiveCoil.name=Bobine conductrice
-item.electricMotor.name=moteur électrique
-item.gearWooden.name=Mécanisme en bois
-item.gearStone.name=Mécanisme en pierre
-item.gearIron.name=Mécanisme en fer
-item.gearCopper.name=Mécanisme en cuivre
-item.gearAluminium.name=Mécanisme en aluminium
-item.gearGold.name=Mécanisme en or
-item.gearDiamond.name=Mécanisme en diamant
-item.gearTitanium.name=Mécanisme en titane
+item.electricMotor.name=Moteur électrique
+item.photoviolicCell.name=Cellule photoviolique
+item.gearWooden.name=Engrenage en bois
+item.gearStone.name=Engrenage en pierre
+item.gearIron.name=Engrenage en fer
+item.gearCopper.name=Engrenage en cuivre
+item.gearAluminium.name=Engrenage en aluminium
+item.gearGold.name=Engrenage en or
+item.gearDiamond.name=Engrenage en diamant
+item.gearTitanium.name=Engrenage en titane
+item.overclockerUpgrade.name=Amélioration overclocker
+item.silkTouchUpgrade.name=Amélioration touché doux
+item.efficiencyUpgrade.name=Amélioration efficacité
+
+// Armor:
+item.zPlatedHelmet.name=Casque plaquéZ
+item.zPlatedChestplate.name=Plastron plaquéZ
+item.zPlatedLeggings.name=Jambières plaquéesZ
+item.zPlatedBoots.name=Bottes plaquéesZ
 
 // Tools:
 item.wrench.name=Clef anglaise
@@ -88,6 +118,13 @@ item.dustAluminium.name=Poudre d'aluminium
 item.dustUranium.name=Poudre d'uranium 
 item.enrichedUranium.name=Uranium enrichi
 item.dustMixedAlloy.name=Poudre d'alliage mélangé
+
+item.nuggetIron.name=Pépite de fer
+item.nuggetAluminium.name=Pépite d'aluminium
+item.nuggetCopper.name=Pépite de cuivre
+item.nuggetNickel.name=Pépite de nickel
+item.nuggetTitanium.name=Pépite de titanium
+item.nuggetUranium.name=Pépite d'uranium
 
 item.ingotTitanium.name=Lingot de titane
 item.ingotCopper.name=Lingot de cuivre
