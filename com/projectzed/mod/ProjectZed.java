@@ -7,11 +7,13 @@
 package com.projectzed.mod;
 
 import com.hockeyhurd.api.math.TimeLapse;
+import com.hockeyhurd.api.util.FluidFactory;
 import com.hockeyhurd.api.util.LogHelper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.*;
 import com.projectzed.mod.block.container.*;
 import com.projectzed.mod.block.container.digger.BlockIndustrialQuarry;
+import com.projectzed.mod.block.fluids.BlockFluidOil;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockLavaGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
@@ -48,6 +50,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * Project-Zed's main class covering all initializations.
@@ -87,6 +91,7 @@ public class ProjectZed {
 	public static Block stoneBricksGreen, stoneBricksGreenStairs;
 	public static Block stoneBricksPurple, stoneBricksPurpleStairs;
 
+	// Nuclear Blocks:
 	public static Block nuclearReactorGlass;
 	public static Block nuclearChamberWall;
 	public static Block nuclearChamberLock;
@@ -94,7 +99,12 @@ public class ProjectZed {
 	public static Block nuclearPowerPort;
 	public static Block nuclearControlPort;
 	public static Block nuclearIOPort;
-	
+
+	// Fluids:
+	public static Block blockFluidOil;
+
+	public static Fluid fluidOil;
+
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
 	public static Block furnaceGen;
@@ -298,6 +308,20 @@ public class ProjectZed {
 		nuclearPowerPort = new BlockNuclearPowerPort();
 		nuclearControlPort = new BlockNuclearControlPort();
 		nuclearIOPort = new BlockNuclearIOPort();
+
+		// Fluids:
+		if (!FluidRegistry.isFluidRegistered("oil")) {
+			fluidOil = FluidFactory.createNewFluid("oil");
+			fluidOil.setDensity(800);
+			fluidOil.setViscosity(10000);
+
+			// TODO: MOVE REGISTERING OF FLUID SOMEWHERE OUT OF THIS MAIN CLASS!!!
+			FluidRegistry.registerFluid(fluidOil);
+		}
+
+		else fluidOil = FluidRegistry.getFluid("oil");
+
+		blockFluidOil = new BlockFluidOil("blockFluidOil", fluidOil);
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
