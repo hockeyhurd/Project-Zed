@@ -143,6 +143,10 @@ tile.blockUranium.name=Block of Uranium
 item.emptyFuelRod.name=Empty Fuel Rod
 item.fuelRod.name=Uranium Fuel Rod
 
+// Fluids:
+tile.blockFluidOil.still.name=Oil
+item.bucketOil.name=Oil Bucket
+
 // Containers/GUIs
 container.industrialFurnace=Industrial Furnace
 container.industrialCrusher=Industrial Crusher

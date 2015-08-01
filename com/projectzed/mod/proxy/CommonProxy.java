@@ -123,6 +123,7 @@ public class CommonProxy {
 		if (ProjectZed.worldgenAluminium != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenAluminium, 1);
 		if (ProjectZed.worldgenCopper != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenCopper, 1);
 		if (ProjectZed.worldgenUranium != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenUranium, 1);
+		if (ProjectZed.worldgenOil != null) GameRegistry.registerWorldGenerator(ProjectZed.worldgenOil, 1);
 	}
 	
 	private void registerEntities() {

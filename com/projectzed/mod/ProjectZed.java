@@ -9,6 +9,7 @@ package com.projectzed.mod;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.FluidFactory;
 import com.hockeyhurd.api.util.LogHelper;
+import com.hockeyhurd.api.worldgen.HCWorldGenFluid;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.*;
 import com.projectzed.mod.block.container.*;
@@ -44,13 +45,18 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
 /**
@@ -104,6 +110,8 @@ public class ProjectZed {
 	public static Block blockFluidOil;
 
 	public static Fluid fluidOil;
+
+	public static Item bucketOil;
 
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -167,11 +175,13 @@ public class ProjectZed {
 	public static Item silkTouchUpgrade;
 	public static Item efficiencyUpgrade;
 
-	// Armor:
+	// Material:
+	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
 	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", 100, new int[] { 3, 8, 6, 3 },  25);
-	
+
+	// Armor:
 	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
-	
+
 	// Tools:
 	public static final ToolMaterial pzToolMat = EnumHelper.addToolMaterial("PZTOOLS", 5, 1000 + 1, 20.0f, 4.0f, 0);
 	
@@ -221,6 +231,7 @@ public class ProjectZed {
 	public static OreWorldgen worldgenAluminium;
 	public static OreWorldgen worldgenCopper;
 	public static OreWorldgen worldgenUranium;
+	public static HCWorldGenFluid worldgenOil;
 	
 	/**
 	 * Default constructor.
@@ -322,6 +333,11 @@ public class ProjectZed {
 		else fluidOil = FluidRegistry.getFluid("oil");
 
 		blockFluidOil = new BlockFluidOil("blockFluidOil", fluidOil);
+
+		bucketOil = new ItemBucketOil("bucketOil", blockFluidOil);
+
+		// TODO: MOVE REGISTERING OF FLUID Bucket SOMEWHERE OUT OF THIS MAIN CLASS!!!
+		FluidContainerRegistry.registerFluidContainer(fluidOil, new ItemStack(bucketOil), new ItemStack(Items.bucket));
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
@@ -454,6 +470,7 @@ public class ProjectZed {
 		if (configHandler.genOreAluminium()) worldgenAluminium = new OreWorldgen(oreAluminium, 8, 4, 8, 10, 64);
 		if (configHandler.genOreCopper()) worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
 		if (configHandler.genOreUranium()) worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
+		if (configHandler.genFluidOil()) worldgenOil = new HCWorldGenFluid(blockFluidOil);
 	}
 
 }

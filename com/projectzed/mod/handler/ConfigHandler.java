@@ -23,12 +23,15 @@ public class ConfigHandler extends AbstractConfigHandler {
 	private boolean updateCheck;
 	private int maxQuarrySize;
 	
-	// ore gen
+	// ore gen:
 	private boolean genTitanium;
 	private boolean genNickel;
 	private boolean genAluminium;
 	private boolean genCopper;
 	private boolean genUranium;
+
+	// fluid gen:
+	private boolean genOil;
 
 	// Upgrade components:
 	private float burnRateModifier;
@@ -59,6 +62,9 @@ public class ConfigHandler extends AbstractConfigHandler {
 		this.genAluminium = this.getSuggestedConfig().getBoolean("ore aluminium", "World Gen", true, "Toggle for generating aluminium");
 		this.genCopper = this.getSuggestedConfig().getBoolean("ore copper", "World Gen", true, "Toggle for generating copper");
 		this.genUranium = this.getSuggestedConfig().getBoolean("ore uranium", "World Gen", true, "Toggle for generating uranium");
+
+		// fluid:
+		this.genOil = this.getSuggestedConfig().getBoolean("fluid oil", "World Gen", true, "Toggle for generating oil");
 
 		// Upgrade components:
 		this.burnRateModifier = this.getSuggestedConfig()
@@ -128,6 +134,12 @@ public class ConfigHandler extends AbstractConfigHandler {
 		return genUranium;
 	}
 
+	/**
+	 * @return genOil flag
+	 */
+	public boolean genFluidOil() {
+		return genOil;
+	}
 	/**
 	 * @return burn rate modifier.
 	 */
