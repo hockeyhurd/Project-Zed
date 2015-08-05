@@ -57,6 +57,9 @@ public final class TileEntityRegistry {
 
 		reg.map.put(TileEntityStoneCraftingTable.class, "craftingStoneTable");
 		reg.idMap.put(TileEntityStoneCraftingTable.class, getNextID());
+
+		reg.map.put(TileEntityRefinery.class, "refinery");
+		reg.idMap.put(TileEntityRefinery.class, getNextID());
 		
 		reg.map.put(TileEntityIndustrialFurnace.class, "industrialFurnaceTileEntity");
 		reg.idMap.put(TileEntityIndustrialFurnace.class, getNextID());

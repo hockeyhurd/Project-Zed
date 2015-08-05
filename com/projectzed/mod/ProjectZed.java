@@ -120,6 +120,7 @@ public class ProjectZed {
 	public static Block lavaGen;
 	public static Block fabricationTable;
 	public static Block stoneCraftingTable;
+	public static Block refinery;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
@@ -127,7 +128,7 @@ public class ProjectZed {
 	public static Block industrialCentrifuge;
 	public static Block industrialEnergizer;
 	public static Block industrialLoader;
-	
+
 	// Containers:
 	public static Block energyPipeRed;
 	public static Block energyPipeOrange;
@@ -352,6 +353,7 @@ public class ProjectZed {
 		// Machines:
 		fabricationTable = new BlockFabricationTable(Material.rock);
 		stoneCraftingTable = new BlockStoneCraftingTable(Material.rock);
+		refinery = new BlockRefinery(Material.rock);
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();

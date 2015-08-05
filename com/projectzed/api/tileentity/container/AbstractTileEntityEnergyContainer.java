@@ -35,7 +35,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	
 	/**
 	 * Init class object through parameters.
-	 * @param name = name of te (its custom name).
+	 * @param name name of te (its custom name).
 	 */
 	public AbstractTileEntityEnergyContainer(String name) {
 		super(name);
@@ -148,7 +148,19 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
 	 */
-	public abstract int addPower(IEnergyContainer cont, int amount);
+	public int addPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxImportRate() >= amount) {
+			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
+			else {
+				amount = this.maxPowerStorage - this.storedPower;
+				this.storedPower = this.maxPowerStorage;
+			}
+
+			return amount;
+		}
+
+		else return 0;
+	}
 	
 	/*
 	 * (non-Javadoc)

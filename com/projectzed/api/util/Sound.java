@@ -16,7 +16,7 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Dec 30, 2014
  */
-public class Sound {
+public final class Sound {
 	
 	/** Name of file (NOTE: Already includes assetDir) */
 	public final String NAME;
@@ -30,8 +30,8 @@ public class Sound {
 	/** Approximate length of sound in whole seconds (best to round up). */
 	public final int LENGTH;
 
-	public static Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f, 2);
-	public static Sound ENERGIZER = new Sound("industrialEnergizerSound", 1.0f, 1.0f, 2);
+	public static final Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f, 2);
+	public static final Sound ENERGIZER = new Sound("industrialEnergizerSound", 1.0f, 1.0f, 2);
 	
 	/**
 	 * @param name = name of sound.

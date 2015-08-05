@@ -29,6 +29,7 @@ public class ClientProxy extends CommonProxy {
 	public static int renderPass;
 	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
 	public static int energyCell;
+	public static int refinery;
 	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
 	public static int liquiductBlue;
 	public static int liquiductClear;
@@ -54,6 +55,7 @@ public class ClientProxy extends CommonProxy {
 		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeClear = RenderingRegistry.getNextAvailableRenderId();
 		energyCell = RenderingRegistry.getNextAvailableRenderId();
+		refinery = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier0 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier1 = RenderingRegistry.getNextAvailableRenderId();
 		fluidTankTier2 = RenderingRegistry.getNextAvailableRenderId();
@@ -70,14 +72,15 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyBankBase.class, new EnergyBankRenderer((byte) 0));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new RefineryRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier0.class, new FluidTankRenderer((byte) 0));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier1.class, new FluidTankRenderer((byte) 1));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier2.class, new FluidTankRenderer((byte) 2));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer((byte) 3));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLiquiductBlue.class, new FluidPipeRenderer(EnumColor.BLUE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLiquiductClear.class, new FluidPipeRenderer(EnumColor.CLEAR));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemPipeGreen.class, new ItemPipeRenderer(EnumColor.GREEN));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemPipeGreenOpaque.class, new ItemPipeRenderer(EnumColor.GREEN_OPAQUE));
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer((byte) 3));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorGlass.class, new ReactorGlassRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWickedClearGlass.class, new WickedClearGlassRenderer());
 

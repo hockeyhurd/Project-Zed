@@ -94,6 +94,11 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
 	}
 
+	@SideOnly(Side.CLIENT)
+	public final IIcon[] getIconArray() {
+		return new IIcon[] { blockIcon, iconBottom, iconFront, iconFrontOn };
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see

@@ -189,7 +189,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 */
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		return new int[0];
 	}
 
 	/*
