@@ -52,7 +52,9 @@ public class RefineryRenderer extends TileEntitySpecialRenderer {
 		renderPlatform();
 		renderFurnace();
 		renderSideTanks();
-		renderTopTank();
+		renderSmokeStack();
+
+		// renderTopTank();
 
 		tessHelp.tess.draw();
 
@@ -64,7 +66,7 @@ public class RefineryRenderer extends TileEntitySpecialRenderer {
 	private void renderPlatform() {
 
 		Vector3<Float> min = new Vector3<Float>(0f, 0f, 0f);
-		Vector3<Float> max = new Vector3<Float>(1f, 3f / 16f, 1f);
+		Vector3<Float> max = new Vector3<Float>(1f, 1f / 16f, 1f);
 
 		{
 			tessHelp.tess.setNormal(-1f, 0f, 0f);
@@ -120,8 +122,8 @@ public class RefineryRenderer extends TileEntitySpecialRenderer {
 
 	// TODO-ADD: Add rendering of fluids!!!
 	private void renderSideTanks() {
-		Vector3<Float> min = new Vector3<Float>(6f / 16f, 3f / 16f + TEX_SPACING, 0f);
-		Vector3<Float> max = new Vector3<Float>(1f - 6f / 16f, 1f - (3f / 16f + TEX_SPACING), 1f - 12f / 16f);
+		Vector3<Float> min = new Vector3<Float>(6f / 16f, 1f / 16f + TEX_SPACING, 0f);
+		Vector3<Float> max = new Vector3<Float>(1f - 6f / 16f, 1f - (5f / 16f + TEX_SPACING), 1f - 12f / 16f);
 
 		Vector3<Float> min2 = new Vector3<Float>(max.x, min.y, 1f);
 		Vector3<Float> max2 = new Vector3<Float>(min.x, max.y, 1f - 4f / 16f);
@@ -272,8 +274,8 @@ public class RefineryRenderer extends TileEntitySpecialRenderer {
 	}
 
 	private void renderFurnace() {
-		Vector3<Float> min = new Vector3<Float>(4f / 16f - TEX_SPACING * 2f, 3f / 16f + TEX_SPACING, 4f / 16f + TEX_SPACING * 2f);
-		Vector3<Float> max = new Vector3<Float>(1f - 4f / 16f - TEX_SPACING * 2f, 1f - (3f / 16f + TEX_SPACING), 1f - 4f / 16f - TEX_SPACING * 2f);
+		Vector3<Float> min = new Vector3<Float>(4f / 16f - TEX_SPACING * 2f, 1f / 16f + TEX_SPACING, 4f / 16f + TEX_SPACING * 2f);
+		Vector3<Float> max = new Vector3<Float>(1f - 4f / 16f - TEX_SPACING * 2f, 1f - (5f / 16f + TEX_SPACING), 1f - 4f / 16f - TEX_SPACING * 2f);
 
 		// Vector3<Float> min = new Vector3<Float>(0f, 0f, 0f);
 		// Vector3<Float> max = new Vector3<Float>(1f, 1f, 1f);
@@ -408,6 +410,141 @@ public class RefineryRenderer extends TileEntitySpecialRenderer {
 			tessHelp.tess.addVertexWithUV(min.x, min.y, min.z, 16f * PIXEL, 32f * PIXEL);
 			tessHelp.tess.addVertexWithUV(min.x, min.y, max.z, 16f * PIXEL, 48f * PIXEL);
 
+		}
+
+	}
+
+	private void renderSmokeStack() {
+		Vector3<Float> min = new Vector3<Float>(6f / 16f, 1f - 5f / 16f, 6f / 16f);
+		Vector3<Float> max = new Vector3<Float>(1f - 6f / 16f, 1f, 1f - 6f / 16f);
+
+		Vector3<Float> min2 = new Vector3<Float>(7f / 16f, min.y, 7f / 16f);
+		Vector3<Float> max2 = new Vector3<Float>(1f - 7f / 16f, max.y, 1f - 7f / 16f);
+
+		{
+
+			// x-
+			tessHelp.tess.setNormal(-1f, 0f, 0f);
+
+			tessHelp.tess.addVertexWithUV(min.x, max.y, min2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, min2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, max2.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, max2.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(max.x, max.y, min2.z, 48f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, min2.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, max2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, max.y, max2.z, 32f * PIXEL, 48f * PIXEL);
+
+			// x+
+			tessHelp.tess.setNormal(1f, 0f, 0f);
+
+			tessHelp.tess.addVertexWithUV(max.x, max.y, max2.z, 16f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, max2.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, min2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, max.y, min2.z, 32f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(min.x, max.y, max2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, max2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, min2.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, min2.z, 48f * PIXEL, 48f * PIXEL);
+
+			// z-
+			tessHelp.tess.setNormal(0f, 0f, -1f);
+
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, min.z, 16f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, min.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, min.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, min.z, 32f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, max.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, max.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, max.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, max.z, 48f * PIXEL, 48f * PIXEL);
+
+			// z+
+			tessHelp.tess.setNormal(0f, 0f, 1f);
+
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, max.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, max.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, max.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, max.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, min.z, 48f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, min.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, min.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, min.z, 32f * PIXEL, 48f * PIXEL);
+
+			// y-
+			/*tessHelp.tess.setNormal(0f, 1f, 0f);
+
+			tessHelp.tess.addVertexWithUV(max.x, min.y, max.z, 48f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, min.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, min.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, max.z, 32f * PIXEL, 48f * PIXEL);*/
+
+			// y+
+			tessHelp.tess.setNormal(0f, 1f, 0f);
+
+			tessHelp.tess.addVertexWithUV(max.x, max.y, max.z, 64f * PIXEL, 64f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, max.y, min.z, 64f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, min.z, 48f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, max.z, 48f * PIXEL, 64f * PIXEL);
+
+		}
+
+		{
+			// x-/z-
+			tessHelp.tess.setNormal(-1f, 0f, -1f);
+
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, min.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, min.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, min2.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, min2.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(max.x, max.y, max2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, max2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, max.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, max.z, 48f * PIXEL, 48f * PIXEL);
+
+			// x+/z-
+			tessHelp.tess.setNormal(-1f, 0f, 1f);
+
+			tessHelp.tess.addVertexWithUV(max.x, max.y, min2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, min2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, min.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, min.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, max.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, max.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, max2.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, max.y, max2.z, 48f * PIXEL, 48f * PIXEL);
+
+			// x-/z+
+			tessHelp.tess.setNormal(-1f, 0f, 1f);
+
+			tessHelp.tess.addVertexWithUV(min.x, max.y, max2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, max2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, max.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, max.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, min.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, min.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, min2.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, max.y, min2.z, 48f * PIXEL, 48f * PIXEL);
+
+			// x+/z+
+			tessHelp.tess.setNormal(1f, 0f, 1f);
+
+			tessHelp.tess.addVertexWithUV(max2.x, max.y, max.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max2.x, min.y, max.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, min.y, max2.z, 16f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(max.x, max.y, max2.z, 16f * PIXEL, 48f * PIXEL);
+
+			tessHelp.tess.addVertexWithUV(min.x, max.y, min2.z, 32f * PIXEL, 48f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min.x, min.y, min2.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, min.y, min.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.tess.addVertexWithUV(min2.x, max.y, min.z, 48f * PIXEL, 48f * PIXEL);
 		}
 
 	}
