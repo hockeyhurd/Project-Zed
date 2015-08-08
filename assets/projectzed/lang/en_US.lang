@@ -54,6 +54,7 @@ tile.energyCellTier0.name=Energy Bank - I
 tile.energyCellTier1.name=Energy Bank - II
 tile.energyCellTier2.name=Energy Bank - III
 tile.energyCellTier3.name=Energy Bank - IV
+tile.refinery.name=Crude Oil Refinery
 tile.fluidTankTier0.name=Fluid Tank - I
 tile.fluidTankTier1.name=Fluid Tank - II
 tile.fluidTankTier2.name=Fluid Tank - III
@@ -144,8 +145,8 @@ item.emptyFuelRod.name=Empty Fuel Rod
 item.fuelRod.name=Uranium Fuel Rod
 
 // Fluids:
-tile.blockFluidOil.still.name=Oil
-item.bucketOil.name=Oil Bucket
+tile.blockFluidOil.still.name=Crude Oil
+item.bucketOil.name=Crude Oil Bucket
 
 // Containers/GUIs
 container.industrialFurnace=Industrial Furnace

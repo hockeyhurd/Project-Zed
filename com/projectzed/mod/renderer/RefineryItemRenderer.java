@@ -9,87 +9,109 @@
 
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.api.item.AbstractItemRenderer;
 import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.TessellatorHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Rendering class for refinery.
+ * Item rendering class for refinery.
  *
  * @author hockeyhurd
- * @version 8/4/2015.
+ * @version 8/7/2015.
  */
 @SideOnly(Side.CLIENT)
-public final class RefineryRenderer extends TileEntitySpecialRenderer {
+public class RefineryItemRenderer extends AbstractItemRenderer {
 
 	private ResourceLocation texture;
-	public static final float PIXEL = 1f / 64f;
-	public static final float TEX_SPACING = 0.00001f;
-	private TessellatorHelper tessHelp;
+	private final float PIXEL = 1f / 64f;
+	private final float TEX_SPACING = 0.00001f;
+	private Vector3<Float> translation = Vector3.zero.getVector3f();
 
-	// vectors and calculations:
-	public static final Vector3<Float> minP = new Vector3<Float>(0f, 0f, 0f);
-	public static final Vector3<Float> maxP = new Vector3<Float>(1f, 1f / 16f, 1f);
+	private static final Vector3<Float> minP = RefineryRenderer.minP.copy();
+	private static final Vector3<Float> maxP = RefineryRenderer.maxP.copy();
 
-	public static final Vector3<Float> minT = new Vector3<Float>(6f / 16f, 1f / 16f + TEX_SPACING, 0f);
-	public static final Vector3<Float> maxT = new Vector3<Float>(1f - 6f / 16f, 1f - (5f / 16f + TEX_SPACING), 1f - 12f / 16f);
+	private static final Vector3<Float> minT = RefineryRenderer.minT.copy();
+	private static final Vector3<Float> maxT = RefineryRenderer.maxT.copy();
 
-	public static final Vector3<Float> minT2 = new Vector3<Float>(maxT.x, minT.y, 1f);
-	public static final Vector3<Float> maxT2 = new Vector3<Float>(minT.x, maxT.y, 1f - 4f / 16f);
+	private static final Vector3<Float> minT2 = RefineryRenderer.minT2.copy();
+	private static final Vector3<Float> maxT2 = RefineryRenderer.maxT2.copy();
 
-	public static final Vector3<Float> minF = new Vector3<Float>(4f / 16f - TEX_SPACING * 2f, 1f / 16f + TEX_SPACING, 4f / 16f + TEX_SPACING * 2f);
-	public static final Vector3<Float> maxF = new Vector3<Float>(1f - 4f / 16f - TEX_SPACING * 2f, 1f - (5f / 16f + TEX_SPACING), 1f - 4f / 16f - TEX_SPACING * 2f);
+	private static final Vector3<Float> minF = RefineryRenderer.minF.copy();
+	private static final Vector3<Float> maxF = RefineryRenderer.maxF.copy();
 
-	public static final Vector3<Float> minSt = new Vector3<Float>(6f / 16f, 1f - 5f / 16f, 6f / 16f);
-	public static final Vector3<Float> maxSt = new Vector3<Float>(1f - 6f / 16f, 1f, 1f - 6f / 16f);
+	private static final Vector3<Float> minSt = RefineryRenderer.minSt.copy();
+	private static final Vector3<Float> maxSt = RefineryRenderer.maxSt.copy();
 
-	public static final Vector3<Float> minSt2 = new Vector3<Float>(7f / 16f, minSt.y, 7f / 16f);
-	public static final Vector3<Float> maxSt2 = new Vector3<Float>(1f - 7f / 16f, maxSt.y, 1f - 7f / 16f);
+	private static final Vector3<Float> minSt2 = RefineryRenderer.minSt2.copy();
+	private static final Vector3<Float> maxSt2 = RefineryRenderer.maxSt2.copy();
 
-	public RefineryRenderer() {
+	public RefineryItemRenderer(IIcon icon) {
+		super(icon);
 		this.texture = new ResourceLocation("projectzed", "textures/blocks/refinery.png");
-		tessHelp = new TessellatorHelper(null);
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float f) {
-		GL11.glTranslated(x, y, z);
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 65536, 0xf0 / 65536);
-		this.bindTexture(texture);
 
-		final double angle = te.blockMetadata == 3 ? 90.0f : te.blockMetadata == 5 ? 180.0f : te.blockMetadata == 2 ? -90.0f : 0.0f;
+		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
-		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
-		GL11.glRotated(angle, 0, 1, 0);
-		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
+		translation.x = 0f;
+		translation.y = 0f;
+		translation.z = 0f;
 
-		tessHelp.tess.startDrawingQuads();
+		tessHelp.startDrawingQuads();
+
+		// adjust rendering space to match what caller expects
+		boolean mustTranslate = false;
+		float angle = 0.0f;
+		switch (type) {
+			case EQUIPPED:
+			case EQUIPPED_FIRST_PERSON: {
+				translation.x = 0f;
+				translation.y = 0.5f;
+				translation.z = 0f;
+
+				GL11.glTranslatef(translation.x, translation.y, translation.z);
+				break; // caller expects us to render over [0,0,0] to [1,1,1], no translation necessary
+			}
+			case ENTITY:
+			case INVENTORY: {
+				// translate our coordinates so that [0,0,0] to [1,1,1] translates to the [-0.5, -0.5, -0.5] to [0.5, 0.5, 0.5] expected by the caller.
+				translation.x = -0.5f;
+				translation.y = -1.25f;
+				translation.z = -0.5f;
+				angle = 180.0f;
+
+				GL11.glTranslatef(translation.x, translation.y, translation.z);
+				GL11.glRotatef(angle, 0f, 1f, 0f);
+				mustTranslate = true;   // must undo the translation when we're finished rendering
+				break;
+			}
+			default:
+				break; // never here
+		}
 
 		renderPlatform();
 		renderFurnace();
 		renderSideTanks();
 		renderSmokeStack();
 
-		// renderTopTank();
+		tessHelp.draw();
 
-		tessHelp.tess.draw();
-
-		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
-		GL11.glRotated(-angle, 0, 1, 0);
-		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
-
-		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glTranslated(-x, -y, -z);
+		GL11.glEnable(GL11.GL_LIGHTING);
+
+		if (angle != 0.0f) GL11.glRotatef(-angle, 0f, 1f, 0f);
+		if (mustTranslate) GL11.glTranslatef(-translation.x, -translation.y, -translation.z);
+
 	}
 
 	private void renderPlatform() {

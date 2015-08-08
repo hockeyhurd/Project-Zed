@@ -6,20 +6,17 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.api.item.AbstractItemRenderer;
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.item.AbstractItemRenderer;
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing code for rendering fluid tanks as item.
@@ -28,7 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @version Jan 24, 2015
  */
 @SideOnly(Side.CLIENT)
-public class FluidTankItemRenderer extends AbstractItemRenderer {
+public final class FluidTankItemRenderer extends AbstractItemRenderer {
 
 	protected Tessellator tess;
 	protected final float PIXEL = 1f / 16f;
