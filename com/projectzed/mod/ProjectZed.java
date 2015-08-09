@@ -15,6 +15,7 @@ import com.projectzed.mod.block.*;
 import com.projectzed.mod.block.container.*;
 import com.projectzed.mod.block.container.digger.BlockIndustrialQuarry;
 import com.projectzed.mod.block.fluids.BlockFluidOil;
+import com.projectzed.mod.block.fluids.BlockFluidPetrol;
 import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.block.generator.BlockLavaGenerator;
 import com.projectzed.mod.block.generator.BlockNuclearController;
@@ -108,10 +109,13 @@ public class ProjectZed {
 
 	// Fluids:
 	public static Block blockFluidOil;
+	public static Block blockFluidPetrol;
 
 	public static Fluid fluidOil;
+	public static Fluid fluidPetrol;
 
 	public static Item bucketOil;
+	public static Item bucketPetrol;
 
 	// Machines: 
 	public static Block solarArray, solarArrayLV, solarArrayMV, solarArrayHV;
@@ -178,6 +182,7 @@ public class ProjectZed {
 
 	// Material:
 	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
+	public static final Material MATERIAL_PETROL = new MaterialLiquid(MapColor.airColor);
 	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", 100, new int[] { 3, 8, 6, 3 },  25);
 
 	// Armor:
@@ -333,12 +338,22 @@ public class ProjectZed {
 
 		else fluidOil = FluidRegistry.getFluid("oil");
 
+		if (!FluidRegistry.isFluidRegistered("fuel")) {
+			fluidPetrol = FluidFactory.createNewFluid("fuel");
+			FluidRegistry.registerFluid(fluidPetrol);
+		}
+
+		else fluidPetrol = FluidRegistry.getFluid("fuel");
+
 		blockFluidOil = new BlockFluidOil("blockFluidOil", fluidOil);
+		blockFluidPetrol = new BlockFluidPetrol("blockFluidPetrol", fluidPetrol);
 
 		bucketOil = new ItemBucketOil("bucketOil", blockFluidOil);
+		bucketPetrol = new ItemBucketPetrol("bucketPetrol", blockFluidPetrol);
 
 		// TODO: MOVE REGISTERING OF FLUID Bucket SOMEWHERE OUT OF THIS MAIN CLASS!!!
 		FluidContainerRegistry.registerFluidContainer(fluidOil, new ItemStack(bucketOil), new ItemStack(Items.bucket));
+		FluidContainerRegistry.registerFluidContainer(fluidPetrol, new ItemStack(bucketPetrol), new ItemStack(Items.bucket));
 
 		// Generators:
 		solarArray = new BlockSolarArray(Material.rock, (byte) 0);

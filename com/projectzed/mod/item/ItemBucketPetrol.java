@@ -7,32 +7,25 @@
  *
  */
 
-package com.projectzed.mod.block.fluids;
+package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.block.fluid.AbstractBlockFluid;
+import com.hockeyhurd.api.item.AbstractItemBucket;
 import com.projectzed.mod.ProjectZed;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.block.Block;
 
 /**
- * Block class for fluidOil.
- *
  * @author hockeyhurd
- * @version 7/29/2015.
+ * @version 8/8/2015.
  */
-public class BlockFluidOil extends AbstractBlockFluid {
+public class ItemBucketPetrol extends AbstractItemBucket {
 
 	/**
-	 * @param name     name of fluid block.
-	 * @param fluid    reference to fluid.
+	 * @param name     name of item bucket.
+	 * @param block    reference to block.
 	 */
-	public BlockFluidOil(String name, Fluid fluid) {
-		super(name, ProjectZed.assetDir, fluid, ProjectZed.MATERIAL_OIL);
+	public ItemBucketPetrol(String name, Block block) {
+		super(name, ProjectZed.assetDir, block);
+		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
-
-	/*@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return still;
-	}*/
 
 }

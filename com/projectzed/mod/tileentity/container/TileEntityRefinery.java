@@ -13,6 +13,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,6 +32,8 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	private final int MAX_FLUID_STORAGE = 8000;
 	private FluidTank oilTank, petrolTank;
 	private FluidTank[] tanks;
+
+	public static final int ENERGY_BURN_RATE = Reference.Constants.getMcUFromRF((int) 1e5) / 1000;
 
 	private FluidNetwork network;
 
@@ -112,9 +115,31 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	// end energy code.
 
+	private boolean canProduceFuel() {
+		return storedPower - ENERGY_BURN_RATE >= 0 && getTank(TankID.INPUT).getFluidAmount() - 1 >= 0
+				&& (getTank(TankID.OUTPUT).getFluid() == null ^ getTank(TankID.OUTPUT).getFluidAmount() + 1 <= getTank(TankID.OUTPUT).getCapacity());
+	}
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+
+		if (!worldObj.isRemote) {
+
+			if (canProduceFuel()) {
+				this.storedPower -= ENERGY_BURN_RATE;
+				FluidTank inputTank = getTank(TankID.INPUT);
+				inputTank.getFluid().amount--;
+				if (inputTank.getFluid().amount == 0) inputTank.setFluid(null);
+
+				FluidTank outputTank = getTank(TankID.OUTPUT);
+				if (outputTank.getFluid() == null) outputTank.setFluid(new FluidStack(ProjectZed.fluidPetrol, 1));
+				else outputTank.getFluid().amount++;
+			}
+
+			// TODO: Implement packet handling (if necessary)!
+			// PacketHandler.INSTANCE.sendToAll();
+		}
 
 		// tanks[TankID.INPUT.ordinal()] = oilTank;
 		// tanks[TankID.OUTPUT.ordinal()] = petrolTank;

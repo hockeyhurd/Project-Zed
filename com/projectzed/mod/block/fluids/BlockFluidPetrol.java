@@ -14,25 +14,15 @@ import com.projectzed.mod.ProjectZed;
 import net.minecraftforge.fluids.Fluid;
 
 /**
- * Block class for fluidOil.
+ * Block class for fluidPetrol.
  *
  * @author hockeyhurd
- * @version 7/29/2015.
+ * @version 8/8/2015.
  */
-public class BlockFluidOil extends AbstractBlockFluid {
+public class BlockFluidPetrol extends AbstractBlockFluid {
 
-	/**
-	 * @param name     name of fluid block.
-	 * @param fluid    reference to fluid.
-	 */
-	public BlockFluidOil(String name, Fluid fluid) {
-		super(name, ProjectZed.assetDir, fluid, ProjectZed.MATERIAL_OIL);
+	public BlockFluidPetrol(String name, Fluid fluid) {
+		super(name, ProjectZed.assetDir, fluid, ProjectZed.MATERIAL_PETROL);
 	}
-
-	/*@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return still;
-	}*/
 
 }
