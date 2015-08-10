@@ -6,19 +6,8 @@
 */
 package com.projectzed.mod.handler;
 
-import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
-import com.projectzed.mod.handler.message.MessageTileEntityDigger;
-import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
-import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
-import com.projectzed.mod.handler.message.MessageTileEntityFluidTank;
-import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
-import com.projectzed.mod.handler.message.MessageTileEntityLoader;
-import com.projectzed.mod.handler.message.MessageTileEntityMachine;
-import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
-import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
+import com.projectzed.mod.handler.message.*;
 import com.projectzed.mod.util.Reference;
-
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -49,6 +38,8 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityRefinery.class, MessageTileEntityRefinery.class, getNextID(), Side.CLIENT);
+		// INSTANCE.registerMessage(MessageTileEntityRefinery.class, MessageTileEntityRefinery.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFluidTank.class, MessageTileEntityFluidTank.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.CLIENT);

@@ -14,6 +14,8 @@ import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityRefinery;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,7 +32,7 @@ import net.minecraftforge.fluids.*;
 public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implements IFluidContainer {
 
 	private final int MAX_FLUID_STORAGE = 8000;
-	private FluidTank oilTank, petrolTank;
+	private FluidTank inputTank, outputTank;
 	private FluidTank[] tanks;
 
 	public static final int ENERGY_BURN_RATE = Reference.Constants.getMcUFromRF((int) 1e5) / 1000;
@@ -44,11 +46,11 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	public TileEntityRefinery() {
 		super("refinery");
 
-		this.oilTank = new FluidTank(this.MAX_FLUID_STORAGE);
-		this.petrolTank = new FluidTank(this.MAX_FLUID_STORAGE);
+		this.inputTank = new FluidTank(this.MAX_FLUID_STORAGE);
+		this.outputTank = new FluidTank(this.MAX_FLUID_STORAGE);
 
 		this.tanks = new FluidTank[] {
-			this.oilTank, this.petrolTank
+			this.inputTank, this.outputTank
 		};
 	}
 
@@ -116,8 +118,8 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	// end energy code.
 
 	private boolean canProduceFuel() {
-		return storedPower - ENERGY_BURN_RATE >= 0 && getTank(TankID.INPUT).getFluidAmount() - 1 >= 0
-				&& (getTank(TankID.OUTPUT).getFluid() == null ^ getTank(TankID.OUTPUT).getFluidAmount() + 1 <= getTank(TankID.OUTPUT).getCapacity());
+		return storedPower - ENERGY_BURN_RATE >= 0 && inputTank.getFluidAmount() - 1 >= 0 && (outputTank.getFluid() == null
+				|| outputTank.getFluidAmount() + 1 <= outputTank.getCapacity());
 	}
 
 	@Override
@@ -126,33 +128,35 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 		if (!worldObj.isRemote) {
 
+			// ProjectZed.logHelper.info("storedPower:", storedPower, inputTank.getFluidAmount(), outputTank.getFluidAmount());
+			// ProjectZed.logHelper.info(inputTank.getFluidAmount(), outputTank.getFluidAmount());
 			if (canProduceFuel()) {
 				this.storedPower -= ENERGY_BURN_RATE;
-				FluidTank inputTank = getTank(TankID.INPUT);
 				inputTank.getFluid().amount--;
 				if (inputTank.getFluid().amount == 0) inputTank.setFluid(null);
 
-				FluidTank outputTank = getTank(TankID.OUTPUT);
 				if (outputTank.getFluid() == null) outputTank.setFluid(new FluidStack(ProjectZed.fluidPetrol, 1));
 				else outputTank.getFluid().amount++;
 			}
 
-			// TODO: Implement packet handling (if necessary)!
-			// PacketHandler.INSTANCE.sendToAll();
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRefinery(this));
 		}
 
-		// tanks[TankID.INPUT.ordinal()] = oilTank;
-		// tanks[TankID.OUTPUT.ordinal()] = petrolTank;
+		// tanks[TankID.INPUT.ordinal()] = inputTank;
+		// tanks[TankID.OUTPUT.ordinal()] = outputTank;
 	}
 
 	@Override
 	public Packet getDescriptionPacket() {
-		return null;
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
 	}
 
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
+
+		// if for some reason fluid tank array is null, init it first.
+		if (tanks == null) tanks = new FluidTank[TankID.values().length];
 
 		for (int i = 0; i < tanks.length; i++) {
 			tanks[i].readFromNBT(comp);
@@ -170,6 +174,13 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	// Start fluid handling code:
 
+	/**
+	 * @return number of tanks held in this tileentity.
+	 */
+	public int getNumTanks() {
+		return tanks.length;
+	}
+
 	@Override
 	public FluidTank getTank() {
 		return getTank(TankID.OUTPUT);
@@ -177,6 +188,10 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	public FluidTank getTank(TankID tankID) {
 		return tanks[tankID.ordinal()];
+	}
+
+	public FluidTank getTank(int id) {
+		return id >= 0 && id < tanks.length ? tanks[id] : null;
 	}
 
 	@Override
@@ -252,13 +267,13 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 
-			int fillAmount = oilTank.fill(resource, doFill);
+			int fillAmount = inputTank.fill(resource, doFill);
 
 			if (doFill) {
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				this.markDirty();
 				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.oilTank, fillAmount));
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.inputTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -288,14 +303,14 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	 */
 	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
-			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(petrolTank.getFluid())) ? petrolTank.drain(
-					drainFluid.amount, doDrain) : drainAmount >= 0 ? petrolTank.drain(drainAmount, doDrain) : null;
+			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(outputTank.getFluid())) ? outputTank.drain(
+					drainFluid.amount, doDrain) : drainAmount >= 0 ? outputTank.drain(drainAmount, doDrain) : null;
 
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.petrolTank));
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.outputTank));
 			}
 
 			return drainedFluid;
@@ -307,7 +322,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
 		if (fluid != null && !isFull(TankID.INPUT)) {
-			FluidStack tankFluid = this.oilTank.getFluid();
+			FluidStack tankFluid = this.inputTank.getFluid();
 
 			return tankFluid == null || tankFluid.isFluidEqual(new FluidStack(fluid, 0));
 		}
@@ -317,8 +332,8 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		if (fluid != null && this.petrolTank.getFluidAmount() > 0) {
-			FluidStack tankFluid = this.petrolTank.getFluid();
+		if (fluid != null && this.outputTank.getFluidAmount() > 0) {
+			FluidStack tankFluid = this.outputTank.getFluid();
 
 			return tankFluid != null && tankFluid.isFluidEqual(new FluidStack(fluid, 0));
 		}
@@ -328,7 +343,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-		return new FluidTankInfo[] { oilTank.getInfo(), petrolTank.getInfo() };
+		return new FluidTankInfo[] { inputTank.getInfo(), outputTank.getInfo() };
 	}
 
 	public boolean isFull(TankID tankID) {

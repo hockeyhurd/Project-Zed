@@ -11,11 +11,13 @@ package com.projectzed.mod.renderer;
 
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.TessellatorHelper;
+import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -76,7 +78,7 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 
 		renderPlatform();
 		renderFurnace();
-		renderSideTanks();
+		renderSideTanks((TileEntityRefinery) te);
 		renderSmokeStack();
 
 		// renderTopTank();
@@ -145,142 +147,174 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 	}
 
 	// TODO-ADD: Add rendering of fluids!!!
-	private void renderSideTanks() {
-		// x-
-		tessHelp.setNormal(-1f, 0f, 0f);
+	private void renderSideTanks(TileEntityRefinery te) {
 
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+		// Tank 1:
 
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+		{
+			// x-
+			tessHelp.setNormal(-1f, 0f, 0f);
 
-		// x+
-		tessHelp.setNormal(1f, 0f, 0f);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			// x+
+			tessHelp.setNormal(1f, 0f, 0f);
 
-		// z-
-		tessHelp.setNormal(0f, 0f, -1f);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, maxT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
+			// z-
+			tessHelp.setNormal(0f, 0f, -1f);
 
-		// z+
-		tessHelp.setNormal(0f, 0f, 1f);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, maxT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, maxT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, minT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 0f * PIXEL, 16f * PIXEL);
+			// z+
+			tessHelp.setNormal(0f, 0f, 1f);
 
-		// y+
-		tessHelp.setNormal(0f, 1f, 1f);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, maxT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, maxT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, minT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, minT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 0f * PIXEL, 16f * PIXEL);
 
-		tessHelp.setNormal(0f, -1f, 1f);
+			// y+
+			tessHelp.setNormal(0f, 1f, 0f);
 
-		tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT.x, maxT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
 
-		// x-
-		tessHelp.setNormal(-1f, 0f, 0f);
+			tessHelp.setNormal(0f, -1f, 0f);
 
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, maxT.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			// try and render fluid:
 
-		// x+
-		tessHelp.setNormal(1f, 0f, 0f);
+			if (te.getTank(0).getFluid() != null && te.getTank(0).getFluidAmount() > 0) {
+				IIcon inputIcon = te.getTank(0).getFluid().getFluid().getIcon();
 
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+				float minU = inputIcon.getMinU();
+				float maxU = inputIcon.getMaxU();
+				float minV = inputIcon.getMinV();
+				float maxV = inputIcon.getMaxV();
 
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+				// x-
+				tessHelp.setNormal(-1f, 0f, 0f);
 
-		// z-
-		tessHelp.setNormal(0f, 0f, -1f);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y - TEX_SPACING, minT.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y - TEX_SPACING, minT.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y - TEX_SPACING, maxT.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y - TEX_SPACING, maxT.z - TEX_SPACING, maxU, maxV);
+			}
 
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+		}
 
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+		// Tank 2:
 
-		// z+
-		tessHelp.setNormal(0f, 0f, 1f);
+		{
+			// x-
+			tessHelp.setNormal(-1f, 0f, 0f);
 
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
 
-		// y+
-		tessHelp.setNormal(0f, 1f, 1f);
+			// x+
+			tessHelp.setNormal(1f, 0f, 0f);
 
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.setNormal(0f, -1f, 1f);
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
 
-		tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
-		tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+			// z-
+			tessHelp.setNormal(0f, 0f, -1f);
 
-		// renderFluids();
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+
+			// z+
+			tessHelp.setNormal(0f, 0f, 1f);
+
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, maxT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, maxT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, minT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, minT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 0f * PIXEL, 16f * PIXEL);
+
+			// y+
+			tessHelp.setNormal(0f, 1f, 0f);
+
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+
+			tessHelp.setNormal(0f, -1f, 0f);
+
+			tessHelp.addVertUV(minT2.x, maxT2.y, maxT2.z, 0f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minT2.x, maxT2.y, minT2.z, 0f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, minT2.z, 16f * PIXEL, 0f * PIXEL);
+			tessHelp.addVertUV(maxT2.x, maxT2.y, maxT2.z, 16f * PIXEL, 16f * PIXEL);
+
+		}
+
+		/*for (int i = 0; i < te.getNumTanks(); i++) {
+			ProjectZed.logHelper.info(te.getTank(i).getFluid().getLocalizedName());
+		}*/
 	}
 
 	private void renderFurnace() {
