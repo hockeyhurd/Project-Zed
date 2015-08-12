@@ -81,6 +81,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 
 		if (tanks != null && !tanks.isEmpty()) {
 			for (TankData data : tanks) {
+				// ProjectZed.logHelper.info(data.toString());
 				data.writeTankData(buf);
 			}
 		}
@@ -98,6 +99,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 				FluidStack fluidStack;
 				for (TankData data : message.tanks) {
 					fluidStack = data.getFluidStack();
+					// if (fluidStack != null && fluidStack.getFluid() != null) ProjectZed.logHelper.info(data.tankID, fluidStack.getUnlocalizedName());
 					te.getTank(data.tankID).setFluid(fluidStack);
 				}
 			}
@@ -154,6 +156,11 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 			int fluidAmount = buf.readInt();
 
 			return new TankData(tankID, fluidID, fluidAmount);
+		}
+
+		@Override
+		public String toString() {
+			return String.format("tankID: %d, fluidID: %d, fluidAmount: %d", tankID, fluidID, fluidAmount);
 		}
 
 	}

@@ -13,6 +13,7 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import com.projectzed.api.util.FluidUtils;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityRefinery;
@@ -40,7 +41,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	private FluidNetwork network;
 
 	public enum TankID {
-		INPUT, OUTPUT;
+		INPUT, OUTPUT
 	}
 
 	public TileEntityRefinery() {
@@ -140,10 +141,10 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 			}
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRefinery(this));
-		}
 
-		// tanks[TankID.INPUT.ordinal()] = inputTank;
-		// tanks[TankID.OUTPUT.ordinal()] = outputTank;
+			// tanks[TankID.INPUT.ordinal()] = inputTank;
+			// tanks[TankID.OUTPUT.ordinal()] = outputTank;
+		}
 	}
 
 	@Override
@@ -156,20 +157,21 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 		super.readNBT(comp);
 
 		// if for some reason fluid tank array is null, init it first.
-		if (tanks == null) tanks = new FluidTank[TankID.values().length];
-
-		for (int i = 0; i < tanks.length; i++) {
-			tanks[i].readFromNBT(comp);
+		if (tanks == null) {
+			// tanks = new FluidTank[TankID.values().length];
+			tanks = new FluidTank[] {
+					inputTank, outputTank,
+			};
 		}
+
+		FluidUtils.readNBT(comp, tanks);
 	}
 
 	@Override
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
 
-		for (int i = 0; i < tanks.length; i++) {
-			tanks[i].writeToNBT(comp);
-		}
+		FluidUtils.saveNBT(comp, tanks);
 	}
 
 	// Start fluid handling code:
@@ -181,13 +183,19 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 		return tanks.length;
 	}
 
-	@Override
-	public FluidTank getTank() {
-		return getTank(TankID.OUTPUT);
-	}
-
 	public FluidTank getTank(TankID tankID) {
 		return tanks[tankID.ordinal()];
+	}
+
+	/**
+	 * @deprecated as of 8/11/2015, use other getTank functions since this TE uses multiple tanks.
+	 *
+	 * @return ouput tank in TE.
+	 */
+	@Override
+	@Deprecated
+	public FluidTank getTank() {
+		return getTank(TankID.OUTPUT);
 	}
 
 	public FluidTank getTank(int id) {

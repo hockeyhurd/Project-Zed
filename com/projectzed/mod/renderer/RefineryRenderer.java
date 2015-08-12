@@ -15,6 +15,7 @@ import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -32,7 +33,7 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 
 	private ResourceLocation texture;
 	public static final float PIXEL = 1f / 64f;
-	public static final float TEX_SPACING = 0.00001f;
+	public static final float TEX_SPACING = 0.001f;
 	private TessellatorHelper tessHelp;
 
 	// vectors and calculations:
@@ -42,8 +43,8 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 	public static final Vector3<Float> minT = new Vector3<Float>(6f / 16f, 1f / 16f + TEX_SPACING, 0f);
 	public static final Vector3<Float> maxT = new Vector3<Float>(1f - 6f / 16f, 1f - (5f / 16f + TEX_SPACING), 1f - 12f / 16f);
 
-	public static final Vector3<Float> minT2 = new Vector3<Float>(maxT.x, minT.y, 1f);
-	public static final Vector3<Float> maxT2 = new Vector3<Float>(minT.x, maxT.y, 1f - 4f / 16f);
+	public static final Vector3<Float> minT2 = new Vector3<Float>(maxT.x, minT.y.floatValue(), 1f);
+	public static final Vector3<Float> maxT2 = new Vector3<Float>(minT.x, maxT.y.floatValue(), 1f - 4f / 16f);
 
 	public static final Vector3<Float> minF = new Vector3<Float>(4f / 16f - TEX_SPACING * 2f, 1f / 16f + TEX_SPACING, 4f / 16f + TEX_SPACING * 2f);
 	public static final Vector3<Float> maxF = new Vector3<Float>(1f - 4f / 16f - TEX_SPACING * 2f, 1f - (5f / 16f + TEX_SPACING), 1f - 4f / 16f - TEX_SPACING * 2f);
@@ -81,9 +82,13 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 		renderSideTanks((TileEntityRefinery) te);
 		renderSmokeStack();
 
+		tessHelp.draw();
+
+		renderFluid((TileEntityRefinery) te);
+
 		// renderTopTank();
 
-		tessHelp.tess.draw();
+		// tessHelp.tess.draw();
 
 		GL11.glTranslatef(0.5f, 0.5f, 0.5f);
 		GL11.glRotated(-angle, 0, 1, 0);
@@ -218,25 +223,6 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 			tessHelp.addVertUV(minT.x, maxT.y, minT.z, 0f * PIXEL, 0f * PIXEL);
 			tessHelp.addVertUV(maxT.x, maxT.y, minT.z, 16f * PIXEL, 0f * PIXEL);
 			tessHelp.addVertUV(maxT.x, maxT.y, maxT.z, 16f * PIXEL, 16f * PIXEL);
-
-			// try and render fluid:
-
-			if (te.getTank(0).getFluid() != null && te.getTank(0).getFluidAmount() > 0) {
-				IIcon inputIcon = te.getTank(0).getFluid().getFluid().getIcon();
-
-				float minU = inputIcon.getMinU();
-				float maxU = inputIcon.getMaxU();
-				float minV = inputIcon.getMinV();
-				float maxV = inputIcon.getMaxV();
-
-				// x-
-				tessHelp.setNormal(-1f, 0f, 0f);
-
-				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y - TEX_SPACING, minT.z - TEX_SPACING, maxU, maxV);
-				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y - TEX_SPACING, minT.z - TEX_SPACING, maxU, maxV);
-				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y - TEX_SPACING, maxT.z - TEX_SPACING, maxU, maxV);
-				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y - TEX_SPACING, maxT.z - TEX_SPACING, maxU, maxV);
-			}
 
 		}
 
@@ -569,6 +555,120 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 		tessHelp.addVertUV(minSt.x, minSt.y, minSt2.z, 32f * PIXEL, 32f * PIXEL);
 		tessHelp.addVertUV(minSt2.x, minSt.y, minSt.z, 48f * PIXEL, 32f * PIXEL);
 		tessHelp.addVertUV(minSt2.x, maxSt.y, minSt.z, 48f * PIXEL, 48f * PIXEL);
+
+	}
+
+	private void renderFluid(TileEntityRefinery te) {
+		this.bindTexture(TextureMap.locationBlocksTexture);
+
+		if (te.getTank(0).getFluid() != null && te.getTank(0).getFluidAmount() > 0) {
+			IIcon inputIcon = te.getTank(0).getFluid().getFluid().getStillIcon();
+			// float progress = ((float) te.getTank(0).getFluidAmount() / te.getTank(0).getCapacity() * 10f) / 16f;
+			float progress = (3f + ((int) (te.getTank(0).getFluidAmount() / (float) (te.getTank(0).getCapacity()) * 10))) / 16f;
+			// ProjectZed.logHelper.info("progress", te.getTank(0).getFluidAmount(), progress, progress * (maxT.y - TEX_SPACING));
+
+			// ProjectZed.logHelper.info(inputIcon.getIconName());
+			if (progress > 3f / 16f) {
+
+				float minU = inputIcon.getMinU();
+				float maxU = inputIcon.getMaxU();
+				float minV = inputIcon.getMinV();
+				float maxV = inputIcon.getMaxV();
+
+				tessHelp.startDrawingQuads();
+
+				// x-
+				tessHelp.setNormal(-1f, 0f, 0f);
+
+				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y * progress, minT.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y, minT.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y, maxT.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y * progress, maxT.z - TEX_SPACING, minU, maxV);
+
+				// x+
+				tessHelp.setNormal(1f, 0f, 0f);
+
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, maxT.y * progress, maxT.z - TEX_SPACING, minU, maxV);
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, minT.y, maxT.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, minT.y, minT.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, maxT.y * progress, minT.z - TEX_SPACING, maxU, maxV);
+
+				// z-
+				tessHelp.setNormal(0f, 0f, -1f);
+
+				tessHelp.addVertUV(maxT.x + TEX_SPACING, maxT.y * progress, minT.z + TEX_SPACING, minU, maxV);
+				tessHelp.addVertUV(maxT.x + TEX_SPACING, minT.y, minT.z + TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, minT.y, minT.z + TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT.x + TEX_SPACING, maxT.y * progress, minT.z + TEX_SPACING, maxU, maxV);
+
+				// y+
+				tessHelp.setNormal(0f, 1f, 0f);
+
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, maxT.y * progress, maxT.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(maxT.x - TEX_SPACING, maxT.y * progress, minT.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT.x - TEX_SPACING, maxT.y * progress, minT.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT.x - TEX_SPACING, maxT.y * progress, maxT.z - TEX_SPACING, minU, maxV);
+
+				// this.bindTexture(texture);
+
+				tessHelp.draw();
+			}
+		}
+
+		if (te.getTank(1).getFluid() != null && te.getTank(1).getFluidAmount() > 0) {
+			IIcon inputIcon = te.getTank(1).getFluid().getFluid().getStillIcon();
+			// float progress = ((float) te.getTank(1).getFluidAmount() / te.getTank(1).getCapacity() * 10f) / 16f;
+			float progress = (3f + ((int) (te.getTank(1).getFluidAmount() / (float) (te.getTank(1).getCapacity()) * 10))) / 16f;
+			// ProjectZed.logHelper.info("progress", te.getTank(1).getFluidAmount(), progress, progress * (maxT.y - TEX_SPACING));
+
+			if (progress > 3f / 16f) {
+
+				float minU = inputIcon.getMinU();
+				float maxU = inputIcon.getMaxU();
+				float minV = inputIcon.getMinV();
+				float maxV = inputIcon.getMaxV();
+
+				tessHelp.startDrawingQuads();
+
+				// x-
+				tessHelp.setNormal(-1f, 0f, 0f);
+
+				// ProjectZed.logHelper.info(minT.y, minT2.y, maxT2.y * progress);
+
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, maxT2.y * progress, minT2.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, minT2.y, minT2.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, minT2.y, maxT2.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, maxT2.y * progress, maxT2.z - TEX_SPACING, minU, maxV);
+
+				// x+
+				tessHelp.setNormal(1f, 0f, 0f);
+
+				tessHelp.addVertUV(maxT2.x + TEX_SPACING, maxT2.y * progress, maxT2.z + TEX_SPACING, minU, maxV);
+				tessHelp.addVertUV(maxT2.x + TEX_SPACING, minT2.y, maxT2.z + TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(maxT2.x + TEX_SPACING, minT2.y, minT2.z + TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(maxT2.x + TEX_SPACING, maxT2.y * progress, minT2.z + TEX_SPACING, maxU, maxV);
+
+				// z-
+				tessHelp.setNormal(0f, 0f, -1f);
+
+				tessHelp.addVertUV(maxT2.x - TEX_SPACING, maxT2.y * progress, minT2.z - TEX_SPACING, minU, maxV);
+				tessHelp.addVertUV(maxT2.x - TEX_SPACING, minT2.y, minT2.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, minT2.y, minT2.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, maxT2.y * progress, minT2.z - TEX_SPACING, maxU, maxV);
+
+				// y+
+				tessHelp.setNormal(0f, 1f, 0f);
+
+				tessHelp.addVertUV(maxT2.x - TEX_SPACING, maxT2.y * progress, maxT2.z - TEX_SPACING, maxU, maxV);
+				tessHelp.addVertUV(maxT2.x - TEX_SPACING, maxT2.y * progress, minT2.z - TEX_SPACING, maxU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, maxT2.y * progress, minT2.z - TEX_SPACING, minU, minV);
+				tessHelp.addVertUV(minT2.x - TEX_SPACING, maxT2.y * progress, maxT2.z - TEX_SPACING, minU, maxV);
+
+				// this.bindTexture(texture);
+
+				tessHelp.draw();
+			}
+		}
 
 	}
 
