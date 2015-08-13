@@ -142,4 +142,26 @@ public final class FluidUtils {
 		return fluidID > 0 && fluidAmount >= 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
 	}
 
+	/**
+	 * Static function for convenient access to checking fluid equality.
+	 *
+	 * @param stack reference stack.
+	 * @param other comparator stack.
+	 * @return true if equal, else returns false.
+	 */
+	public static boolean areFluidsEqual(FluidStack stack, FluidStack other) {
+		return stack.isFluidEqual(other);
+	}
+
+	/**
+	 * Static function for convenient access to checking fluid stack equality.
+	 *
+	 * @param stack reference stack.
+	 * @param other comparator stack.
+	 * @return true if equal, else returns false.
+	 */
+	public static boolean areFluidStacksEqual(FluidStack stack, FluidStack other) {
+		return stack.isFluidStackIdentical(other);
+	}
+
 }

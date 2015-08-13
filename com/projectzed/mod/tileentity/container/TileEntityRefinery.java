@@ -9,7 +9,6 @@
 
 package com.projectzed.mod.tileentity.container;
 
-import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -104,11 +103,6 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public int requestPower(IEnergyContainer cont, int amount) {
-		return 0;
-	}
-
-	@Override
 	protected void importContents() {
 	}
 
@@ -118,27 +112,47 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	// end energy code.
 
+	/**
+	 * Function to check if TE contains basic necessities for producing fuel.
+	 *
+	 * @return true if valid parameters, else returns false.
+	 */
 	private boolean canProduceFuel() {
 		return storedPower - ENERGY_BURN_RATE >= 0 && inputTank.getFluidAmount() - 1 >= 0 && (outputTank.getFluid() == null
 				|| outputTank.getFluidAmount() + 1 <= outputTank.getCapacity());
 	}
 
+	/**
+	 * Function to get output fuel from inputted fluidstack.
+	 *
+	 * @param fluidStack fluid stack to reference.
+	 * @return output fluid if valid input, else returns NULL.
+	 */
+	public static Fluid getOutputFromInput(FluidStack fluidStack) {
+		return fluidStack.getFluid() == ProjectZed.fluidOil ? ProjectZed.fluidPetrol : null;
+	}
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		// transferPower();
 
 		if (!worldObj.isRemote) {
 
-			// ProjectZed.logHelper.info("storedPower:", storedPower, inputTank.getFluidAmount(), outputTank.getFluidAmount());
-			// ProjectZed.logHelper.info(inputTank.getFluidAmount(), outputTank.getFluidAmount());
-			if (canProduceFuel()) {
+			Fluid outputFluid = getOutputFromInput(inputTank.getFluid());
+
+			if (canProduceFuel() && outputFluid != null) {
 				this.storedPower -= ENERGY_BURN_RATE;
 				inputTank.getFluid().amount--;
 				if (inputTank.getFluid().amount == 0) inputTank.setFluid(null);
 
-				if (outputTank.getFluid() == null) outputTank.setFluid(new FluidStack(ProjectZed.fluidPetrol, 1));
-				else outputTank.getFluid().amount++;
+				if (outputTank.getFluid() == null) outputTank.setFluid(new FluidStack(outputFluid, 1));
+				else if (FluidUtils.areFluidsEqual(outputTank.getFluid(), (new FluidStack(outputFluid, 1)))) outputTank.getFluid().amount++;
+
+				this.powerMode = true;
 			}
+
+			else this.powerMode = false;
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityRefinery(this));
 

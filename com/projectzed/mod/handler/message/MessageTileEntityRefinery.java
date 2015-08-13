@@ -37,6 +37,8 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 	private Vector3<Integer> vec;
 	private List<TankData> tanks;
 	private int numTanks;
+	private int storedPower;
+	private boolean powerMode;
 
 	public MessageTileEntityRefinery() {
 		vec = Vector3.zero.getVector3i();
@@ -46,6 +48,8 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		this.te = te;
 		this.vec = te.worldVec();
 		numTanks = te.getNumTanks();
+		powerMode = te.isPowered();
+		storedPower = te.getEnergyStored();
 
 		tanks = new ArrayList<TankData>(numTanks);
 
@@ -63,6 +67,8 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		this.vec.y = buf.readInt();
 		this.vec.z = buf.readInt();
 		this.numTanks = buf.readInt();
+		this.storedPower = buf.readInt();
+		this.powerMode = buf.readBoolean();
 
 		if (this.numTanks == 0) return; // no need to continue if we have no tanks!
 		if (tanks == null) tanks = new ArrayList<TankData>(this.numTanks);
@@ -78,6 +84,8 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);
 		buf.writeInt(numTanks);
+		buf.writeInt(storedPower);
+		buf.writeBoolean(powerMode);
 
 		if (tanks != null && !tanks.isEmpty()) {
 			for (TankData data : tanks) {
@@ -93,6 +101,9 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 
 		if (tileEntity != null && tileEntity instanceof TileEntityRefinery) {
 			TileEntityRefinery te = (TileEntityRefinery) tileEntity;
+
+			te.setEnergyStored(message.storedPower);
+			te.setPowered(message.powerMode);
 
 			if (message.tanks != null && !message.tanks.isEmpty()) {
 

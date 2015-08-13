@@ -142,7 +142,19 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
-	public abstract int requestPower(IEnergyContainer cont, int amount);
+	public int requestPower(IEnergyContainer cont, int amount) {
+		if (cont != null && this.getMaxExportRate() >= amount) {
+			if (this.storedPower - amount >= 0) this.storedPower -= amount;
+			else {
+				amount = this.storedPower;
+				this.storedPower = 0;
+			}
+
+			return amount;
+		}
+
+		return 0;
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -159,7 +171,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 			return amount;
 		}
 
-		else return 0;
+		return 0;
 	}
 	
 	/*
@@ -204,7 +216,24 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 	}
-	
+
+	/**
+	 * @return if container is 'powered'.
+	 */
+	public boolean isPowered() {
+		return powerMode;
+	}
+
+	/**
+	 * Sets the powered mode.
+	 * <br><bold>NOTE: </bold> This method is intended to only be used in networking!
+	 *
+	 * @param powered mode to set.
+	 */
+	public void setPowered(boolean powered) {
+		this.powerMode = powered;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
@@ -224,7 +253,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		importContents();
 		exportContents();
 		
-		this.powerMode = this.storedPower > 0;
+		// this.powerMode = this.storedPower > 0;
 		this.markDirty();
 		
 		super.updateEntity();

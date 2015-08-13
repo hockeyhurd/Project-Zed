@@ -6,10 +6,10 @@
 */
 package com.projectzed.api.energy;
 
+import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumFrameType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -54,7 +54,7 @@ public class EnergyNet {
 				if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IEnergyContainer) {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
-					else if (cont instanceof AbstractTileEntityMachine) continue;
+					else if (cont instanceof IEnergyMachine) continue;
 					else if (/*sideDep &&*/ cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.POWER && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
 					else if (cont.getEnergyStored() > 0 && lastDir != dir) {
 						sides[dir.ordinal()] = true;
@@ -71,11 +71,15 @@ public class EnergyNet {
 					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 					
 					if (sideDep && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
-					
+					if (cont.getMaxExportRate() == 0 || sourceCont.getMaxImportRate() == 0) {
+						if (count > 0) count--;
+						continue;
+					}
+
 					int amount = Math.min(cont.getMaxExportRate(), sourceCont.getMaxImportRate());
 					amount = Math.min(amount, sourceCont.getMaxStorage() - sourceCont.getEnergyStored());
 
-					if (count > 1) amount /= count;
+					if (amount > 0 && count > 1) amount /= count;
 
 					if (amount > 0 && cont.getEnergyStored() > 0) {
 						if (colorDep && cont instanceof IColorComponent && cont.getEnergyStored() <= sourceCont.getEnergyStored()) continue;
@@ -102,19 +106,19 @@ public class EnergyNet {
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
 	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
-		boolean shouldSend = false;
+		// boolean shouldSend = false;
 		
 		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
 		IEnergyContainer cont = null;
 		if (te != null && te instanceof IEnergyContainer) cont = (IEnergyContainer) te;
 		// if (/*sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || */ sourceCont.getEnergyStored() == 0 || cont == null) {
 		if (cont == null || sourceCont.getEnergyStored() == 0) {
-			shouldSend = true;
+			// shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}
 		
 		else if (cont != null && lastDir == cont.getLastReceivedDirection().getOpposite() && sourceCont.getEnergyStored() >= cont.getEnergyStored()) {
-			shouldSend = true;
+			// shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}
 	}

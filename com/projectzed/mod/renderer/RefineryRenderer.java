@@ -78,7 +78,7 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 		tessHelp.tess.startDrawingQuads();
 
 		renderPlatform();
-		renderFurnace();
+		renderFurnace(((TileEntityRefinery) te).isPowered());
 		renderSideTanks((TileEntityRefinery) te);
 		renderSmokeStack();
 
@@ -303,14 +303,23 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer {
 		}*/
 	}
 
-	private void renderFurnace() {
+	private void renderFurnace(final boolean powered) {
 		// x-
 		tessHelp.setNormal(-1f, 0f, 0f);
 
-		tessHelp.addVertUV(minF.x, maxF.y, minF.z, 48f * PIXEL, 16f * PIXEL);
-		tessHelp.addVertUV(minF.x, minF.y, minF.z, 48f * PIXEL, 32f * PIXEL);
-		tessHelp.addVertUV(minF.x, minF.y, maxF.z, 64f * PIXEL, 32f * PIXEL);
-		tessHelp.addVertUV(minF.x, maxF.y, maxF.z, 64f * PIXEL, 16f * PIXEL);
+		if (powered) {
+			tessHelp.addVertUV(minF.x, maxF.y, minF.z, 48f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minF.x, minF.y, minF.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.addVertUV(minF.x, minF.y, maxF.z, 64f * PIXEL, 32f * PIXEL);
+			tessHelp.addVertUV(minF.x, maxF.y, maxF.z, 64f * PIXEL, 16f * PIXEL);
+		}
+
+		else {
+			tessHelp.addVertUV(minF.x, maxF.y, minF.z, 32f * PIXEL, 16f * PIXEL);
+			tessHelp.addVertUV(minF.x, minF.y, minF.z, 32f * PIXEL, 32f * PIXEL);
+			tessHelp.addVertUV(minF.x, minF.y, maxF.z, 48f * PIXEL, 32f * PIXEL);
+			tessHelp.addVertUV(minF.x, maxF.y, maxF.z, 48f * PIXEL, 16f * PIXEL);
+		}
 
 		// x+
 		tessHelp.setNormal(1f, 0f, 0f);

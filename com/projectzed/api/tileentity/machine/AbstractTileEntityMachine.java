@@ -314,7 +314,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.stored > 0) burnEnergy();
 
 		if (!this.worldObj.isRemote) {
-			
 			if (this.worldObj.getTotalWorldTime() % 20L == 0) handleSidedIO();
 			
 			// if (!isActiveFromRedstoneSignal()) return;
