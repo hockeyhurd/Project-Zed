@@ -16,10 +16,7 @@ import com.projectzed.mod.block.container.*;
 import com.projectzed.mod.block.container.digger.BlockIndustrialQuarry;
 import com.projectzed.mod.block.fluids.BlockFluidOil;
 import com.projectzed.mod.block.fluids.BlockFluidPetrol;
-import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
-import com.projectzed.mod.block.generator.BlockLavaGenerator;
-import com.projectzed.mod.block.generator.BlockNuclearController;
-import com.projectzed.mod.block.generator.BlockSolarArray;
+import com.projectzed.mod.block.generator.*;
 import com.projectzed.mod.block.machines.*;
 import com.projectzed.mod.block.ore.*;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
@@ -122,6 +119,7 @@ public class ProjectZed {
 	public static Block furnaceGen;
 	public static Block fusionController, fissionController;
 	public static Block lavaGen;
+	public static Block petrolGen;
 	public static Block fabricationTable;
 	public static Block stoneCraftingTable;
 	public static Block refinery;
@@ -362,6 +360,7 @@ public class ProjectZed {
 		solarArrayHV = new BlockSolarArray(Material.rock, (byte) 3);
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
 		lavaGen = new BlockLavaGenerator(Material.rock);
+		petrolGen = new BlockPetrolGenerator(Material.rock);
 		fusionController = new BlockNuclearController(Material.iron, true);
 		fissionController = new BlockNuclearController(Material.iron, false);
 		

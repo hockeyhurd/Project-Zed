@@ -44,8 +44,9 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 	 */
 	public FluidTankRenderer(byte tier) {
 		this.texture = new ResourceLocation("projectzed", "textures/blocks/fluidTankTier" + tier + ".png");
+		this.tier = tier;
 
-		minVec = new Vector3<Float>(48f / 4f * this.PIXEL, 0f, 48f / 4f * this.PIXEL);
+		minVec = new Vector3<Float>(48f / 4f * this.PIXEL, 0f + 0.001f, 48f / 4f * this.PIXEL);
 		maxVec = new Vector3<Float>(1f - 48f / 4f * this.PIXEL, 1f /*- 48f / 8f * this.PIXEL*/, 1f - 48f / 4f * this.PIXEL);
 		
 		fluidMinVec = new Vector3<Float>(5f / 16f, 2f / 16f, 5f / 16f);

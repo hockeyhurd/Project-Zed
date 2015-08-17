@@ -12,10 +12,7 @@ import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
-import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
-import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
+import com.projectzed.mod.tileentity.generator.*;
 import com.projectzed.mod.tileentity.machine.*;
 import com.projectzed.mod.util.ModsLoadedHelper;
 import net.minecraft.tileentity.TileEntity;
@@ -48,6 +45,9 @@ public final class TileEntityRegistry {
 
 		reg.map.put(TileEntityLavaGenerator.class, "lavaGenTileEntity");
 		reg.idMap.put(TileEntityLavaGenerator.class, getNextID());
+
+		reg.map.put(TileEntityPetrolGenerator.class, "petrolGenTileEntity");
+		reg.idMap.put(TileEntityPetrolGenerator.class, getNextID());
 		
 		reg.map.put(TileEntityNuclearController.class, "nuclearControllerTileEntity");
 		reg.idMap.put(TileEntityNuclearController.class, getNextID());
