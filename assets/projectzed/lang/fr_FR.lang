@@ -54,6 +54,7 @@ tile.energyCellTier0.name=Réserve d'énergie - I
 tile.energyCellTier1.name=Réserve d'énergie - II
 tile.energyCellTier2.name=Réserve d'énergie - III
 tile.energyCellTier3.name=Réserve d'énergie - IV
+tile.refinery.name=Raffinerie de pétrole brut
 tile.fluidTankTier0.name=Réservoir à fluide - I
 tile.fluidTankTier1.name=Réservoir à fluide - II
 tile.fluidTankTier2.name=Réservoir à fluide - III
@@ -142,6 +143,12 @@ tile.blockUranium.name=Bloc d'uranium
 // Fuels:
 item.emptyFuelRod.name=Barre de carburant vide
 item.fuelRod.name=Barre d'uranium
+
+// Fluids:
+tile.blockFluidOil.still.name=Pétrole brut
+tile.blockFluidPetrol.still.name=Essence
+item.bucketOil.name=Seau de pétrole brut
+item.bucketPetrol.name=Seau d'essence
 
 // Containers/GUIs
 container.industrialFurnace=Four industriel
