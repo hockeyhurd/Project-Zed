@@ -81,6 +81,10 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	@Override
 	public abstract void defineSource();
 
+	public boolean isPowered() {
+		return powerMode;
+	}
+
 	/**
 	 * Method used to consume fuel from internal tank.
 	 */

@@ -32,4 +32,14 @@ public class TileEntityPetrolGenerator extends AbstractTileEntityFluidGenerator 
 		this.source = new Source(EnumType.FUEL);
 	}
 
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+
+		if (!worldObj.isRemote) {
+			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored && this.burnTime > 0;
+		}
+
+	}
+
 }

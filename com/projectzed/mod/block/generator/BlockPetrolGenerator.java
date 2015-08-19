@@ -26,6 +26,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 /**
  * Block class for petrolGen.
  *
@@ -67,6 +69,12 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
 	@Override
 	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		return side == 0 || side == 1 ? this.base : (side != meta && side != 3 ? this.blockIcon : frontIcons[0]);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
 		int progress = (int) ((te.getTank().getFluidAmount() / (float) te.getTank().getCapacity()) * (te.getTank().getCapacity() / 2f / 1000f));
@@ -77,8 +85,6 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if (side == 3 && meta == 0) return this.frontIcons[0];
-		// return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (te.canProducePower() ? this.frontIcons[1] : this.frontIcons[0]));
 		return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (this.frontIcons[progress]));
 	}
 
@@ -100,11 +106,41 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 	}
 
 	@Override
+	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
+		if (((TileEntityPetrolGenerator) world.getTileEntity(x, y, z)).isPowered()) {
+			int metaData = world.getBlockMetadata(x, y, z);
+			float f = (float) x + 0.5F;
+			float f1 = (float) y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+			float f2 = (float) z + 0.5F;
+			float f3 = 0.52F;
+			float f4 = random.nextFloat() * 0.6F - 0.3F;
+
+			if (metaData == 4) {
+				world.spawnParticle("smoke", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle("flame", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+			}
+			else if (metaData == 5) {
+				world.spawnParticle("smoke", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle("flame", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+			}
+			else if (metaData == 2) {
+				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+			}
+			else if (metaData == 3) {
+				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+			}
+		}
+	}
+
+	@Override
 	protected void doBreakBlock(World world, int x, int y, int z) {
 		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
 
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 
-		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
+		ProjectZed.logHelper.info("Stored McU:", te.getEnergyStored());
+		ProjectZed.logHelper.info("Stored Petrol (mb):", te.getTank().getFluidAmount());
 	}
 }
