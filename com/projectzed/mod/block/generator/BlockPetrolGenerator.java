@@ -34,8 +34,11 @@ import net.minecraft.world.World;
  */
 public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
+	/*@SideOnly(Side.CLIENT)
+	private IIcon frontOn;*/
+
 	@SideOnly(Side.CLIENT)
-	private IIcon frontOn;
+	private IIcon[] frontIcons = new IIcon[9];
 
 	/**
 	 * @param material = material of block
@@ -53,18 +56,30 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
 		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
-		this.frontOn = reg.registerIcon(ProjectZed.assetDir + this.name + "_front_on");
+		// this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
+		// this.frontOn = reg.registerIcon(ProjectZed.assetDir + this.name + "_front_on");
+
+		for (int i = 0; i < frontIcons.length; i++) {
+			frontIcons[i] = reg.registerIcon(ProjectZed.assetDir + this.name + '_' + i);
+		}
+
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
+		int progress = (int) ((te.getTank().getFluidAmount() / (float) te.getTank().getCapacity()) * (te.getTank().getCapacity() / 2f / 1000f));
+
+		// ensure nothing weird can happen, i.e. array index out of bound exceptions.
+		if (progress < 0) progress = 0;
+		else if (progress >= frontIcons.length) progress = frontIcons.length - 1;
+
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if (side == 3 && meta == 0) return this.front;
-		return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (te.canProducePower() ? this.frontOn : this.front));
+		if (side == 3 && meta == 0) return this.frontIcons[0];
+		// return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (te.canProducePower() ? this.frontIcons[1] : this.frontIcons[0]));
+		return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (this.frontIcons[progress]));
 	}
 
 	@Override

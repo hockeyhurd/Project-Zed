@@ -33,8 +33,10 @@ import com.projectzed.mod.item.upgrades.ItemUpgradeOverclocker;
 import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
 import com.projectzed.mod.proxy.CommonProxy;
 import com.projectzed.mod.util.ModsLoadedHelper;
+import com.projectzed.mod.util.ProjectZedMetadata;
 import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.worldgen.OreWorldgen;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -42,6 +44,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -63,8 +66,8 @@ import net.minecraftforge.fluids.FluidRegistry;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-@Mod(modid = Reference.MOD_NAME, name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:HCoreLib")
-public class ProjectZed {
+@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.7.10]", name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:HCoreLib")
+public final class ProjectZed {
 
 	@SidedProxy(clientSide = "com.projectzed.mod.proxy.ClientProxy", serverSide = "com.projectzed.mod.proxy.CommonProxy")
 	public static CommonProxy proxy;
@@ -247,7 +250,18 @@ public class ProjectZed {
 	public void preInit(FMLPreInitializationEvent event) {
 		TimeLapse tl = new TimeLapse();
 		logHelper = new LogHelper(Reference.class);
-		
+
+		final Side side = FMLCommonHandler.instance().getEffectiveSide();
+
+		if (side == Side.CLIENT) {
+			logHelper.info("Injecting mcmod.info information");
+
+			final ProjectZedMetadata metadata = new ProjectZedMetadata(event);
+
+			if (metadata.getResult()) logHelper.info("Injection was successful!");
+			else logHelper.warn("Injection was un-successful! mcmod.info is a liar!");
+		}
+
 		logHelper.info("Pre-init started, looking for config info!");
 		configHandler = new ConfigHandler(event, Reference.class);
 		configHandler.handleConfiguration();
@@ -268,8 +282,11 @@ public class ProjectZed {
 	public void init(FMLInitializationEvent event) {
 		TimeLapse tl = new TimeLapse();
 		logHelper.info("Init started");
-		
+
+		logHelper.info("Generating blocks, items, various objects and tinkering tools...");
 		loadObj();
+
+		logHelper.info("Setting up proxy on side: " + FMLCommonHandler.instance().getEffectiveSide().name());
 		proxy.init();
 		proxy.registerRenderInformation();
 		

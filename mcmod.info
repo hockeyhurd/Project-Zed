@@ -3,12 +3,12 @@
         "modid": "ProjectZed",
         "name": "ProjectZed",
         "description": "A tech mod set to be unique and progressive.",
-        "version": "",
-        "mcversion": "1.7.10",
+        "version": "${version}",
+        "mcversion": "${mcversion}",
         "logoFile": "",
         "url": "http://goo.gl/nYTUfU",
         "updateUrl": "http://goo.gl/nYTUfU",
-        "authors": [
+        "authorList": [
             "hockeyhurd"
         ],
         "credits": "Authored by hockeyhurd.",

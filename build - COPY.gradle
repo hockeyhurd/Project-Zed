@@ -18,15 +18,15 @@ buildscript {
 apply plugin: 'forge'
 
 sourceSets {
-	main {
-		java { srcDirs = ["$projectDir/src"] }
-		resources { srcDirs = ["$projectDir/src"] }
-	}
+    main {
+        java { srcDirs = ["$projectDir/src"] }
+        resources { srcDirs = ["$projectDir/src"] }
+    }
 }
 
-version = "1.1.4"
+version = "1.1.22"
 group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Project-Zed"
+archivesBaseName = "ProjectZed"
 
 minecraft {
     version = "1.7.10-10.13.3.1428-1.7.10"
@@ -38,7 +38,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -47,58 +47,60 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-	// compile files('eclipse/mods/HCoreLib-1.1.24.jar')
-	// compile files('NotEnoughItems-1.7.10-1.0.3.74-dev.jar')
-	// compile files('libs/HCoreLib-deobf-1.1.17.jar')
-	// compile files('CoFHCore-[1.7.10]3.0.0B9-71-dev.jar')
-	
+    // compile files('eclipse/mods/HCoreLib-1.1.24.jar')
+    // compile files('NotEnoughItems-1.7.10-1.0.3.74-dev.jar')
+    // compile files('libs/HCoreLib-deobf-1.1.17.jar')
+    // compile files('CoFHCore-[1.7.10]3.0.0B9-71-dev.jar')
+
 }
 
 processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+
+                // replace version and mcversion
+                expand 'version':project.version, 'mcversion':project.minecraft.version
+            }
+
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }
 
 jar {
-	// appendix = 'universal'
-	exclude '**/*.java'
-	exclude '**/*.txt'
-	exclude 'cofh/**'
+    // appendix = 'universal'
+    exclude '**/*.java'
+    exclude '**/*.txt'
+    exclude 'cofh/**'
 }
 
 task devjar(type: Jar) {
-	from (sourceSets.main.output) {
-		exclude 'com/projectzed/mod/**'
-		exclude 'cofh/**'
-		exclude '**/*.txt'
-	}
-	appendix = 'deobf'
+    from (sourceSets.main.output) {
+        exclude 'com/projectzed/mod/**'
+        exclude 'cofh/**'
+        exclude '**/*.txt'
+    }
+    appendix = 'deobf'
 }
 
 task srcjar(type: Jar) {
-	from (sourceSets.main.output) {
-		exclude 'cofh/**'
-		exclude '**/*.txt'
-	}
-	appendix = 'src'
+    from (sourceSets.main.output) {
+        exclude 'cofh/**'
+        exclude '**/*.txt'
+    }
+    appendix = 'src'
 }
 
 artifacts {
     archives devjar
-	archives srcjar
+    archives srcjar
 }
+
+idea { module { inheritOutputDirs = true } }
