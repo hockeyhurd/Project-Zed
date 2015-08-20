@@ -42,8 +42,8 @@ public final class BlockRegistry {
 				if (f.get(mainClass) instanceof Block) {
 					Block block = (Block) f.get(mainClass); // cast object to a block.
 					if (block != null) {
-						reg.blocks.add(block); // add block to list if not null.
-						if (block.getUnlocalizedName().toLowerCase().contains("ore") || block.getUnlocalizedName().toLowerCase().contains("block")) reg.blockOres.add(block);
+						blocks.add(block); // add block to list if not null.
+						if (block.getUnlocalizedName().toLowerCase().contains("ore") || block.getUnlocalizedName().toLowerCase().contains("block")) blockOres.add(block);
 					}
 				}
 			}
@@ -86,9 +86,9 @@ public final class BlockRegistry {
 	 */
 	public Block getBlockByName(String name) {
 		Block block = null;
-		if (reg == null || reg.blocks == null || reg.blocks.size() == 0) return null; // if null or no objects, return null.
+		if (reg == null || blocks == null || blocks.size() == 0) return null; // if null or no objects, return null.
 		
-		for (Block b : reg.blocks) {
+		for (Block b : blocks) {
 			if (b.getUnlocalizedName().equals(name)) { // if found, exit loop.
 				block = b;
 				break;

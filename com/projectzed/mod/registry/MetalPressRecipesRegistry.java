@@ -6,14 +6,14 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class containing code for initializing the metal press's smelting recipe list. <br>
@@ -40,8 +40,8 @@ public class MetalPressRecipesRegistry {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping.
-		// mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.sheetAluminium, 1));
-		// mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.sheetReinforced, 1));
+		// mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.plateAluminium, 1));
+		// mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.plateReinforced, 1));
 		
 		// Fall back/modded mapping.
 		mapModded.put("ingotAluminium", "plateAluminium");

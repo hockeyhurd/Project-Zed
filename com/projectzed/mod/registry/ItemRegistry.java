@@ -42,9 +42,9 @@ public final class ItemRegistry {
 				if (f.get(mainClass) instanceof Item) {
 					Item item = (Item) f.get(mainClass); // cast object to a item.
 					if (item != null) {
-						reg.items.add(item); // add block to list if not null.
+						items.add(item); // add block to list if not null.
 						if (item.getUnlocalizedName().toLowerCase().contains("ingot") || item.getUnlocalizedName().toLowerCase().contains("dust")
-								|| item.getUnlocalizedName().toLowerCase().contains("nugget")) reg.itemOres.add(item);
+								|| item.getUnlocalizedName().toLowerCase().contains("nugget") || item.getUnlocalizedName().toLowerCase().contains("plate")) reg.itemOres.add(item);
 					}
 				}
 			}
@@ -87,9 +87,9 @@ public final class ItemRegistry {
 	 */
 	public Item getItemByName(String name) {
 		Item item = null;
-		if (reg == null || reg.items == null || reg.items.size() == 0) return null; // if null or no objects, return null.
+		if (reg == null || items == null || items.size() == 0) return null; // if null or no objects, return null.
 		
-		for (Item i : reg.items) {
+		for (Item i : items) {
 			if (i.getUnlocalizedName().equals(name)) { // if found, exit loop.
 				item = i;
 				break;

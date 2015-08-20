@@ -74,14 +74,14 @@ public class CommonProxy {
 	}
 	
 	private void registerBlocks() {
-		BlockRegistry.instance().init(ProjectZed.instance.getClass());
+		BlockRegistry.instance().init(ProjectZed.class);
 		for (Block b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) GameRegistry.registerBlock(b, b.getUnlocalizedName());
 		}
 	}
 	
 	private void registerItems() {
-		ItemRegistry.instance().init(ProjectZed.instance.getClass());
+		ItemRegistry.instance().init(ProjectZed.class);
 		for (Item i : ItemRegistry.instance().getItems()) {
 			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
 		}
@@ -89,11 +89,11 @@ public class CommonProxy {
 	
 	private void registerOreDictionaryEntries() {
 		for (Block b : BlockRegistry.instance().getOreBlocks()) {
-			if (b != null) OreDictionary.registerOre(BlockRegistry.instance().getBlockName(b), b);
+			if (b != null) OreDictionary.registerOre(BlockRegistry.getBlockName(b), b);
 		}
 		
 		for (Item i : ItemRegistry.instance().getItemOres()) {
-			if (i != null) OreDictionary.registerOre(ItemRegistry.instance().getBlockName(i), i);
+			if (i != null) OreDictionary.registerOre(ItemRegistry.getBlockName(i), i);
 		}
 
 		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksDefault);
@@ -109,9 +109,9 @@ public class CommonProxy {
 		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksGreenStairs);
 		OreDictionary.registerOre("stoneBricksStairs", ProjectZed.stoneBricksPurpleStairs);
 
-		OreDictionary.registerOre("plateAluminium", ProjectZed.sheetAluminium);
-		OreDictionary.registerOre("plateAluminum", ProjectZed.sheetAluminium);
-		OreDictionary.registerOre("plateReinforced", ProjectZed.sheetReinforced);
+		// OreDictionary.registerOre("plateAluminium", ProjectZed.plateAluminium);
+		OreDictionary.registerOre("plateAluminum", ProjectZed.plateAluminium);
+		// OreDictionary.registerOre("plateReinforced", ProjectZed.plateReinforced);
 		OreDictionary.registerOre("mixedAlloy", ProjectZed.mixedAlloy);
 		OreDictionary.registerOre("dustMixedAlloy", ProjectZed.dustMixedAlloy);
 		OreDictionary.registerOre("dustCoal", ProjectZed.dustCoal);
