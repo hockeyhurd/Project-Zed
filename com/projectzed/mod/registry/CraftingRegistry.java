@@ -90,6 +90,7 @@ public final class CraftingRegistry {
 		reg.shapelessList.add(createShapelessRecipe(plateAluminium, 1, "ingotAluminium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 		reg.shapelessList.add(createShapelessRecipe(mixedAlloy, 2, "ingotIron", "ingotCopper", "ingotTitanium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksWide, 2, "stoneBricks", "stoneBricks"));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefault, 1, "stoneBricks", Items.water_bucket));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefaultStairs, 1, "stoneBricksStairs", Items.water_bucket));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksRedStairs, 1, "stoneBricksStairs", "dyeRed"));
@@ -145,7 +146,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminum", 'x', Blocks.redstone_torch));
 
 		reg.shapedList.add(createShapedRecipe(stoneBricksDefault, 8, "xxx", "x x", "xxx", 'x', Blocks.stonebrick));
-		reg.shapedList.add(createShapedRecipe(stoneBricksWide, 8, "xx", 'x', stoneBricksDefault));
+		// reg.shapedList.add(createShapedRecipe(stoneBricksWide, 8, "xx", 'x', stoneBricksDefault));
 		reg.shapedList.add(createShapedRecipe(stoneBricksRed, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeRed"));
 		reg.shapedList.add(createShapedRecipe(stoneBricksBlue, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeBlue"));
 		reg.shapedList.add(createShapedRecipe(stoneBricksGreen, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeGreen"));
@@ -188,6 +189,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(solarArrayMV, 1, "xxx", "x x", "xxx", 'x', solarArrayLV));
 		reg.shapedList.add(createShapedRecipe(solarArrayHV, 1, "xxx", "x x", "xxx", 'x', solarArrayMV));
 		reg.shapedList.add(createShapedRecipe(lavaGen, 1, "xbx", "sgs", "tct", 'b', Items.lava_bucket, 'x', Blocks.brick_block, 'g', furnaceGen, 's', screw, 't', "ingotTitanium", 'c', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(petrolGen, 1, "rbr", "sgs", "xcx", 'b', bucketPetrol, 'c', conductiveCoil, 'g', furnaceGen, 'r', Items.redstone, 's', screw, 'x', gearIron));
 		reg.shapedList.add(createShapedRecipe(fissionController, 1, "xyx", "yzy", "xyx", 'x', "gemDiamond", 'y', "plateAluminium", 'z', furnaceGen));
 		reg.shapedList.add(createShapedRecipe(machineContainer, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateAluminium", 'z', "ingotNickel"));
 		reg.shapedList.add(createShapedRecipe(gearWooden, 1, "xyx", "y y", "xyx", 'x', "stickWood", 'y', "plankWood"));
@@ -198,15 +200,16 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(gearTitanium, 1, " x ", "xyx", " x ", 'x', "ingotTitanium", 'y', gearIron));
 		reg.shapedList.add(createShapedRecipe(gearGold, 1, " x ", "xyx", " x ", 'x', "ingotGold", 'y', gearIron));
 		reg.shapedList.add(createShapedRecipe(gearDiamond, 1, " x ", "xyx", " x ", 'x', "gemDiamond", 'y', gearGold));
-		reg.shapedList.add(createShapedRecipe(industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', emptyFuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearAluminium, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', emptyFuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearCopper, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialLoader, 1, "xyx", "yzy", "xyx", 'x', Blocks.obsidian, 'y', "plateReinforced", 'z', machineContainer));
 		reg.shapedList.add(createShapedRecipe(industrialQuarry, 1, "eae", "sbs", "dcd", 'a', titaniumDrill, 'b', machineContainer, 'c', conductiveCoil, 'd', gearDiamond, 'e', energyPipeClear, 's', screw));
 		reg.shapedList.add(createShapedRecipe(liquidNode, 1, "wyw", "xzx", "vuv", 'u', conductiveCoil, 'v', "dustRedstone", 'w', "gemLapis", 'x', liquiductBlue, 'y', Items.bucket, 'z', machineContainer));
+		reg.shapedList.add(createShapedRecipe(refinery, 1, "gtg", "sfs", "gcg", 'c', conductiveCoil, 'f', industrialFurnace, 'g', thickenedGlass, 's', screw, 't', fluidTankTier3));
 	}
 	
 	/**

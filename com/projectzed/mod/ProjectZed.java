@@ -80,6 +80,7 @@ public final class ProjectZed {
 	public static SortingConfigHandler sortingConfigHandler;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
 	public static final String modID = Reference.MOD_NAME;
+	private TimeLapse tl;
 	
 	// Creative Tabs:
 	public static CreativeTabs modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
@@ -255,7 +256,7 @@ public final class ProjectZed {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		TimeLapse tl = new TimeLapse();
+		tl = new TimeLapse();
 		logHelper = new LogHelper(Reference.class);
 
 		final Side side = FMLCommonHandler.instance().getEffectiveSide();
@@ -287,7 +288,7 @@ public final class ProjectZed {
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		TimeLapse tl = new TimeLapse();
+		tl.resetStartTime();
 		logHelper.info("Init started");
 
 		logHelper.info("Generating blocks, items, various objects and tinkering tools...");
@@ -302,7 +303,7 @@ public final class ProjectZed {
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		TimeLapse tl = new TimeLapse();
+		tl.resetStartTime();
 		logHelper.info("Post-Init started");
 		
 		if (configHandler.allowUpdating()) {
