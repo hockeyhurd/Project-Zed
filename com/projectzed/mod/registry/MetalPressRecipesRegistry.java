@@ -6,7 +6,9 @@
 */
 package com.projectzed.mod.registry;
 
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -42,16 +44,20 @@ public class MetalPressRecipesRegistry {
 		// Normal mapping.
 		// mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.plateAluminium, 1));
 		// mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.plateReinforced, 1));
-		
+		mapVanilla.put(new ItemStack(Items.iron_ingot), new ItemStack(ProjectZed.plateIron));
+		mapVanilla.put(new ItemStack(Items.gold_ingot), new ItemStack(ProjectZed.plateGold));
+		mapVanilla.put(new ItemStack(Items.dye, 1, 0x4), new ItemStack(ProjectZed.plateLapis));
+
 		// Fall back/modded mapping.
 		mapModded.put("ingotAluminium", "plateAluminium");
 		mapModded.put("ingotAluminum", "plateAluminum");
 		mapModded.put("mixedAlloy", "plateReinforced");
-		mapModded.put("ingotIron", "plateIron");
-		mapModded.put("ingotGold", "plateGold");
 		mapModded.put("ingotTin", "plateTin");
 		mapModded.put("ingotCopper", "plateCopper");
 		mapModded.put("ingotBronze", "plateBronze");
+		mapModded.put("ingotTitanium", "plateTitanium");
+		mapModded.put("ingotNickel", "plateNickel");
+		mapModded.put("ingotUranium", "plateUranium");
 
 		initEntries();
 	}

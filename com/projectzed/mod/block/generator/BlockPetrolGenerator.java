@@ -39,7 +39,7 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 	/*@SideOnly(Side.CLIENT)
 	private IIcon frontOn;*/
 
-	@SideOnly(Side.CLIENT)
+	// @SideOnly(Side.CLIENT)
 	private IIcon[] frontIcons = new IIcon[9];
 
 	/**
