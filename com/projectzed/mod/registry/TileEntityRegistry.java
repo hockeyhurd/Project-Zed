@@ -81,7 +81,10 @@ public final class TileEntityRegistry {
 		
 		reg.map.put(TileEntityIndustrialEnergizer.class, "industrialEnergizer");
 		reg.idMap.put(TileEntityIndustrialEnergizer.class, getNextID());
-		
+
+		reg.map.put(TileEntityIndustrialPlanter.class, "industrialPlanter");
+		reg.idMap.put(TileEntityIndustrialPlanter.class, getNextID());
+
 		reg.map.put(TileEntityEnergyPipeRed.class,  "energyPipeTileEntityRed");
 		reg.idMap.put(TileEntityEnergyPipeRed.class, getNextID());
 		

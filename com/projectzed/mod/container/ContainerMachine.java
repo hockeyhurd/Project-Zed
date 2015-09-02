@@ -41,13 +41,24 @@ public class ContainerMachine extends Container {
 	public int lastCookTime;
 
 	/**
-	 * @param inv = inventory of player as reference.
-	 * @param te = tile entity to append to as reference.
+	 * @param inv inventory of player as reference.
+	 * @param te tile entity to append to as reference.
+	 * @param runInitMethods flag whether init methods should be called automatically in super constructor.
 	 */
-	public ContainerMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
+	public ContainerMachine(InventoryPlayer inv, AbstractTileEntityMachine te, boolean runInitMethods) {
 		this.te = te;
 		this.NUM_SLOTS = te.getSizeInvenotry();
-		addSlots(inv, te);
+		if (runInitMethods) addSlots(inv, te);
+	}
+
+	/**
+	 * Shortened constructor that auto-adds inventory slots by default to maintain compatibility.
+	 *
+	 * @param inv inventory as reference.
+	 * @param te tile entity to append to as reference.
+	 */
+	public ContainerMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
+		this(inv, te, true);
 	}
 
 	/**
@@ -58,7 +69,6 @@ public class ContainerMachine extends Container {
 	 */
 	protected void addSlots(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		// Add 'crafting' slots to container.
-		
 		if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 1) this.addSlotToContainer(new Slot(te, 0, 79, 21));
 		
 		else if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 2) {
@@ -72,13 +82,30 @@ public class ContainerMachine extends Container {
 			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
 		}
 
+		addUpgradeInventorySlots(te);
+		addPlayerInventorySlots(inv);
+	}
+
+	/**
+	 * Adds upgrade slots to container.
+	 *
+	 * @param te tileentity object to reference and check.
+	 */
+	protected void addUpgradeInventorySlots(AbstractTileEntityMachine te) {
 		if (te.getSizeUpgradeSlots() > 0) {
 			// add upgrade slots last!
 			for (int i = 0; i < te.getSizeUpgradeSlots(); i++) {
 				this.addSlotToContainer(new SlotUpgrade(te, this.NUM_SLOTS - te.getSizeUpgradeSlots() + i, 176 + 8, 8 + i * 18));
 			}
 		}
+	}
 
+	/**
+	 * Adds player inventory to container.
+	 *
+	 * @param inv player inventory.
+	 */
+	protected void addPlayerInventorySlots(InventoryPlayer inv) {
 		// Adds the player inventory to furnace's gui.
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
@@ -176,7 +203,7 @@ public class ContainerMachine extends Container {
 				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
 			}
 
-			if (slotStack.stackSize == 0) slot.putStack((ItemStack) null);
+			if (slotStack.stackSize == 0) slot.putStack(null);
 			else slot.onSlotChanged();
 
 			if (slotStack.stackSize == stack.stackSize) return null;

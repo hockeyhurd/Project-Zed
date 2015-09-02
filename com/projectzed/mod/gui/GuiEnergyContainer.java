@@ -6,18 +6,6 @@
 */
 package com.projectzed.mod.gui;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hockeyhurd.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
@@ -27,10 +15,20 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.util.Reference.Constants;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
+
+import static com.hockeyhurd.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for energy cell gui.
@@ -259,7 +257,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		if (isEnergyCell && button.id >= 0 && button.id < buttons.length) {
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) this.te;
 			
-			if (!this.isShiftKeyDown()) {
+			if (!isShiftKeyDown()) {
 				ForgeDirection dirToSet = getDirectionFromName(button.displayString);
 				
 				ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
@@ -267,7 +265,7 @@ public class GuiEnergyContainer extends GuiContainer {
 				ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 			}
 			
-			else if (this.isShiftKeyDown()) {
+			else if (isShiftKeyDown()) {
 				// ProjectZed.logHelper.info(true);
 				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 					if (this.buttons[dir.ordinal()] instanceof GuiIOButton) ((GuiIOButton) this.buttons[dir.ordinal()]).setStateID((byte) 0);

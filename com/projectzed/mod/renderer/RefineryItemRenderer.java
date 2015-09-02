@@ -74,6 +74,15 @@ public class RefineryItemRenderer extends AbstractItemRenderer {
 		float angle = 0.0f;
 		switch (type) {
 			case EQUIPPED:
+				translation.x = 0.5f;
+				translation.y = 0.5f;
+				translation.z = 0.75f;
+				angle = 90.0f;
+
+				GL11.glTranslatef(translation.x, translation.y, translation.z);
+				GL11.glRotatef(angle, 0f, 1f, 0f);
+
+				break; // caller expects us to render over [0,0,0] to [1,1,1], no translation necessary
 			case EQUIPPED_FIRST_PERSON: {
 				translation.x = 0f;
 				translation.y = 0.5f;

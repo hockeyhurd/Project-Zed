@@ -43,8 +43,8 @@ import java.util.List;
 public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 	public ResourceLocation texture;
-	private AbstractTileEntityMachine te;
-	private String stringToDraw;
+	protected AbstractTileEntityMachine te;
+	protected String stringToDraw;
 
 	protected Vector2<Integer> mouseVec, pos, minMax;
 	protected List<IInfoLabel> labelList;
@@ -82,6 +82,32 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
 	}
 
+	/**
+	 * @param containerMachine
+	 * @param inv
+	 * @param te
+	 */
+	public GuiMachine(ContainerMachine containerMachine, InventoryPlayer inv, AbstractTileEntityMachine te) {
+		super(containerMachine);
+		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
+		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+
+		upgradeXOffset = te.getSizeInventory() > 0 ? 0x20 : 0x0;
+
+		this.te = te;
+		this.xSize = 176 + upgradeXOffset;
+		this.ySize = 166;
+
+		this.labelList = new ArrayList<IInfoLabel>();
+		this.redstoneType = te.getRedstoneType();
+
+		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
+
+		waila = new Waila(null, player.worldObj, player, null, 0);
+		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.client.gui.inventory.GuiContainer#
@@ -89,9 +115,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
+		stringToDraw = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
-		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2 - (upgradeXOffset / 2), 6, 4210752);
+		this.fontRendererObj.drawString(stringToDraw, this.xSize / 2 - this.fontRendererObj.getStringWidth(stringToDraw) / 2 - (upgradeXOffset / 2), 6, 4210752);
 		// this.fontRendererObj.drawString(I18n.format("container.inventory",
 		// new Object[0]), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -111,7 +137,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
         
 		this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize - upgradeXOffset, ySize);
 
-		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
+		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 	
 		if (this.te.getSizeInvenotry() > 1) {
@@ -199,7 +225,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			current = buttons.get(i);
 			if (!(current instanceof GuiConfigButton)) ((GuiButton) current).visible = false;
 			
-			if (current instanceof GuiButton) this.buttonList.add(current);
+			this.buttonList.add(current);
 		}
 		
 	}
@@ -274,7 +300,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			}
 			
 			else if (button instanceof GuiIOButton) {
-				if (!this.isShiftKeyDown()) {
+				if (!isShiftKeyDown()) {
 					ForgeDirection dirToSet = getDirectionFromName(button.displayString);
 
 					// ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
@@ -282,7 +308,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 					// ProjectZed.logHelper.info("Post-Val:\t" + te.getSideValve(dirToSet));
 				}
 
-				else if (this.isShiftKeyDown()) {
+				else if (isShiftKeyDown()) {
 					int index = 0;
 
 					for (int i = 0; i < this.buttonList.size(); i++) {
@@ -300,8 +326,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			
 			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityMachine(te));
 		}
-		
-		else return;
 	}
 	
 	/*
@@ -466,7 +490,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 * @return value of the 'valve' on side specified.
 	 */
 	private byte getSideValueFromTE(ForgeDirection dir) {
-		return te instanceof AbstractTileEntityMachine ? ((AbstractTileEntityMachine) te).getSideValve(dir) : 0;
+		return te.getSideValve(dir);
 	}
 
 }
