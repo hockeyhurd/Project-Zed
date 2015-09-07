@@ -46,7 +46,7 @@ public class ContainerPlanter extends ContainerMachine {
 
 		for (int y = 0; y < 2; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlotToContainer(new Slot(te, x + y * 9, 8 + x * 18, 17 + 53 + y * 18));
+				this.addSlotToContainer(new Slot(te, 9 + x + y * 9, 8 + x * 18, 17 + 53 + y * 18));
 			}
 		}
 

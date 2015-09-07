@@ -11,14 +11,17 @@
 package com.projectzed.mod.tileentity.machine;
 
 import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockHelper;
+import com.hockeyhurd.api.util.BlockUtils;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * TileEntity class for industrialPlanter.
@@ -31,7 +34,6 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 	private Vector3<Integer> currentCheckingVec;
 	private Rect<Integer> boundedRect;
 	private int currentSize = 1;
-	private BlockHelper blockHelper;
 
 	public static final int DEFAULT_RECT_SIZE = 3;
 	public static final int DEFAULT_NORMALIZED_RECT_SIZE = 1;
@@ -68,6 +70,16 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 	}
 
 	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot >= 9 && super.isItemValidForSlot(slot, stack) && BlockUtils.getBlockFromItem(stack.getItem()) instanceof BlockSapling;
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+		return slot >= 9 && super.canExtractItem(slot, stack, side);
+	}
+
+	@Override
 	protected boolean canSmelt() {
 		return false;
 	}
@@ -94,14 +106,14 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		return null;
 	}
 
-	private Block getFirstSapling() {
+	/*private Block getFirstSapling() {
 		Block ret = Blocks.air;
 
 		Block currentBlock;
 		for (int i = 0; i < slots.length; i++) {
 			if (slots[i] == null) continue;
 
-			currentBlock = Block.getBlockFromItem(slots[i].getItem());
+			currentBlock = BlockUtils.getBlockFromItem(slots[i].getItem());
 
 			if (currentBlock instanceof BlockSapling) {
 				ret = currentBlock;
@@ -111,6 +123,22 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		}
 
 		return ret;
+	}*/
+
+	private int getFirstSapling() {
+		Block currentBlock;
+		for (int i = 0; i < getSizeInventory(); i++) {
+			if (slots[i] != null) {
+				currentBlock = BlockUtils.getBlockFromItem(slots[i].getItem());
+				if (currentBlock != null && currentBlock instanceof BlockSapling) return i;
+			}
+		}
+
+		return -1;
+	}
+
+	private boolean canPlaceSapling(Block currentBlock, Block blockBelow, Block sapling) {
+		return currentBlock == Blocks.air && sapling != Blocks.air && (blockBelow.getMaterial() == Material.grass || blockBelow.getMaterial() == Material.ground);
 	}
 
 	@Override
@@ -118,18 +146,63 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		super.updateEntity();
 
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
-			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), yCoord + 1, boundedRect.min.y.intValue());
-			if (blockHelper == null) blockHelper = new BlockHelper(worldObj, null);
+			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), yCoord + 2, boundedRect.min.y.intValue());
 
-			final Block block = blockHelper.getBlock(currentCheckingVec);
-			final Block sapling = getFirstSapling();
+			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
+			final Block blockBelow = BlockUtils.getBlock(worldObj, currentCheckingVec.x, currentCheckingVec.y - 1, currentCheckingVec.z);
+			final int saplingIndex = getFirstSapling();
 
-			if (block == Blocks.air && sapling != Blocks.air) {
-				blockHelper.setBlock(currentCheckingVec, sapling);
+			if (saplingIndex != -1) {
+				final Block sapling = BlockUtils.getBlockFromItem(slots[saplingIndex]);
+
+				if (canPlaceSapling(currentBlock, blockBelow, sapling)) {
+					BlockUtils.setBlock(worldObj, currentCheckingVec, sapling);
+					decrStackSize(saplingIndex, 1);
+				}
 			}
 
 			incrementVector();
 		}
 	}
 
+	@Override
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
+
+		if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
+
+		if (comp.getBoolean("HasBoundedRect")) {
+			int qX0 = comp.getInteger("BoundedMinX");
+			int qY0 = comp.getInteger("BoundedMinY");
+
+			int qX1 = comp.getInteger("BoundedMaxX");
+			int qY1= comp.getInteger("BoundedMaxY");
+
+			boundedRect = new Rect<Integer>(new Vector2<Integer>(qX0, qY0), new Vector2<Integer>(qX1, qY1));
+
+			currentCheckingVec.x = comp.getInteger("CurrentCheckingVecX");
+			currentCheckingVec.y = comp.getInteger("CurrentCheckingVecY");
+			currentCheckingVec.z = comp.getInteger("CurrentCheckingVecZ");
+		}
+	}
+
+	@Override
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
+
+		comp.setBoolean("HasBoundedRect", boundedRect != null);
+		if (boundedRect != null) {
+			comp.setInteger("BoundedMinX", boundedRect.min.x);
+			comp.setInteger("BoundedMinY", boundedRect.min.y);
+
+			comp.setInteger("BoundedMaxX", boundedRect.max.x);
+			comp.setInteger("BoundedMaxY", boundedRect.max.y);
+
+			if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
+
+			comp.setInteger("CurrentCheckingVecX", currentCheckingVec.x);
+			comp.setInteger("CurrentCheckingVecY", currentCheckingVec.y);
+			comp.setInteger("CurrentCheckingVecZ", currentCheckingVec.z);
+		}
+	}
 }
