@@ -72,7 +72,29 @@ public class ContainerPlanter extends ContainerMachine {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-		return super.transferStackInSlot(player, index); // TODO: This must be changed.
+		ItemStack stack = null;
+		Slot slot = (Slot) this.inventorySlots.get(index);
+
+		if (slot != null && slot.getHasStack()) {
+			ItemStack slotStack = slot.getStack();
+			stack = slotStack.copy();
+
+			if (index < te.getSizeInventory()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInventory(), this.inventorySlots.size(), false)) return null;
+			}
+
+			else {
+				if (!this.mergeItemStack(slotStack, 9, te.getSizeInventory(), false)) return null;
+			}
+
+			if (slotStack.stackSize == 0) slot.putStack(null);
+			else slot.onSlotChanged();
+
+			if (slotStack.stackSize == stack.stackSize) return null;
+			slot.onPickupFromSlot(player, slotStack);
+		}
+
+		return stack;
 	}
 
 }

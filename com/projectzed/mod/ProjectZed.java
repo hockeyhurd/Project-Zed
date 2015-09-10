@@ -135,6 +135,7 @@ public final class ProjectZed {
 	public static Block industrialEnergizer;
 	public static Block industrialLoader;
 	public static Block industrialPlanter;
+	public static Block industrialHarvester;
 
 	// Containers:
 	public static Block energyPipeRed;
@@ -402,7 +403,8 @@ public final class ProjectZed {
 		industrialEnergizer = new BlockIndustrialEnergizer();
 		industrialLoader = new BlockIndustrialLoader();
 		industrialPlanter = new BlockIndustrialPlanter();
-		
+		industrialHarvester = new BlockIndustrialHarvester();
+
 		// Containers:
 		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
 		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
