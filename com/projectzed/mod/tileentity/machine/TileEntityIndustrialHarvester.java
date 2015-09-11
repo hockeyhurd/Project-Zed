@@ -11,6 +11,7 @@
 package com.projectzed.mod.tileentity.machine;
 
 import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockUtils;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -19,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.LinkedHashMap;
@@ -179,6 +181,47 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 			}
 
 			incrementVector();
+		}
+	}
+
+	@Override
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
+
+		if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
+
+		if (comp.getBoolean("HasBoundedRect")) {
+			int qX0 = comp.getInteger("BoundedMinX");
+			int qY0 = comp.getInteger("BoundedMinY");
+
+			int qX1 = comp.getInteger("BoundedMaxX");
+			int qY1= comp.getInteger("BoundedMaxY");
+
+			boundedRect = new Rect<Integer>(new Vector2<Integer>(qX0, qY0), new Vector2<Integer>(qX1, qY1));
+
+			currentCheckingVec.x = comp.getInteger("CurrentCheckingVecX");
+			currentCheckingVec.y = comp.getInteger("CurrentCheckingVecY");
+			currentCheckingVec.z = comp.getInteger("CurrentCheckingVecZ");
+		}
+	}
+
+	@Override
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
+
+		comp.setBoolean("HasBoundedRect", boundedRect != null);
+		if (boundedRect != null) {
+			comp.setInteger("BoundedMinX", boundedRect.min.x);
+			comp.setInteger("BoundedMinY", boundedRect.min.y);
+
+			comp.setInteger("BoundedMaxX", boundedRect.max.x);
+			comp.setInteger("BoundedMaxY", boundedRect.max.y);
+
+			if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
+
+			comp.setInteger("CurrentCheckingVecX", currentCheckingVec.x);
+			comp.setInteger("CurrentCheckingVecY", currentCheckingVec.y);
+			comp.setInteger("CurrentCheckingVecZ", currentCheckingVec.z);
 		}
 	}
 
