@@ -16,14 +16,16 @@ import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockUtils;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TileEntity class for industrialHarvester.
@@ -129,41 +131,72 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 
 	}
 
-	private LinkedHashMap<Vector3<Integer>, Block> createChopList(LinkedHashMap<Vector3<Integer>, Block> currentMap, Vector3<Integer> currentVec, boolean isOriginal) {
-		LinkedHashMap<Vector3<Integer>, Block> newMap = new LinkedHashMap<Vector3<Integer>, Block>();
-		Vector3<Integer> copy = currentVec.copy();
+	private List<Vector3<Integer>> createChopList(List<Vector3<Integer>> currentList, Vector3<Integer> currentCheckingVec) {
+		Vector3<Integer> copy = currentCheckingVec.copy();
 
-		Block current;
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			copy.x = currentVec.x + dir.offsetX;
-			copy.y = currentVec.y + dir.offsetY;
-			copy.z = currentVec.z + dir.offsetZ;
+		Vector3<Integer> min = new Vector3<Integer>(copy.x - 5, copy.y.intValue(), copy.z - 5);
+		Vector3<Integer> max = new Vector3<Integer>(copy.x + 5, copy.y + 32, copy.z + 5);
 
-			current = BlockUtils.getBlock(worldObj, copy);
-			if (current instanceof BlockLog || current instanceof BlockLeaves) {
-				if (!newMap.containsKey(copy) || !currentMap.containsKey(copy)) newMap.putAll(createChopList(newMap, copy, false));
+		Vector3<Integer> bufferVec = Vector3.zero.getVector3i();
+		Block currentBlock;
+		for (int y = min.y; y < max.y; y++) {
+			for (int x = min.x; x < max.x; x++) {
+				for (int z = min.z; z < max.z; z++) {
+					bufferVec.x = x;
+					bufferVec.y = y;
+					bufferVec.z = z;
+
+					currentBlock = BlockUtils.getBlock(worldObj, bufferVec);
+
+					if (currentBlock == Blocks.air) continue;
+					if (currentBlock instanceof BlockLog || currentBlock instanceof BlockLeaves) {
+						currentList.add(bufferVec.copy());
+					}
+				}
 			}
 		}
 
-		if (isOriginal) currentMap.putAll(newMap);
-
-		return newMap;
+		return currentList;
 	}
 
 	private void chopTree(BlockLog origin) {
 		Vector3<Integer> currentVec = currentCheckingVec.copy();
-		LinkedHashMap<Vector3<Integer>, Block> chopMap = new LinkedHashMap<Vector3<Integer>, Block>();
+		int volume = getVolume();
+		List<Vector3<Integer>> chopList = new ArrayList<Vector3<Integer>>(volume);
 
-		chopMap.put(currentVec, origin);
-		createChopList(chopMap, currentVec, true);
+		createChopList(chopList, currentVec);
 
-		if (!chopMap.isEmpty()) {
-			for (Vector3<Integer> vec : chopMap.keySet()) {
-				for (ItemStack stack : chopMap.get(vec).getDrops(worldObj, vec.x, vec.y, vec.z, BlockUtils.getBlockMetadata(worldObj, vec), 0)) {
-					addStackToContainer(stack);
+		if (!chopList.isEmpty()) {
+			Block block;
+			List<ItemStack> dropsList;
+			for (Vector3<Integer> vec : chopList) {
+				/*if (vec != null) {
+					ProjectZed.logHelper.info(vec, BlockUtils.getBlock(worldObj, vec).getLocalizedName());
+					continue;
+				}*/
+
+				block = BlockUtils.getBlock(worldObj, vec);
+
+				dropsList = block.getDrops(worldObj, vec.x, vec.y, vec.z, BlockUtils.getBlockMetadata(worldObj, vec), 0);
+
+				if (dropsList != null && !dropsList.isEmpty()) {
+					for (ItemStack stack : dropsList) {
+						if (stack != null && stack.stackSize > 0) {
+							addStackToContainer(stack);
+							// BlockUtils.destroyBlock(worldObj, vec);
+						}
+					}
 				}
+
+				BlockUtils.destroyBlock(worldObj, vec);
 			}
 		}
+
+		else ProjectZed.logHelper.warn("Empty chop list, is empty!!");
+	}
+
+	private int getVolume() {
+		return (Math.abs(boundedRect.max.x) + 5 - Math.abs(boundedRect.min.x) - 5) * (Math.abs(boundedRect.max.y) + 5 - Math.abs(boundedRect.min.y) - 5) * (32);
 	}
 
 	@Override
@@ -175,6 +208,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 
 			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
 
+			// ProjectZed.logHelper.info(currentCheckingVec);
 			if (currentBlock instanceof BlockLog) {
 				chopTree((BlockLog) currentBlock);
 				return;

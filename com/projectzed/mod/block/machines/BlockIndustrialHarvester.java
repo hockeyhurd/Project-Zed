@@ -125,7 +125,9 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 				rect = new Rect<Integer>(min, max);
 			}
 
-			if (rect != null && rect.getArea() >= dist * dist) {
+			ProjectZed.logHelper.info(rect != null ? rect.getNormalizedArea() : 0.0d);
+			ProjectZed.logHelper.info(rect != null ? rect.getArea() : 0.0d);
+			if (rect != null && rect.getNormalizedArea() >= dist * dist) {
 				ProjectZed.logHelper.info("Rect:", rect);
 				te.setBoundedRect(rect);
 			}
