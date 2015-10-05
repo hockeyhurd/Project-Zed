@@ -131,6 +131,13 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 
 	}
 
+	/**
+	 * Method to create and return a 'chop list' of blocks/trees to chop.
+	 *
+	 * @param currentList current list container.
+	 * @param currentCheckingVec current checking vector3i.
+	 * @return list of blocks to chop.
+	 */
 	private List<Vector3<Integer>> createChopList(List<Vector3<Integer>> currentList, Vector3<Integer> currentCheckingVec) {
 		Vector3<Integer> copy = currentCheckingVec.copy();
 
@@ -159,7 +166,10 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 		return currentList;
 	}
 
-	private void chopTree(BlockLog origin) {
+	/**
+	 * Method to perform action of checking and chopping tress.
+	 */
+	private void chopTree() {
 		Vector3<Integer> currentVec = currentCheckingVec.copy();
 		int volume = getVolume();
 		List<Vector3<Integer>> chopList = new ArrayList<Vector3<Integer>>(volume);
@@ -195,8 +205,13 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 		else ProjectZed.logHelper.warn("Empty chop list, is empty!!");
 	}
 
+	/**
+	 * Calculates volume of cubic area.
+	 *
+	 * @return volume.
+	 */
 	private int getVolume() {
-		return (Math.abs(boundedRect.max.x) + 5 - Math.abs(boundedRect.min.x) - 5) * (Math.abs(boundedRect.max.y) + 5 - Math.abs(boundedRect.min.y) - 5) * (32);
+		return Math.abs(Math.abs(boundedRect.max.x) + 5 - Math.abs(boundedRect.min.x) - 5) * (Math.abs(boundedRect.max.y) + 5 - Math.abs(boundedRect.min.y) - 5) * (32);
 	}
 
 	@Override
@@ -206,11 +221,15 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
 			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), yCoord, boundedRect.min.y.intValue());
 
+			// ProjectZed.logHelper.info(boundedRect.min, currentCheckingVec);
+			// ProjectZed.logHelper.info(boundedRect.min, boundedRect.max);
+
 			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
 
 			// ProjectZed.logHelper.info(currentCheckingVec);
 			if (currentBlock instanceof BlockLog) {
-				chopTree((BlockLog) currentBlock);
+				// chopTree((BlockLog) currentBlock);
+				chopTree();
 				return;
 			}
 

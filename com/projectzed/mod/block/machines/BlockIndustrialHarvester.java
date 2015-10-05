@@ -119,8 +119,8 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 
 			// WEST:
 			else if (meta == 5) {
-				Vector2<Integer> min = new Vector2<Integer>(x - dist, z + distNorm);
-				Vector2<Integer> max = new Vector2<Integer>(x - 1, z - distNorm);
+				Vector2<Integer> min = new Vector2<Integer>(x - dist, z - distNorm);
+				Vector2<Integer> max = new Vector2<Integer>(x - 1, z + distNorm);
 
 				rect = new Rect<Integer>(min, max);
 			}
