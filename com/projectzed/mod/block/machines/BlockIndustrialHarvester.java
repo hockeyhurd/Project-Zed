@@ -95,8 +95,8 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 
 			// SOUTH:
 			if (meta == 2) {
-				Vector2<Integer> min = new Vector2<Integer>(x + distNorm, z + 1);
-				Vector2<Integer> max = new Vector2<Integer>(x - distNorm, z + dist);
+				Vector2<Integer> min = new Vector2<Integer>(x - distNorm, z + 1);
+				Vector2<Integer> max = new Vector2<Integer>(x + distNorm, z + dist);
 
 				rect = new Rect<Integer>(min, max);
 			}
@@ -125,10 +125,10 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 				rect = new Rect<Integer>(min, max);
 			}
 
-			ProjectZed.logHelper.info(rect != null ? rect.getNormalizedArea() : 0.0d);
-			ProjectZed.logHelper.info(rect != null ? rect.getArea() : 0.0d);
+			// ProjectZed.logHelper.info(rect != null ? rect.getNormalizedArea() : 0.0d);
+			// ProjectZed.logHelper.info(rect != null ? rect.getArea() : 0.0d);
 			if (rect != null && rect.getNormalizedArea() >= dist * dist) {
-				ProjectZed.logHelper.info("Rect:", rect);
+				// ProjectZed.logHelper.info("Rect:", rect);
 				te.setBoundedRect(rect);
 			}
 
