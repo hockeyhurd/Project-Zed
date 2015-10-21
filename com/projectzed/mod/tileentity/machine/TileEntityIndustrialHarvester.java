@@ -14,6 +14,7 @@ import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.util.BlockUtils;
+import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
@@ -71,6 +72,18 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 	@Override
 	protected void initSlotsArray() {
 		this.slots = new ItemStack[2 * 9 + getSizeUpgradeSlots()];
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		if (stack == null || stack.stackSize == 0) return false;
+
+		if (stack.getItem() instanceof IItemUpgradeComponent && slot < getSizeInventory() && slot >= getSizeInventory() - 4 - 1) {
+			System.out.println("Testing!");
+			return canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
+		}
+
+		return true;
 	}
 
 	@Override

@@ -10,8 +10,8 @@
 
 package com.projectzed.mod.gui;
 
-import com.projectzed.mod.container.ContainerPlanter;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialPlanter;
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.container.ContainerHarvester;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -20,23 +20,19 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Gui class for TileEntityIndustrialPlanter.
+ * Gui class for TileEntityIndustrialHarvester.
  *
  * @author hockeyhurd
- * @version 9/1/2015.
+ * @version 10/21/2015.
  */
 @SideOnly(Side.CLIENT)
-public class GuiPlanter extends GuiMachine {
+public class GuiHarvester extends GuiMachine {
 
-	/**
-	 * @param inv
-	 * @param te
-	 */
-	public GuiPlanter(InventoryPlayer inv, TileEntityIndustrialPlanter te) {
-		super(new ContainerPlanter(inv, te), inv, te);
+	public GuiHarvester(InventoryPlayer inv, AbstractTileEntityMachine te) {
+		super(new ContainerHarvester(inv, te), inv, te);
 		this.ySize = 213;
 
-		this.texture = new ResourceLocation("projectzed", "textures/gui/GuiPlanter.png");
+		this.texture = new ResourceLocation("projectzed", "textures/gui/GuiHarvester.png");
 	}
 
 	@Override
@@ -52,16 +48,7 @@ public class GuiPlanter extends GuiMachine {
 		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 0x30, 0, 170 + 0x30, (int) progress, 17);
 
-		if (this.te.getSizeInvenotry() > 1) {
-			/*int i1 = 0;
-			if (this.te.isPoweredOn() && this.te.cookTime > 0) {
-				i1 = this.te.getCookProgressScaled(24);
-				// ProjectZed.logHelper.info(i1);
-				this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
-			}*/
-
-			upgradePanel.renderContainer(f, x, y);
-		}
+		if (this.te.getSizeInventory() > 1) upgradePanel.renderContainer(f, x, y);
 	}
 
 	@Override
@@ -71,4 +58,5 @@ public class GuiPlanter extends GuiMachine {
 		this.pos.y = guiTop + 61 + 0x30;
 		this.minMax.y = guiTop + 61 + 17 + 0x30;
 	}
+
 }
