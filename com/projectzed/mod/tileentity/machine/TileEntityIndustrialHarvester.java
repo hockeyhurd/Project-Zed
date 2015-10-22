@@ -19,6 +19,7 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
 import net.minecraft.init.Blocks;
@@ -169,7 +170,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 					currentBlock = BlockUtils.getBlock(worldObj, bufferVec);
 
 					if (currentBlock == Blocks.air) continue;
-					if (currentBlock instanceof BlockLog || currentBlock instanceof BlockLeaves) {
+					if (currentBlock instanceof BlockLog || currentBlock instanceof BlockLeaves || currentBlock instanceof BlockCrops) {
 						currentList.add(bufferVec.copy());
 					}
 				}
@@ -211,7 +212,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 					}
 				}
 
-				BlockUtils.destroyBlock(worldObj, vec);
+				BlockUtils.destroyBlock(worldObj, vec, false);
 			}
 		}
 
@@ -238,9 +239,10 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 			// ProjectZed.logHelper.info(boundedRect.min, boundedRect.max);
 
 			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
+			final int currentMeta = BlockUtils.getBlockMetadata(worldObj, currentCheckingVec);
 
 			// ProjectZed.logHelper.info(currentCheckingVec);
-			if (currentBlock instanceof BlockLog) {
+			if (currentBlock instanceof BlockLog || (currentBlock instanceof BlockCrops && currentMeta >= 7)) {
 				// chopTree((BlockLog) currentBlock);
 				chopTree();
 				return;
