@@ -12,6 +12,7 @@ package com.projectzed.api.util;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -162,6 +163,19 @@ public final class FluidUtils {
 	 */
 	public static boolean areFluidStacksEqual(FluidStack stack, FluidStack other) {
 		return stack.isFluidStackIdentical(other);
+	}
+
+	/**
+	 * Attempts to get a fluid from FluidRegistry if found and is valid.
+	 * else may return NULL!
+	 *
+	 * @param name name of fluid.
+	 * @return fluid if valid, else may return NULL!
+	 */
+	public static Fluid getFluidByName(String name) {
+		if (name == null || name.length() == 0) return null;
+
+		return FluidRegistry.getFluid(name);
 	}
 
 }

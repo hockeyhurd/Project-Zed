@@ -6,16 +6,19 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.hockeyhurd.api.util.LogicHelper;
+import com.hockeyhurd.api.util.NumberParser;
+import com.projectzed.api.registry.IRegistrable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class containing code for initializing the lumber mill's smelting recipe list. <br>
@@ -25,7 +28,7 @@ import net.minecraftforge.oredict.OreDictionary;
  * @author hockeyhurd
  * @version Nov 17, 2014
  */
-public class LumberMillRecipesRegistry {
+public class LumberMillRecipesRegistry implements IRegistrable {
 
 	private static HashMap<ItemStack, ItemStack> mapVanilla;
 	private static HashMap<String, String> mapModded;
@@ -74,6 +77,53 @@ public class LumberMillRecipesRegistry {
 	 */
 	public static HashMap<ItemStack, ItemStack> getMap() {
 		return mapVanilla;
+	}
+
+	@Override
+	public IRegistrable getInstance() {
+		return this;
+	}
+
+	@Override
+	public boolean addToRegistry(String key, String value) {
+		return false;
+	}
+
+	@Override
+	public boolean addToRegistry(String[] key, String[] value) {
+		if (!LogicHelper.nullCheckString(key) || !LogicHelper.nullCheckString(value)) return false;
+
+		if ((key.length == 2 || key.length == 3) && (value.length == 2 || value.length == 3)) {
+			final Block blockKey = Block.getBlockFromName(key[0]);
+			if (blockKey == null) return false;
+
+			int blockAmount = NumberParser.parseInt(key[1]);
+			if (blockAmount < 0) blockAmount = 0;
+
+			int blockMeta = key.length == 3 ? NumberParser.parseInt(key[2]) : 0;
+			if (blockMeta < 0) blockMeta = 0;
+
+			ItemStack inputStack = new ItemStack(blockKey, blockAmount, blockMeta);
+
+			Block blockValue = Block.getBlockFromName(value[0]);
+			Item itemValue = (Item) Item.itemRegistry.getObject(value[0]);
+			ItemStack outStack;
+
+			int outAmount = NumberParser.parseInt(value[1]);
+			if (outAmount < 0) outAmount = 1;
+
+			int outMeta = value.length == 3 ? NumberParser.parseInt(value[2]) : 0;
+			if (outMeta < 0) outMeta = 0;
+
+			if (blockValue == null && itemValue == null) return false;
+			else if (blockValue == null && itemValue != null) outStack = new ItemStack(itemValue, outAmount, outMeta);
+			else outStack = new ItemStack(blockValue, outAmount, outMeta);
+
+			mapVanilla.put(inputStack, outStack);
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

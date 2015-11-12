@@ -12,6 +12,7 @@ import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.heat.HeatLogic;
+import com.projectzed.api.heat.IHeatable;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
@@ -39,7 +40,8 @@ import java.util.List;
  * @author hockeyhurd
  * @version Nov 24, 2014
  */
-public class TileEntityNuclearController extends AbstractTileEntityGenerator implements IMultiBlockableController<AbstractTileEntityGenerator> {
+public class TileEntityNuclearController extends AbstractTileEntityGenerator implements IMultiBlockableController<AbstractTileEntityGenerator>,
+		IHeatable {
 
 	/** Variable tracking whether to use fusion or fission. */
 	private boolean fusionMode;
@@ -63,7 +65,17 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		heatLogic = new HeatLogic(2500, 0.05f);
 	}
-	
+
+	@Override
+	public HeatLogic getHeatLogic() {
+		return heatLogic;
+	}
+
+	@Override
+	public boolean isOverheated() {
+		return heatLogic.getHeat() == heatLogic.MAX;
+	}
+
 	/**
 	 * Sets direction of placed nuclear controller.
 	 * 
@@ -174,11 +186,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 */
 	@Override
 	public boolean canProducePower() {
-		boolean flag = false;
 		if (worldObj.isRemote) return false;
-		else flag = checkMultiBlockForm() && checkCorners();
-		
-		return flag;
+
+		return checkMultiBlockForm() && checkCorners();
 	}
 	
 	/**

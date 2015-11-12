@@ -14,7 +14,9 @@ package com.projectzed.api.heat;
  */
 public class HeatLogic {
 
+	/** Max amount of heat. */
 	public final int MAX;
+
 	private int heat = 20;
 	private float resistance;
 	
@@ -86,16 +88,27 @@ public class HeatLogic {
 		}
 	}
 
+	private int getIncrementHeat() {
+		int x = (int) Math.ceil(heat * resistance);
+		return (int) Math.ceil(10 * Math.pow(Math.E, x));
+	}
+
+	private int getDecrementHeat() {
+		int x = (int) Math.ceil(heat * resistance);
+		return (int) Math.ceil(10 * Math.pow(Math.E, -x));
+	}
+
 	public void update(final boolean running) {
 
 		// do heating:
 		if (running) {
-
+			heat += getIncrementHeat();
 		}
 
 		// do cooling:
 		else {
-
+			// heat -= getDecrementHeat();
+			heat -= getIncrementHeat();
 		}
 	}
 

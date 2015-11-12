@@ -6,16 +6,15 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.OutputUtil;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.OutputUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Registry for all furnace recipes.
@@ -106,5 +105,5 @@ public class FurnaceRecipeRegistry {
 	private void add(Item input, OutputUtil output) {
 		if (map != null && input != null && output.isValid()) map.put(input, output);
 	}
-	
+
 }

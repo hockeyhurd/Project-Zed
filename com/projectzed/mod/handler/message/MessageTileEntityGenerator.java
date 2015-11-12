@@ -7,6 +7,8 @@
 package com.projectzed.mod.handler.message;
 
 import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.api.heat.HeatLogic;
+import com.projectzed.api.heat.IHeatable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -38,6 +40,10 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	public int fluidID;
 	public int fluidAmount;
 
+	public boolean hasHeatLogic;
+	public int heatAmount;
+	public float heatResistance;
+
 	@Deprecated
 	public MessageTileEntityGenerator() {
 	}
@@ -58,6 +64,12 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 			fluidID = ((IFluidContainer) te).getFluidID();
 			fluidAmount = ((IFluidContainer) te).getTank().getFluidAmount();
 		}
+
+		if (te instanceof IHeatable) {
+			hasHeatLogic = true;
+			heatAmount = ((IHeatable) te).getHeatLogic().getHeat();
+			heatResistance = ((IHeatable) te).getHeatLogic().getResistance();
+		}
 	}
 
 	@Override
@@ -74,6 +86,10 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		this.hasFluidTank = buf.readBoolean();
 		this.fluidID = buf.readInt();
 		this.fluidAmount = buf.readInt();
+
+		this.hasHeatLogic = buf.readBoolean();
+		this.heatAmount = buf.readInt();
+		this.heatResistance = buf.readFloat();
 	}
 
 	@Override
@@ -90,6 +106,10 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeBoolean(hasFluidTank);
 		buf.writeInt(fluidID);
 		buf.writeInt(fluidAmount);
+
+		buf.writeBoolean(hasHeatLogic);
+		buf.writeInt(heatAmount);
+		buf.writeFloat(heatResistance);
 	}
 
 	@Override
@@ -109,6 +129,13 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 					fluidStack = new FluidStack(FluidRegistry.getFluid(message.fluidID), message.fluidAmount);
 
 				((IFluidContainer) te).getTank().setFluid(fluidStack);
+			}
+
+			if (te instanceof IHeatable && message.hasHeatLogic) {
+				HeatLogic heatLogic = ((IHeatable) te).getHeatLogic();
+
+				heatLogic.setCurrentHeat(message.heatAmount);
+				heatLogic.setResistance(message.heatResistance);
 			}
 		}
 		
