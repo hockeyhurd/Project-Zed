@@ -6,14 +6,12 @@
 */
 package com.projectzed.mod.gui;
 
+import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
-import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui class specific to nuclear controllers.
@@ -80,15 +78,24 @@ public class GuiNuclearController extends GuiGenerator {
 		float progressCoolant = 39f;
 		progressCoolant = 39f - progressCoolant;
 		int v = 0 - (int) progressCoolant;
-		
+
+		final float currentHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getHeat();
+		final float maxHeat = ((TileEntityNuclearController) this.te).getHeatLogic().MAX;
+		float progressHeat = currentHeat / maxHeat * 39f;
+		progressHeat = 39f - progressHeat;
+		if (progressHeat < 0.0f) progressHeat = 0.0f;
+		int vh = 0 - (int) progressHeat;
+
 		// water:
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 176, v, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8, guiTop + 17, 176 + 16, 0, 16, 39);
 		
 		// heat:
-		this.drawTexturedModalRect(guiLeft + 7 + 17, guiTop + 17, 176 + 32, v, 16, 39);
+		// this.drawTexturedModalRect(guiLeft + 7 + 17, guiTop + 17, 176 + 32, v, 16, 39);
+		this.drawTexturedModalRect(guiLeft + 7 + 17, guiTop + 17, 176 + 32, vh, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8 + 17, guiTop + 17, 176 + 48, 0, 16, 39);
-		
+		// this.drawTexturedModalRect(guiLeft + 8 + 17, guiTop + 17, 176 + 48, (int) progressHeat, 16, 39);
+
 		// fuel stored:
 		this.drawTexturedModalRect(guiLeft + 7 + 17 + 17, guiTop + 17, 176, v + 41, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8 + 17 + 17, guiTop + 17, 176 + 16, 41, 16, 39);

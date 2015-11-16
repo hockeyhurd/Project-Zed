@@ -63,7 +63,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
 		
-		heatLogic = new HeatLogic(2500, 0.05f);
+		// heatLogic = new HeatLogic(2500, 0.05f);
+		heatLogic = new HeatLogic(2500000, 0.05f);
 	}
 
 	@Override
@@ -224,7 +225,12 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 */
 	@Override
 	public void generatePower() {
-		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) this.stored += this.source.getEffectiveSize();
+		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
+			this.stored += this.source.getEffectiveSize();
+			// heatLogic.setCurrentHeat(0);
+			heatLogic.update(true, this.stored, this.getChamberSize());
+		}
+
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 	
@@ -322,6 +328,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			this.markDirty();
+
+			// ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
 		}
 		
 	}
@@ -347,6 +355,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		masterVec.x = comp.getInteger("ProjectZedMasterX");
 		masterVec.y = comp.getInteger("ProjectZedMasterY");
 		masterVec.z = comp.getInteger("ProjectZedMasterZ");
+
+		heatLogic.readNBT(comp);
 	}
 	
 	@Override
@@ -363,6 +373,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		comp.setInteger("ProjectZedMasterX", masterVec.x);
 		comp.setInteger("ProjectZedMasterY", masterVec.y);
 		comp.setInteger("ProjectZedMasterZ", masterVec.z);
+
+		heatLogic.saveNBT(comp);
 	}
 
 	/**

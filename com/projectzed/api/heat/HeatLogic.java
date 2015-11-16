@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.heat;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 /**
  * Class containing seperated logic for machines that are effected/use heat.
  * 
@@ -88,9 +90,11 @@ public class HeatLogic {
 		}
 	}
 
-	private int getIncrementHeat() {
-		int x = (int) Math.ceil(heat * resistance);
-		return (int) Math.ceil(10 * Math.pow(Math.E, x));
+	private int getIncrementHeat(int mcu, int volume) {
+		// int x = (int) Math.ceil(heat * resistance);
+		// return (int) Math.ceil(1 * Math.pow(Math.E, x));
+
+		return (int) Math.ceil((float) mcu / ((float) volume * 10f));
 	}
 
 	private int getDecrementHeat() {
@@ -98,18 +102,32 @@ public class HeatLogic {
 		return (int) Math.ceil(10 * Math.pow(Math.E, -x));
 	}
 
-	public void update(final boolean running) {
+	public void update(final boolean running, int mcu, int volume) {
 
 		// do heating:
 		if (running) {
-			heat += getIncrementHeat();
+			// ProjectZed.logHelper.info("Heat before:", heat);
+			// ProjectZed.logHelper.info("Increment heat:", getIncrementHeat(mcu, volume));
+			heat += getIncrementHeat(mcu, volume);
+			// heat = getIncrementHeat();
+			// ProjectZed.logHelper.info("Heat after:", heat);
 		}
 
 		// do cooling:
 		else {
 			// heat -= getDecrementHeat();
-			heat -= getIncrementHeat();
+			heat -= getIncrementHeat(mcu, volume);
 		}
+	}
+
+	public void saveNBT(NBTTagCompound comp) {
+		comp.setInteger("HeatLogic:Heat", this.heat);
+		comp.setFloat("HeatLogic:Resistance", this.resistance);
+	}
+
+	public void readNBT(NBTTagCompound comp) {
+		this.heat = comp.getInteger("HeatLogic:Heat");
+		this.resistance = comp.getFloat("HeatLogic:Resistance");
 	}
 
 }
