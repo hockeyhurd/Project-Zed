@@ -25,6 +25,7 @@ public class GuiNuclearController extends GuiGenerator {
 	// TODO: implement these in both controller TE classes and sync to here!
 	// private int storedFuel;
 	// private int storedCoolant;
+	private static final float DATA_BAR_HEIGHT = 39.0f;
 	
 	/**
 	 * @param inv player's inventory.
@@ -75,15 +76,19 @@ public class GuiNuclearController extends GuiGenerator {
 		super.drawGuiContainerBackgroundLayer(f, x, y);
 		
 		// float progressWater = (float) ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
-		float progressCoolant = 39f;
-		progressCoolant = 39f - progressCoolant;
+		float progressCoolant = DATA_BAR_HEIGHT;
+		progressCoolant = DATA_BAR_HEIGHT - progressCoolant;
 		int v = 0 - (int) progressCoolant;
 
 		final float currentHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getHeat();
-		final float maxHeat = ((TileEntityNuclearController) this.te).getHeatLogic().MAX;
-		float progressHeat = currentHeat / maxHeat * 39f;
-		progressHeat = 39f - progressHeat;
+		final float maxHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getMaxHeat();
+		float progressHeat = currentHeat / maxHeat * DATA_BAR_HEIGHT;
+		// ProjectZed.logHelper.info("progressHeat:", progressHeat, currentHeat / maxHeat);
+		progressHeat = DATA_BAR_HEIGHT - progressHeat;
+
+		// Clamp values accordingly:
 		if (progressHeat < 0.0f) progressHeat = 0.0f;
+		// if (progressHeat > 1.0f) progressHeat = 1.0f;
 		int vh = 0 - (int) progressHeat;
 
 		// water:

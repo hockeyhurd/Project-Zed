@@ -42,6 +42,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	public boolean hasHeatLogic;
 	public int heatAmount;
+	public int maxHeatAmount;
 	public float heatResistance;
 
 	@Deprecated
@@ -68,6 +69,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (te instanceof IHeatable) {
 			hasHeatLogic = true;
 			heatAmount = ((IHeatable) te).getHeatLogic().getHeat();
+			maxHeatAmount = ((IHeatable) te).getHeatLogic().getMaxHeat();
 			heatResistance = ((IHeatable) te).getHeatLogic().getResistance();
 		}
 	}
@@ -89,6 +91,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 		this.hasHeatLogic = buf.readBoolean();
 		this.heatAmount = buf.readInt();
+		this.maxHeatAmount = buf.readInt();
 		this.heatResistance = buf.readFloat();
 	}
 
@@ -109,6 +112,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 		buf.writeBoolean(hasHeatLogic);
 		buf.writeInt(heatAmount);
+		buf.writeInt(maxHeatAmount);
 		buf.writeFloat(heatResistance);
 	}
 
@@ -135,6 +139,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 				HeatLogic heatLogic = ((IHeatable) te).getHeatLogic();
 
 				heatLogic.setCurrentHeat(message.heatAmount);
+				heatLogic.setMaxHeat(message.maxHeatAmount);
 				heatLogic.setResistance(message.heatResistance);
 			}
 		}

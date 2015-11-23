@@ -74,7 +74,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 	@Override
 	public boolean isOverheated() {
-		return heatLogic.getHeat() == heatLogic.MAX;
+		return heatLogic.getHeat() == heatLogic.getMaxHeat();
 	}
 
 	/**
@@ -82,11 +82,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * 
 	 * @param dir direction.
 	 * @param size expected size of chamber.
+	 * @param rel relative size.
 	 */
 	public void setPlaceDir(byte dir, byte size, byte rel) {
 		this.placeDir = dir;
 		this.size = size;
 		this.rel = rel;
+
+		heatLogic.setMaxHeat(HeatLogic.getHeatFromValues(this.maxStored, this.size));
 	}
 	
 	/**
@@ -225,10 +228,15 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 */
 	@Override
 	public void generatePower() {
-		if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
-			this.stored += this.source.getEffectiveSize();
-			// heatLogic.setCurrentHeat(0);
-			heatLogic.update(true, this.stored, this.getChamberSize());
+		// if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
+		if (poweredLastUpdate && inputPort.getBurnTime() > 0) {
+			final int preStored = this.stored;
+
+			if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+			else this.stored = this.maxStored;
+
+			if (preStored < this.stored) heatLogic.update(true, this.stored, this.getChamberSize());
+			else heatLogic.update(false, this.stored, this.getChamberSize());
 		}
 
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
@@ -287,7 +295,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @param controlPort flag whether control port is appropriately set.
 	 * @return true if successful, else returns false.
 	 */
-	public boolean checksAndConsumations(boolean controlPort) {
+	public boolean checksAndConsumptions(boolean controlPort) {
 		boolean flag = false;
 		
 		if (inputPort != null) flag = poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle(outputPort);
@@ -315,7 +323,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 			if (inputPort == null) return;
 			boolean controlPort = checkControlPort();
-			checksAndConsumations(controlPort);
+			checksAndConsumptions(controlPort);
 			
 			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) resetStructure();
 
@@ -329,7 +337,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			this.markDirty();
 
-			// ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
+			if (this.worldObj.getTotalWorldTime() % 20L == 0) ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
+			// ProjectZed.logHelper.info("Max heat:", heatLogic.getMaxHeat());
 		}
 		
 	}
