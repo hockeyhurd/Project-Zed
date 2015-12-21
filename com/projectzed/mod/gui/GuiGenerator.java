@@ -85,13 +85,13 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	}
 
 	/*
-		 * (non-Javadoc)
-		 * @see net.minecraft.client.gui.inventory.GuiContainer#
-		 * drawGuiContainerForegroundLayer(int, int)
-		 */
+	* (non-Javadoc)
+	* @see net.minecraft.client.gui.inventory.GuiContainer#
+	* drawGuiContainerForegroundLayer(int, int)
+	*/
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
+		String name = !this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 

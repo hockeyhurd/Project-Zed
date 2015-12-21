@@ -6,19 +6,16 @@
 */
 package com.projectzed.mod.gui;
 
+import com.projectzed.mod.container.ContainerNuclearIOPort;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.projectzed.mod.container.ContainerNuclearIOPort;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing gui code for NuclearIOPort.
@@ -52,7 +49,7 @@ public class GuiNuclearIOPort extends GuiContainer {
 	 */
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		String name = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
+		String name = !this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
 		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
 	}

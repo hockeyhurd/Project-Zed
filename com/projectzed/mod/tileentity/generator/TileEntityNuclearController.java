@@ -337,7 +337,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			this.markDirty();
 
-			if (this.worldObj.getTotalWorldTime() % 20L == 0) ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
+			// if (this.worldObj.getTotalWorldTime() % 20L == 0) ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
 			// ProjectZed.logHelper.info("Max heat:", heatLogic.getMaxHeat());
 		}
 		

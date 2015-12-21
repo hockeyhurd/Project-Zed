@@ -30,7 +30,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	 * @param name
 	 */
 	public AbstractTileEntityNuclearComponent(String name) {
-		setCustomName(name);
+		setCustomName("container." + name);
 	}
 
 	/* (non-Javadoc)

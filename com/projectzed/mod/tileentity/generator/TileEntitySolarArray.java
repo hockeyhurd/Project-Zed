@@ -27,9 +27,11 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	private final float[] TIER_MODIFIER = new float[] {
 		1.0f, 8.0f, 64.0f, 512.0f	 
 	};
+
+	private static final String invName = "solarArray";
 	
 	public TileEntitySolarArray() {
-		super("solarArray");
+		super(invName);
 	}
 	
 	/**
@@ -40,6 +42,7 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	public void setTier(byte tier) {
 		this.tier = tier >= 0 && tier < this.TIER_MODIFIER.length ? tier : 0;
 		this.source.setModifier(this.TIER_MODIFIER[this.tier]);
+		if (tier > 0) this.setCustomName("container." + invName + tier); // TODO: Fix this temp fix!
 	}
 	
 	/**

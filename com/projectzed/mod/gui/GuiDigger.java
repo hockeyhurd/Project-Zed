@@ -77,7 +77,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
-		stringToDraw = this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
+		stringToDraw = !this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 		
 		this.fontRendererObj.drawString(stringToDraw, this.xSize / 2 - this.fontRendererObj.getStringWidth(stringToDraw) / 2, 6, 4210752);
 	}
