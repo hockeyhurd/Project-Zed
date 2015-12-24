@@ -53,16 +53,21 @@ public class HeatLabel<N> implements IInfoLabel<N> {
 		String text0 = EnumChatFormatting.RED + "Amount: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.HEAT_UNIT;
 
 		float percent = getPercent();
-		String text1 = String.format("%.2f%%", percent);
+		String text2 = String.format("%.2f%%", percent);
+
+		String text1 = EnumChatFormatting.RED + "Status: " + (percent < 50f ? EnumChatFormatting.GREEN + "Good!" : percent < 75f ? EnumChatFormatting.YELLOW + "Fair!" :
+				EnumChatFormatting.RED + "Critical!");
 
 		if (list.size() == 0) {
 			list.add(text0);
 			list.add(text1);
+			list.add(text2);
 		}
 
 		else {
 			list.set(0, text0);
 			list.set(1, text1);
+			list.set(2, text2);
 		}
 
 		return list;

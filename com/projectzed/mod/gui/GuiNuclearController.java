@@ -6,6 +6,8 @@
 */
 package com.projectzed.mod.gui;
 
+import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.mod.gui.component.HeatLabel;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,6 +28,9 @@ public class GuiNuclearController extends GuiGenerator {
 	// private int storedFuel;
 	// private int storedCoolant;
 	private static final float DATA_BAR_HEIGHT = 39.0f;
+
+	private final TileEntityNuclearController te2;
+	private Vector2<Integer> pos2, minMax2;
 	
 	/**
 	 * @param inv player's inventory.
@@ -33,6 +38,7 @@ public class GuiNuclearController extends GuiGenerator {
 	 */
 	public GuiNuclearController(InventoryPlayer inv, TileEntityNuclearController te) {
 		super(inv, te);
+		this.te2 = te;
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiNuclearController.png");
 	}
 
@@ -50,6 +56,11 @@ public class GuiNuclearController extends GuiGenerator {
 		
 		// this.labelList.add(new FluidLabel<Integer>(new Vector4<Integer>(guiLeft + 7, guiTop + 17, 0), new Vector4<Integer>(
 		//		guiLeft + 7 + 16, guiTop + 17 + 41, 0), storedCoolant, getTE().getCoolantFluidStored()));
+
+		pos2 = new Vector2<Integer>(guiLeft + 7 + 0x10, guiTop + 17);
+		minMax2 = new Vector2<Integer>(guiLeft + 7 + 0x20, guiTop + 17 + 41);
+
+		this.labelList.add(new HeatLabel<Integer>(pos2, minMax2, te2.getHeatLogic().getHeat(), te2.getHeatLogic().getMaxHeat()));
 	}
 	
 	/*
@@ -105,5 +116,20 @@ public class GuiNuclearController extends GuiGenerator {
 		this.drawTexturedModalRect(guiLeft + 7 + 17 + 17, guiTop + 17, 176, v + 41, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8 + 17 + 17, guiTop + 17, 176 + 16, 41, 16, 39);
 	}
-	
+
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+
+		pos2.x = guiLeft + 7 + 0x10;
+		pos2.y = guiTop + 17;
+
+		minMax2.x = guiLeft + 7 + 0x20;
+		minMax2.y = guiTop + 17 + 41;
+
+		if (getComponents() != null && getComponents().size() > 1) {
+			getComponents().get(1).update(mouseVec, pos2, minMax2, new Integer[] { te2.getHeatLogic().getHeat(), te2.getHeatLogic().getMaxHeat() } );
+		}
+	}
+
 }
