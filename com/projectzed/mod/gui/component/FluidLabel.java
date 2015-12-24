@@ -29,10 +29,10 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	private boolean visible;
 	
 	/**
-	 * @param pos = x, y coordinate of label boundary.
-	 * @param minMax = width, height of label boundary.
-	 * @param stored = amount stored at start.
-	 * @param max = max stored at start.
+	 * @param pos x, y coordinate of label boundary.
+	 * @param minMax width, height of label boundary.
+	 * @param stored amount stored at start.
+	 * @param max max stored at start.
 	 */
 	public FluidLabel(Vector2<Integer> pos, Vector2<Integer> minMax, N stored, N max) {
 		this.pos = pos;
@@ -51,7 +51,8 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 	public List<String> getLabel() {
 		String text0 = EnumChatFormatting.AQUA + "Stored: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.FLUID_UNIT;
 		
-		float percent = ((Number) this.stored).floatValue() / ((Number) this.max).floatValue() * 100.0f;
+		// float percent = ((Number) this.stored).floatValue() / ((Number) this.max).floatValue() * 100.0f;
+		float percent = getPercent();
 		String text1 =  String.format("%.2f%%", percent);
 		
 		if (list.size() == 0) {

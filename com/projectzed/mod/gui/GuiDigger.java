@@ -142,7 +142,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		GuiRedstoneButton[] redstoneButtons = new GuiRedstoneButton[] {
 			new GuiRedstoneButton(counter++, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED),
 			new GuiRedstoneButton(counter++, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW),
-			new GuiRedstoneButton(counter++, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH)
+			new GuiRedstoneButton(counter++, guiLeft - 72 + 32, guiTop + 24 + 20, null, EnumRedstoneType.HIGH)
 		};
 		
 		for (int i = 0; i < redstoneButtons.length; i++) {

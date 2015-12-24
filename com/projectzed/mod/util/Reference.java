@@ -57,6 +57,8 @@ public class Reference extends AbstractReference {
 		
 		/** Common fluid unit for mc standing for milibucket. */
 		public static final String FLUID_UNIT = "mb";
+
+		public static final String HEAT_UNIT = "C";
 		
 		/** Base unit for machine's energy consumption. */
 		public static final int BASE_MACH_USAGE = 20; 

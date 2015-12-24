@@ -11,6 +11,9 @@ import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityCentrifuge;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -21,9 +24,10 @@ import net.minecraft.util.ResourceLocation;
  * @author hockeyhurd
  * @version Dec 21, 2014
  */
+@SideOnly(Side.CLIENT)
 public class GuiCentrifuge extends GuiMachine {
 
-	private int waterStored;
+	// private int waterStored;
 	private TileEntityIndustrialCentrifuge te2;
 	private byte amount = 1;
 
@@ -64,12 +68,13 @@ public class GuiCentrifuge extends GuiMachine {
 	@Override
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		super.drawGuiContainerBackgroundLayer(f, x, y);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 
 		float progressWater =  ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
 		progressWater = 39f - progressWater;
 		int v = 0 - (int) progressWater;
+
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 200, v, 16, 39);
-		
 		this.drawTexturedModalRect(guiLeft + 8, guiTop + 17, 216, 0, 16, 39);
 	}
 
@@ -87,7 +92,7 @@ public class GuiCentrifuge extends GuiMachine {
 		this.labelList.add(new FluidLabel<Integer>(this.pos2, this.minMax2, this.te2.getTank().getFluidAmount(), this.te2.getTank().getCapacity()));
 		
 			// new GuiButton(0, guiLeft + 25, guiTop + 42, 20, 20, "-"),
-		GuiButton guiButton0 = new GuiButton(super.buttons.size() + 0, guiLeft + 38, guiTop + 49, 12, 12, "-");
+		GuiButton guiButton0 = new GuiButton(super.buttons.size(), guiLeft + 38, guiTop + 49, 12, 12, "-");
 		GuiButton guiButton1 = new GuiButton(super.buttons.size() + 1, guiLeft + 69, guiTop + 49, 12, 12, "+");
 
 		this.buttonList.add(guiButton0);
@@ -123,13 +128,13 @@ public class GuiCentrifuge extends GuiMachine {
 	public void actionPerformed(GuiButton button) {
 		// ProjectZed.logHelper.info("Button ID:", button.id);
 		if (button.id == this.buttonList.size() - 2) {
-			if (!this.isShiftKeyDown() && amount - 1 >= 1) amount--;
-			else if (this.isShiftKeyDown() && amount > 1) amount = 1;
+			if (!isShiftKeyDown() && amount - 1 >= 1) amount--;
+			else if (isShiftKeyDown() && amount > 1) amount = 1;
 		}
 
 		else if (button.id == this.buttonList.size() - 1) {
-			if (!this.isShiftKeyDown() && amount + 1 <= 10) amount++;
-			else if (this.isShiftKeyDown() && amount < 10) amount = 10;
+			if (!isShiftKeyDown() && amount + 1 <= 10) amount++;
+			else if (isShiftKeyDown() && amount < 10) amount = 10;
 		}
 
 		else super.actionPerformed(button);
