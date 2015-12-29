@@ -126,8 +126,8 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	@Override
-	public void readFromNBT(NBTTagCompound comp) {
-		super.readFromNBT(comp);
+	public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 		this.radii = comp.getByte("ChunkRadii");
 		this.lastRadii = this.radii;
 	}
@@ -137,11 +137,11 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
-		super.writeToNBT(comp);
+	public void saveNBT(NBTTagCompound comp) {
+		super.saveNBT(comp);
 		comp.setByte("ChunkRadii", this.radii);
 		
-		unloadChunk();
+		// unloadChunk();
 	}
 	
 	/*
@@ -215,8 +215,10 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	@Override
 	public void loadChunk(Ticket ticket) {
 		if (ticket != null) {
+			if (this.heldChunk != null) unloadChunk();
+
 			this.heldChunk = ticket;
-			
+
 			Vector3<Integer> vec = new Vector3<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
 			
 			for (int x = -this.radii + 1; x < this.radii; x++) {

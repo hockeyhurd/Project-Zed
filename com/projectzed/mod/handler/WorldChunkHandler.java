@@ -6,19 +6,17 @@
 */
 package com.projectzed.mod.handler;
 
-import java.util.HashMap;
-import java.util.List;
-
+import com.hockeyhurd.api.math.Vector4;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-import com.hockeyhurd.api.math.Vector4;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The chunkloader event handler.
@@ -33,14 +31,24 @@ public class WorldChunkHandler implements LoadingCallback {
 	
 	private WorldChunkHandler() {
 	}
-	
+
+	/**
+	 * Registers mod.
+	 *
+	 * @param mod Mod object.
+	 */
 	public void registerMod(Object mod) {
 		ModContainer container = Loader.instance().getModObjectList().inverse().get(mod);
 		if (container == null) throw new NullPointerException("Mod container not found for: " + mod);
 		mods.put(mod, container);
 		ForgeChunkManager.setForcedChunkLoadingCallback(mod, instance());
 	}
-	
+
+	/**
+	 * Instance of handler.
+	 *
+	 * @return Handler instance.
+	 */
 	public static WorldChunkHandler instance() {
 		return INSTANCE;
 	}

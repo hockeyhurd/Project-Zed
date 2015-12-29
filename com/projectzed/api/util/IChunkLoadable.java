@@ -32,7 +32,7 @@ public interface IChunkLoadable {
 	 * @param ticket ticket to reference for chunk loading.
 	 */
 	void loadChunk(Ticket ticket);
-	
+
 	/**
 	 * Releases ticket and removes force chunk loading operation.
 	 */
