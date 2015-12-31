@@ -30,7 +30,7 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
  */
 public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implements IChunkLoadable {
 
-	public Ticket heldChunk;
+	private Ticket heldChunk;
 	
 	public static final byte MIN_RADII = 1;
 	public static final byte MAX_RADII = 3; // temp lowered from 6 to 3 until decided how to overcome forge chunk loading limitations.

@@ -53,9 +53,15 @@ public class CommonProxy {
 	}
 	 
 	/**
-	 * To be used in the ClientProxy and overriden.
+	 * To be used in the ClientProxy and overridden.
 	 */
 	public void registerRenderInformation() {
+	}
+
+	/**
+	 * To be used in the ClientProxy and overridden.
+	 */
+	public void registerInputHandlers() {
 	}
 	
 	/**

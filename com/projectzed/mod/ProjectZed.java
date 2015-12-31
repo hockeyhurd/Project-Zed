@@ -297,8 +297,10 @@ public final class ProjectZed {
 		loadObj();
 
 		logHelper.info("Setting up proxy on side: " + FMLCommonHandler.instance().getEffectiveSide().name());
+
 		proxy.init();
 		proxy.registerRenderInformation();
+		proxy.registerInputHandlers();
 		
 		logHelper.info("Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
@@ -310,9 +312,11 @@ public final class ProjectZed {
 		
 		if (configHandler.allowUpdating()) {
 			proxy.registerUpdateHandler();
+
 			if (!proxy.updateFlag) logHelper.warn("Found an update!");
 			else logHelper.info("Everything is up to date!");
 		}
+
 		else logHelper.warn("Skipping checking for updates. WARNING: bugs may exist!");
 			
 		logHelper.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");

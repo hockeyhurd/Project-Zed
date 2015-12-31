@@ -6,16 +6,21 @@
 */
 package com.projectzed.mod.proxy;
 
+import com.hockeyhurd.api.handler.RenderWorldHandler;
+import com.hockeyhurd.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.input.ChunkToggleKeyBind;
 import com.projectzed.mod.renderer.*;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Client proxy for client related registering only!
@@ -38,10 +43,23 @@ public class ClientProxy extends CommonProxy {
 	public static int wickedClearGlass;
 	public static int reactorGlass;
 
+	private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
+	private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
+	private static KeyBindingHandler keyBindingHandler;
+
 	/**
 	 * Default Constructor.
 	 */
 	public ClientProxy() {
+	}
+
+	/**
+	 * Gets the KeyBindingHandler from ClientProxy.
+	 *
+	 * @return KeyBindingHandler instance.
+	 */
+	public static KeyBindingHandler getKeyBindingHandler() {
+		return keyBindingHandler;
 	}
 
 	/**
@@ -84,8 +102,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorGlass.class, new ReactorGlassRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWickedClearGlass.class, new WickedClearGlassRenderer());
 
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed),
-				new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeRed), new EnergyPipeItemRenderer(ProjectZed.energyPipeRed.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeOrange), new EnergyPipeItemRenderer(ProjectZed.energyPipeOrange.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyPipeClear), new EnergyPipeItemRenderer(ProjectZed.energyPipeClear.getBlockTextureFromSide(0), true));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.energyCellTier0), new EnergyBankItemRenderer(ProjectZed.energyCellTier0.getBlockTextureFromSide(0)));
@@ -106,6 +123,19 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.wickedClearGlass), new WickedClearGlassItemRenderer(ProjectZed.wickedClearGlass.getBlockTextureFromSide(0)));
 		
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
+
+		MinecraftForge.EVENT_BUS.register(renderWorldHandler);
+		renderWorldHandler.addRenderer(chunkLoaderWorldRenderer);
+	}
+
+	/**
+	 * Method used to overwrite CommonProxy's method
+	 * and to register any input handler(s) we may have.
+	 */
+	@Override
+	public void registerInputHandlers() {
+		keyBindingHandler = new KeyBindingHandler(new ChunkToggleKeyBind(chunkLoaderWorldRenderer));
+		FMLCommonHandler.instance().bus().register(keyBindingHandler);
 	}
 
 }

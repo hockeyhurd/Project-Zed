@@ -22,7 +22,7 @@ public class ConfigHandler extends AbstractConfigHandler {
 	private boolean debugMode;
 	private boolean updateCheck;
 	private int maxQuarrySize;
-	
+
 	// ore gen:
 	private boolean genTitanium;
 	private boolean genNickel;
@@ -55,7 +55,7 @@ public class ConfigHandler extends AbstractConfigHandler {
 		this.updateCheck = this.getSuggestedConfig().getBoolean("update-check", "General", true, "Ability to turn off update checking.");
 		this.debugMode = this.getSuggestedConfig().getBoolean("debug-mode toggle,", "General", false, "Allows displaying of debugging info!");
 		this.maxQuarrySize = this.getSuggestedConfig().getInt("max quarry size", "General", 128, 3, 256, "Sets the max-size alloted for quarries to be.");
-		
+
 		// ore:
 		this.genTitanium = this.getSuggestedConfig().getBoolean("ore titanium", "World Gen", true, "Toggle for generating titanium");
 		this.genNickel = this.getSuggestedConfig().getBoolean("ore nickel", "World Gen", true, "Toggle for generating nickel");
