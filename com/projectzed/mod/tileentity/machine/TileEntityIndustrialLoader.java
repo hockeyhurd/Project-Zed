@@ -6,10 +6,12 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
+import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.ChunkLoaderManager;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import net.minecraft.item.ItemStack;
@@ -18,6 +20,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
@@ -30,16 +33,23 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
  */
 public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implements IChunkLoadable {
 
+	private static final ChunkLoaderManager chunkLoaderManager = ChunkLoaderManager.instance();
+	private boolean isRegistered = false;
+
 	private Ticket heldChunk;
 	
 	public static final byte MIN_RADII = 1;
 	public static final byte MAX_RADII = 3; // temp lowered from 6 to 3 until decided how to overcome forge chunk loading limitations.
 	private byte radii = 1;
 	private byte lastRadii = 1;
+
+	private Rect<Integer> chunkBoundary;
 	
 	public TileEntityIndustrialLoader() {
 		super();
 		setCustomName("industrialLoader");
+
+		chunkBoundary = new Rect<Integer>(0, 0, 0, 0);
 	}
 	
 	/*
@@ -130,6 +140,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		super.readNBT(comp);
 		this.radii = comp.getByte("ChunkRadii");
 		this.lastRadii = this.radii;
+		this.isRegistered = comp.getBoolean("IsRegistered");
 	}
 	
 	/*
@@ -140,6 +151,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
 		comp.setByte("ChunkRadii", this.radii);
+		comp.setBoolean("IsRegistered", isRegistered);
 		
 		// unloadChunk();
 	}
@@ -173,8 +185,16 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		
+
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
+
+			if (!isRegistered) {
+				chunkLoaderManager.addIChunkLoadable(this);
+				isRegistered = true;
+
+				ProjectZed.logHelper.info("Added IChunkloadable @:", worldVec());
+			}
+
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLoader(this, getRadii()));
 
 			if (this.lastRadii != this.radii) {
@@ -220,6 +240,12 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			this.heldChunk = ticket;
 
 			Vector3<Integer> vec = new Vector3<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
+
+			chunkBoundary.min.x = -this.radii + 1;
+			chunkBoundary.min.y = -this.radii + 1;
+
+			chunkBoundary.max.x = (int) this.radii;
+			chunkBoundary.max.y = (int) this.radii;
 			
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {
@@ -240,7 +266,13 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			this.heldChunk = newTicket;
 			
 			Vector3<Integer> vec = new Vector3<Integer>(this.xCoord >> 4, 0, this.zCoord >> 4);
-			
+
+			chunkBoundary.min.x = -this.radii + 1;
+			chunkBoundary.min.y = -this.radii + 1;
+
+			chunkBoundary.max.x = (int) this.radii;
+			chunkBoundary.max.y = (int) this.radii;
+
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {
 					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.z + z));
@@ -259,6 +291,33 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		if (this.heldChunk != null) {
 			ForgeChunkManager.releaseTicket(this.heldChunk);
 			this.heldChunk = null;
+		}
+	}
+
+	@Override
+	public Vector3<Integer> worldVec() {
+		return new Vector3<Integer>(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public Rect<Integer> loadedChunkBoundary() {
+		return chunkBoundary;
+	}
+
+	@Override
+	public World getWorld() {
+		return worldObj;
+	}
+
+	/**
+	 * Method to remove this IChunkloadable from the Global Chunk Manager.
+	 */
+	public void removeFromChunkManager() {
+		if (isRegistered) {
+			chunkLoaderManager.removeIChunkLoadable(this);
+			isRegistered = false;
+
+			ProjectZed.logHelper.info("Removed IChunkloadable @:", worldVec());
 		}
 	}
 

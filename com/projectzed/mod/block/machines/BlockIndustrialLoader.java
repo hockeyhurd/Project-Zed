@@ -13,6 +13,7 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -67,10 +68,19 @@ public class BlockIndustrialLoader extends BlockContainer {
 		}
 	}
 
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+		final TileEntity te = world.getTileEntity(x, y, z);
+
+		if (te instanceof TileEntityIndustrialLoader) ((TileEntityIndustrialLoader) te).removeFromChunkManager();
+
+		super.breakBlock(world, x, y, z, block, meta);
+	}
+
 	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
+	* (non-Javadoc)
+	* @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
+	*/
 	@Override
 	public TileEntity createNewTileEntity(World world, int id) {
 		return new TileEntityIndustrialLoader();

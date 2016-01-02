@@ -6,6 +6,9 @@
 */
 package com.projectzed.api.util;
 
+import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 /**
@@ -37,5 +40,26 @@ public interface IChunkLoadable {
 	 * Releases ticket and removes force chunk loading operation.
 	 */
 	void unloadChunk();
-	
+
+	/**
+	 * Gets the world location of the chunk loader.
+	 *
+	 * @return Vector3i.
+	 */
+	Vector3<Integer> worldVec();
+
+	/**
+	 * Gets the x, z rectangle of all chunks in the world.
+	 *
+	 * @return Chunk bounded rectangle.
+	 */
+	Rect<Integer> loadedChunkBoundary();
+
+	/**
+	 * Get the World in which the titleentity is located in.
+	 *
+	 * @return World reference.
+	 */
+	World getWorld();
+
 }

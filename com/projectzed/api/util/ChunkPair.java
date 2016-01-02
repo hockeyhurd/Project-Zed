@@ -6,11 +6,10 @@
 */
 package com.projectzed.api.util;
 
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * Util class for storing chunk related data.
@@ -34,7 +33,7 @@ public class ChunkPair {
 		this.chunkVec3 = vec;
 		this.chunkVec = new Vector2<Integer>(vec.x, vec.z);
 		
-		if (world != null) this.chunk = world.getChunkFromBlockCoords(vec.x, vec.y);
+		if (world != null) this.chunk = world.getChunkFromBlockCoords(vec.x, vec.z);
 		else this.chunk = null;
 	}
 	
