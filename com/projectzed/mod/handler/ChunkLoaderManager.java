@@ -13,6 +13,7 @@ package com.projectzed.mod.handler;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -144,6 +145,55 @@ public final class ChunkLoaderManager {
 
 		ProjectZed.logHelper.warn("Mapping could not find IChunkLoadable @:", loadableVec);
 		return false;
+	}
+
+	/**
+	 * Gets an array of IChunkLoadable's in range of player view distance.
+	 *
+	 * @param player EntityPlayer to check.
+	 * @return Array of IChunkLoadable's. <bold>NOTE: </bold> Could return empty array! i.e. length '0'.
+	 */
+	public IChunkLoadable[] getIChunkLoadablesInPlayerRange(EntityPlayer player) {
+		final World world = player.getEntityWorld();
+
+		// If we don't have any entries of IChunkLoadable's in the player world, then return empty array!
+		if (!loaders.containsKey(world)) return new IChunkLoadable[0];
+
+		final List<IChunkLoadable> referenceList = loaders.get(world);
+		final List<IChunkLoadable> list = new ArrayList<IChunkLoadable>(referenceList.size());
+
+		Vector3<Integer> vec;
+		for (IChunkLoadable loader : referenceList) {
+			vec = loader.worldVec();
+
+			if (player.isInRangeToRender3d(vec.x, vec.y, vec.z)) list.add(loader);
+		}
+
+		return !list.isEmpty() ? list.toArray(new IChunkLoadable[list.size()]) : new IChunkLoadable[0];
+	}
+
+	/**
+	 * Gets an array of IChunkLoadable's in range of a position with max distance.
+	 *
+	 * @param world World to reference.
+	 * @param position Vector3 position.
+	 * @param maxDistance Max distance to/from the provided Vector3 position.
+	 * @return Array of IChunkLoadable's. <bold>NOTE: </bold> Could return empty array! i.e. length '0'.
+	 */
+	public IChunkLoadable[] getIChunkLoadablesRange(World world, Vector3<Integer> position, double maxDistance) {
+		if (!loaders.containsKey(world)) return new IChunkLoadable[0];
+
+		final List<IChunkLoadable> referenceList = loaders.get(world);
+		final List<IChunkLoadable> list = new ArrayList<IChunkLoadable>(referenceList.size());
+
+		Vector3<Integer> vec;
+		for (IChunkLoadable loader : referenceList) {
+			vec = loader.worldVec();
+
+			if (vec.getNetDifference(position) <= maxDistance) list.add(loader);
+		}
+
+		return !list.isEmpty() ? list.toArray(new IChunkLoadable[list.size()]) : new IChunkLoadable[0];
 	}
 
 }

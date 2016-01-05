@@ -17,11 +17,17 @@ import com.hockeyhurd.api.renderer.EnumShape;
 import com.hockeyhurd.api.renderer.IWorldRenderable;
 import com.hockeyhurd.api.renderer.ShapeRendererUtils;
 import com.hockeyhurd.api.util.ChunkHelper;
+import com.projectzed.api.util.IChunkLoadable;
+import com.projectzed.mod.handler.ChunkLoaderManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * World renderer for chunk loading overlay.
@@ -33,10 +39,14 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 public class ChunkLoaderWorldRenderer implements IWorldRenderable {
 
 	private static final ChunkLoaderWorldRenderer instance = new ChunkLoaderWorldRenderer();
+	private static final ChunkLoaderManager managerInstance = ChunkLoaderManager.instance();
 
 	private final Color4i CHUNK_COLOR = new Color4i(0x7f00ff00);
 	private boolean visible = false;
 	private EntityPlayer player;
+	private int timer = 0;
+	private IChunkLoadable[] chunkLoadables;
+	private List<Chunk> chunkList;
 
 	private ChunkLoaderWorldRenderer() {
 	}
@@ -75,32 +85,53 @@ public class ChunkLoaderWorldRenderer implements IWorldRenderable {
 	@Override
 	public void render(RenderWorldLastEvent event) {
 		if (player == null) player = Minecraft.getMinecraft().thePlayer;
+		if (chunkList == null) chunkList = new LinkedList<Chunk>();
 
 		if (visible) {
-			Vector3<Float> playerVec = new Vector3<Double>(player.posX, player.posY, player.posZ).getVector3f();
+			/*if (timer++ % 1000 == 0) {
+				if (!chunkList.isEmpty()) chunkList.clear();
 
-			final Rect<Integer> chunkRect = ChunkHelper.getChunkBounds(ChunkHelper.getChunkFromPlayerLocation(player));
+				chunkLoadables = managerInstance.getIChunkLoadablesInPlayerRange(player);
 
-			Vector3<Float> minVec = chunkRect.min.toVector3().getVector3f();
-			minVec.z = minVec.y;
-			minVec.y = playerVec.y;
+				for (IChunkLoadable loadable : chunkLoadables) {
+					if (loadable.getChunksLoaded() == null || loadable.getChunksLoaded().length == 0) continue;
 
-			Vector3<Float> maxVec = chunkRect.max.toVector3().getVector3f();
-			maxVec.z = maxVec.y;
-			maxVec.y = playerVec.y + 1.0f;
+					for (Chunk chunk : loadable.getChunksLoaded()) {
+						chunkList.add(chunk);
+					}
+				}
+
+				timer = 0;
+			}*/
+
+			// If no chunks to 'render', then return!
+			if (chunkList.isEmpty()) return;
+
+			final Vector3<Float> playerVec = new Vector3<Double>(player.posX, player.posY, player.posZ).getVector3f();
 
 			playerVec.x = (float) (player.lastTickPosX + (player.posX - player.lastTickPosX) * event.partialTicks);
 			playerVec.y = (float) (player.lastTickPosY + (player.posY - player.lastTickPosY) * event.partialTicks);
 			playerVec.z = (float) (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.partialTicks);
 
-			minVec.x *= 0x10;
-			minVec.z *= 0x10;
-			maxVec.x *= 0x10;
-			maxVec.z *= 0x10;
+			for (Chunk chunk : chunkList) {
+				// final Rect<Integer> chunkRect = ChunkHelper.getChunkBounds(ChunkHelper.getChunkFromPlayerLocation(player));
+				final Rect<Integer> chunkRect = ChunkHelper.getChunkBounds(chunk);
 
-			minVec.y = playerVec.y + 20.0f;
+				Vector3<Float> minVec = chunkRect.min.toVector3().getVector3f();
+				minVec.z = minVec.y;
+				minVec.y = playerVec.y + 20.0f;
 
-			ShapeRendererUtils.renderShape(EnumShape.SQUARE, new Vector3[] { minVec, maxVec }, playerVec, CHUNK_COLOR );
+				Vector3<Float> maxVec = chunkRect.max.toVector3().getVector3f();
+				maxVec.z = maxVec.y;
+				maxVec.y = minVec.y + 1.0f;
+
+				minVec.x *= 0x10;
+				minVec.z *= 0x10;
+				maxVec.x *= 0x10;
+				maxVec.z *= 0x10;
+
+				ShapeRendererUtils.renderShape(EnumShape.SQUARE, new Vector3[] { minVec, maxVec }, playerVec, CHUNK_COLOR);
+			}
 		}
 	}
 

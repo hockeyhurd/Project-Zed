@@ -21,6 +21,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
@@ -43,6 +44,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	private byte radii = 1;
 	private byte lastRadii = 1;
 
+	private Chunk[] chunksLoaded;
 	private Rect<Integer> chunkBoundary;
 	
 	public TileEntityIndustrialLoader() {
@@ -234,8 +236,11 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 */
 	@Override
 	public void loadChunk(Ticket ticket) {
+		final int calculatedSize = (radii + (radii - 1)) * (radii + (radii - 1));
+
 		if (ticket != null) {
 			if (this.heldChunk != null) unloadChunk();
+			if (chunksLoaded == null || chunksLoaded.length != calculatedSize) chunksLoaded = new Chunk[calculatedSize];
 
 			this.heldChunk = ticket;
 
@@ -246,10 +251,12 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 
 			chunkBoundary.max.x = (int) this.radii;
 			chunkBoundary.max.y = (int) this.radii;
-			
+
+			int counter = 0;
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {
 					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.z + z));
+					chunksLoaded[counter++] = worldObj.getChunkFromChunkCoords(vec.x + x, vec.z + z);
 				}
 			}
 			
@@ -257,6 +264,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		
 		else {
 			if (this.heldChunk != null) unloadChunk();
+			if (chunksLoaded == null || chunksLoaded.length != calculatedSize) chunksLoaded = new Chunk[calculatedSize];
 			
 			Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
 			newTicket.getModData().setInteger("xCoord", this.xCoord);
@@ -273,9 +281,11 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			chunkBoundary.max.x = (int) this.radii;
 			chunkBoundary.max.y = (int) this.radii;
 
+			int counter = 0;
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int z = -this.radii + 1; z < this.radii; z++) {
 					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.z + z));
+					chunksLoaded[counter++] = worldObj.getChunkFromChunkCoords(vec.x + x, vec.z + z);
 				}
 			}
 			
@@ -291,7 +301,14 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		if (this.heldChunk != null) {
 			ForgeChunkManager.releaseTicket(this.heldChunk);
 			this.heldChunk = null;
+
+			chunksLoaded = null;
 		}
+	}
+
+	@Override
+	public Chunk[] getChunksLoaded() {
+		return chunksLoaded;
 	}
 
 	@Override

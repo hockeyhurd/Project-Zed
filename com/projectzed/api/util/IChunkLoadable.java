@@ -9,6 +9,7 @@ package com.projectzed.api.util;
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector3;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 /**
@@ -40,6 +41,13 @@ public interface IChunkLoadable {
 	 * Releases ticket and removes force chunk loading operation.
 	 */
 	void unloadChunk();
+
+	/**
+	 * Gets the chunks loaded.
+	 *
+	 * @return Array of chunks loaded.
+	 */
+	Chunk[] getChunksLoaded();
 
 	/**
 	 * Gets the world location of the chunk loader.
