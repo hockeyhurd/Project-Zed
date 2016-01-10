@@ -18,6 +18,7 @@ import com.hockeyhurd.api.renderer.IWorldRenderable;
 import com.hockeyhurd.api.renderer.ShapeRendererUtils;
 import com.hockeyhurd.api.util.ChunkHelper;
 import com.projectzed.api.util.IChunkLoadable;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.ChunkLoaderManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +44,11 @@ public class ChunkLoaderWorldRenderer implements IWorldRenderable {
 
 	private final Color4i CHUNK_COLOR = new Color4i(0x7f00ff00);
 	private boolean visible = false;
+	private Minecraft minecraft;
 	private EntityPlayer player;
 	private int timer = 0;
+	private boolean forceReload = false;
+	private int lastDimensionID, currentDimensionID;
 	private IChunkLoadable[] chunkLoadables;
 	private List<Chunk> chunkList;
 
@@ -84,14 +88,27 @@ public class ChunkLoaderWorldRenderer implements IWorldRenderable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void render(RenderWorldLastEvent event) {
-		if (player == null) player = Minecraft.getMinecraft().thePlayer;
+		if (minecraft == null) minecraft = Minecraft.getMinecraft();
 		if (chunkList == null) chunkList = new LinkedList<Chunk>();
+		if (player == null) {
+			player = minecraft.thePlayer;
+			lastDimensionID = player.getEntityWorld().provider.dimensionId;
+		}
+
+		currentDimensionID = player.getEntityWorld().provider.dimensionId;
+		if (currentDimensionID != lastDimensionID) {
+			forceReload = true;
+			player = null;
+			return;
+		}
 
 		if (visible) {
-			/*if (timer++ % 1000 == 0) {
+
+			if (minecraft.inGameHasFocus && !minecraft.isGamePaused() && (forceReload || timer++ % 100 == 0 /*&& timer > 0*/)) {
 				if (!chunkList.isEmpty()) chunkList.clear();
 
 				chunkLoadables = managerInstance.getIChunkLoadablesInPlayerRange(player);
+				if (chunkLoadables.length > 0) ProjectZed.logHelper.info(chunkLoadables[0].worldVec());
 
 				for (IChunkLoadable loadable : chunkLoadables) {
 					if (loadable.getChunksLoaded() == null || loadable.getChunksLoaded().length == 0) continue;
@@ -101,11 +118,15 @@ public class ChunkLoaderWorldRenderer implements IWorldRenderable {
 					}
 				}
 
-				timer = 0;
-			}*/
+				if (timer > 100) timer = 0;
+				forceReload = false;
+			}
 
 			// If no chunks to 'render', then return!
-			if (chunkList.isEmpty()) return;
+			if (chunkList.isEmpty()) {
+				// ProjectZed.logHelper.warn("Chunk list is empty! Nothing to render here!");
+				return;
+			}
 
 			final Vector3<Float> playerVec = new Vector3<Double>(player.posX, player.posY, player.posZ).getVector3f();
 

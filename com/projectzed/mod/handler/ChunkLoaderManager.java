@@ -13,6 +13,9 @@ package com.projectzed.mod.handler;
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.message.MessageChunkLoaderManager;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -44,6 +47,28 @@ public final class ChunkLoaderManager {
 	 */
 	public static ChunkLoaderManager instance() {
 		return manager;
+	}
+
+	public Map<World, List<IChunkLoadable>> getLoaders() {
+		return loaders;
+	}
+
+	public boolean flushWorldData(World world) {
+		if (loaders.containsKey(world)) {
+			loaders.remove(world);
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean put(World world, List<IChunkLoadable> loadables) {
+		if (loadables == null || loadables.isEmpty()) return false;
+		if (loaders.containsKey(loadables.get(0).getWorld())) return false;
+
+		loaders.put(world, loadables);
+
+		return true;
 	}
 
 	/**
@@ -85,8 +110,6 @@ public final class ChunkLoaderManager {
 
 		if (loaders.containsKey(world) && !containsIChunkLoadable(loadable)) {
 			loaders.get(world).add(loadable);
-
-			return true;
 		}
 
 		else {
@@ -94,8 +117,11 @@ public final class ChunkLoaderManager {
 			list.add(loadable);
 
 			loaders.put(world, list);
-			return true;
 		}
+
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) PacketHandler.INSTANCE.sendToAll(new MessageChunkLoaderManager(this));
+
+		return true;
 	}
 
 	/**
@@ -140,6 +166,8 @@ public final class ChunkLoaderManager {
 			// Ensure we don't have unused empty list in the mapping!
 			if (list.isEmpty()) loaders.remove(world);
 
+			if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) PacketHandler.INSTANCE.sendToAll(new MessageChunkLoaderManager(this));
+
 			return true;
 		}
 
@@ -161,13 +189,33 @@ public final class ChunkLoaderManager {
 
 		final List<IChunkLoadable> referenceList = loaders.get(world);
 		final List<IChunkLoadable> list = new ArrayList<IChunkLoadable>(referenceList.size());
+		// final List<IChunkLoadable> removeList = new ArrayList<IChunkLoadable>(referenceList.size());
 
 		Vector3<Integer> vec;
 		for (IChunkLoadable loader : referenceList) {
 			vec = loader.worldVec();
 
+			/*if (!(world.getTileEntity(vec.x, vec.y, vec.z) instanceof IChunkLoadable)) {
+				removeList.add(loader);
+				continue;
+			}*/
+
 			if (player.isInRangeToRender3d(vec.x, vec.y, vec.z)) list.add(loader);
 		}
+
+		// Remove, the designated removed IChunkLoadable's
+		/*if (!removeList.isEmpty()) {
+			for (IChunkLoadable toRemove : removeList) {
+				vec = toRemove.worldVec();
+
+				for (int i = 0; i < referenceList.size(); i++) {
+					if (referenceList.get(i).worldVec().equals(vec)) {
+						referenceList.remove(i);
+						break;
+					}
+				}
+			}
+		}*/
 
 		return !list.isEmpty() ? list.toArray(new IChunkLoadable[list.size()]) : new IChunkLoadable[0];
 	}
