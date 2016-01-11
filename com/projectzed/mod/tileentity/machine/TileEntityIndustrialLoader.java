@@ -13,7 +13,6 @@ import com.hockeyhurd.api.util.ChunkHelper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.ChunkLoaderManager;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import net.minecraft.item.ItemStack;
@@ -35,10 +34,6 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
  * @version Apr 19, 2015
  */
 public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implements IChunkLoadable {
-
-	private static final ChunkLoaderManager chunkLoaderManager = ChunkLoaderManager.instance();
-	private boolean registered = false;
-	private boolean removed = false;
 
 	private Ticket heldChunk;
 	
@@ -146,7 +141,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		super.readNBT(comp);
 		this.radii = comp.getByte("ChunkRadii");
 		this.lastRadii = this.radii;
-		this.registered = comp.getBoolean("IsRegistered");
 	}
 	
 	/*
@@ -157,8 +151,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
 		comp.setByte("ChunkRadii", this.radii);
-		comp.setBoolean("IsRegistered", registered);
-		
 		// unloadChunk();
 	}
 	
@@ -179,45 +171,30 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
 	}
-	
+
+	/**
+	 * Gets the radii of the chunks loaded.
+	 *
+	 * @return Byte radii.
+	 */
 	public byte getRadii() {
 		return radii;
 	}
-	
+
+	/**
+	 * Sets the radii of the chunk loader.
+	 *
+	 * @param radii Byte radii to set.
+	 */
 	public void setRadii(byte radii) {
 		this.radii = radii;
-	}
-
-	public boolean isRegistered() {
-		return registered;
-	}
-
-	public void setRegistered(boolean registered) {
-		this.registered = registered;
-	}
-
-	public boolean isRemoved() {
-		return removed;
-	}
-
-	public void setRemoved(boolean removed) {
-		this.removed = removed;
 	}
 
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
 
-		// ProjectZed.logHelper.info(chunkLoaderManager.getIChunkLoadablesRange(worldObj, worldVec(), 100.0d).length);
-
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
-
-			if (!registered) {
-				chunkLoaderManager.addIChunkLoadable(this);
-				registered = true;
-
-				ProjectZed.logHelper.info("Added IChunkloadable @:", worldVec());
-			}
 
 			if (chunksLoaded != null && markedForReinitChunksLoaded) reinitChunksLoaded();
 
@@ -225,26 +202,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 
 			if (this.lastRadii != this.radii) {
 				loadChunk(null);
-				this.lastRadii = this.radii;
-			}
-		}
-
-		else if (worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
-			if (removed) {
-				removeFromChunkManager();
-				return;
-			}
-
-			else if (!registered) {
-				chunkLoaderManager.addIChunkLoadable(this);
-				registered = true;
-
-				ProjectZed.logHelper.info("Added IChunkloadable @:", worldVec());
-			}
-
-			if (this.lastRadii != this.radii || markedForReinitChunksLoaded || chunksLoaded == null) {
-				reinitChunksLoaded();
-
 				this.lastRadii = this.radii;
 			}
 		}
@@ -281,11 +238,9 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	 */
 	@Override
 	public void loadChunk(Ticket ticket) {
-		final int calculatedSize = getCalculatedArrayLength();
 
 		if (ticket != null) {
 			if (this.heldChunk != null) unloadChunk();
-			if (chunksLoaded == null || chunksLoaded.length != calculatedSize) chunksLoaded = new Chunk[calculatedSize];
 
 			this.heldChunk = ticket;
 
@@ -298,15 +253,12 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			chunkBoundary.max.y = (int) this.radii;
 
 			Vector2<Integer> current = new Vector2<Integer>();
-			int counter = 0;
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int y = -this.radii + 1; y < this.radii; y++) {
 					current.x = vec.x + x;
 					current.y = vec.y + y;
 
 					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.y + y));
-					// chunksLoaded[counter++] = worldObj.getChunkFromChunkCoords(vec.x + x, vec.y + y);
-					chunksLoaded[counter++] = ChunkHelper.getChunkFromChunkCoordinates(worldObj, current);
 				}
 			}
 			
@@ -314,8 +266,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		
 		else {
 			if (this.heldChunk != null) unloadChunk();
-			if (chunksLoaded == null || chunksLoaded.length != calculatedSize) chunksLoaded = new Chunk[calculatedSize];
-			
+
 			Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
 			newTicket.getModData().setInteger("xCoord", this.xCoord);
 			newTicket.getModData().setInteger("yCoord", this.yCoord);
@@ -332,32 +283,12 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			chunkBoundary.max.y = (int) this.radii;
 
 			Vector2<Integer> current = new Vector2<Integer>();
-			int counter = 0;
 			for (int x = -this.radii + 1; x < this.radii; x++) {
 				for (int y = -this.radii + 1; y < this.radii; y++) {
 					current.x = vec.x + x;
 					current.y = vec.y + y;
 
 					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(current.x, current.y));
-					// chunksLoaded[counter++] = worldObj.getChunkFromChunkCoords(vec.x + x, vec.y + y);
-					Chunk chunk = null;
-
-					try {
-						// chunk = ChunkHelper.getChunkFromChunkCoordinates(worldObj, current);
-						current.x = current.x << 4;
-						current.y = current.y << 4;
-
-						chunk = ChunkHelper.getChunk(worldObj, current);
-						// ProjectZed.logHelper.info("It's a miracle that chunk isn't null!");
-					}
-
-					catch (Exception e) {
-						// ProjectZed.logHelper.severe("Error is here!");
-						markedForReinitChunksLoaded = true;
-						continue;
-					}
-
-					chunksLoaded[counter++] = chunk;
 				}
 			}
 			
@@ -427,19 +358,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	@Override
 	public World getWorld() {
 		return worldObj;
-	}
-
-	/**
-	 * Method to remove this IChunkloadable from the Global Chunk Manager.
-	 */
-	public void removeFromChunkManager() {
-		if (registered) {
-			chunkLoaderManager.removeIChunkLoadable(this);
-			registered = false;
-			removed = true;
-
-			ProjectZed.logHelper.info("Removed IChunkloadable @:", worldVec());
-		}
 	}
 
 }

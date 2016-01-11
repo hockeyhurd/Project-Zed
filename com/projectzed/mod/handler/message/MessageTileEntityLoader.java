@@ -42,8 +42,6 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 		this.te = te;
 		this.vec = te.worldVec();
 		this.radii = radii;
-		this.registered = te.isRegistered();
-		this.removed = te.isRemoved();
 	}
 	
 	@Override
@@ -53,8 +51,6 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 		this.vec.y = buf.readInt();
 		this.vec.z = buf.readInt();
 		this.radii = buf.readByte();
-		this.registered = buf.readBoolean();
-		this.removed = buf.readBoolean();
 	}
 
 	@Override
@@ -63,8 +59,6 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 		buf.writeInt(this.vec.y);
 		buf.writeInt(this.vec.z);
 		buf.writeByte(this.radii);
-		buf.writeBoolean(this.registered);
-		buf.writeBoolean(this.removed);
 	}
 	
 	@Override
@@ -77,8 +71,6 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 				TileEntityIndustrialLoader te2 = (TileEntityIndustrialLoader) te;
 
 				if (message.radii != -1 && message.radii != te2.getRadii()) te2.setRadii(message.radii);
-				te2.setRegistered(message.registered);
-				te2.setRemoved(message.removed);
 			}
 		}
 		
@@ -87,8 +79,6 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 			
 			if (te != null && te instanceof TileEntityIndustrialLoader) {
 				if (((TileEntityIndustrialLoader) te).getRadii() != message.radii) ((TileEntityIndustrialLoader) te).setRadii(message.radii);
-				// ((TileEntityIndustrialLoader) te).setRegistered(message.registered);
-				((TileEntityIndustrialLoader) te).setRemoved(message.removed);
 			}
 		}
 		

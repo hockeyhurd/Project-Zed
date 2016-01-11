@@ -6,21 +6,16 @@
 */
 package com.projectzed.mod.proxy;
 
-import com.hockeyhurd.api.handler.RenderWorldHandler;
-import com.hockeyhurd.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.input.ChunkToggleKeyBind;
 import com.projectzed.mod.renderer.*;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Client proxy for client related registering only!
@@ -43,9 +38,9 @@ public class ClientProxy extends CommonProxy {
 	public static int wickedClearGlass;
 	public static int reactorGlass;
 
-	private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
-	private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
-	private static KeyBindingHandler keyBindingHandler;
+	// private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
+	// private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
+	// private static KeyBindingHandler keyBindingHandler;
 
 	/**
 	 * Default Constructor.
@@ -58,9 +53,9 @@ public class ClientProxy extends CommonProxy {
 	 *
 	 * @return KeyBindingHandler instance.
 	 */
-	public static KeyBindingHandler getKeyBindingHandler() {
+	/*public static KeyBindingHandler getKeyBindingHandler() {
 		return keyBindingHandler;
-	}
+	}*/
 
 	/**
 	 * Method used to overwrite CommonProxy's method
@@ -124,8 +119,7 @@ public class ClientProxy extends CommonProxy {
 		
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
 
-		MinecraftForge.EVENT_BUS.register(renderWorldHandler);
-		renderWorldHandler.addRenderer(chunkLoaderWorldRenderer);
+		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 	}
 
 	/**
@@ -134,8 +128,8 @@ public class ClientProxy extends CommonProxy {
 	 */
 	@Override
 	public void registerInputHandlers() {
-		keyBindingHandler = new KeyBindingHandler(new ChunkToggleKeyBind(chunkLoaderWorldRenderer));
-		FMLCommonHandler.instance().bus().register(keyBindingHandler);
+		// keyBindingHandler = new KeyBindingHandler(new ChunkToggleKeyBind(chunkLoaderWorldRenderer));
+		// FMLCommonHandler.instance().bus().register(keyBindingHandler);
 	}
 
 }
