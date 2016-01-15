@@ -28,22 +28,22 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class MessageTileEntityGenerator implements IMessage, IMessageHandler<MessageTileEntityGenerator, IMessage> {
 
-	public AbstractTileEntityGenerator te;
-	public int x, y, z;
-	public int stored;
-	public boolean powerMode;
-	
-	public byte tier;
-	public boolean tierable;
+	private AbstractTileEntityGenerator te;
+	private int x, y, z;
+	private int stored;
+	private boolean powerMode;
 
-	public boolean hasFluidTank;
-	public int fluidID;
-	public int fluidAmount;
+	private byte tier;
+	private boolean tierable;
 
-	public boolean hasHeatLogic;
-	public int heatAmount;
-	public int maxHeatAmount;
-	public float heatResistance;
+	private boolean hasFluidTank;
+	private int fluidID;
+	private int fluidAmount;
+
+	private boolean hasHeatLogic;
+	private int heatAmount;
+	private int maxHeatAmount;
+	private float heatResistance;
 
 	@Deprecated
 	public MessageTileEntityGenerator() {

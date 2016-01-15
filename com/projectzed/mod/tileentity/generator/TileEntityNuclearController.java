@@ -63,8 +63,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
 		
-		// heatLogic = new HeatLogic(2500, 0.05f);
-		heatLogic = new HeatLogic(2500000, 0.05f);
+		heatLogic = new HeatLogic(2500, 0.05f);
+		// heatLogic = new HeatLogic(2500000, 0.05f);
 	}
 
 	@Override
@@ -89,7 +89,16 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		this.size = size;
 		this.rel = rel;
 
-		heatLogic.setMaxHeat(HeatLogic.getHeatFromValues(this.maxStored, this.size));
+		heatLogic.setMaxHeat(HeatLogic.getHeatFromValues(maxStored, getReactorVolume()));
+	}
+
+	/**
+	 * Gets the reactor's current volume.
+	 *
+	 * @return Integer volume of nuclear reactor.
+	 */
+	public int getReactorVolume() {
+		return size * size * size;
 	}
 	
 	/**
@@ -231,12 +240,19 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		// if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
 		if (poweredLastUpdate && inputPort.getBurnTime() > 0) {
 			final int preStored = this.stored;
+			int anmoutToGen = heatLogic.getEnergyFromTemp(getReactorVolume());
 
-			if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+			anmoutToGen = Math.min(anmoutToGen, source.getEffectiveSize());
+			ProjectZed.logHelper.info("anmoutToGen:", anmoutToGen, "Current Heat:", heatLogic.getHeat());
+
+			// if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
+			if (this.stored + anmoutToGen <= this.maxStored) this.stored += anmoutToGen;
 			else this.stored = this.maxStored;
 
-			if (preStored < this.stored) heatLogic.update(true, this.stored, this.getChamberSize());
-			else heatLogic.update(false, this.stored, this.getChamberSize());
+			// if (preStored < this.stored) heatLogic.update(true, this.stored, this.getChamberSize());
+			// else heatLogic.update(false, this.stored, this.getChamberSize());
+			// heatLogic.update(preStored < this.stored, this.stored, this.getChamberSize());
+			heatLogic.update(preStored < this.stored, this.stored, this.getReactorVolume());
 		}
 
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.

@@ -19,7 +19,8 @@ public class HeatLogic {
 	/** Max amount of heat. */
 	private int max;
 
-	private int heat = 20;
+	private static int startingHeat = 20;
+	private int heat = startingHeat;
 	private float resistance;
 	
 	public HeatLogic(int max, float resistance) {
@@ -100,6 +101,10 @@ public class HeatLogic {
 
 	public static int getHeatFromValues(int mcu, int volume) {
 		return (int) Math.ceil((float) mcu / ((float) volume * 10f));
+	}
+
+	public int getEnergyFromTemp(int volume) {
+		return (int) Math.floor(heat * volume / 10.0f);
 	}
 
 	@Deprecated

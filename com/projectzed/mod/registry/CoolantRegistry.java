@@ -14,6 +14,7 @@ import com.hockeyhurd.api.util.LogicHelper;
 import com.hockeyhurd.api.util.NumberParser;
 import com.projectzed.api.registry.IRegistrable;
 import com.projectzed.api.util.FluidUtils;
+import com.projectzed.mod.util.Coolant;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -87,8 +88,29 @@ public class CoolantRegistry implements IRegistrable {
 			return true;
 		}
 
-
 		return false;
+	}
+
+	/**
+	 * Gets Coolant from internal coolant mapping.
+	 *
+	 * @param fluid Fluid to reference.
+	 * @return Coolant object (NOTE: the amount of coolant will be set to auto-full by default!).
+	 */
+	public Coolant getCoolantByFluid(Fluid fluid) {
+		if (fluid == null || !coolantMap.containsKey(fluid)) return Coolant.AIR;
+
+		return new Coolant(fluid, coolantMap.get(fluid));
+	}
+
+	/**
+	 * Checks if coolant is a valid coolant by referencing this internal mapping.
+	 *
+	 * @param coolant Coolant to reference.
+	 * @return True if coolant is valid, else returns false.
+	 */
+	public boolean isCoolantValid(Coolant coolant) {
+		return coolant != null && coolantMap.containsKey(coolant.getFluid()) && coolantMap.get(coolant.getFluid()) == coolant.getBaseEfficiency();
 	}
 
 }
