@@ -10,7 +10,10 @@
 
 package com.projectzed.mod.util;
 
+import com.projectzed.api.util.FluidUtils;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Largely immutable class (except for ability to adjust the amount of fluid as needed), used for
@@ -26,6 +29,7 @@ public final class Coolant {
 	 *
 	 */
 	public static final int FULL_FLAG = -1;
+	private static final String NBT_TAG_PREFIX = "Coolant Fluid ";
 
 	public static final Coolant AIR = new Coolant(null, FULL_FLAG, 1.0f);
 
@@ -132,6 +136,34 @@ public final class Coolant {
 		final float percentFilled = (amount / Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE) / effectiveVolume;
 
 		return percentFilled * efficiency;
+	}
+
+	/**
+	 * Static function to read Coolant from NBT.
+	 *
+	 * @param comp NBTTagCompound to read from.
+	 * @return Coolant object.
+	 */
+	public static Coolant readNBT(NBTTagCompound comp) {
+		String fluidName = comp.getString(NBT_TAG_PREFIX + "Fluid Name");
+		FluidStack fluidStack = FluidUtils.readNBT(comp, NBT_TAG_PREFIX + fluidName);
+		float efficiency = comp.getFloat(NBT_TAG_PREFIX + "Efficiency");
+
+		return new Coolant(fluidStack.getFluid(), fluidStack.amount, efficiency);
+	}
+
+	/**
+	 * Method to save Coolant to NBT.
+	 *
+	 * @param comp NBTTagCompound to write to.
+	 * @param coolant Coolant object to write.
+	 */
+	public static void saveNBT(NBTTagCompound comp, Coolant coolant) {
+		FluidStack fluidStack = FluidUtils.createFluidStack(coolant.fluid, coolant.amount);
+
+		comp.setString(NBT_TAG_PREFIX + "Fluid Name", coolant.fluid.getName());
+		FluidUtils.saveNBT(comp, fluidStack, NBT_TAG_PREFIX + coolant.fluid.getName());
+		comp.setFloat(NBT_TAG_PREFIX + "Efficiency", coolant.efficiency);
 	}
 
 	/**

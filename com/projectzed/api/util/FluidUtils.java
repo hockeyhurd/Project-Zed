@@ -78,9 +78,23 @@ public final class FluidUtils {
 		final int fluidID = temp.getInteger(FLUID_ID);
 		final int fluidAmount = temp.getInteger(FLUID_AMOUNT);
 
-		tank.setFluid(creatFluidStack(fluidID, fluidAmount));
+		tank.setFluid(createFluidStack(fluidID, fluidAmount));
 
 		return tank;
+	}
+
+	/**
+	 * Method attempts to read NBT data and create a FluidStack from said saved data.
+	 *
+	 * @param compound NBTTagCompound to reference.
+	 * @param prefixTag Prefix tag to ensure tag uniqueness.
+	 * @return FluidStack from NBT if successful, else may return NULL.
+	 */
+	public static FluidStack readNBT(NBTTagCompound compound, String prefixTag) {
+		final int fluidID = compound.getInteger(prefixTag + ": Fluid ID");
+		final int fluidAmount = compound.getInteger(prefixTag + ": Fluid Amount");
+
+		return createFluidStack(fluidID, fluidAmount);
 	}
 
 	/**
@@ -133,14 +147,37 @@ public final class FluidUtils {
 	}
 
 	/**
-	 * Function attempts to create a fluidstack object from provided parameters.
+	 * Method to write a fluid stack to NBT.
+	 *
+	 * @param compound NBTTagCompound to reference.
+	 * @param fluidStack FluidStack to reference and save.
+	 * @param prefixTag Prefix tag to ensure tag uniqueness.
+	 */
+	public static void saveNBT(NBTTagCompound compound, FluidStack fluidStack, String prefixTag) {
+		compound.setInteger(prefixTag + ": Fluid ID", fluidStack.getFluidID());
+		compound.setInteger(prefixTag + ": Fluid Amount", fluidStack.amount);
+	}
+
+	/**
+	 * Function attempts to create a FluidStack object from provided parameters.
 	 *
 	 * @param fluidID ID of fluid.
 	 * @param fluidAmount amount of fluid that should be contained.
-	 * @return fluidstack object if has sufficient parameters, else returns null.
+	 * @return FluidStack object if has sufficient parameters, else returns NULL.
 	 */
-	public static FluidStack creatFluidStack(final int fluidID, final int fluidAmount) {
+	public static FluidStack createFluidStack(final int fluidID, final int fluidAmount) {
 		return fluidID > 0 && fluidAmount >= 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
+	}
+
+	/**
+	 * Function attempts to create a FluidStack object from provided parameters.
+	 *
+	 * @param fluid Fluid to use.
+	 * @param amount Amount of fluid to establish.
+	 * @return FluidStack object if has sufficient parameters, else returns NULL.
+	 */
+	public static FluidStack createFluidStack(Fluid fluid, int amount) {
+		return fluid != null && amount >= 0 ? new FluidStack(fluid, amount) : null;
 	}
 
 	/**

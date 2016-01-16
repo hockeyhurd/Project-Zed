@@ -21,6 +21,7 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.util.Coolant;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -58,6 +59,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private HashMap<Fluid, Boolean> fluidMap;
 	private TileEntityNuclearIOPort inputPort, outputPort;
 	private HeatLogic heatLogic;
+	private Coolant coolant; // TODO: Implement this!
 	
 	public TileEntityNuclearController() {
 		super("nuclearController");
