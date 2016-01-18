@@ -19,14 +19,18 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.registry.CoolantRegistry;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.util.Coolant;
+import com.projectzed.mod.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -56,7 +60,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private Vector3<Integer> maxVec = Vector3.zero.getVector3i();
 	private HashMap<Block, Integer> mbMap;
 	private HashMap<Block, List<Vector3<Integer>>> mbMapVec;
-	private HashMap<Fluid, Boolean> fluidMap;
+	private List<Coolant> coolantList;
 	private TileEntityNuclearIOPort inputPort, outputPort;
 	private HeatLogic heatLogic;
 	private Coolant coolant; // TODO: Implement this!
@@ -314,11 +318,51 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * @return true if successful, else returns false.
 	 */
 	public boolean checksAndConsumptions(boolean controlPort) {
-		boolean flag = false;
-		
+		return inputPort != null && poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle(outputPort);
+
+		/*boolean flag = false;
+
 		if (inputPort != null) flag = poweredLastUpdate && controlPort && this.stored < this.maxStored && inputPort.runCycle(outputPort);
-		
-		return flag;
+
+		return flag;*/
+	}
+
+	/**
+	 * Checks the coolants in the reactor and reports data to the HeatLogic system
+	 * if successful, else if an error has occured, we will return 'FALSE'.
+	 *
+	 * @return True if successful, else may return false.
+	 */
+	public boolean checkFluids() {
+
+		// If no fluids, something went wrong...
+		if (coolantList == null || coolantList.isEmpty()) return false;
+
+		// Only 1 coolant, makes life easier!
+		else if (coolantList.size() == 1) {
+			final float effectiveEfficiency = coolantList.get(0).getEffectiveEfficiency(size, size, size, 1);
+
+			heatLogic.setResistance(effectiveEfficiency);
+		}
+
+		// We'll see what we can do...
+		else {
+
+			// For now, we will just go with the lowest efficiency coolant.
+			// TODO: Implement variable efficiency based on percentages of coolants.
+
+			float lowestEff = Float.MAX_VALUE;
+
+			for (Coolant coolant : coolantList) {
+				float currentEff = coolant.getEffectiveEfficiency(size, size, size, 1);
+
+				if (currentEff < lowestEff) lowestEff = currentEff;
+			}
+
+			heatLogic.setResistance(lowestEff);
+		}
+
+		return true;
 	}
 	
 	/*
@@ -340,9 +384,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			}
 
 			if (inputPort == null) return;
-			boolean controlPort = checkControlPort();
-			checksAndConsumptions(controlPort);
-			
+
+			final boolean controlPort = checkControlPort();
+			final boolean consumptions = checksAndConsumptions(controlPort);
+			final boolean checkFluids = checkFluids();
+
+			// if (coolantList != null && !coolantList.isEmpty()) ProjectZed.logHelper.info(coolantList.size());
+			// if (coolantList != null && !coolantList.isEmpty()) ProjectZed.logHelper.info(coolantList.get(0).getAmount());
+
 			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) resetStructure();
 
 			poweredThisUpdate = poweredLastUpdate;
@@ -641,8 +690,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (!isSizeValid()) return false;
 			if (minVec == null) minVec = Vector3.zero.getVector3i();
 			if (maxVec == null) maxVec = Vector3.zero.getVector3i();
-			if (fluidMap == null) fluidMap = new HashMap<Fluid, Boolean>();
-				
+
 			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
 			minVec.x = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
 			minVec.y = this.yCoord + ((size - 1) / 2);
@@ -656,20 +704,28 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			int counterMaster = 0;
 			Vector3<Integer> currentVec;
 			Block currentBlock;
-			boolean show = false;
+
 			int counter = 0;
-			mbMap = new HashMap<Block, Integer>();
-			mbMapVec = new HashMap<Block, List<Vector3<Integer>>>();
+
+			if (mbMap == null) mbMap = new HashMap<Block, Integer>();
+			else if (!mbMap.isEmpty()) mbMap.clear();
+
+			if (mbMapVec == null) mbMapVec = new HashMap<Block, List<Vector3<Integer>>>();
+			else if (!mbMapVec.isEmpty()) mbMapVec.clear();
+
+			if (coolantList == null) coolantList = new ArrayList<Coolant>(Coolant.calculateChamberSize(size, size, size, 1));
+			else if (!coolantList.isEmpty()) coolantList.clear();
+
 			TileEntity te;
 			Block b;
 			Fluid fluid;
 	
-			if (show) {
+			/*if (ProjectZed.configHandler.isDebugMode()) {
 				// System.out.println(size / 2 - 1);
 				System.out.println(placeDir);
 				System.out.println("1: (" + (minVec.x) + ", " + (minVec.y) + ", " + (minVec.z) + ")");
 				System.out.println("2: (" + (minVec.x + size - 1) + ", " + (minVec.y - size + 1) + ", " + (minVec.z + size - 1) + ")");
-			}
+			}*/
 	
 			List<Vector3<Integer>> list;
 	
@@ -683,11 +739,68 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						
 						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
 							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) ) {
-								// if (!(currentBlock instanceof BlockFluidBase) && currentBlock != Blocks.air) return false;
+								if (!(currentBlock instanceof BlockFluidBase) && !(currentBlock instanceof BlockLiquid) && currentBlock != Blocks.air) return false;
 								
-								fluid = FluidRegistry.lookupFluidForBlock(currentBlock); 
-								if (fluid != null && !fluidMap.containsKey(fluid)) fluidMap.put(fluid, false);
-								if (/*fluid == null*/ !fluidMap.containsKey(fluid) && currentBlock != Blocks.air) return false;
+								// fluid = FluidRegistry.lookupFluidForBlock(currentBlock);
+								// if (fluid != null && !coolantList.containsKey(fluid)) coolantList.put(fluid, false);
+								// if (/*fluid == null*/ !coolantList.containsKey(fluid) && currentBlock != Blocks.air) return false;
+
+								if (currentBlock instanceof BlockFluidBase) {
+									fluid = ((BlockFluidBase) currentBlock).getFluid();
+
+									if (CoolantRegistry.instance().isFluidInRegistry(fluid)) {
+										Coolant coolant = CoolantRegistry.instance().getCoolantByFluid(fluid);
+										coolant.setAmount(Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE);
+
+										if (coolantList.isEmpty()) coolantList.add(coolant);
+										else {
+											for (Coolant currentCoolant : coolantList) {
+												if (currentCoolant.isFluidEqual(coolant)) {
+													currentCoolant.addAmount(coolant.getAmount());
+													break;
+												}
+											}
+										}
+									}
+								}
+
+								// Typically water for lava in vanilla.
+								else if (currentBlock instanceof BlockLiquid) {
+
+									// If block is water, set fluid to water, else treat it like lava and watch it burn!!!
+									fluid = currentBlock == Blocks.water ? FluidRegistry.WATER : FluidRegistry.LAVA;
+
+									if (CoolantRegistry.instance().isFluidInRegistry(fluid)) {
+										Coolant coolant = CoolantRegistry.instance().getCoolantByFluid(fluid);
+										coolant.setAmount(Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE);
+
+										if (coolantList.isEmpty()) coolantList.add(coolant);
+										else {
+											for (Coolant currentCoolant : coolantList) {
+												if (currentCoolant.isFluidEqual(coolant)) {
+													currentCoolant.addAmount(coolant.getAmount());
+													break;
+												}
+											}
+										}
+									}
+								}
+
+								// If block is air, deal with it!
+								else if (currentBlock == Blocks.air) {
+									Coolant airCoolant = Coolant.AIR;
+									airCoolant.setAmount(Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE);
+
+									if (coolantList.isEmpty()) coolantList.add(coolant);
+									else {
+										for (Coolant currentCoolant : coolantList) {
+											if (currentCoolant.isFluidEqual(airCoolant)) {
+												currentCoolant.addAmount(airCoolant.getAmount());
+												break;
+											}
+										}
+									}
+								}
 							}
 						}
 

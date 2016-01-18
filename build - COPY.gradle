@@ -24,7 +24,7 @@ sourceSets {
     }
 }
 
-version = "1.1.22"
+version = "1.1.23"
 group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectZed"
 

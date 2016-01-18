@@ -92,6 +92,16 @@ public class CoolantRegistry implements IRegistrable {
 	}
 
 	/**
+	 * Gets whether fluid is in coolant registry.
+	 *
+	 * @param fluid Fluid to reference.
+	 * @return True if in registry, else may return false.
+	 */
+	public boolean isFluidInRegistry(Fluid fluid) {
+		return fluid != null && coolantMap.containsKey(fluid);
+	}
+
+	/**
 	 * Gets Coolant from internal coolant mapping.
 	 *
 	 * @param fluid Fluid to reference.

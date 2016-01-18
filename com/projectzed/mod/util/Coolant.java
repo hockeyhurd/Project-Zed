@@ -88,6 +88,15 @@ public final class Coolant {
 	}
 
 	/**
+	 * Adds the given amount to the total amount.
+	 *
+	 * @param amount Int amount to add.
+	 */
+	public void addAmount(int amount) {
+		if (this.amount > FULL_FLAG) this.amount += amount;
+	}
+
+	/**
 	 * Gets the base efficiency of the coolant.
 	 *
 	 * @return Float base efficiency.
@@ -139,6 +148,37 @@ public final class Coolant {
 	}
 
 	/**
+	 * Checks if fluids between 2 coolants are equal.
+	 *
+	 * @param coolant Coolant to check and reference.
+	 * @return Boolean result.
+	 */
+	public boolean isFluidEqual(Coolant coolant) {
+		return coolant != null && fluid != null && coolant.fluid != null && fluid.equals(coolant.fluid);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = fluid != null ? fluid.hashCode() : 0;
+		result = 31 * result + amount;
+		result = 31 * result + (efficiency != +0.0f ? Float.floatToIntBits(efficiency) : 0);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Coolant coolant = (Coolant) o;
+
+		if (amount != coolant.amount) return false;
+		if (Float.compare(coolant.efficiency, efficiency) != 0) return false;
+		return !(fluid != null ? !fluid.equals(coolant.fluid) : coolant.fluid != null);
+
+	}
+
+	/**
 	 * Static function to read Coolant from NBT.
 	 *
 	 * @param comp NBTTagCompound to read from.
@@ -175,7 +215,7 @@ public final class Coolant {
 	 * @param offset Amount to disregard (i.e. ReactantCore).
 	 * @return Calculated nuclear reactor chamber size.
 	 */
-	private static int calculateChamberSize(int width, int height, int depth, int offset) {
+	public static int calculateChamberSize(int width, int height, int depth, int offset) {
 		return (width - 2) * (height - 2) * (depth - 2) - offset;
 	}
 

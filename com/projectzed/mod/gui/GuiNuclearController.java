@@ -118,6 +118,7 @@ public class GuiNuclearController extends GuiGenerator {
 		this.drawTexturedModalRect(guiLeft + 8 + 17 + 17, guiTop + 17, 176 + 16, 41, 16, 39);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void updateScreen() {
 		super.updateScreen();
