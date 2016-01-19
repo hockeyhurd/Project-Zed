@@ -31,8 +31,8 @@ public class GuiNuclearController extends GuiGenerator {
 
 	private final TileEntityNuclearController te2;
 	private Vector2<Integer> pos2, minMax2;
-	private int lastStored;
-	
+	// private int lastStored;
+
 	/**
 	 * @param inv player's inventory.
 	 * @param te tileentity object to reference.
@@ -129,13 +129,13 @@ public class GuiNuclearController extends GuiGenerator {
 		minMax2.x = guiLeft + 7 + 0x20;
 		minMax2.y = guiTop + 17 + 41;
 
-		genRate = te.getEnergyStored() - lastStored;
+		// genRate = te.getEnergyStored() - lastStored;
 
 		if (getComponents() != null && getComponents().size() > 1) {
 			getComponents().get(1).update(mouseVec, pos2, minMax2, new Integer[] { te2.getHeatLogic().getHeat(), te2.getHeatLogic().getMaxHeat() } );
 		}
 
-		lastStored = te.getEnergyStored();
+		// lastStored = te.getEnergyStored();
 	}
 
 }

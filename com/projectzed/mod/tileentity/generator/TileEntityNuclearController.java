@@ -52,7 +52,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private boolean fusionMode;
 	private boolean poweredLastUpdate = false;
 	private boolean poweredThisUpdate = false;
-	
+
+	private int lastStored;
 	private byte placeDir, size, rel;
 	private boolean isMaster, hasMaster;
 	private Vector3<Integer> masterVec = Vector3.zero.getVector3i();
@@ -63,8 +64,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private List<Coolant> coolantList;
 	private TileEntityNuclearIOPort inputPort, outputPort;
 	private HeatLogic heatLogic;
-	private Coolant coolant; // TODO: Implement this!
-	
+
 	public TileEntityNuclearController() {
 		super("nuclearController");
 		this.maxStored = (int) 1e8;
@@ -246,10 +246,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		// if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
 		if (poweredLastUpdate && inputPort.getBurnTime() > 0) {
 			final int preStored = this.stored;
-			int anmoutToGen = heatLogic.getEnergyFromTemp(getReactorVolume());
+			// int anmoutToGen = HeatLogic.getEnergyFromTemp(heatLogic.getHeat(), getReactorVolume());
+			int anmoutToGen = this.source.getEffectiveSize();
 
-			anmoutToGen = Math.min(anmoutToGen, source.getEffectiveSize());
-			ProjectZed.logHelper.info("anmoutToGen:", anmoutToGen, "Current Heat:", heatLogic.getHeat());
+			// anmoutToGen = Math.min(anmoutToGen, source.getEffectiveSize());
+			// ProjectZed.logHelper.info("anmoutToGen:", anmoutToGen, "Current Heat:", heatLogic.getHeat());
 
 			// if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 			if (this.stored + anmoutToGen <= this.maxStored) this.stored += anmoutToGen;
@@ -258,7 +259,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			// if (preStored < this.stored) heatLogic.update(true, this.stored, this.getChamberSize());
 			// else heatLogic.update(false, this.stored, this.getChamberSize());
 			// heatLogic.update(preStored < this.stored, this.stored, this.getChamberSize());
-			heatLogic.update(preStored < this.stored, this.stored, this.getReactorVolume());
+			heatLogic.update(preStored < this.stored, this.stored - this.lastStored, this.getReactorVolume());
+
+			this.lastStored = this.stored;
 		}
 
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
@@ -364,6 +367,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 		return true;
 	}
+
+	/**
+	 * Method to handle cooling of Nuclear Reactor.
+	 */
+	public void doCooling() {
+		heatLogic.update(powerMode, stored - lastStored, getReactorVolume());
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -383,7 +393,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 				poweredLastUpdate = canProducePower();
 			}
 
-			if (inputPort == null) return;
+			// if (inputPort == null) return;
 
 			final boolean controlPort = checkControlPort();
 			final boolean consumptions = checksAndConsumptions(controlPort);
@@ -395,12 +405,15 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (this.worldObj.getTotalWorldTime() % 20L == 0 && poweredThisUpdate != poweredLastUpdate) resetStructure();
 
 			poweredThisUpdate = poweredLastUpdate;
-			this.powerMode = inputPort.getBurnTime() > 0;
+			this.powerMode = inputPort != null && inputPort.getBurnTime() > 0;
 			if (this.powerMode && controlPort) {
 				generatePower();
 				inputPort.tickBurnTime();
 			}
-			
+
+			// Machine is off!
+			else if (!this.powerMode) doCooling();
+
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 			this.markDirty();
 
@@ -413,7 +426,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
-		
+
+		this.lastStored = this.stored;
+
 		byte dir = comp.getByte("ProjectZedNuclearDir");
 		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
 
@@ -438,6 +453,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	@Override
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
+
+		this.lastStored = this.stored;
 
 		comp.setByte("ProjectZedNuclearDir", this.placeDir);
 		comp.setByte("ProjectZedNuclearRel", this.rel);
@@ -791,7 +808,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 									Coolant airCoolant = Coolant.AIR;
 									airCoolant.setAmount(Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE);
 
-									if (coolantList.isEmpty()) coolantList.add(coolant);
+									if (coolantList.isEmpty()) coolantList.add(airCoolant);
 									else {
 										for (Coolant currentCoolant : coolantList) {
 											if (currentCoolant.isFluidEqual(airCoolant)) {

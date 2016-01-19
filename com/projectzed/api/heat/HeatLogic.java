@@ -22,40 +22,81 @@ public class HeatLogic {
 	private static int startingHeat = 20;
 	private int heat = startingHeat;
 	private float resistance;
-	
+
+	/**
+	 * @param max Max heat threshold.
+	 * @param resistance Resistance value, used for calculating heat generation and thresholds.
+	 */
 	public HeatLogic(int max, float resistance) {
 		this.max = max;
 		this.resistance = resistance;
 	}
-	
+
+	/**
+	 * Sets the resistance.
+	 *
+	 * @param res Resistance value, used for calculating heat generation and thresholds.
+	 */
 	public void setResistance(float res) {
 		this.resistance = res;
 	}
-	
+
+	/**
+	 * Gets the heat resistance.
+	 *
+	 * @return Heat resistance.
+	 */
 	public float getResistance() {
 		return this.resistance;
 	}
 
+	/**
+	 * Gets the max heat value.
+	 *
+	 * @return Max heat value.
+	 */
 	public int getMaxHeat() {
 		return max;
 	}
 
+	/**
+	 * Sets the max heat value.
+	 *
+	 * @param maxHeat Max heat value to set.
+	 */
 	public void setMaxHeat(int maxHeat) {
 		this.max = maxHeat;
 	}
 
+	/**
+	 * Overrides the current heat value with the providided value.
+	 *
+	 * @param heat Heat value to set.
+	 */
 	public void setCurrentHeat(int heat) {
 		this.heat = heat;
 	}
-	
+
+	/**
+	 * Gets the current heat value.
+	 *
+	 * @return Current heat value.
+	 */
 	public int getHeat() {
 		return this.heat;
 	}
-	
+
+	/**
+	 * Attempts to add heat to heat value.
+	 *
+	 * @param heat Amount of heat to add.
+	 * @param simulate Boolean flag, set to 'true' to simulate, 'false' to execute changes.
+	 * @return Resulting heat value.
+	 */
 	public int addHeat(int heat, final boolean simulate) {
-		if (heat <= 0 || heat > this.max) return 0;
-		
-		if (this.heat + heat * this.resistance <= this.max) {
+		if (heat <= 0 || heat > getLimitingHeatFromResistance()) return 0;
+
+		if (this.heat + heat * this.resistance <= getLimitingHeatFromResistance()) {
 
 			if (!simulate) {
 				this.heat += Math.ceil(heat * this.resistance);
@@ -64,18 +105,30 @@ public class HeatLogic {
 
 			else return (int) (this.heat + Math.ceil(heat * this.resistance));
 		}
-		
+
 		else {
-			int rem = (int) (this.max - Math.ceil(heat * this.resistance));
+			int rem = (int) (getLimitingHeatFromResistance() - Math.ceil(heat * this.resistance));
 			if (!simulate) {
 				this.heat += rem;
 				return this.heat;
 			}
-			
+
 			else return this.heat + rem;
 		}
 	}
-	
+
+	/**
+	 * Opposite of addHeat function except for subtraction.
+	 *
+	 * @deprecated
+	 * Deprecated (1/19/2016) as there currently exists no use.  Therefore use with caution!
+	 * <br>It is recommended to use addHeat function but with '-=' instead of '+='.
+	 *
+	 * @param heat Amount of heat to add.
+	 * @param simulate Boolean flag, set to 'true' to simulate, 'false' to execute changes.
+	 * @return Resulting heat value.
+	 */
+	@Deprecated
 	public int subtractHeat(int heat, final boolean simulate) {
 		if (heat <= 0 || heat > this.max) return 0;
 		
@@ -99,57 +152,78 @@ public class HeatLogic {
 		}
 	}
 
+	/**
+	 * Gets the appropriate heat from values.
+	 *
+	 * @param mcu McU energy amount.
+	 * @param volume Volume of container.
+	 * @return Heat value.
+	 */
 	public static int getHeatFromValues(int mcu, int volume) {
 		return (int) Math.ceil((float) mcu / ((float) volume * 10f));
 	}
 
-	public int getEnergyFromTemp(int volume) {
-		return (int) Math.floor(heat * volume / 10.0f);
+	/**
+	 * Gets the limiting threshold and is calculated by maxHeat * resistance value.
+	 *
+	 * @return limiting threshold.
+	 */
+	public int getLimitingHeatFromResistance() {
+		return (int) Math.ceil(max * resistance);
 	}
 
-	@Deprecated
+	/**
+	 * Gets the increment heat value.
+	 *
+	 * @param mcu McU energy change.
+	 * @param volume Volume of container.
+	 * @return Increment heat value.
+	 */
 	private int getIncrementHeat(int mcu, int volume) {
-		// int x = (int) Math.ceil(heat * resistance);
-		// return (int) Math.ceil(1 * Math.pow(Math.E, x));
-
-		return (int) Math.ceil((float) mcu / ((float) volume * 10f));
+		return (int) Math.ceil((float) mcu / ((float) volume * 10f) * resistance);
 	}
 
-	@Deprecated
-	private int getDecrementHeat() {
-		int x = (int) Math.ceil(heat * resistance);
-		return (int) Math.ceil(10 * Math.pow(Math.E, -x));
-	}
-
+	/**
+	 * Main updating method.
+	 *
+	 * @param running Boolean flag whether to add heat or subtract heat.
+	 * @param mcu McU energy change.
+	 * @param volume Volume of container.
+	 */
 	public void update(final boolean running, int mcu, int volume) {
 
 		// do heating:
 		if (running) {
-			if (heat >= max) return;
+			// if (heat >= max) return;
+			if (heat >= getLimitingHeatFromResistance()) return;
 
-			// ProjectZed.logHelper.info("Heat before:", heat);
-			// ProjectZed.logHelper.info("Increment heat:", getIncrementHeat(mcu, volume));
-			heat = getIncrementHeat(mcu, volume);
-			// addHeat(getIncrementHeat(mcu, volume), false);
-			// heat = getIncrementHeat();
-			// ProjectZed.logHelper.info("Heat after:", heat);
+			addHeat(getIncrementHeat(mcu, volume), false);
 		}
 
 		// do cooling:
 		else {
-			if (heat <= 0) return;
+			if (heat <= startingHeat) return;
 
-			// heat -= getDecrementHeat();
 			heat -= getIncrementHeat(mcu, volume);
 		}
 	}
 
+	/**
+	 * Method to save data to NBT.
+	 *
+	 * @param comp NBTTagCompound to write to.
+	 */
 	public void saveNBT(NBTTagCompound comp) {
 		comp.setInteger("HeatLogic:Heat", this.heat);
 		comp.setInteger("HeatLogic:Max", this.max);
 		comp.setFloat("HeatLogic:Resistance", this.resistance);
 	}
 
+	/**
+	 * Method to read data from NBT.
+	 *
+	 * @param comp NBTTagCompound to read from.
+	 */
 	public void readNBT(NBTTagCompound comp) {
 		this.heat = comp.getInteger("HeatLogic:Heat");
 		this.max = comp.getInteger("HeatLogic:Max");

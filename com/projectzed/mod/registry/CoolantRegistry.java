@@ -40,7 +40,7 @@ public class CoolantRegistry implements IRegistrable {
 	private void init() {
 		coolantMap = new HashMap<Fluid, Float>();
 
-		coolantMap.put(FluidRegistry.WATER, 0.05f);
+		coolantMap.put(FluidRegistry.WATER, 0.75f);
 	}
 
 	/**
