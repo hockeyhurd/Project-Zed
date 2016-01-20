@@ -7,6 +7,7 @@
 package com.projectzed.mod.gui;
 
 import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.gui.component.HeatLabel;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import cpw.mods.fml.relauncher.Side;
@@ -95,23 +96,22 @@ public class GuiNuclearController extends GuiGenerator {
 		final float currentHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getHeat();
 		final float maxHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getMaxHeat();
 		float progressHeat = currentHeat / maxHeat * DATA_BAR_HEIGHT;
-		// ProjectZed.logHelper.info("progressHeat:", progressHeat, currentHeat / maxHeat);
 		progressHeat = DATA_BAR_HEIGHT - progressHeat;
 
 		// Clamp values accordingly:
 		if (progressHeat < 0.0f) progressHeat = 0.0f;
-		// if (progressHeat > 1.0f) progressHeat = 1.0f;
 		int vh = 0 - (int) progressHeat;
+
+		int progressFuel = ((TileEntityNuclearController) te).getBurnTime();
+		ProjectZed.logHelper.info("progressFuel:", progressFuel);
 
 		// water:
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 176, v, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8, guiTop + 17, 176 + 16, 0, 16, 39);
 		
 		// heat:
-		// this.drawTexturedModalRect(guiLeft + 7 + 17, guiTop + 17, 176 + 32, v, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 7 + 17, guiTop + 17, 176 + 32, vh, 16, 39);
 		this.drawTexturedModalRect(guiLeft + 8 + 17, guiTop + 17, 176 + 48, 0, 16, 39);
-		// this.drawTexturedModalRect(guiLeft + 8 + 17, guiTop + 17, 176 + 48, (int) progressHeat, 16, 39);
 
 		// fuel stored:
 		this.drawTexturedModalRect(guiLeft + 7 + 17 + 17, guiTop + 17, 176, v + 41, 16, 39);

@@ -6,14 +6,13 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 
 /**
  * Class containing container code for NuclearIOPort.
@@ -25,7 +24,7 @@ public class ContainerNuclearIOPort extends Container {
 
 	private TileEntityNuclearIOPort te;
 	private final int NUM_SLOTS;
-	
+
 	public ContainerNuclearIOPort(InventoryPlayer inv, TileEntityNuclearIOPort te) {
 		this.te = te;
 		this.NUM_SLOTS = te.getSizeInvenotry();
@@ -56,10 +55,10 @@ public class ContainerNuclearIOPort extends Container {
 			this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 142)); // 198
 		}
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
-	 */
+		 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
+		 */
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;

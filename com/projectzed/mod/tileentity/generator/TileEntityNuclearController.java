@@ -209,7 +209,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 
 		return checkMultiBlockForm() && checkCorners();
 	}
-	
+
+	public int getBurnTime() {
+		return inputPort != null ? inputPort.getBurnTime() : 0;
+	}
+
 	/**
 	 * Function to check if size of multiblock structure is valid.
 	 * 
@@ -372,7 +376,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	 * Method to handle cooling of Nuclear Reactor.
 	 */
 	public void doCooling() {
-		heatLogic.update(powerMode, stored - lastStored, getReactorVolume());
+		if (worldObj.isRemote || worldObj.getTotalWorldTime() % 5 != 0) return; // Used to 'slow cooling process'
+
+		final int dif = stored - lastStored;
+		heatLogic.update(powerMode, dif != 0 ? dif : -1, getReactorVolume());
 	}
 	
 	/*

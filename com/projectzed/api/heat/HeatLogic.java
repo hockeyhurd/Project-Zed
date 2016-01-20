@@ -203,6 +203,7 @@ public class HeatLogic {
 		// do cooling:
 		else {
 			if (heat <= startingHeat) return;
+			if (mcu < 0) mcu = -mcu; // Normalize mcu energy input.
 
 			heat -= getIncrementHeat(mcu, volume);
 		}

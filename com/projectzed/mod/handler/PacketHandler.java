@@ -44,6 +44,7 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityLiquiduct.class, MessageTileEntityLiquiduct.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityNuclearIOPort.class, MessageTileEntityNuclearIOPort.class, getNextID(), Side.CLIENT);
 	}
 	
 	public static int getNextID() {

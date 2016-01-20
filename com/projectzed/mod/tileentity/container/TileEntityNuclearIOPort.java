@@ -12,6 +12,11 @@ import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.container.BlockNuclearIOPort;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityNuclearIOPort;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -94,6 +99,13 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
 			byte current = (byte) this.blockMetadata;
 			if (this.meta != current) setMetaOnUpdate(current);
+
+			PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityNuclearIOPort(this),
+					new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 0x10));
+		}
+
+		else if (worldObj.isRemote && burnTime > 0) {
+			burnTime--; // On client side, we can predict that burn time will be decreased each tick, and will be corrected via messages 1/sec.
 		}
 	}
 	
@@ -140,7 +152,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 * @param stack stack to test.
 	 * @return item burn time.
 	 */
-	public static final int getItemBurnTime(ItemStack stack) {
+	public static int getItemBurnTime(ItemStack stack) {
 		if (stack == null) return 0;
 		else {
 			Item item = stack.getItem();
@@ -216,6 +228,16 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 */
 	public int getBurnTime() {
 		return this.burnTime;
+	}
+
+	/**
+	 * Setter method used for syncing with client side.
+	 *
+	 * @param burnTime Int burn time to set.
+	 */
+	@SideOnly(Side.CLIENT)
+	public void setBurnTime(int burnTime) {
+		this.burnTime = burnTime;
 	}
 	
 	@Override
