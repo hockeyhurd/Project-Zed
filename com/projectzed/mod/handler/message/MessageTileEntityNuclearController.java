@@ -11,7 +11,7 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
+import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -20,27 +20,25 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Nuclear IO Port message handler.
- *
  * @author hockeyhurd
- * @version 1/19/2016.
+ * @version 1/21/2016.
  */
-public class MessageTileEntityNuclearIOPort implements IMessage, IMessageHandler<MessageTileEntityNuclearIOPort, IMessage> {
+public class MessageTileEntityNuclearController implements IMessage, IMessageHandler<MessageTileEntityNuclearController, IMessage> {
 
-	private final TileEntityNuclearIOPort te;
+	private final TileEntityNuclearController te;
 	private Vector3<Integer> pos;
 	private int burnTime;
 
 	@Deprecated
-	public MessageTileEntityNuclearIOPort() {
+	public MessageTileEntityNuclearController() {
 		this.te = null;
-		this.pos = new Vector3<Integer>();
+		pos = new Vector3<Integer>();
 	}
 
-	public MessageTileEntityNuclearIOPort(TileEntityNuclearIOPort te) {
+	public MessageTileEntityNuclearController(TileEntityNuclearController te) {
 		this.te = te;
-		this.pos = te.worldVec();
-		this.burnTime = te.getBurnTime();
+		burnTime = te.getBurnTime();
+		pos = te.worldVec();
 	}
 
 	@Override
@@ -52,6 +50,7 @@ public class MessageTileEntityNuclearIOPort implements IMessage, IMessageHandler
 		pos.x = buf.readInt();
 		pos.y = buf.readInt();
 		pos.z = buf.readInt();
+
 	}
 
 	@Override
@@ -63,16 +62,17 @@ public class MessageTileEntityNuclearIOPort implements IMessage, IMessageHandler
 			buf.writeInt(pos.y);
 			buf.writeInt(pos.z);
 		}
+
 	}
 
 	@Override
-	public IMessage onMessage(MessageTileEntityNuclearIOPort message, MessageContext ctx) {
+	public IMessage onMessage(MessageTileEntityNuclearController message, MessageContext ctx) {
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.pos.x, message.pos.y, message.pos.z);
 
-		if (te != null && te instanceof TileEntityNuclearIOPort) {
-			((TileEntityNuclearIOPort) te).setBurnTime(message.burnTime);
-		}
+		if (te instanceof TileEntityNuclearController)
+			((TileEntityNuclearController) te).setBurnTime(message.burnTime);
 
 		return null;
 	}
+
 }

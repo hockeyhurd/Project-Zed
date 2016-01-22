@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.generator;
 
 import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.api.util.SidedHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.energy.source.EnumType;
@@ -19,16 +20,20 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import com.projectzed.mod.handler.message.MessageTileEntityNuclearController;
 import com.projectzed.mod.registry.CoolantRegistry;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.util.Coolant;
 import com.projectzed.mod.util.Reference;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
@@ -52,6 +57,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private boolean fusionMode;
 	private boolean poweredLastUpdate = false;
 	private boolean poweredThisUpdate = false;
+
+	@SideOnly(Side.CLIENT)
+	private int burnTime;
 
 	private int lastStored;
 	private byte placeDir, size, rel;
@@ -210,8 +218,26 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return checkMultiBlockForm() && checkCorners();
 	}
 
+	/**
+	 * Gets the burn time of the reactor.
+	 * <br><bold>NOTE: </bold>This is side dependent.
+	 *
+	 * @return Int burn time left in the reactor.
+	 */
 	public int getBurnTime() {
-		return inputPort != null ? inputPort.getBurnTime() : 0;
+		final boolean isServer = SidedHelper.isServer();
+
+		return isServer && inputPort != null ? inputPort.getBurnTime() : !isServer ? burnTime : 0;
+	}
+
+	/**
+	 * Sets the burn time in the client.
+	 *
+	 * @param burnTime Int burn time to set.
+	 */
+	@SideOnly(Side.CLIENT)
+	public void setBurnTime(int burnTime) {
+		this.burnTime = burnTime;
 	}
 
 	/**
@@ -422,6 +448,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			else if (!this.powerMode) doCooling();
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityNuclearController(this));
 			this.markDirty();
 
 			// if (this.worldObj.getTotalWorldTime() % 20L == 0) ProjectZed.logHelper.info("Heat:", heatLogic.getHeat());
@@ -475,6 +502,12 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		comp.setInteger("ProjectZedMasterZ", masterVec.z);
 
 		heatLogic.saveNBT(comp);
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		super.getDescriptionPacket();
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityNuclearController(this));
 	}
 
 	/**

@@ -105,7 +105,11 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	public void updateEntity() {
 		super.updateEntity();
 		
-		// if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityStoneCraftingTable(this));
+		// if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
+
+			/*PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityStoneCraftingTable(this),
+					new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 0x10));*/
+		// }
 	}
 
 	@Override

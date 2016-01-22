@@ -7,8 +7,8 @@
 package com.projectzed.mod.gui;
 
 import com.hockeyhurd.api.math.Vector2;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.gui.component.HeatLabel;
+import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -91,7 +91,7 @@ public class GuiNuclearController extends GuiGenerator {
 		// float progressWater = (float) ((float) this.te2.getTank().getFluidAmount() / (float) this.te2.getTank().getCapacity()) * 39f;
 		float progressCoolant = DATA_BAR_HEIGHT;
 		progressCoolant = DATA_BAR_HEIGHT - progressCoolant;
-		int v = 0 - (int) progressCoolant;
+		int v = (int) -progressCoolant;
 
 		final float currentHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getHeat();
 		final float maxHeat = ((TileEntityNuclearController) this.te).getHeatLogic().getMaxHeat();
@@ -100,10 +100,11 @@ public class GuiNuclearController extends GuiGenerator {
 
 		// Clamp values accordingly:
 		if (progressHeat < 0.0f) progressHeat = 0.0f;
-		int vh = 0 - (int) progressHeat;
+		int vh = (int) -progressHeat;
 
-		int progressFuel = ((TileEntityNuclearController) te).getBurnTime();
-		ProjectZed.logHelper.info("progressFuel:", progressFuel);
+		float progressFuel = ((TileEntityNuclearController) te).getBurnTime() / (float) TileEntityNuclearIOPort.MAX_BURN_TIME * DATA_BAR_HEIGHT;
+		progressFuel = DATA_BAR_HEIGHT - progressFuel;
+		int vf = (int) -progressFuel;
 
 		// water:
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 17, 176, v, 16, 39);
@@ -114,8 +115,8 @@ public class GuiNuclearController extends GuiGenerator {
 		this.drawTexturedModalRect(guiLeft + 8 + 17, guiTop + 17, 176 + 48, 0, 16, 39);
 
 		// fuel stored:
-		this.drawTexturedModalRect(guiLeft + 7 + 17 + 17, guiTop + 17, 176, v + 41, 16, 39);
-		this.drawTexturedModalRect(guiLeft + 8 + 17 + 17, guiTop + 17, 176 + 16, 41, 16, 39);
+		this.drawTexturedModalRect(guiLeft + 7 + 17 + 17, guiTop + 17, 176 + 64, vf, 16, 39);
+		this.drawTexturedModalRect(guiLeft + 8 + 17 + 17, guiTop + 17, 176 + 16, 0, 16, 39);
 	}
 
 	@SuppressWarnings("unchecked")

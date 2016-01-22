@@ -22,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -35,7 +36,9 @@ import java.util.List;
 public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent implements IWrenchable {
 
 	// TODO: This class should take over IO of TileEntityNuclearController. For now this TE is set to optional use.
-	
+
+	public static final int MAX_BURN_TIME = 1600; // TODO: Should this be moved?
+
 	private byte meta;
 	private int burnTime;
 	
@@ -157,7 +160,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		else {
 			Item item = stack.getItem();
 
-			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return 1600;
+			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return MAX_BURN_TIME;
 			
 			return 0;
 		}
@@ -239,7 +242,12 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	public void setBurnTime(int burnTime) {
 		this.burnTime = burnTime;
 	}
-	
+
+	@Override
+	public Packet getDescriptionPacket() {
+		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityNuclearIOPort(this));
+	}
+
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
