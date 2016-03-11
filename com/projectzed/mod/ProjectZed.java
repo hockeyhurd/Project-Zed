@@ -25,8 +25,9 @@ import com.projectzed.mod.handler.SortingConfigHandler;
 import com.projectzed.mod.item.*;
 import com.projectzed.mod.item.armor.ArmorSetZPlated;
 import com.projectzed.mod.item.metals.*;
-import com.projectzed.mod.item.tools.ItemChainsaw;
-import com.projectzed.mod.item.tools.ItemMiningDrill;
+import com.projectzed.mod.item.tools.ItemBlockExchanger;
+import com.projectzed.mod.item.tools.ItemToolChainsaw;
+import com.projectzed.mod.item.tools.ItemToolMiningDrill;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.item.upgrades.ItemUpgradeEfficiency;
 import com.projectzed.mod.item.upgrades.ItemUpgradeOverclocker;
@@ -203,6 +204,7 @@ public final class ProjectZed {
 	public static final ToolMaterial pzToolMat = EnumHelper.addToolMaterial("PZTOOLS", 5, 1000 + 1, 20.0f, 4.0f, 0);
 	
 	public static Item wrench;
+	public static Item blockExchanger;
 	public static Item titaniumDrill;
 	public static Item titaniumChainsaw;
 	
@@ -481,9 +483,10 @@ public final class ProjectZed {
 		
 		// Tools:
 		wrench = new ItemWrench("wrench");
-		titaniumDrill = new ItemMiningDrill(pzToolMat, "titaniumDrill");
-		titaniumChainsaw = new ItemChainsaw(pzToolMat, "titaniumChainsaw");
-		
+		titaniumDrill = new ItemToolMiningDrill(pzToolMat, "titaniumDrill");
+		titaniumChainsaw = new ItemToolChainsaw(pzToolMat, "titaniumChainsaw");
+		blockExchanger = new ItemBlockExchanger("blockExchanger");
+
 		// Metals:
 		dustGold = new ItemDustGold("dustGold", assetDir);
 		dustIron = new ItemDustIron("dustIron", assetDir);
