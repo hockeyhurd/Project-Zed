@@ -9,6 +9,7 @@ package com.projectzed.mod;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.FluidFactory;
 import com.hockeyhurd.api.util.LogHelper;
+import com.hockeyhurd.api.util.interfaces.IForgeMod;
 import com.hockeyhurd.api.worldgen.HCWorldGenFluid;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.*;
@@ -42,9 +43,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -68,7 +67,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  * @version Oct 19, 2014
  */
 @Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.7.10]", name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:HCoreLib")
-public final class ProjectZed {
+public final class ProjectZed implements IForgeMod {
 
 	@SidedProxy(clientSide = "com.projectzed.mod.proxy.ClientProxy", serverSide = "com.projectzed.mod.proxy.CommonProxy")
 	public static CommonProxy proxy;
@@ -257,7 +256,8 @@ public final class ProjectZed {
 	 */
 	public ProjectZed() {
 	}
-	
+
+	@Override
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		tl = new TimeLapse();
@@ -289,7 +289,8 @@ public final class ProjectZed {
 		
 		logHelper.info("Pre-init finished succesfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
-	
+
+	@Override
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		tl.resetStartTime();
@@ -306,7 +307,8 @@ public final class ProjectZed {
 		
 		logHelper.info("Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
-	
+
+	@Override
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		tl.resetStartTime();
@@ -323,7 +325,7 @@ public final class ProjectZed {
 			
 		logHelper.info("Post-Init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
-	
+
 	/**
 	 * Method used to instantiate objects: blocks, items, etc.
 	 */
@@ -530,6 +532,16 @@ public final class ProjectZed {
 		if (configHandler.genOreCopper()) worldgenCopper = new OreWorldgen(oreCopper, 10, 5, 10, 40, 75);
 		if (configHandler.genOreUranium()) worldgenUranium = new OreWorldgen(oreUranium, 5, 3, 5, 4, 16);
 		if (configHandler.genFluidOil()) worldgenOil = new HCWorldGenFluid(blockFluidOil);
+	}
+
+	@Override
+	@EventHandler
+	public void serverStartingEvent(FMLServerStartingEvent event) {
+	}
+
+	@Override
+	@EventHandler
+	public void serverStartedEvent(FMLServerStartedEvent event) {
 	}
 
 }

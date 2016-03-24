@@ -50,6 +50,7 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 		boolean used = false;
 
 		if (!world.isRemote) {
+
 			/*
 		 	* sideHit == 0, bottom sideHit == 1, top sideHit == 2, front sideHit == 3, back sideHit == 4, left sideHit == 5, right
 		 	*/
@@ -57,64 +58,27 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 			if (!player.isSneaking() && blockToPlace != null) {
 				ProjectZed.logHelper.info("Side:", side, blockToPlace.getLocalizedName());
 
-				int numBlocksToPlace = 0;
+				for (int i = -radii; i <= radii; i++) {
+					for (int j = -radii; j <= radii; j++) {
+						// if (counter <= 0) break;
 
-				List<Integer> indicies = new ArrayList<Integer>(player.inventory.getSizeInventory());
-				ItemStack current;
-				for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-					current = player.inventory.getStackInSlot(i);
-					if (current != null && current.stackSize > 0 && BlockUtils.getBlockFromItem(current.getItem()) == blockToPlace) {
-						numBlocksToPlace++;
-						indicies.add(i);
-					}
-				}
-
-				if (numBlocksToPlace > 0) {
-
-					final int min = Math.min(numBlocksToPlace, (radii * 2) * (radii * 2));
-					int counter = min;
-					for (int i = -radii; i <= radii; i++) {
-						for (int j = -radii; j <= radii; j++) {
-							if (counter <= 0) break;
-
-							if (side == 0 || side == 1) {
-								BlockUtils.destroyBlock(world, x + i, y, z + j);
-								BlockUtils.setBlock(world, x + i, y, z + j, blockToPlace);
-							}
-
-							else if (side == 3 || side == 4) {
-								BlockUtils.destroyBlock(world, x + i, y + j, z);
-								BlockUtils.setBlock(world, x + i, y + j, z, blockToPlace);
-							}
-
-							else {
-								BlockUtils.destroyBlock(world, x, y + j, z + i);
-								BlockUtils.setBlock(world, x, y + j, z + i, blockToPlace);
-							}
-
-							counter--;
-						}
-					}
-
-					// BlockUtils.destroyBlock(world, x, y, z);
-					// BlockUtils.setBlock(world, x, y, z, blockToPlace);
-
-					int placed = min - counter;
-					counter = 0;
-					while (placed > 0) {
-						ItemStack stackInSlot = null;
-						while (stackInSlot == null && counter < indicies.size()) {
-							stackInSlot = player.inventory.getStackInSlot(indicies.get(counter));
-							if (stackInSlot == null) counter++;
+						if (side == 0 || side == 1) {
+							BlockUtils.destroyBlock(world, x + i, y, z + j);
+							BlockUtils.setBlock(world, x + i, y, z + j, blockToPlace);
 						}
 
-						int size = Math.min(stackInSlot.stackSize, placed);
-						placed -= size;
-						player.inventory.decrStackSize(counter, size);
-					}
+						else if (side == 3 || side == 4) {
+							BlockUtils.destroyBlock(world, x + i, y + j, z);
+							BlockUtils.setBlock(world, x + i, y + j, z, blockToPlace);
+						}
 
-					player.inventory.markDirty();
-					player.inventoryContainer.detectAndSendChanges();
+						else {
+							BlockUtils.destroyBlock(world, x, y + j, z + i);
+							BlockUtils.setBlock(world, x, y + j, z + i, blockToPlace);
+						}
+
+						// counter--;
+					}
 				}
 			}
 
