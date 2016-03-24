@@ -13,17 +13,17 @@ package com.projectzed.mod.item.tools;
 import com.hockeyhurd.api.util.BlockUtils;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.hockeyhurd.api.util.TimerHelper;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author hockeyhurd
@@ -38,6 +38,9 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 	private TimerHelper timer;
 	private ChatHelper chatHelper;
 
+	/**
+	 * @param name Name of item.
+	 */
 	public ItemBlockExchanger(String name) {
 		super(name);
 
@@ -56,29 +59,94 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 		 	*/
 
 			if (!player.isSneaking() && blockToPlace != null) {
-				ProjectZed.logHelper.info("Side:", side, blockToPlace.getLocalizedName());
+				// ProjectZed.logHelper.info("Side:", side, blockToPlace.getLocalizedName());
+
+				int amountToPlace = radii * 2 + 1;
+				amountToPlace *= amountToPlace;
+
+				Map<Integer, Integer> invMap = new HashMap<Integer, Integer>(player.inventory.getSizeInventory() * 3 / 2, 2.0f / 3.0f);
+				int itemCount = 0;
+
+				ItemStack current;
+				for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+					current = player.inventory.getStackInSlot(i);
+
+					if (current != null && BlockUtils.getBlockFromItem(current.getItem()) == blockToPlace) {
+						invMap.put(i, current.stackSize);
+						itemCount += current.stackSize;
+					}
+				}
+
+				if (amountToPlace > itemCount) amountToPlace = itemCount;
+
+				// ProjectZed.logHelper.info("Max # can place:", amountToPlace);
+
+				int counter = amountToPlace;
+				Block currentBlock;
 
 				for (int i = -radii; i <= radii; i++) {
 					for (int j = -radii; j <= radii; j++) {
-						// if (counter <= 0) break;
+						if (counter <= 0) break;
 
 						if (side == 0 || side == 1) {
-							BlockUtils.destroyBlock(world, x + i, y, z + j);
-							BlockUtils.setBlock(world, x + i, y, z + j, blockToPlace);
+							currentBlock = BlockUtils.getBlock(world, x + i, y, z + j);
+
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x + i, y, z + j) > 0.0f) {
+								BlockUtils.destroyBlock(world, x + i, y, z + j);
+								BlockUtils.setBlock(world, x + i, y, z + j, blockToPlace);
+								world.markBlockForUpdate(x + i, y, z + j);
+
+								counter--;
+							}
 						}
 
-						else if (side == 3 || side == 4) {
-							BlockUtils.destroyBlock(world, x + i, y + j, z);
-							BlockUtils.setBlock(world, x + i, y + j, z, blockToPlace);
+						else if (side == 2 || side == 3) {
+							currentBlock = BlockUtils.getBlock(world, x + i, y + j, z);
+
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x + i, y + j, z) > 0.0f) {
+								BlockUtils.destroyBlock(world, x + i, y + j, z);
+								BlockUtils.setBlock(world, x + i, y + j, z, blockToPlace);
+								world.markBlockForUpdate(x + i, y + j, z);
+
+								counter--;
+							}
 						}
 
 						else {
-							BlockUtils.destroyBlock(world, x, y + j, z + i);
-							BlockUtils.setBlock(world, x, y + j, z + i, blockToPlace);
+							currentBlock = BlockUtils.getBlock(world, x, y + j, z + i);
+
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x, y + j, z + i) > 0.0f) {
+								BlockUtils.destroyBlock(world, x, y + j, z + i);
+								BlockUtils.setBlock(world, x, y + j, z + i, blockToPlace);
+								world.markBlockForUpdate(x, y + j, z + i);
+
+								counter--;
+							}
 						}
 
 						// counter--;
 					}
+				}
+
+				int amountPlaced = amountToPlace - counter;
+
+				for (int i : invMap.keySet()) {
+					current = player.inventory.getStackInSlot(i);
+
+					final int displacement = Math.min(current.stackSize, amountPlaced);
+
+					amountPlaced -= displacement;
+
+					if (current.stackSize - displacement <= 0) player.inventory.setInventorySlotContents(i, null);
+					else {
+						current.stackSize -= displacement;
+						player.inventory.setInventorySlotContents(i, current);
+					}
+
+					player.inventory.markDirty();
+					player.inventoryContainer.detectAndSendChanges();
+
+					if (amountPlaced <= 0) break;
 				}
 			}
 
@@ -89,7 +157,7 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 			if (player.isSneaking()) {
 				final Block newBlock = BlockUtils.getBlock(world, x, y, z);
 
-				if (newBlock != blockToPlace) {
+				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
 					player.addChatComponentMessage(chatHelper.comp(msg + blockToPlace.getLocalizedName()));
 				}
