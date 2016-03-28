@@ -9,6 +9,7 @@ package com.projectzed.mod.proxy;
 import com.hockeyhurd.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
 import com.projectzed.mod.renderer.*;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
@@ -22,6 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -128,6 +130,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
+		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());
 	}
 
 	/**

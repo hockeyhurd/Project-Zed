@@ -12,6 +12,7 @@ package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.api.util.BlockUtils;
 import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.NumberFormatter;
 import com.hockeyhurd.api.util.TimerHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.IItemAdjustable;
@@ -58,12 +59,23 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		chatHelper = new ChatHelper();
 	}
 
+	/**
+	 * Gets the radii set.
+	 *
+	 * @return int.
+	 */
+	public int getRadii() {
+		return radii;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
 		String blockName = blockToPlace != null ? blockToPlace.getLocalizedName() : "<empty>";
 		list.add(EnumChatFormatting.GREEN + "Block set to: " + EnumChatFormatting.WHITE + blockName);
 		list.add(EnumChatFormatting.GREEN + "Radii set to: " + EnumChatFormatting.WHITE + radii);
+		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
+		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
 	}
 
 	@Override
