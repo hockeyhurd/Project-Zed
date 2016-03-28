@@ -117,6 +117,7 @@ item.zPlatedBoots.name=zPlated Boots
 item.wrench.name=Crescent Wrench
 item.titaniumDrill.name=Mining Drill - Titanium
 item.titaniumChainsaw.name=Chainsaw - Titanium
+item.blockExchanger.name=Block Exchanger
 
 // Metals:
 item.dustGold.name=Gold Dust

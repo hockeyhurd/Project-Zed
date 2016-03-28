@@ -6,16 +6,23 @@
 */
 package com.projectzed.mod.proxy;
 
+import com.hockeyhurd.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.input.ItemAdjusterHandler;
 import com.projectzed.mod.renderer.*;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
+import com.projectzed.mod.util.Reference;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Client proxy for client related registering only!
@@ -23,6 +30,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
 	/** Stating variable for tracking the current render pass in special renderers. */
@@ -40,7 +48,7 @@ public class ClientProxy extends CommonProxy {
 
 	// private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
 	// private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
-	// private static KeyBindingHandler keyBindingHandler;
+	private static KeyBindingHandler keyBindingHandler;
 
 	/**
 	 * Default Constructor.
@@ -130,6 +138,10 @@ public class ClientProxy extends CommonProxy {
 	public void registerInputHandlers() {
 		// keyBindingHandler = new KeyBindingHandler(new ChunkToggleKeyBind(chunkLoaderWorldRenderer));
 		// FMLCommonHandler.instance().bus().register(keyBindingHandler);
+
+		keyBindingHandler = new KeyBindingHandler(new ItemAdjusterHandler.ItemAdjusterIncrementorHandler("radii increase", Keyboard.KEY_ADD, Reference.MOD_NAME),
+				new ItemAdjusterHandler.ItemAdjusterDecrementorHandler("radii decrease", Keyboard.KEY_SUBTRACT, Reference.MOD_NAME));
+		FMLCommonHandler.instance().bus().register(keyBindingHandler);
 	}
 
 }

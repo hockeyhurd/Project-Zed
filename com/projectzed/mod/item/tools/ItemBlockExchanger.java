@@ -13,25 +13,35 @@ package com.projectzed.mod.item.tools;
 import com.hockeyhurd.api.util.BlockUtils;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.hockeyhurd.api.util.TimerHelper;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.IItemAdjustable;
 import com.projectzed.mod.util.Reference;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
+ * Item class for ItemBlockExchanger.
+ *
  * @author hockeyhurd
  * @version 3/11/2016.
  */
-public class ItemBlockExchanger extends AbstractItemPowered {
+public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdjustable {
 
-	private static final String msg = EnumChatFormatting.GREEN + "[" + Reference.MOD_NAME + "] Block set to: ";
+	private static final String msgType = EnumChatFormatting.GREEN + "[" + Reference.MOD_NAME + "]";
+	private static final String msgBlockSet = msgType + " Block set to: ";
+	private static final String msgRadiiSet = msgType + " Tool radii set to: ";
 
 	private int radii = 1;
 	private Block blockToPlace;
@@ -49,6 +59,14 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
+		String blockName = blockToPlace != null ? blockToPlace.getLocalizedName() : "<empty>";
+		list.add(EnumChatFormatting.GREEN + "Block set to: " + EnumChatFormatting.WHITE + blockName);
+		list.add(EnumChatFormatting.GREEN + "Radii set to: " + EnumChatFormatting.WHITE + radii);
+	}
+
+	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
 		boolean used = false;
 
@@ -58,7 +76,9 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 		 	* sideHit == 0, bottom sideHit == 1, top sideHit == 2, front sideHit == 3, back sideHit == 4, left sideHit == 5, right
 		 	*/
 
-			if (!player.isSneaking() && blockToPlace != null) {
+			if (!timer.getUse() && !player.isSneaking() && blockToPlace != null) {
+				timer.trigger();
+
 				// ProjectZed.logHelper.info("Side:", side, blockToPlace.getLocalizedName());
 
 				int amountToPlace = radii * 2 + 1;
@@ -97,6 +117,7 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 								world.markBlockForUpdate(x + i, y, z + j);
 
 								counter--;
+								used = true;
 							}
 						}
 
@@ -109,6 +130,7 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 								world.markBlockForUpdate(x + i, y + j, z);
 
 								counter--;
+								used = true;
 							}
 						}
 
@@ -121,6 +143,7 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 								world.markBlockForUpdate(x, y + j, z + i);
 
 								counter--;
+								used = true;
 							}
 						}
 
@@ -159,9 +182,11 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 
 				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
-					player.addChatComponentMessage(chatHelper.comp(msg + blockToPlace.getLocalizedName()));
+					player.addChatComponentMessage(chatHelper.comp(msgBlockSet + blockToPlace.getLocalizedName()));
 				}
 			}
+
+			used = true;
 		}
 
 		if (!timer.getUse()) player.swingItem();
@@ -173,6 +198,48 @@ public class ItemBlockExchanger extends AbstractItemPowered {
 	public void onUpdate(ItemStack stack, World world, Entity e, int i, boolean f) {
 		super.onUpdate(stack, world, e, i, f);
 		timer.update();
+	}
+
+	@Override
+	public void increment(EntityPlayer player, ItemStack stack) {
+		if (radii < ProjectZed.configHandler.getMaxExchangerRadii()) {
+			radii++;
+			writeToNBT(stack);
+			player.addChatComponentMessage(chatHelper.comp(msgRadiiSet + radii));
+		}
+	}
+
+	@Override
+	public void decrement(EntityPlayer player, ItemStack stack) {
+		if (radii > 0) {
+			radii--;
+			writeToNBT(stack);
+			player.addChatComponentMessage(chatHelper.comp(msgRadiiSet + radii));
+		}
+	}
+
+	@Override
+	public void writeToNBT(ItemStack stack) {
+		// int value = readFromNBT(stack)[0];
+		readFromNBT(stack);
+
+		NBTTagCompound comp = stack.stackTagCompound;
+
+		// if (comp == null) comp = stack.stackTagCompound = new NBTTagCompound();
+
+		comp.setInteger("ItemExchangerRadii", radii);
+	}
+
+	@Override
+	public Integer[] readFromNBT(ItemStack stack) {
+		NBTTagCompound comp = stack.stackTagCompound;
+
+		if (comp == null) comp = stack.stackTagCompound = new NBTTagCompound();
+
+		int num = comp.getInteger("ItemExchangerRadii");
+		Integer[] val = { num };
+
+		return val;
 	}
 
 }

@@ -33,6 +33,9 @@ public class ConfigHandler extends AbstractConfigHandler {
 	// fluid gen:
 	private boolean genOil;
 
+	// tools:
+	private int maxExchangerRadii;
+
 	// Upgrade components:
 	private float burnRateModifier;
 	private float effRateModifier;
@@ -54,7 +57,7 @@ public class ConfigHandler extends AbstractConfigHandler {
 		// general:
 		this.updateCheck = this.getSuggestedConfig().getBoolean("update-check", "General", true, "Ability to turn off update checking.");
 		this.debugMode = this.getSuggestedConfig().getBoolean("debug-mode toggle,", "General", false, "Allows displaying of debugging info!");
-		this.maxQuarrySize = this.getSuggestedConfig().getInt("max quarry size", "General", 128, 3, 256, "Sets the max-size alloted for quarries to be.");
+		this.maxQuarrySize = this.getSuggestedConfig().getInt("max quarry size", "General", 128, 3, 256, "Sets the max-size allotted for quarries to be.");
 
 		// ore:
 		this.genTitanium = this.getSuggestedConfig().getBoolean("ore titanium", "World Gen", true, "Toggle for generating titanium");
@@ -65,6 +68,10 @@ public class ConfigHandler extends AbstractConfigHandler {
 
 		// fluid:
 		this.genOil = this.getSuggestedConfig().getBoolean("fluid oil", "World Gen", true, "Toggle for generating oil");
+
+		// tools:
+		this.maxExchangerRadii = this.getSuggestedConfig().getInt("max exchanger radii", "Tools", 5, 1, 15,
+				"Sets the max radii allotted for exchanger to be.");
 
 		// Upgrade components:
 		this.burnRateModifier = this.getSuggestedConfig()
@@ -152,6 +159,13 @@ public class ConfigHandler extends AbstractConfigHandler {
 	 */
 	public float getEffRateModifier() {
 		return effRateModifier;
+	}
+
+	/**
+	 * @return max exchanger radii.
+	 */
+	public int getMaxExchangerRadii() {
+		return maxExchangerRadii;
 	}
 
 }
