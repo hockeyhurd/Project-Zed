@@ -8,8 +8,10 @@ package com.projectzed.api.tileentity.container;
 
 import com.hockeyhurd.api.math.Vector3;
 import com.projectzed.api.fluid.FluidNetwork;
+import com.projectzed.api.fluid.IFluidTile;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IWrenchable;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +27,8 @@ import net.minecraftforge.fluids.*;
  * @author hockeyhurd
  * @version Jan 9, 2015
  */
-public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityContainer implements IFluidContainer, IWrenchable {
+public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityContainer implements IFluidContainer,
+		IFluidTile, IWrenchable {
 
 	protected int maxFluidStorage = 10000;
 
@@ -299,6 +302,37 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * now).
 	 */
 	protected abstract void importContents();
+
+	@Override
+	public double distanceTo(Vector3<Integer> vec) {
+		return this.worldVec().getNetDifference(vec);
+	}
+
+	@Override
+	public Vector3<Integer> getOffsetVec(int x, int y, int z) {
+		final Vector3<Integer> ret = worldVec();
+
+		ret.x += x;
+		ret.y += y;
+		ret.z += z;
+
+		return ret;
+	}
+
+	@Override
+	public float getCost() {
+		return 1.0f;
+	}
+
+	@Override
+	public Block getTile(World world) {
+		return world != null ? world.getBlock(xCoord, yCoord, zCoord) : null;
+	}
+
+	@Override
+	public boolean isSolid() {
+		return false;
+	}
 
 	/*
 	 * (non-Javadoc)

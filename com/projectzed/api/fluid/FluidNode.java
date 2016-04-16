@@ -6,18 +6,20 @@
 */
 package com.projectzed.api.fluid;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.api.math.pathfinding.IPathTile;
+import com.projectzed.api.fluid.container.IFluidContainer;
+import com.projectzed.mod.util.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.fluid.container.IFluidContainer;
-import com.projectzed.mod.util.WorldUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class containing code for a FluidNode, used in and for tracking 
@@ -31,11 +33,15 @@ public class FluidNode {
 
 	private IFluidHandler container;
 	private ForgeDirection[] connections;
-	private Vector3<Integer> vec = Vector3.zero.getVector3i();
 	private ValveType valveType;
-	
+
+	@SuppressWarnings("unchecked")
+	private Vector3<Integer> vec = Vector3.zero.getVector3i();
+
 	private FluidNetwork network = null;
-	
+
+	protected float cost;
+
 	/**
 	 * @param container container/tank.
 	 * @param connections connections with other nodes.
@@ -61,6 +67,8 @@ public class FluidNode {
 		
 		this.vec = vec;
 		this.valveType = type;
+
+		this.cost = 1.0f;
 	}
 	
 	/**
@@ -246,7 +254,7 @@ public class FluidNode {
 	 * @return true if is a pipe, else returns false.
 	 */
 	public boolean isPipe() {
-		return getIFluidContainer() != null ? getIFluidContainer().isPipe() : false;
+		return getIFluidContainer() != null && getIFluidContainer().isPipe();
 	}
 	
 	/**
@@ -277,16 +285,16 @@ public class FluidNode {
 		this.vec.y = vec.y;
 		this.vec.z = vec.z;
 	}
-	
+
 	/**
 	 * Gets world vector coordinates of this fluid node.
-	 * 
+	 *
 	 * @return world vector coordinates.
 	 */
 	public Vector3<Integer> worldVec() {
 		return vec;
 	}
-	
+
 	/**
 	 * Helper function to determine and get valve type for said container on ForgeDirection side.
 	 * 
@@ -331,6 +339,16 @@ public class FluidNode {
 		// ProjectZed.logHelper.info("dir:", dir.getOpposite(), "in:", in, "out:", out);
 		
 		return in && !out ? ValveType.INPUT : !in && out ? ValveType.OUTPUT : ValveType.NEUTRAL;
+	}
+
+	/**
+	 * Gets the IFluidTile at world location.
+	 *
+	 * @param world World to reference.
+	 * @return IFluidTile.
+	 */
+	public IFluidTile getTileAt(World world) {
+		return (IFluidTile) world.getTileEntity(vec.x, vec.y, vec.z);
 	}
 	
 	/**

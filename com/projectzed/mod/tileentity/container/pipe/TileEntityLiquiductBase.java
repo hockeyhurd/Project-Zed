@@ -12,6 +12,7 @@ import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.FluidNode;
+import com.projectzed.api.fluid.IFluidTile;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
@@ -20,9 +21,11 @@ import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -36,7 +39,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version Feb 12, 2015
  */
-public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidContainer, IColorComponent {
+public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements IFluidContainer, IFluidTile, IColorComponent {
 
 	// protected int maxFluidStorage = 2000;
 	protected int maxFluidStorage = 0; // temp set '0'
@@ -298,6 +301,37 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		
 		else connections[5] = null;
 		
+	}
+
+	@Override
+	public double distanceTo(Vector3<Integer> vec) {
+		return this.worldVec().getNetDifference(vec);
+	}
+
+	@Override
+	public Vector3<Integer> getOffsetVec(int x, int y, int z) {
+		final Vector3<Integer> ret = worldVec();
+
+		ret.x += x;
+		ret.y += y;
+		ret.z += z;
+
+		return ret;
+	}
+
+	@Override
+	public float getCost() {
+		return 1.0f;
+	}
+
+	@Override
+	public Block getTile(World world) {
+		return world != null ? world.getBlock(xCoord, yCoord, zCoord) : null;
+	}
+
+	@Override
+	public boolean isSolid() {
+		return false;
 	}
 
 	/*

@@ -36,6 +36,8 @@ public class FluidNetwork {
 	private boolean markUpdate = false;
 	private boolean transferring = false;
 	private FluidStack transferredFluid = null;
+
+	private FluidPathing pathing;
 	
 	/**
 	 * @param world world to reference.
@@ -50,6 +52,8 @@ public class FluidNetwork {
 		lastUpdateNodes = (LinkedList<FluidNode>) nodes.clone();
 		
 		this.MAX_IO = Math.min(masterNode.getIFluidContainer().getMaxFluidExportRate(), masterNode.getIFluidContainer().getMaxFluidImportRate());
+
+		pathing = new FluidPathing();
 	}
 	
 	/**
@@ -377,9 +381,25 @@ public class FluidNetwork {
 						continue;
 					}
 
+					// Set pathing start tile.
+					pathing.setStartTile(node.getTileAt(world));
+
 					int amount = this.MAX_IO;
 					for (FluidNode accNode : acceptorNodes) {
 						if (accNode.getConnections() != null && accNode.getConnections().length > 0 && !node.equals(accNode)) {
+
+							// Set pathing end tile.
+							pathing.setEndTile(accNode.getTileAt(world));
+
+							// Check to see if a valid path has been found, if not continue to next node.
+							if (pathing.findPath(world) == null) {
+								if (ProjectZed.configHandler.isDebugMode())
+									ProjectZed.logHelper.warn("Can't find a path!");
+								continue;
+							}
+
+							else if (ProjectZed.configHandler.isDebugMode()) ProjectZed.logHelper.info("Established a path!");
+
 							for (ForgeDirection dir : accNode.getConnections()) {
 								if (dir == ForgeDirection.UNKNOWN) continue;
 								FluidTankInfo[] info = accNode.getFluidContainer().getTankInfo(dir);
