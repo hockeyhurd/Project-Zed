@@ -38,6 +38,7 @@ tile.solarArray3.name=Solar Array - HV
 tile.furnaceGen.name=Furnace Generator
 tile.lavaGen.name=Lava Generator
 tile.petrolGen.name=Petrol Generator
+tile.handGen.name=Manual Kinetic Generator
 tile.nuclearControllerFission.name=Fission Controller
 tile.nuclearControllerFusion.name=Fusion Controller
 tile.industrialFurnace.name=Industrial Furnace

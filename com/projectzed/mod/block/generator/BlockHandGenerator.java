@@ -14,7 +14,10 @@ import com.projectzed.api.block.AbstractBlockKineticGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.generator.AbstractTileEntityKineticGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityHandGenerator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -31,6 +34,14 @@ public class BlockHandGenerator extends AbstractBlockKineticGenerator {
 	 */
 	public BlockHandGenerator(Material material) {
 		super(material, "handGen");
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister reg) {
+		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
+		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
+		this.front = reg.registerIcon(ProjectZed.assetDir + name + "_front");
 	}
 
 	@Override

@@ -25,6 +25,7 @@ public class TileEntityHandGenerator extends AbstractTileEntityKineticGenerator 
 
 	public TileEntityHandGenerator() {
 		super("handGen");
+		this.maxStored = 100;
 	}
 
 	@Override
