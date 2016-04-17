@@ -38,9 +38,6 @@ public class BlockLavaGenerator extends AbstractBlockGenerator {
 
 	public BlockLavaGenerator(Material material) {
 		super(material, "lavaGen");
-		this.setBlockName("lavaGen");
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
 	}
 
 	@Override

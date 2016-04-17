@@ -124,6 +124,7 @@ public final class ProjectZed implements IForgeMod {
 	public static Block fusionController, fissionController;
 	public static Block lavaGen;
 	public static Block petrolGen;
+	public static Block handGen;
 	public static Block fabricationTable;
 	public static Block stoneCraftingTable;
 	public static Block refinery;
@@ -396,6 +397,7 @@ public final class ProjectZed implements IForgeMod {
 		furnaceGen = new BlockFurnaceGenerator(Material.rock);
 		lavaGen = new BlockLavaGenerator(Material.rock);
 		petrolGen = new BlockPetrolGenerator(Material.rock);
+		handGen = new BlockHandGenerator(Material.rock);
 		fusionController = new BlockNuclearController(Material.iron, true);
 		fissionController = new BlockNuclearController(Material.iron, false);
 		

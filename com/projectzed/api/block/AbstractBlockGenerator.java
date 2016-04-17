@@ -39,7 +39,8 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 	protected IIcon top, base, front;
 
 	/**
-	 * @param material = material of block
+	 * @param material material of block
+	 * @param name String name.
 	 */
 	public AbstractBlockGenerator(Material material, String name) {
 		super(material);
@@ -87,11 +88,11 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 
 	/**
 	 * Method used to update block's state
-	 * @param active = whether currently active or not.
-	 * @param world = world object.
-	 * @param x = x-position.
-	 * @param y = y-position.
-	 * @param z = z-position.
+	 * @param active whether currently active or not.
+	 * @param world world object.
+	 * @param x x-position.
+	 * @param y y-position.
+	 * @param z z-position.
 	 */
 	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);

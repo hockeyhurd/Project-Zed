@@ -246,6 +246,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 				this.stored += rem;
 			}
 		}
+
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 
