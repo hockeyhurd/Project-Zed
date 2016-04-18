@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod;
 
+import com.hockeyhurd.api.creativetab.AbstractCreativeTab;
 import com.hockeyhurd.api.math.TimeLapse;
 import com.hockeyhurd.api.util.FluidFactory;
 import com.hockeyhurd.api.util.LogHelper;
@@ -83,7 +84,7 @@ public final class ProjectZed implements IForgeMod {
 	private TimeLapse tl;
 	
 	// Creative Tabs:
-	public static CreativeTabs modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
+	public static AbstractCreativeTab modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
 	
 	// Blocks:
 	public static Block machineContainer;

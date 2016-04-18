@@ -14,6 +14,7 @@ import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.math.pathfinding.AStarAlogirthm;
 import com.hockeyhurd.api.math.pathfinding.IPathTile;
 import com.hockeyhurd.api.math.pathfinding.PathNode;
+import com.hockeyhurd.api.math.pathfinding.PathUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -70,7 +71,7 @@ public final class FluidPathing extends AStarAlogirthm {
 	}*/
 
 	@Override
-	public List<IPathTile> findPath(World world) {
+	public IPathTile[] findPath(World world) {
 		List<PathNode> openList = new LinkedList<PathNode>();
 		List<PathNode> closedList = new LinkedList<PathNode>();
 		PathNode current = new PathNode(startTile, null, startTile.getCost(), 0.0d);
@@ -100,9 +101,10 @@ public final class FluidPathing extends AStarAlogirthm {
 					current = current.parent;
 				}
 
-				openList.clear();
-				closedList.clear();
-				return path;
+				PathUtils.toArray(path, pathTiles);
+				// openList.clear();
+				// closedList.clear();
+				return pathTiles;
 			}
 
 			openList.remove(current);
