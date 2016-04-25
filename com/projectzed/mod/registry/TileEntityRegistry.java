@@ -48,6 +48,9 @@ public final class TileEntityRegistry {
 
 		reg.map.put(TileEntityPetrolGenerator.class, "petrolGenTileEntity");
 		reg.idMap.put(TileEntityPetrolGenerator.class, getNextID());
+
+		reg.map.put(TileEntityHandGenerator.class, "handGenTileEntity");
+		reg.idMap.put(TileEntityHandGenerator.class, getNextID());
 		
 		reg.map.put(TileEntityNuclearController.class, "nuclearControllerTileEntity");
 		reg.idMap.put(TileEntityNuclearController.class, getNextID());

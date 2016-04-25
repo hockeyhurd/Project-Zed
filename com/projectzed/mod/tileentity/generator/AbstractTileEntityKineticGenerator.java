@@ -40,6 +40,7 @@ public abstract class AbstractTileEntityKineticGenerator extends AbstractTileEnt
 
 	@Override
 	protected void initContentsArray() {
+		slots = new ItemStack[0];
 	}
 
 	@Override

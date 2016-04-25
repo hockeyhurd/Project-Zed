@@ -26,7 +26,7 @@ import java.util.*;
  * @author hockeyhurd
  * @version May 7, 2015
  */
-public class FluidNetwork {
+public final class FluidNetwork {
 
 	private final World world;
 	private LinkedList<FluidNode> nodes, lastUpdateNodes;
@@ -388,6 +388,7 @@ public class FluidNetwork {
 					for (FluidNode accNode : acceptorNodes) {
 						if (accNode.getConnections() != null && accNode.getConnections().length > 0 && !node.equals(accNode)) {
 
+							// TimeLapse timeLapse = new TimeLapse();
 							// Set pathing end tile.
 							pathing.setEndTile(accNode.getTileAt(world));
 
@@ -395,6 +396,8 @@ public class FluidNetwork {
 							if (pathing.findPath(world) == null) {
 								if (ProjectZed.configHandler.isDebugMode())
 									ProjectZed.logHelper.warn("Can't find a path!");
+
+								// ProjectZed.logHelper.info("Found path in:", timeLapse.getEffectiveTimeSince());
 								continue;
 							}
 
