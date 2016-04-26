@@ -70,7 +70,7 @@ public final class FluidPathing extends AStarAlogirthm {
 	}*/
 
 	@Override
-	public IPathTile[] findPath(World world) {
+	public List<IPathTile> findPath(World world) {
 		List<PathNode> openList = new LinkedList<PathNode>();
 		List<PathNode> closedList = new LinkedList<PathNode>();
 		PathNode current = new PathNode(startTile, null, startTile.getCost(), 0.0d);
@@ -93,18 +93,16 @@ public final class FluidPathing extends AStarAlogirthm {
 			current = openList.get(0);
 
 			if (current.vec.equals(endVec)) {
-				List<IPathTile> path = new LinkedList<IPathTile>();
+				lastPath = new LinkedList<IPathTile>();
 
 				while (current.parent != null) {
-					path.add(current.tile);
+					lastPath.add(current.tile);
 					current = current.parent;
 				}
 
-				pathTiles = path.toArray(new IPathTile[path.size()]);
-
 				// openList.clear();
 				// closedList.clear();
-				return pathTiles;
+				return lastPath;
 			}
 
 			openList.remove(current);

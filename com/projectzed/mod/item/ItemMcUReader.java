@@ -6,14 +6,7 @@
 */
 package com.projectzed.mod.item;
 
-import static net.minecraft.util.EnumChatFormatting.AQUA;
-import static net.minecraft.util.EnumChatFormatting.GOLD;
-import static net.minecraft.util.EnumChatFormatting.WHITE;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.hockeyhurd.api.util.ChatHelper;
 import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -21,6 +14,11 @@ import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import static net.minecraft.util.EnumChatFormatting.*;
 
 /**
  * Class containing code for item mcu reader
@@ -30,16 +28,12 @@ import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
  * @author hockeyhurd
  * @version Dec 6, 2014
  */
-public class ItemMcUReader extends AbstractItemMetalic {
+public class ItemMcUReader extends AbstractHCoreItem {
 
 	private final ChatHelper chatHelper;
 	
-	/**
-	 * @param name
-	 * @param assetDir
-	 */
 	public ItemMcUReader() {
-		super("mcuReader", ProjectZed.assetDir);
+		super(ProjectZed.modCreativeTab, "mcuReader", ProjectZed.assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxStackSize(1);
 		chatHelper = new ChatHelper();

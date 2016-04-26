@@ -9,7 +9,7 @@
 
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -18,11 +18,10 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version 6/30/2015.
  */
-public class ItemNuggetUranium extends AbstractItemMetalic {
+public class ItemNuggetUranium extends AbstractHCoreItem {
 
 	public ItemNuggetUranium(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

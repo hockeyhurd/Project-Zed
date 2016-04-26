@@ -6,19 +6,19 @@
 */
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**
- * 
+ * Item screw class.
+ *
  * @author hockeyhurd
  * @version Nov 14, 2014
  */
-public class ItemScrew extends AbstractItemMetalic {
+public class ItemScrew extends AbstractHCoreItem {
 
 	public ItemScrew(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

@@ -207,7 +207,7 @@ public class CommonProxy {
 		ChainsawSetRegistry.instance().init();
 	}
 	
-	private void registerEventHandlers() {
+	protected void registerEventHandlers() {
 		PacketHandler.init();
 		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());

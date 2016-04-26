@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -15,11 +15,10 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Nov 4, 2014
  */
-public class ItemDustGold extends AbstractItemMetalic {
+public class ItemDustGold extends AbstractHCoreItem {
 
 	public ItemDustGold(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

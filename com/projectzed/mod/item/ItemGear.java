@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -15,11 +15,10 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version Nov 14, 2014
  */
-public class ItemGear extends AbstractItemMetalic {
+public class ItemGear extends AbstractHCoreItem {
 
 	public ItemGear(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

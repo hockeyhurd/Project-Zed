@@ -6,7 +6,8 @@
 */
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing code for mixed metal alloy.
@@ -14,14 +15,14 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
  * @author hockeyhurd
  * @version Jan 11, 2015
  */
-public class ItemMixedAlloy extends AbstractItemMetalic {
+public class ItemMixedAlloy extends AbstractHCoreItem {
 
 	/**
 	 * @param name
 	 * @param assetDir
 	 */
 	public ItemMixedAlloy(String name, String assetDir) {
-		super(name, assetDir);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

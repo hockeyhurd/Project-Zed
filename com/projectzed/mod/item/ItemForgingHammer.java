@@ -6,17 +6,15 @@
 */
 package com.projectzed.mod.item;
 
-import java.util.List;
-
+import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
-import com.projectzed.mod.ProjectZed;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 
 /**
  * Class containing code for forgingHammer.
@@ -24,11 +22,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Dec 9, 2014
  */
-public class ItemForgingHammer extends AbstractItemMetalic {
+public class ItemForgingHammer extends AbstractHCoreItem {
 
 	public ItemForgingHammer() {
-		super("forgingHammer", ProjectZed.assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, "forgingHammer", ProjectZed.assetDir);
 		this.setMaxDamage(256);
 		this.setMaxStackSize(1);
 	}

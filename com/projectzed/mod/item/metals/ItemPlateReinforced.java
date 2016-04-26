@@ -6,7 +6,8 @@
 */
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Class containing code for plate of reinforced item sheet.
@@ -14,14 +15,14 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
  * @author hockeyhurd
  * @version Jan 11, 2015
  */
-public class ItemPlateReinforced extends AbstractItemMetalic {
+public class ItemPlateReinforced extends AbstractHCoreItem {
 
 	/**
 	 * @param name
 	 * @param assetDir
 	 */
 	public ItemPlateReinforced(String name, String assetDir) {
-		super(name, assetDir);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

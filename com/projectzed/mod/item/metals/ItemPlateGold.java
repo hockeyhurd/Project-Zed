@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**
@@ -19,11 +19,10 @@ import com.projectzed.mod.ProjectZed;
  * @author hockeyhurd
  * @version 8/20/2015.
  */
-public class ItemPlateGold extends AbstractItemMetalic {
+public class ItemPlateGold extends AbstractHCoreItem {
 
 	public ItemPlateGold(String name, String assetDir) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

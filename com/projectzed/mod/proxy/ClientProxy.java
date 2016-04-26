@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.proxy;
 
+import com.hockeyhurd.api.handler.config.ConfigChangedEventHandler;
 import com.hockeyhurd.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
@@ -66,6 +67,13 @@ public class ClientProxy extends CommonProxy {
 	/*public static KeyBindingHandler getKeyBindingHandler() {
 		return keyBindingHandler;
 	}*/
+
+	@Override
+	protected void registerEventHandlers() {
+		super.registerEventHandlers();
+
+		FMLCommonHandler.instance().bus().register(new ConfigChangedEventHandler(ProjectZed.modID, ProjectZed.configHandler));
+	}
 
 	/**
 	 * Method used to overwrite CommonProxy's method

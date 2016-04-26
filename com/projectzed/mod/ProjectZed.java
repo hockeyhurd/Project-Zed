@@ -67,7 +67,8 @@ import net.minecraftforge.fluids.FluidRegistry;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.7.10]", name = Reference.MOD_NAME, version = Reference.VERSION, dependencies = "required-after:HCoreLib")
+@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.7.10]", name = Reference.MOD_NAME,
+		version = Reference.VERSION, dependencies = "required-after:HCoreLib", guiFactory = "com.projectzed.mod.gui.config.PZGuiFactory")
 public final class ProjectZed implements IForgeMod {
 
 	@SidedProxy(clientSide = "com.projectzed.mod.proxy.ClientProxy", serverSide = "com.projectzed.mod.proxy.CommonProxy")

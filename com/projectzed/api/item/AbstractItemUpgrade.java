@@ -9,7 +9,7 @@
 
 package com.projectzed.api.item;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version 6/29/2015.
  */
-public abstract class AbstractItemUpgrade extends AbstractItemMetalic implements IItemUpgradeComponent {
+public abstract class AbstractItemUpgrade extends AbstractHCoreItem implements IItemUpgradeComponent {
 
 	protected float burnRateModifier;
 	protected float effRateModifier;
@@ -38,8 +38,7 @@ public abstract class AbstractItemUpgrade extends AbstractItemMetalic implements
 	 * @param name name of upgrade component.
 	 */
 	public AbstractItemUpgrade(String name) {
-		super(name, ProjectZed.assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, ProjectZed.assetDir);
 		this.setMaxStackSize(0x10); // 16
 
 		this.burnRateModifier = ProjectZed.configHandler.getBurnRateModifier();

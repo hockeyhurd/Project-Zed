@@ -6,17 +6,14 @@
 */
 package com.projectzed.mod.item.metals;
 
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Class containing code for all urnanium dust stuff.
@@ -24,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Nov 6, 2014
  */
-public class ItemDustUranium extends AbstractItemMetalic {
+public class ItemDustUranium extends AbstractHCoreItem {
 	
 	private final boolean ENRICHED;
 	
@@ -33,8 +30,7 @@ public class ItemDustUranium extends AbstractItemMetalic {
 	 * @param assetDir
 	 */
 	public ItemDustUranium(String name, String assetDir, boolean enriched) {
-		super(name, assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 		this.ENRICHED = enriched;
 	}
 

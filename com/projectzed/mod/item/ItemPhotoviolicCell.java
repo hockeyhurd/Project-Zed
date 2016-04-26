@@ -9,7 +9,8 @@
 
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.projectzed.mod.ProjectZed;
 
 /**
  * Item class for photoviolicCell.
@@ -17,10 +18,10 @@ import com.hockeyhurd.api.item.AbstractItemMetalic;
  * @author hockeyhurd
  * @version 6/30/2015.
  */
-public class ItemPhotoviolicCell extends AbstractItemMetalic {
+public class ItemPhotoviolicCell extends AbstractHCoreItem {
 
 	public ItemPhotoviolicCell(String name, String assetDir) {
-		super(name, assetDir);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 	}
 
 }

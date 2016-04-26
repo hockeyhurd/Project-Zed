@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractItemMetalic;
+import com.hockeyhurd.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version Dec 18, 2014
  */
-public class ItemFuelRod extends AbstractItemMetalic {
+public class ItemFuelRod extends AbstractHCoreItem {
 
 	private boolean isEmpty;
 	private String name, assetDir;
@@ -35,11 +35,10 @@ public class ItemFuelRod extends AbstractItemMetalic {
 	 * @param assetDir
 	 */
 	public ItemFuelRod(String name, String assetDir, boolean isEmpty) {
-		super(name, assetDir);
+		super(ProjectZed.modCreativeTab, name, assetDir);
 		this.name = name;
 		this.assetDir = assetDir;
 		this.isEmpty = isEmpty;
-		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxDamage(10);
 		if (!isEmpty) this.maxStackSize = 1;
 	}

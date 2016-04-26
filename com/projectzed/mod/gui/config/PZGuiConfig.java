@@ -8,21 +8,22 @@
  *  .org/licenses/>
  */
 
-package com.projectzed.mod.item.metals;
+package com.projectzed.mod.gui.config;
 
-import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.hockeyhurd.api.client.gui.ModGuiConfig;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.client.gui.GuiScreen;
 
 /**
- * Class containing code for plate of lapis.
+ * Gui config class for ProjectZed.
  *
  * @author hockeyhurd
- * @version 8/20/2015.
+ * @version 4/26/2016.
  */
-public class ItemPlateLapis extends AbstractHCoreItem {
+public final class PZGuiConfig extends ModGuiConfig {
 
-	public ItemPlateLapis(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+	public PZGuiConfig(GuiScreen parent) {
+		super(parent, ProjectZed.configHandler, ProjectZed.modID, ProjectZed.modID + " config");
 	}
 
 }
