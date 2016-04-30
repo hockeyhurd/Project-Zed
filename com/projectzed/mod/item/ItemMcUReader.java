@@ -7,7 +7,7 @@
 package com.projectzed.mod.item;
 
 import com.hockeyhurd.api.item.AbstractHCoreItem;
-import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.ChatUtils;
 import com.hockeyhurd.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.container.IFluidContainer;
@@ -30,13 +30,10 @@ import static net.minecraft.util.EnumChatFormatting.*;
  */
 public class ItemMcUReader extends AbstractHCoreItem {
 
-	private final ChatHelper chatHelper;
-	
 	public ItemMcUReader() {
 		super(ProjectZed.modCreativeTab, "mcuReader", ProjectZed.assetDir);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxStackSize(1);
-		chatHelper = new ChatHelper();
 	}
 	
 	/*
@@ -50,10 +47,15 @@ public class ItemMcUReader extends AbstractHCoreItem {
 			boolean full = cont.getEnergyStored() == cont.getMaxStorage();
 			
 			if (world.isRemote) {
-				player.addChatComponentMessage(chatHelper.comp(GOLD + "Stored: " + WHITE + NumberFormatter.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
-				player.addChatComponentMessage(chatHelper.comp(GOLD + "Max Storage: " + WHITE + NumberFormatter.format(cont.getMaxStorage()) +  " McU"));
-				if (cont instanceof TileEntityEnergyBankBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Tier: " + WHITE + (((TileEntityEnergyBankBase) cont).getTier() + 1)));
-				else if (cont instanceof TileEntityEnergyPipeBase) player.addChatComponentMessage(chatHelper.comp(GOLD + "Last Received Direction: " + WHITE + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection()));
+				player.addChatComponentMessage(
+						ChatUtils.createComponent(false,
+								GOLD + "Stored: " + WHITE + NumberFormatter.format(cont.getEnergyStored()) + " McU" + (full ? " (full)" : "")));
+				player.addChatComponentMessage(ChatUtils.createComponent(false,
+						GOLD + "Max Storage: " + WHITE + NumberFormatter.format(cont.getMaxStorage()) + " McU"));
+				if (cont instanceof TileEntityEnergyBankBase) player.addChatComponentMessage(ChatUtils.createComponent(false,
+						GOLD + "Tier: " + WHITE + (((TileEntityEnergyBankBase) cont).getTier() + 1)));
+				else if (cont instanceof TileEntityEnergyPipeBase) player.addChatComponentMessage(ChatUtils.createComponent(false,
+						GOLD + "Last Received Direction: " + WHITE + ((TileEntityEnergyPipeBase) cont).getLastReceivedDirection()));
 			}
 			
 			else {
@@ -68,7 +70,7 @@ public class ItemMcUReader extends AbstractHCoreItem {
 		else if (world.getTileEntity(x, y, z) instanceof IFluidContainer) {
 			IFluidContainer cont = (IFluidContainer) world.getTileEntity(x, y, z);
 			if (world.isRemote) {
-				player.addChatComponentMessage(chatHelper.comp(AQUA + "Stored: " + cont.getTank().getFluidAmount()));
+				player.addChatComponentMessage(ChatUtils.createComponent(false, AQUA + "Stored: " + cont.getTank().getFluidAmount()));
 			}
 			
 			else ProjectZed.logHelper.info("Stored: " + cont.getTank().getFluidAmount());

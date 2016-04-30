@@ -193,6 +193,8 @@ public final class ProjectZed implements IForgeMod {
 	public static Item overclockerUpgrade;
 	public static Item silkTouchUpgrade;
 	public static Item efficiencyUpgrade;
+	public static Item blankCraftingPattern;
+	public static Item craftingPattern;
 
 	// Material:
 	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
@@ -480,7 +482,9 @@ public final class ProjectZed implements IForgeMod {
 		overclockerUpgrade = new ItemUpgradeOverclocker("overclockerUpgrade");
 		silkTouchUpgrade = new ItemUpgradeSilkTouch("silkTouchUpgrade");
 		efficiencyUpgrade = new ItemUpgradeEfficiency("efficiencyUpgrade");
-		
+		blankCraftingPattern = new ItemCraftingPattern("blankCraftingPattern", false);
+		craftingPattern = new ItemCraftingPattern("craftingPattern", true);
+
 		// Armor:
 		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, 0).setUnlocalizedName("zPlatedHelmet");
 		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, 1).setUnlocalizedName("zPlatedChestplate");

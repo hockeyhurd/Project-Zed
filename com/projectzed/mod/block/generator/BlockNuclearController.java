@@ -7,7 +7,7 @@
 package com.projectzed.mod.block.generator;
 
 import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.tileentity.IMultiBlockableController;
@@ -133,7 +133,8 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		
 		this.placeDir = (byte) dir;
 		this.size = getSizeFromDir(world, x, y, z, dir);
-		if (size > 9 && player instanceof EntityPlayer) ((EntityPlayer) player).addChatComponentMessage(new ChatHelper().comp("Block Placed incorrectly!")); 
+		if (size > 9 && player instanceof EntityPlayer)
+			((EntityPlayer) player).addChatComponentMessage(ChatUtils.createComponent(false, "Block Placed incorrectly!"));
 		// System.out.println("Placed Dir: " + this.placeDir);
 		// System.out.println("Size: " + this.size + "x" + this.size);
 		

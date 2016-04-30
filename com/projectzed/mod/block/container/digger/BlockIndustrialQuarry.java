@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.block.container.digger;
 
-import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
@@ -52,7 +52,7 @@ public class BlockIndustrialQuarry extends AbstractBlockContainer {
 			TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(x, y, z);
 			if (te != null) {
 				FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialQuarry.class), world, x, y, z);
-				player.addChatComponentMessage(new ChatHelper().comp("is done: " + te.isDone()));
+				player.addChatComponentMessage(ChatUtils.createComponent(false, "is done: " + te.isDone()));
 			}
 
 			return true;

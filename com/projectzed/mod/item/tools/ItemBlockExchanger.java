@@ -11,7 +11,7 @@
 package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.api.util.BlockUtils;
-import com.hockeyhurd.api.util.ChatHelper;
+import com.hockeyhurd.api.util.ChatUtils;
 import com.hockeyhurd.api.util.NumberFormatter;
 import com.hockeyhurd.api.util.TimerHelper;
 import com.projectzed.mod.ProjectZed;
@@ -47,7 +47,6 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 	private int radii = 1;
 	private Block blockToPlace;
 	private TimerHelper timer;
-	private ChatHelper chatHelper;
 
 	/**
 	 * @param name Name of item.
@@ -56,7 +55,6 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		super(name);
 
 		timer = new TimerHelper(20, 2);
-		chatHelper = new ChatHelper();
 	}
 
 	/**
@@ -194,7 +192,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
-					player.addChatComponentMessage(chatHelper.comp(msgBlockSet + blockToPlace.getLocalizedName()));
+					player.addChatComponentMessage(ChatUtils.createComponent(false, msgBlockSet + blockToPlace.getLocalizedName()));
 				}
 			}
 
@@ -217,7 +215,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii < ProjectZed.configHandler.getMaxExchangerRadii()) {
 			radii++;
 			writeToNBT(stack);
-			player.addChatComponentMessage(chatHelper.comp(msgRadiiSet + radii));
+			player.addChatComponentMessage(ChatUtils.createComponent(false, msgRadiiSet + radii));
 		}
 	}
 
@@ -226,7 +224,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii > 0) {
 			radii--;
 			writeToNBT(stack);
-			player.addChatComponentMessage(chatHelper.comp(msgRadiiSet + radii));
+			player.addChatComponentMessage(ChatUtils.createComponent(false, msgRadiiSet + radii));
 		}
 	}
 

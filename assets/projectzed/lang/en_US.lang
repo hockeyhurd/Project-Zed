@@ -107,6 +107,8 @@ item.gearTitanium.name=Titanium Gear
 item.overclockerUpgrade.name=Overclocker Upgrade
 item.silkTouchUpgrade.name=Silk Touch Upgrade
 item.efficiencyUpgrade.name=Efficiency Upgrade
+item.blankCraftingPattern.name=Blank Crafting Pattern
+item.craftingPattern.name=Encoded Crafting Pattern
 
 // Armor:
 item.zPlatedHelmet.name=zPlated Helmet
