@@ -6,18 +6,15 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.api.math.Vector2;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.math.Vector2;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class used to implement input, ouput, off, gui interface. <br>
@@ -30,8 +27,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiIOButton extends GuiButton implements IGuiButton {
 
-	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected static final Tessellator TESS = Tessellator.instance;
+	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
 	protected byte stateID;
 	protected final float PIXEL;
 	
@@ -52,7 +50,6 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.stateID = state;
-		this.TESS = Tessellator.instance;
 		this.pos.x = x;
 		this.pos.y = y;
 	}
@@ -72,7 +69,6 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.stateID = state;
-		this.TESS = Tessellator.instance;
 		this.pos.x = x;
 		this.pos.y = y;
 	}

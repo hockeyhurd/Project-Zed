@@ -27,7 +27,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		super();
 		this.customName = "fabricationTable";
 		// this.slots = new ItemStack[10 + 6 * 12 + 4 * 9];
-		this.slots = new ItemStack[10 + 6 * 12];
+		// this.slots = new ItemStack[10 + 6 * 12];
 	}
 
 	/*

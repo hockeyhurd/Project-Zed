@@ -65,9 +65,13 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		super(new ContainerMachine(inv, te));
 		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
 		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
-		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		// else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		else texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
-		upgradeXOffset = te.getSizeInventory() > 0 ? 0x20 : 0x0;
+		if (te.getSizeUpgradeSlots() > 0) {
+			upgradeXOffset = 0x20;
+			upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
+		}
 
 		this.te = te;
 		this.xSize = 176 + upgradeXOffset;
@@ -79,7 +83,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
 		
 		waila = new Waila(null, player.worldObj, player, null, 0);
-		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
 	}
 
 	/**
@@ -91,9 +94,13 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		super(containerMachine);
 		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
 		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
-		else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		// else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		else texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
-		upgradeXOffset = te.getSizeInventory() > 0 ? 0x20 : 0x0;
+		if (te.getSizeUpgradeSlots() > 0) {
+			upgradeXOffset = 0x20;
+			upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
+		}
 
 		this.te = te;
 		this.xSize = 176 + upgradeXOffset;
@@ -105,7 +112,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
 
 		waila = new Waila(null, player.worldObj, player, null, 0);
-		upgradePanel = new GuiPanelUpgrade(new Vector2<Double>((double) guiLeft + xSize - upgradeXOffset, (double) guiTop));
 	}
 
 	/*
@@ -148,7 +154,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
 			}
 
-			upgradePanel.renderContainer(f, x, y);
+			if (upgradePanel != null) upgradePanel.renderContainer(f, x, y);
 		}
 	}
 
@@ -232,8 +238,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 	@Override
 	public void actionPerformed(GuiButton button) {
-		boolean isActive = false;
-		
 		// ProjectZed.logHelper.info("button.id:", button.id);
 		
 		if (button instanceof IGuiButton) {
@@ -377,8 +381,10 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			getComponents().get(0).update(this.mouseVec, this.pos, this.minMax, new Integer[] { this.te.getEnergyStored(), this.te.getMaxStorage(), te.getEnergyBurnRate() });
 		}
 
-		upgradePanel.location.x = (double) (guiLeft + xSize - upgradeXOffset);
-		upgradePanel.location.y = (double) guiTop;
+		if (upgradePanel != null) {
+			upgradePanel.location.x = (double) (guiLeft + xSize - upgradeXOffset);
+			upgradePanel.location.y = (double) guiTop;
+		}
 		
 	}
 	

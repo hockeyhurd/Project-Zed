@@ -11,6 +11,7 @@
 package com.projectzed.mod.item;
 
 import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.hockeyhurd.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
 import com.projectzed.mod.ProjectZed;
 import cpw.mods.fml.relauncher.Side;
@@ -32,7 +33,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	private boolean encoded;
 	private final ItemStack[][] pattern;
 	private ItemStack result;
-	private int size;
+	private Vector2<Integer> size;
 
 	public ItemCraftingPattern(String name, boolean encoded) {
 		this(name, encoded, 3);
@@ -41,7 +42,14 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	public ItemCraftingPattern(String name, boolean encoded, int size) {
 		super(ProjectZed.modCreativeTab, name, ProjectZed.assetDir);
 		this.encoded = encoded;
+
+		this.size = new Vector2<Integer>(size, size);
 		pattern = new ItemStack[size][size];
+	}
+
+	@Override
+	public Vector2<Integer> getPatternSize() {
+		return size;
 	}
 
 	@Override
@@ -61,11 +69,11 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 
 	@Override
 	public boolean isPatternEqual(ItemStack[][] pattern) {
-		if (pattern == null || size != pattern.length || pattern[0] == null || size != pattern[0].length)
+		if (pattern == null || size.y != pattern.length || pattern[0] == null || size.x != pattern[0].length)
 			return false;
 
-		for (int y = 0; y < size; y++) {
-			for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.x; x++) {
 				if (!ItemStack.areItemStacksEqual(this.pattern[y][x], pattern[y][x]))
 					return false;
 			}
@@ -76,13 +84,13 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 
 	@Override
 	public void setPattern(ItemStack[][] pattern, ItemStack resultStack) {
-		if (resultStack == null || pattern == null || size != pattern.length || pattern[0] == null || size != pattern[0].length)
+		if (resultStack == null || pattern == null || size.y != pattern.length || pattern[0] == null || size.x != pattern[0].length)
 			return;
 
 		this.result = resultStack;
 
-		for (int y = 0; y < size; y++) {
-			for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.x; x++) {
 				this.pattern[y][x] = pattern[y][x];
 			}
 		}
@@ -92,8 +100,8 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	public void clearPattern() {
 		result = null;
 
-		for (int y = 0; y < size; y++) {
-			for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.x; x++) {
 				this.pattern[y][x] = null;
 			}
 		}
@@ -106,9 +114,9 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 
 		list.add(EnumChatFormatting.GREEN + "Result: " + result.getDisplayName());
 
-		for (int y = 0; y < size; y++) {
-			String[] strings = new String[size];
-			for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size.y; y++) {
+			String[] strings = new String[size.y];
+			for (int x = 0; x < size.x; x++) {
 				strings[x] = result.getDisplayName();
 			}
 

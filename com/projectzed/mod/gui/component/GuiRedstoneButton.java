@@ -6,20 +6,16 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.api.math.Vector2;
+import com.projectzed.api.util.EnumRedstoneType;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.math.Vector2;
-import com.projectzed.api.util.EnumRedstoneType;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Gui buttons for redstone conrol.
@@ -30,13 +26,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 
-	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected static final Tessellator TESS = Tessellator.instance;
+	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
 	protected final float PIXEL;
 	protected EnumRedstoneType type;
 	
 	protected boolean active;
-	protected Vector2<Float> min = Vector2.zero.getVector2f(); 
+	protected Vector2<Float> min = Vector2.zero.getVector2f();
 	protected Vector2<Float> max = Vector2.zero.getVector2f(); 
 	
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
@@ -55,7 +52,6 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.type = type;
-		this.TESS = Tessellator.instance;
 		this.pos.x = x;
 		this.pos.y = y;
 	}
@@ -75,7 +71,6 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.type = type;
-		this.TESS = Tessellator.instance;
 	}
 
 	/*

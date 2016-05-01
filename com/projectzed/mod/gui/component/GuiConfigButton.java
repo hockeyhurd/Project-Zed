@@ -6,18 +6,15 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.api.math.Rect;
+import com.hockeyhurd.api.math.Vector2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
 
 /**
  * Gui buttons for controlling tabs/widgets.
@@ -27,14 +24,15 @@ import com.hockeyhurd.api.math.Vector2;
  */
 public class GuiConfigButton extends GuiButton implements IGuiButton {
 
-	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected static final Tessellator TESS = Tessellator.instance;
+	protected static final ResourceLocation DEFFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
+	protected ResourceLocation TEXTURE = DEFFAULT_TEXTURE;
 	protected final float PIXEL;
 	protected byte stateID;
 	
 	protected int x = 16, y = 16;
+	protected static final int rateOfMovement = 8;
 	protected final Rect<Integer> rect;
-	protected static final int panelSize = 50;
 	protected boolean active;
 	protected float calc, calc2, dif;
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
@@ -59,7 +57,6 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.stateID = stateID;
-		this.TESS = Tessellator.instance;
 		this.rect = rect;
 		this.pos.x = x;
 		this.pos.y = y;
@@ -81,7 +78,6 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		this.PIXEL = 1f / 64f;
 		
 		this.stateID = stateID;
-		this.TESS = Tessellator.instance;
 		this.rect = rect;
 		this.pos.x = x;
 		this.pos.y = y;
@@ -131,15 +127,15 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 			this.TESS.draw();
 			
 			if (active) {
-				if (this.x < rect.max.x) this.x++;
-				if (this.y < rect.max.y) this.y++;
+				if (this.x < rect.max.x) this.x += rateOfMovement;
+				if (this.y < rect.max.y) this.y += rateOfMovement;
 				
 				Gui.drawRect(rect.min.x, rect.min.y, rect.min.x - this.x, rect.min.y + this.y, rect.getColor());
 			}
 			
 			else if (!active && (this.x != 16 || this.y != 16)) {
-				if (this.x > 16) this.x--;
-				if (this.y > 16) this.y--;
+				if (this.x > 16) this.x -= rateOfMovement;
+				if (this.y > 16) this.y -= rateOfMovement;
 				
 				Gui.drawRect(rect.min.x, rect.min.y, rect.min.x - this.x, rect.min.y + this.y, rect.getColor());
 			}

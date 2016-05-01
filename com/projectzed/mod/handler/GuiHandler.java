@@ -48,6 +48,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialHarvester) return new ContainerHarvester(player.inventory, (TileEntityIndustrialHarvester) te);
 		else if (te instanceof TileEntityFabricationTable) return new ContainerFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityStoneCraftingTable) return new ContainerStoneCraftingTable(player.inventory, (TileEntityStoneCraftingTable) te);
+		else if (te instanceof TileEntityPatternEncoder) return new ContainerPatternEncoder(player.inventory, (TileEntityPatternEncoder) te);
 		else if (te instanceof TileEntityRFBridge) return new ContainerRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new ContainerEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
 
@@ -77,6 +78,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialHarvester) return new GuiHarvester(player.inventory, (TileEntityIndustrialHarvester) te);
 		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityStoneCraftingTable) return new GuiStoneCraftingTable(player.inventory, (TileEntityStoneCraftingTable) te);
+		else if (te instanceof TileEntityPatternEncoder) return new GuiPatternEncoder(player.inventory, (TileEntityPatternEncoder) te);
 		else if (te instanceof TileEntityRFBridge) return new GuiRFBridge(player.inventory, (TileEntityRFBridge) te);
 		else if (te instanceof TileEntityEnergyBankBase) return new GuiEnergyContainer(player.inventory, (TileEntityEnergyBankBase) te);
 		

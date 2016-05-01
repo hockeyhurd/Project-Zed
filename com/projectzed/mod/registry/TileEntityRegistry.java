@@ -58,11 +58,14 @@ public final class TileEntityRegistry {
 		reg.map.put(TileEntityFabricationTable.class, "fabricationTableTileEntity");
 		reg.idMap.put(TileEntityFabricationTable.class, getNextID());
 
-		reg.map.put(TileEntityStoneCraftingTable.class, "craftingStoneTable");
+		reg.map.put(TileEntityStoneCraftingTable.class, "craftingStoneTableTileEntity");
 		reg.idMap.put(TileEntityStoneCraftingTable.class, getNextID());
 
-		reg.map.put(TileEntityRefinery.class, "refinery");
+		reg.map.put(TileEntityRefinery.class, "refineryTileEntity");
 		reg.idMap.put(TileEntityRefinery.class, getNextID());
+
+		reg.map.put(TileEntityPatternEncoder.class, "patternEncoderTileEntity");
+		reg.idMap.put(TileEntityPatternEncoder.class, getNextID());
 		
 		reg.map.put(TileEntityIndustrialFurnace.class, "industrialFurnaceTileEntity");
 		reg.idMap.put(TileEntityIndustrialFurnace.class, getNextID());

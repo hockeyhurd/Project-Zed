@@ -36,6 +36,10 @@ public class GuiHarvester extends GuiMachine {
 	}
 
 	@Override
+	public void drawGuiContainerForegroundLayer(int x, int y) {
+	}
+
+	@Override
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);

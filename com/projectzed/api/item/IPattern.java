@@ -10,6 +10,7 @@
 
 package com.projectzed.api.item;
 
+import com.hockeyhurd.api.math.Vector2;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -19,6 +20,13 @@ import net.minecraft.item.ItemStack;
  * @version 4/30/2016.
  */
 public interface IPattern {
+
+	/**
+	 * Gets the pattern width and height contained in vector2i.
+	 *
+	 * @return Vector2i.
+	 */
+	Vector2<Integer> getPatternSize();
 
 	/**
 	 * Gets if IPattern has a set pattern.

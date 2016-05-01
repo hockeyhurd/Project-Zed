@@ -79,8 +79,9 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		if (stack == null || stack.stackSize == 0) return false;
 
-		if (stack.getItem() instanceof IItemUpgradeComponent && slot < getSizeInventory() && slot >= getSizeInventory() - 4 - 1) {
-			System.out.println("Testing!");
+		if (stack.getItem() instanceof IItemUpgradeComponent && slot < getSizeInventory() &&
+				slot >= getSizeInventory() - getSizeUpgradeSlots() - 1) {
+			// System.out.println("Testing!");
 			return canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
 		}
 
@@ -152,6 +153,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 	 * @param currentCheckingVec current checking vector3i.
 	 * @return list of blocks to chop.
 	 */
+	@SuppressWarnings("unchecked")
 	private List<Vector3<Integer>> createChopList(List<Vector3<Integer>> currentList, Vector3<Integer> currentCheckingVec) {
 		Vector3<Integer> copy = currentCheckingVec.copy();
 

@@ -130,6 +130,7 @@ public final class ProjectZed implements IForgeMod {
 	public static Block fabricationTable;
 	public static Block stoneCraftingTable;
 	public static Block refinery;
+	public static Block patternEncoder;
 	public static Block industrialFurnace;
 	public static Block industrialCrusher;
 	public static Block industrialLumberMill;
@@ -409,6 +410,7 @@ public final class ProjectZed implements IForgeMod {
 		fabricationTable = new BlockFabricationTable(Material.rock);
 		stoneCraftingTable = new BlockStoneCraftingTable(Material.rock);
 		refinery = new BlockRefinery(Material.rock);
+		patternEncoder = new BlockPatternEncoder("patternEncoder");
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
 		industrialLumberMill = new BlockIndustrialLumberMill();
