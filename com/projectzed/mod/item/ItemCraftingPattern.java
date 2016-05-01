@@ -18,6 +18,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
@@ -29,6 +31,12 @@ import java.util.List;
  * @version 4/30/2016.
  */
 public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
+
+	private static final String COMP_HAS_PATTERN = "ItemCraftingPattern:hasPattern";
+	private static final String COMP_RESULT = "ItemCraftingPattern:Result";
+	private static final String COMP_SIZE_X = "ItemCraftingPattern:sizeX";
+	private static final String COMP_SIZE_Y = "ItemCraftingPattern:sizeY";
+	private static final String COMP_ITEMS = "ItemCraftingPattern:Items";
 
 	private boolean encoded;
 	private final ItemStack[][] pattern;
@@ -45,6 +53,29 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 
 		this.size = new Vector2<Integer>(size, size);
 		pattern = new ItemStack[size][size];
+
+		setMaxStackSize(encoded ? 1 : 0x40);
+	}
+
+	private static NBTTagCompound getOrInitNBT(ItemStack stack) {
+		NBTTagCompound comp = null;
+		if (!stack.hasTagCompound()) {
+			stack.stackTagCompound = comp = new NBTTagCompound();
+
+			final ItemCraftingPattern item = (ItemCraftingPattern) stack.getItem();
+
+			comp.setBoolean(COMP_HAS_PATTERN, false);
+			comp.setInteger(COMP_SIZE_X, item.size.x);
+			comp.setInteger(COMP_SIZE_Y, item.size.y);
+
+			NBTTagList tagList = comp.getTagList(COMP_ITEMS, 10);
+
+			comp.setTag(COMP_ITEMS, tagList);
+		}
+
+		else comp = stack.stackTagCompound;
+
+		return comp;
 	}
 
 	@Override
@@ -53,29 +84,73 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	}
 
 	@Override
-	public boolean hasPattern() {
-		return encoded;
+	public boolean hasPattern(ItemStack stack) {
+		if (stack.getItem() instanceof ItemCraftingPattern) {
+			NBTTagCompound comp = getOrInitNBT(stack);
+
+			return comp.getBoolean(COMP_HAS_PATTERN);
+		}
+
+		return false;
 	}
 
 	@Override
-	public ItemStack[][] getPattern() {
-		return pattern;
+	public ItemStack[][] getPattern(ItemStack stack) {
+		if (stack.getItem() instanceof ItemCraftingPattern) {
+			final NBTTagCompound comp = getOrInitNBT(stack);
+			final NBTTagList tagList = comp.getTagList(COMP_ITEMS, 10);
+
+			final Vector2<Integer> vec = new Vector2<Integer>();
+			vec.x = comp.getInteger(COMP_SIZE_X);
+			vec.y = comp.getInteger(COMP_SIZE_Y);
+			final int size = vec.x * vec.y;
+
+			final ItemStack[][] pattern = new ItemStack[vec.y][vec.x];
+
+			for (int i = 0; i < tagList.tagCount() - 1; i++) {
+				NBTTagCompound temp = tagList.getCompoundTagAt(i);
+				byte b0 = temp.getByte("Slot");
+
+				if (b0 >= 0 && b0 < size)
+					pattern[i / vec.y][i % vec.x] = ItemStack.loadItemStackFromNBT(temp);
+			}
+
+			return pattern;
+		}
+
+		return new ItemStack[0][0];
 	}
 
 	@Override
-	public ItemStack getCraftingResult() {
-		return result;
+	public ItemStack getCraftingResult(ItemStack stack) {
+		if (stack.getItem() instanceof ItemCraftingPattern) {
+			final NBTTagCompound comp = getOrInitNBT(stack);
+
+			if (comp.getBoolean(COMP_HAS_PATTERN)) {
+				final NBTTagList tagList = comp.getTagList(COMP_ITEMS, 10);
+				final NBTTagCompound stackComp = tagList.getCompoundTagAt(tagList.tagCount() - 1);
+				return ItemStack.loadItemStackFromNBT(stackComp);
+			}
+		}
+
+		return null;
 	}
 
 	@Override
-	public boolean isPatternEqual(ItemStack[][] pattern) {
-		if (pattern == null || size.y != pattern.length || pattern[0] == null || size.x != pattern[0].length)
+	public boolean isPatternEqual(ItemStack stack, ItemStack[][] otherPattern) {
+		if (!(stack.getItem() instanceof ItemCraftingPattern)) return false;
+		if (otherPattern == null /*|| size.y != otherPattern.length*/ || otherPattern[0] == null /*|| size.x != otherPattern[0].length*/)
 			return false;
 
-		for (int y = 0; y < size.y; y++) {
-			for (int x = 0; x < size.x; x++) {
-				if (!ItemStack.areItemStacksEqual(this.pattern[y][x], pattern[y][x]))
-					return false;
+		ItemStack[][] pattern = getPattern(stack);
+		if (pattern.length != otherPattern.length || pattern[0].length != otherPattern[0].length) return false;
+
+		for (int y = 0; y < pattern.length; y++) {
+			for (int x = 0; x < pattern[y].length; x++) {
+				ItemStack thisStack = pattern[y][x];
+				ItemStack otherStack = otherPattern[y][x];
+
+				if (!ItemStack.areItemStacksEqual(thisStack, otherStack)) return false;
 			}
 		}
 
@@ -83,28 +158,43 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	}
 
 	@Override
-	public void setPattern(ItemStack[][] pattern, ItemStack resultStack) {
-		if (resultStack == null || pattern == null || size.y != pattern.length || pattern[0] == null || size.x != pattern[0].length)
+	public void setPattern(ItemStack stack, ItemStack[][] pattern, ItemStack resultStack) {
+		if (!(stack.getItem() instanceof ItemCraftingPattern)) return;
+		if (resultStack == null || pattern == null /*|| size.y != pattern.length*/ || pattern[0] == null /*|| size.x != pattern[0].length*/)
 			return;
 
-		this.result = resultStack;
+		final NBTTagCompound comp = getOrInitNBT(stack);
 
-		for (int y = 0; y < size.y; y++) {
-			for (int x = 0; x < size.x; x++) {
-				this.pattern[y][x] = pattern[y][x];
+		comp.setBoolean(COMP_HAS_PATTERN, true);
+		comp.setInteger(COMP_SIZE_X, pattern[0].length);
+		comp.setInteger(COMP_SIZE_Y, pattern.length);
+
+		final NBTTagList tagList = comp.getTagList(COMP_ITEMS, 10);
+
+		for (int y = 0; y < pattern.length; y++) {
+			for (int x = 0; x < pattern[y].length; x++) {
+				if (pattern[y][x] != null) {
+					NBTTagCompound temp = new NBTTagCompound();
+					temp.setByte("Slot", (byte) (x + y * pattern.length));
+					pattern[y][x].writeToNBT(temp);
+					tagList.appendTag(temp);
+				}
 			}
 		}
+
+		comp.setTag(COMP_ITEMS, tagList);
 	}
 
 	@Override
-	public void clearPattern() {
-		result = null;
+	public void clearPattern(ItemStack stack) {
+		if (!(stack.getItem() instanceof ItemCraftingPattern)) return;
 
-		for (int y = 0; y < size.y; y++) {
-			for (int x = 0; x < size.x; x++) {
-				this.pattern[y][x] = null;
-			}
-		}
+		final NBTTagCompound comp = getOrInitNBT(stack);
+		if (!comp.getBoolean(COMP_HAS_PATTERN)) return;
+
+		comp.setBoolean(COMP_HAS_PATTERN, false);
+		comp.setInteger(COMP_SIZE_X, 0);
+		comp.setInteger(COMP_SIZE_Y, 0);
 	}
 
 	@Override

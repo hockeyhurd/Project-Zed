@@ -6,8 +6,12 @@
 */
 package com.projectzed.mod.util;
 
-import java.util.Random;
-
+import com.hockeyhurd.api.math.Vector3;
+import com.projectzed.api.block.AbstractBlockContainer;
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IMultiBlockable;
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -15,12 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.block.AbstractBlockContainer;
-import com.projectzed.api.block.AbstractBlockNuclearComponent;
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
-import com.projectzed.api.tileentity.IMultiBlockable;
-import com.projectzed.mod.ProjectZed;
+import java.util.Random;
 
 /**
  * Class containing code for general purpose code in the mc world. <br>
@@ -66,7 +65,6 @@ public class WorldUtils {
 	/**
 	 * Method used to add drop items to world more efficiently.
 	 * 
-	 * @param stacks = stack array object to drop.
 	 * @param world = world object as reference.
 	 * @param x = x-pos.
 	 * @param y = y-pos.

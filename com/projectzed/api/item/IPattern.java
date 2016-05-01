@@ -31,43 +31,53 @@ public interface IPattern {
 	/**
 	 * Gets if IPattern has a set pattern.
 	 *
+	 * @param stack ItemStack to reference.
+	 *
 	 * @return boolean result.
 	 */
-	boolean hasPattern();
+	boolean hasPattern(ItemStack stack);
 
 	/**
 	 * Gets the ItemStack pattern.
 	 *
+	 * @param stack ItemStack to reference.
+	 *
 	 * @return ItemStack[][].
 	 */
-	ItemStack[][] getPattern();
+	ItemStack[][] getPattern(ItemStack stack);
 
 	/**
 	 * Gets the output of the crafting result.
 	 *
+	 * @param stack ItemStack to reference.
+	 *
 	 * @return ItemStack crafting result.
 	 */
-	ItemStack getCraftingResult();
+	ItemStack getCraftingResult(ItemStack stack);
 
 	/**
 	 * Function to compare patterns.
 	 *
-	 * @param pattern ItemStack[][] pattern to compare.
+	 * @param stack ItemStack to reference.
+	 * @param otherPattern ItemStack[][] pattern to compare.
 	 * @return boolean result.
 	 */
-	boolean isPatternEqual(ItemStack[][] pattern);
+	boolean isPatternEqual(ItemStack stack, ItemStack[][] otherPattern);
 
 	/**
 	 * Sets internal pattern to provided pattern.
 	 *
+	 * @param stack ItemStack to reference.
 	 * @param pattern ItemStack[][] pattern.
 	 * @param resultStack ItemStack result.
 	 */
-	void setPattern(ItemStack[][] pattern, ItemStack resultStack);
+	void setPattern(ItemStack stack, ItemStack[][]pattern, ItemStack resultStack);
 
 	/**
 	 * Clears internal pattern.
+	 *
+	 * @param stack ItemStack to reference.
 	 */
-	void clearPattern();
+	void clearPattern(ItemStack stack);
 
 }

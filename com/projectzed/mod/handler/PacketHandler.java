@@ -30,6 +30,8 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityMachine.class, MessageTileEntityMachine.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityCentrifuge.class, MessageTileEntityCentrifuge.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityPatternEncoder.class, MessageTileEntityPatternEncoder.class, getNextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageTileEntityPatternEncoder.class, MessageTileEntityPatternEncoder.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityFabricationTable.class, MessageTileEntityFabricationTable.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.SERVER);

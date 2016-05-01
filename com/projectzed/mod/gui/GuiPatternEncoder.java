@@ -11,16 +11,25 @@
 package com.projectzed.mod.gui;
 
 import com.projectzed.mod.container.ContainerPatternEncoder;
+import com.projectzed.mod.gui.component.GuiClearButton;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityPatternEncoder;
 import com.projectzed.mod.tileentity.machine.TileEntityPatternEncoder;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
 /**
+ * Gui clas for pattern encoder.
+ *
  * @author hockeyhurd
  * @version 4/30/2016.
  */
 public class GuiPatternEncoder extends GuiMachine {
+
+	private GuiClearButton clearButton;
+	private GuiButton encodeButton;
 
 	public GuiPatternEncoder(InventoryPlayer inv, TileEntityPatternEncoder te) {
 		super(new ContainerPatternEncoder(inv, te), inv, te);
@@ -30,6 +39,35 @@ public class GuiPatternEncoder extends GuiMachine {
 
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
+	}
+
+	@Override
+	public void initGui() {
+		super.initGui();
+
+		if (clearButton == null)
+			clearButton = new GuiClearButton(buttonList.size(), pos.x + 70, pos.y - 0x35, "");
+
+		if (encodeButton == null)
+			encodeButton = new GuiButton(buttonList.size(), pos.x + 70, pos.y - 0x20, "Encode");
+
+		buttonList.add(clearButton);
+		buttonList.add(encodeButton);
+	}
+
+	@Override
+	public void actionPerformed(GuiButton button) {
+		if (button.id == clearButton.id) {
+			((ContainerPatternEncoder)inventorySlots).clearSlots();
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityPatternEncoder((TileEntityPatternEncoder) te,
+					MessageTileEntityPatternEncoder.CLEAR));
+		}
+
+		else if (button.id == encodeButton.id)
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityPatternEncoder((TileEntityPatternEncoder) te,
+					MessageTileEntityPatternEncoder.ENCODE));
+
+		else super.actionPerformed(button);
 	}
 
 }

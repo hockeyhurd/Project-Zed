@@ -103,7 +103,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 			World world = ctx.getServerHandler().playerEntity.worldObj;
 			TileEntity te = world.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
 			
-			if (world != null && te != null && te instanceof TileEntityStoneCraftingTable) {
+			if (te != null && te instanceof TileEntityStoneCraftingTable) {
 				TileEntityStoneCraftingTable te2 = (TileEntityStoneCraftingTable) te;
 				
 				if (message.slots != null && message.slots.length > 0) {

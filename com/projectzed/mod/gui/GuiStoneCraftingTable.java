@@ -6,22 +6,18 @@
 */
 package com.projectzed.mod.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.gui.component.GuiClearButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Gui class for craftingStoneTable.
@@ -74,7 +70,7 @@ public class GuiStoneCraftingTable extends GuiContainer {
 				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityStoneCraftingTable(this.te, (byte) 1));
 			}
 			
-			ProjectZed.logHelper.info("button id hit:", button.id);
+			// ProjectZed.logHelper.info("button id hit:", button.id);
 		}
 	}
 	
