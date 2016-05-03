@@ -12,8 +12,10 @@ package com.projectzed.mod.gui;
 
 import com.projectzed.mod.container.ContainerPatternEncoder;
 import com.projectzed.mod.gui.component.GuiClearButton;
+import com.projectzed.mod.gui.component.GuiEncodeButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityPatternEncoder;
+import com.projectzed.mod.tileentity.interfaces.IEncodable;
 import com.projectzed.mod.tileentity.machine.TileEntityPatternEncoder;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.client.gui.GuiButton;
@@ -28,13 +30,15 @@ import net.minecraft.util.ResourceLocation;
  */
 public class GuiPatternEncoder extends GuiMachine {
 
+	private final IEncodable encodable;
 	private GuiClearButton clearButton;
-	private GuiButton encodeButton;
+	private GuiEncodeButton encodeButton;
 
 	public GuiPatternEncoder(InventoryPlayer inv, TileEntityPatternEncoder te) {
 		super(new ContainerPatternEncoder(inv, te), inv, te);
 
 		this.texture = new ResourceLocation(Reference.MOD_NAME.toLowerCase(), "textures/gui/GuiPatternEncoder.png");
+		this.encodable = te;
 	}
 
 	@Override
@@ -46,10 +50,14 @@ public class GuiPatternEncoder extends GuiMachine {
 		super.initGui();
 
 		if (clearButton == null)
-			clearButton = new GuiClearButton(buttonList.size(), pos.x + 70, pos.y - 0x35, "");
+			clearButton = new GuiClearButton(buttonList.size(), pos.x - 2, pos.y - 0x35, "");
 
-		if (encodeButton == null)
-			encodeButton = new GuiButton(buttonList.size(), pos.x + 70, pos.y - 0x20, "Encode");
+		if (encodeButton == null) {
+			// encodeButton = new GuiButton(buttonList.size(), pos.x + 70, pos.y - 0x10, "Encode");
+			// encodeButton.width = 41;
+			// encodeButton.height = 10;
+			encodeButton = new GuiEncodeButton(buttonList.size(), pos.x + 70, pos.y - 0x10, "");
+		}
 
 		buttonList.add(clearButton);
 		buttonList.add(encodeButton);
@@ -63,9 +71,11 @@ public class GuiPatternEncoder extends GuiMachine {
 					MessageTileEntityPatternEncoder.CLEAR));
 		}
 
-		else if (button.id == encodeButton.id)
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityPatternEncoder((TileEntityPatternEncoder) te,
-					MessageTileEntityPatternEncoder.ENCODE));
+		else if (button.id == encodeButton.id) {
+			encodable.encode(false);
+			PacketHandler.INSTANCE.sendToServer(
+					new MessageTileEntityPatternEncoder((TileEntityPatternEncoder) te, MessageTileEntityPatternEncoder.ENCODE));
+		}
 
 		else super.actionPerformed(button);
 	}

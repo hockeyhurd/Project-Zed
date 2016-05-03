@@ -26,14 +26,37 @@ public class ItemForgingHammer extends AbstractHCoreItem {
 
 	public ItemForgingHammer() {
 		super(ProjectZed.modCreativeTab, "forgingHammer", ProjectZed.assetDir);
-		this.setMaxDamage(256);
+		this.setMaxDamage(255);
 		this.setMaxStackSize(1);
 	}
-	
-	
+
+	@Override
+	public boolean hasContainerItem(ItemStack itemStack) {
+		return true;
+	}
+
+	@Override
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
+		/*final int itemDamage = stack.getItemDamage();
+		if (itemDamage >= 256) return false;
+
+		stack.setItemDamage(itemDamage + 1);*/
+
+		return false;
+	}
+
+	@Override
+	public ItemStack getContainerItem(ItemStack stack) {
+		// if (stack.attemptDamageItem(1, itemRand)) return new ItemStack(Items.bowl);
+		if (stack.attemptDamageItem(1, itemRand)) return null;
+
+		return stack;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
-		list.add(EnumChatFormatting.GREEN + "Uses left " + EnumChatFormatting.GRAY + (stack.getMaxDamage() - stack.getItemDamage()));
+		list.add(EnumChatFormatting.GREEN + "Uses left " + EnumChatFormatting.GRAY + (stack.getMaxDamage() - stack.getItemDamage() + 1));
 	}
 
 }

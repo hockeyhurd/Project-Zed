@@ -55,7 +55,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
 
 	public int cookTime;
-	public static int defaultCookTime = 200;
+	public static final int defaultCookTime = 200;
 	public int scaledTime = (defaultCookTime / 10) * 5;
 	public int originalScaledTime = scaledTime;
 

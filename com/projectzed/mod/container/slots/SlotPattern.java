@@ -41,18 +41,21 @@ public class SlotPattern extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		return stack != null && stack.getItem() instanceof IPattern && blankOnly != ((IPattern) stack.getItem()).hasPattern();
+		return stack != null && stack.getItem() instanceof IPattern &&
+				blankOnly != ((IPattern) stack.getItem()).hasPattern(stack);
 	}
 
 	@Override
 	public void putStack(ItemStack stack) {
 		super.putStack(stack);
 
+		if (stack == null || stack.getItem() == null) return;
+
 		// Nothing we can do with a blank pattern, therefore return.
 		if (blankOnly) return;
 
 		IPattern pattern = (IPattern) stack.getItem();
-		if (pattern == null || !pattern.hasPattern()) return;
+		if (pattern == null || !pattern.hasPattern(stack)) return;
 		final Vector2<Integer> patternVec = pattern.getPatternSize();
 		final int patternSize = patternVec.x * patternVec.y;
 
@@ -61,7 +64,7 @@ public class SlotPattern extends Slot {
 
 		for (int y = 0; y < patternVec.y; y++) {
 			for (int x = 0; x < patternVec.x; x++) {
-				final ItemStack currentStack = pattern.getPattern()[y][x];
+				final ItemStack currentStack = pattern.getPattern(stack)[y][x];
 				craftMatrix.setInventorySlotContents(x + y * patternVec.y, currentStack);
 			}
 		}

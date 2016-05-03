@@ -8,6 +8,8 @@ package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -22,6 +24,7 @@ import org.lwjgl.opengl.GL11;
  * @author hockeyhurd
  * @version May 20, 2015
  */
+@SideOnly(Side.CLIENT)
 public class GuiConfigButton extends GuiButton implements IGuiButton {
 
 	protected static final Tessellator TESS = Tessellator.instance;
@@ -100,7 +103,7 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		if (this.visible) {
 			FontRenderer fontRenderer = minecraft.fontRenderer;
 			GL11.glColor4f(1f, 1f, 1f, 1f);
-			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
+			minecraft.getTextureManager().bindTexture(this.TEXTURE);
 			
 			calc = (SIZE * this.stateID) * this.PIXEL;
 			dif = 3f * SIZE * this.PIXEL;

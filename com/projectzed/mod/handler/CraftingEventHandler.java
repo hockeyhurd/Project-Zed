@@ -6,10 +6,8 @@
 */
 package com.projectzed.mod.handler;
 
-import com.projectzed.mod.ProjectZed;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraft.item.ItemStack;
 
 /**
  * Class containing code for recipes that return more than one item.
@@ -39,24 +37,6 @@ public class CraftingEventHandler {
 	 */
 	@SubscribeEvent
 	public void onCraftingEvent(PlayerEvent.ItemCraftedEvent event) {
-
-		int count = 0;
-		for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
-			if (event.craftMatrix.getStackInSlot(i) != null) count++;
-		}
-
-		if (count == 2 || count == 4) {
-			for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
-				if (event.craftMatrix.getStackInSlot(i) != null) {
-					ItemStack stack = event.craftMatrix.getStackInSlot(i);
-
-					if (stack.getItem() == ProjectZed.forgingHammer && stack.getItemDamage() < stack.getMaxDamage()) {
-						ItemStack newStack = new ItemStack(ProjectZed.forgingHammer, 2, stack.getItemDamage() + 1);
-						event.craftMatrix.setInventorySlotContents(i, newStack);
-					}
-				}
-			}
-		}
 	}
 
 }

@@ -10,10 +10,15 @@
 
 package com.projectzed.mod.tileentity.machine;
 
+import com.projectzed.api.item.IPattern;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.api.util.SidedInfo;
 import com.projectzed.api.util.Sound;
+import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityPatternEncoder;
+import com.projectzed.mod.tileentity.interfaces.IEncodable;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -26,9 +31,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
  * @author hockeyhurd
  * @version 4/30/2016.
  */
-public class TileEntityPatternEncoder extends AbstractTileEntityMachine {
+public class TileEntityPatternEncoder extends AbstractTileEntityMachine implements IEncodable {
 
 	public static final int CRAFTING_MATRIX_SIZE = 3;
+	private static final int RESULT_STACK_INDEX = 9;
 	private static final int PATTERN_IN_INDEX = 10;
 	private static final int PATTERN_OUT_INDEX = 11;
 
@@ -109,24 +115,73 @@ public class TileEntityPatternEncoder extends AbstractTileEntityMachine {
 	@Override
 	public void smeltItem() {
 		if (canSmelt()) {
+			int fromStackIndex = -1;
 			ItemStack fromStack = null;
 			ItemStack outStack = getStackInSlot(PATTERN_OUT_INDEX);
-			if (outStack != null && outStack.stackSize > 0) fromStack = outStack;
+			if (outStack != null && outStack.stackSize > 0) {
+				fromStack = outStack;
+				fromStackIndex = PATTERN_OUT_INDEX;
+			}
+
 			else {
 				ItemStack inStack = getStackInSlot(PATTERN_IN_INDEX);
-				if (inStack != null && inStack.stackSize > 0) fromStack = inStack;
+				if (inStack != null && inStack.stackSize > 0) {
+					fromStack = inStack;
+					fromStackIndex = PATTERN_IN_INDEX;
+				}
 			}
 
 			// If has no source pattern -> return.
-			if (fromStack == null || fromStack.stackSize == 0) return;
+			if (fromStack == null || fromStack.stackSize == 0 || fromStackIndex < 0) return;
 
+			IPattern patternItem = (IPattern) fromStack.getItem();
 
+			ItemStack[][] patternArr = new ItemStack[CRAFTING_MATRIX_SIZE][CRAFTING_MATRIX_SIZE];
+
+			for (int y = 0; y < CRAFTING_MATRIX_SIZE; y++) {
+				for (int x = 0; x < CRAFTING_MATRIX_SIZE; x++) {
+					patternArr[y][x] = getStackInSlot(x + y * CRAFTING_MATRIX_SIZE);
+				}
+			}
+
+			patternItem.setPattern(fromStack, patternArr, getStackInSlot(RESULT_STACK_INDEX));
+			fromStack.stackSize--;
+
+			if (fromStack.stackSize <= 0) fromStack = null;
+			setInventorySlotContents(fromStackIndex, fromStack);
 		}
 	}
 
 	@Override
 	public Sound getSound() {
 		return null;
+	}
+
+	@Override
+	public boolean encode(boolean simulate) {
+		if (canSmelt()) {
+			if (!simulate) cookTime = 0;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public void sendMessage(SidedInfo sidedInfo) {
+		if (sidedInfo.isSideServer())
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityPatternEncoder(this));
+
+		else {
+			if (sidedInfo.packet == SidedInfo.EnumClientPacket.ALL)
+				PacketHandler.INSTANCE.sendToAll(new MessageTileEntityPatternEncoder(this));
+			else if (sidedInfo.packet == SidedInfo.EnumClientPacket.ALL_AROUND && sidedInfo.packet.getTargetPoint() != null)
+				PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityPatternEncoder(this), sidedInfo.packet.getTargetPoint());
+			else if (sidedInfo.packet == SidedInfo.EnumClientPacket.PLAYER && sidedInfo.packet.getPlayer() != null)
+				PacketHandler.INSTANCE.sendTo(new MessageTileEntityPatternEncoder(this), (EntityPlayerMP) sidedInfo.packet.getPlayer());
+			else ProjectZed.logHelper.severe("Warning sending client packet!");
+		}
 	}
 
 	@Override

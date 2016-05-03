@@ -29,7 +29,7 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 	protected static final Tessellator TESS = Tessellator.instance;
 	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
-	protected final float PIXEL;
+	protected static final float PIXEL = 1.0f / 64.0f;
 	protected EnumRedstoneType type;
 	
 	protected boolean active;
@@ -49,8 +49,7 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 		super(id, x, y, text);
 		this.width = 16;
 		this.height = 16;
-		this.PIXEL = 1f / 64f;
-		
+
 		this.type = type;
 		this.pos.x = x;
 		this.pos.y = y;
@@ -68,8 +67,7 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 		super(id, x, y, 16, 16, text);
 		this.width = width;
 		this.height = height;
-		this.PIXEL = 1f / 64f;
-		
+
 		this.type = type;
 	}
 

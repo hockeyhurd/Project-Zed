@@ -15,7 +15,6 @@ import com.projectzed.mod.registry.tools.ChainsawSetRegistry;
 import com.projectzed.mod.registry.tools.DrillSetRegistry;
 import com.projectzed.mod.util.OutputUtil;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -209,7 +208,7 @@ public class CommonProxy {
 	
 	protected void registerEventHandlers() {
 		PacketHandler.init();
-		FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
+		// FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
 		
