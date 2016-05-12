@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.tileentity.container;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.IFluidTile;
 import com.projectzed.api.fluid.container.IFluidContainer;

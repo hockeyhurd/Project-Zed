@@ -6,16 +6,15 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.Block;
-
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
+import net.minecraft.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class containing tileentity code for nuclearReactorGlass.

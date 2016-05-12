@@ -10,10 +10,10 @@
 
 package com.projectzed.api.fluid;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.math.pathfinding.AStarAlogirthm;
-import com.hockeyhurd.api.math.pathfinding.IPathTile;
-import com.hockeyhurd.api.math.pathfinding.PathNode;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.pathfinding.AStarAlogirthm;
+import com.hockeyhurd.hcorelib.api.math.pathfinding.IPathTile;
+import com.hockeyhurd.hcorelib.api.math.pathfinding.PathNode;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 

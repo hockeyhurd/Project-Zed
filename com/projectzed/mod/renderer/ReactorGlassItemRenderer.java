@@ -6,13 +6,11 @@
 */
 package com.projectzed.mod.renderer;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import com.hockeyhurd.api.item.AbstractItemRenderer;
-
+import com.hockeyhurd.hcorelib.api.item.AbstractItemRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 /**
  * Simple item renderer of nuclearReactorGlass.

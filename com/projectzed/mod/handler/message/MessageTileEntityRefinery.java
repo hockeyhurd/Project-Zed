@@ -9,7 +9,7 @@
 
 package com.projectzed.mod.handler.message;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import cpw.mods.fml.client.FMLClientHandler;

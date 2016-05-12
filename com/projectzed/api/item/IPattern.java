@@ -10,7 +10,7 @@
 
 package com.projectzed.api.item;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import net.minecraft.item.ItemStack;
 
 /**

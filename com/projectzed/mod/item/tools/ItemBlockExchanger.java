@@ -10,10 +10,10 @@
 
 package com.projectzed.mod.item.tools;
 
-import com.hockeyhurd.api.util.BlockUtils;
-import com.hockeyhurd.api.util.ChatUtils;
-import com.hockeyhurd.api.util.NumberFormatter;
-import com.hockeyhurd.api.util.TimerHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.ChatUtils;
+import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
+import com.hockeyhurd.hcorelib.api.util.TimerHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.IItemAdjustable;
 import com.projectzed.mod.util.Reference;

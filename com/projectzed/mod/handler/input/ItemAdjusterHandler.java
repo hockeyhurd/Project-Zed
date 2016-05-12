@@ -10,8 +10,7 @@
 
 package com.projectzed.mod.handler.input;
 
-import com.hockeyhurd.api.handler.input.AbstractKeyBinding;
-import com.projectzed.mod.ProjectZed;
+import com.hockeyhurd.hcorelib.api.handler.input.AbstractKeyBinding;
 import com.projectzed.mod.item.IItemAdjustable;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.gameevent.InputEvent;

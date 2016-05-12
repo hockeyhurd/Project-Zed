@@ -6,12 +6,11 @@
 */
 package com.projectzed.api.item;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.hockeyhurd.api.math.Vector3;
 
 /**
  * 

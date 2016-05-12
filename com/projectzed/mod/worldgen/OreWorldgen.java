@@ -6,9 +6,8 @@
 */
 package com.projectzed.mod.worldgen;
 
+import com.hockeyhurd.hcorelib.api.worldgen.AbstractWorldgen;
 import net.minecraft.block.Block;
-
-import com.hockeyhurd.api.worldgen.AbstractWorldgen;
 
 /**
  * Class used to create new instances of AbstractWorldgen class 

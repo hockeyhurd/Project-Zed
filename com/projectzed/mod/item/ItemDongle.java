@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;

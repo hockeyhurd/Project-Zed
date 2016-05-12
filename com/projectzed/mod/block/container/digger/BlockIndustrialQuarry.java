@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.block.container.digger;
 
-import com.hockeyhurd.api.util.ChatUtils;
+import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;

@@ -8,7 +8,7 @@
 
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;

@@ -6,10 +6,10 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.ChunkHelper;
+import com.hockeyhurd.hcorelib.api.math.Rect;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.ChunkHelper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
 import com.projectzed.mod.ProjectZed;

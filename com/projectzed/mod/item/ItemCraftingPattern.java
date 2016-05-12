@@ -10,8 +10,8 @@
 
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractHCoreItem;
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
 import com.projectzed.mod.ProjectZed;
 import cpw.mods.fml.relauncher.Side;

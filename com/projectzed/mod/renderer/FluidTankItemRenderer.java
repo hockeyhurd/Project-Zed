@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.hockeyhurd.api.item.AbstractItemRenderer;
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.item.AbstractItemRenderer;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

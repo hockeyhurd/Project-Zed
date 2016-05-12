@@ -9,7 +9,7 @@
 
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractItemBucket;
+import com.hockeyhurd.hcorelib.api.item.AbstractItemBucket;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 

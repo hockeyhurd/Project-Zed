@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.SidedHelper;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.SidedHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.energy.source.EnumType;

@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.gui.component.HeatLabel;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;

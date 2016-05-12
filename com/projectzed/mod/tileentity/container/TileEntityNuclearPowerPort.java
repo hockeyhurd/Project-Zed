@@ -6,13 +6,7 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -22,6 +16,11 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.container.BlockNuclearPowerPort;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
+
+import java.util.List;
 
 /**
  * TileEntity code for nuclearPowerPort.

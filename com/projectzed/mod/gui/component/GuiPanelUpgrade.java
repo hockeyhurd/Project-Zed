@@ -9,7 +9,7 @@
 
 package com.projectzed.mod.gui.component;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

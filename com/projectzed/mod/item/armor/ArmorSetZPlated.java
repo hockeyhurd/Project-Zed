@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.item.armor;
 
-import com.hockeyhurd.api.item.armor.AbstractArmor;
-import com.hockeyhurd.api.util.NumberFormatter;
+import com.hockeyhurd.hcorelib.api.item.armor.AbstractArmor;
+import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
 import cpw.mods.fml.relauncher.Side;

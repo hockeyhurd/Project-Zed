@@ -6,11 +6,9 @@
 */
 package com.projectzed.api.fluid;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.math.pathfinding.IPathTile;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.util.WorldUtils;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;

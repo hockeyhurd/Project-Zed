@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.item.tools;
 
-import com.hockeyhurd.api.util.TimerHelper;
+import com.hockeyhurd.hcorelib.api.util.TimerHelper;
 import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.registry.tools.DrillSetRegistry;
 import com.projectzed.mod.util.Reference.Constants;

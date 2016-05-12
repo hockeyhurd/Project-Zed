@@ -6,11 +6,10 @@
 */
 package com.projectzed.api.tileentity;
 
-import java.util.List;
-
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraft.block.Block;
 
-import com.hockeyhurd.api.math.Vector3;
+import java.util.List;
 
 /**
  * Interface for multiblock structures to be implemented in the TE's class.

@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.util;
 
-import com.hockeyhurd.api.util.AbstractReference;
+import com.hockeyhurd.hcorelib.api.util.AbstractReference;
 
 /**
  * Reference class containing version numbers, modid, and update url. 

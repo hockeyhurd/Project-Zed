@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.container.slots;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;

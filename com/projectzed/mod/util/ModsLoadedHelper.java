@@ -6,14 +6,13 @@
 */
 package com.projectzed.mod.util;
 
+import com.hockeyhurd.hcorelib.api.util.LogHelper;
+import cpw.mods.fml.common.Loader;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.hockeyhurd.api.util.LogHelper;
-
-import cpw.mods.fml.common.Loader;
 
 /**
  * Class used as a helper for determining what mods

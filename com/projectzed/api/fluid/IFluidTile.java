@@ -10,13 +10,13 @@
 
 package com.projectzed.api.fluid;
 
-import com.hockeyhurd.api.math.pathfinding.IPathTile;
+import com.hockeyhurd.hcorelib.api.math.pathfinding.IPathTile;
 import net.minecraftforge.fluids.FluidTank;
 
 /**
  * Simple extension of IPathTile with little to no added features.
  *
- * @see com.hockeyhurd.api.math.pathfinding.IPathTile
+ * @see com.hockeyhurd.hcorelib.api.math.pathfinding.IPathTile
  *
  * @author hockeyhurd
  * @version 4/15/2016.

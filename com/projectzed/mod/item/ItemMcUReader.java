@@ -6,9 +6,9 @@
 */
 package com.projectzed.mod.item;
 
-import com.hockeyhurd.api.item.AbstractHCoreItem;
-import com.hockeyhurd.api.util.ChatUtils;
-import com.hockeyhurd.api.util.NumberFormatter;
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.util.ChatUtils;
+import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;

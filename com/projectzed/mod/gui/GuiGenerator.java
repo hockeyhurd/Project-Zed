@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.gui.component.IInfoContainer;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
+import static com.hockeyhurd.hcorelib.api.util.NumberFormatter.format;
 
 /**
  * Generic class for gui's of generators.

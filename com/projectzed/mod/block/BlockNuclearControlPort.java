@@ -6,20 +6,18 @@
 */
 package com.projectzed.mod.block;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.projectzed.api.block.AbstractBlockNuclearComponent;
+import com.projectzed.api.block.IMetaUpdate;
+import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
+import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.block.AbstractBlockNuclearComponent;
-import com.projectzed.api.block.IMetaUpdate;
-import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
-import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for nuclearControlPort.

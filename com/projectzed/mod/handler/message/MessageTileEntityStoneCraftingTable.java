@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.handler.message;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 import cpw.mods.fml.client.FMLClientHandler;

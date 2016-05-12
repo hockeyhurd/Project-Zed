@@ -21,6 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
 /**
+ * Container for pattern encoding.
+ *
  * @author hockeyhurd
  * @version 4/30/2016.
  */
