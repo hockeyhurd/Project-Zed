@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.fluid;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.tileentity.TileEntity;

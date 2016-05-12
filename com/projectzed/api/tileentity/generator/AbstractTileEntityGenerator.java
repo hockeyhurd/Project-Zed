@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.tileentity.generator;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.energy.storage.IEnergyContainer;

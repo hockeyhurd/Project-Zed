@@ -9,7 +9,7 @@
 
 package com.projectzed.api.item;
 
-import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;

@@ -9,7 +9,7 @@
 
 package com.projectzed.mod.block.fluids;
 
-import com.hockeyhurd.api.block.fluid.AbstractBlockFluid;
+import com.hockeyhurd.hcorelib.api.block.fluid.AbstractBlockFluid;
 import com.projectzed.mod.ProjectZed;
 import net.minecraftforge.fluids.Fluid;
 

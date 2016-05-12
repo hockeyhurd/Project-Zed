@@ -6,9 +6,9 @@
 */
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.util.Waila;
+import com.hockeyhurd.hcorelib.api.math.Rect;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.container.ContainerMachine;

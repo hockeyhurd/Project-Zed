@@ -10,14 +10,14 @@
 
 package com.projectzed.mod.gui.component;
 
-import com.hockeyhurd.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
+import static com.hockeyhurd.hcorelib.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for custom heat info label.

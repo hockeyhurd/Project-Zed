@@ -6,27 +6,21 @@
 */
 package com.projectzed.mod.container;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
+import com.hockeyhurd.hcorelib.api.math.TimeLapse;
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
-import com.hockeyhurd.api.math.TimeLapse;
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.TileEntityFabricationTable;
-import com.projectzed.mod.util.WorldUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class containing container code for FabricationTable.

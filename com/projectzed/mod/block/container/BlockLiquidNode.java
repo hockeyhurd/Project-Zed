@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.block.container;
 
-import com.hockeyhurd.api.util.Waila;
+import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;

@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.api.util.Waila;
+import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerEnergyContainer;
@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
-import static com.hockeyhurd.api.util.NumberFormatter.format;
+import static com.hockeyhurd.hcorelib.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for energy cell gui.

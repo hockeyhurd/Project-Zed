@@ -6,8 +6,8 @@
 */
 package com.projectzed.api.util;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Rect;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;

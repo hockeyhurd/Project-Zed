@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.tileentity.container;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;

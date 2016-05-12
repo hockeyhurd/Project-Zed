@@ -10,8 +10,8 @@
 
 package com.projectzed.mod.gui.component;
 
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.util.TessellatorHelper;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.util.TessellatorHelper;
 import com.projectzed.mod.util.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

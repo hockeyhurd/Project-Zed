@@ -6,9 +6,8 @@
 */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraft.world.World;
-
-import com.hockeyhurd.api.math.Vector3;
 
 /**
  * Simple interface to allow updating of block metadata through method call.

@@ -10,9 +10,9 @@
 
 package com.projectzed.mod.block.machines;
 
-import com.hockeyhurd.api.math.Rect;
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.math.Rect;
+import com.hockeyhurd.hcorelib.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;

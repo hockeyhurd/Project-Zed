@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.hockeyhurd.api.item.AbstractItemRenderer;
+import com.hockeyhurd.hcorelib.api.item.AbstractItemRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.IIcon;

@@ -6,9 +6,9 @@
 */
 package com.projectzed.mod.item.tools;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockUtils;
-import com.hockeyhurd.api.util.Waila;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;

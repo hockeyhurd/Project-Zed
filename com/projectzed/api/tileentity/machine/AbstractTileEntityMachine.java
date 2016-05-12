@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.tileentity.machine;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.machine.IEnergyMachine;
@@ -328,7 +328,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 					flag1 = true;
 				}
 				
-				if (getSound() != null && this.worldObj.getTotalWorldTime() % (20L * getSound().LENGTH) == 0) SoundHandler.playEffect(getSound(), this.worldObj, this.worldVec());
+				if (getSound() != null && this.worldObj.getTotalWorldTime() % (20L * getSound().LENGTH) == 0)
+					SoundHandler.playEffect(getSound(), worldObj, worldVec());
 			}
 			
 			else {

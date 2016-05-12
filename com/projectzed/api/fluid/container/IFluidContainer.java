@@ -6,12 +6,11 @@
 */
 package com.projectzed.api.fluid.container;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.projectzed.api.fluid.FluidNetwork;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.api.fluid.FluidNetwork;
 
 /**
  * Helper interface to get more relevant info for this te tank.

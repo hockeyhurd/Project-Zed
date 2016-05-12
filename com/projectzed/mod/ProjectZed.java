@@ -6,12 +6,12 @@
 */
 package com.projectzed.mod;
 
-import com.hockeyhurd.api.creativetab.AbstractCreativeTab;
-import com.hockeyhurd.api.math.TimeLapse;
-import com.hockeyhurd.api.util.FluidFactory;
-import com.hockeyhurd.api.util.LogHelper;
-import com.hockeyhurd.api.util.interfaces.IForgeMod;
-import com.hockeyhurd.api.worldgen.HCWorldGenFluid;
+import com.hockeyhurd.hcorelib.api.creativetab.AbstractCreativeTab;
+import com.hockeyhurd.hcorelib.api.math.TimeLapse;
+import com.hockeyhurd.hcorelib.api.util.FluidFactory;
+import com.hockeyhurd.hcorelib.api.util.LogHelper;
+import com.hockeyhurd.hcorelib.api.util.interfaces.IForgeMod;
+import com.hockeyhurd.hcorelib.api.worldgen.HCWorldGenFluid;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.block.*;
 import com.projectzed.mod.block.container.*;

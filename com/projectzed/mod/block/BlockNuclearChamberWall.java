@@ -6,8 +6,8 @@
  */
 package com.projectzed.mod.block;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector4;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;

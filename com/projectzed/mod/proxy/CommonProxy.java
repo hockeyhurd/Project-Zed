@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.proxy;
 
-import com.hockeyhurd.api.handler.NotifyPlayerOnJoinHandler;
-import com.hockeyhurd.api.handler.UpdateHandler;
+import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
+import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.*;
 import com.projectzed.mod.registry.*;

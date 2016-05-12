@@ -6,8 +6,11 @@
 */
 package com.projectzed.mod.block;
 
-import java.util.Random;
-
+import com.hockeyhurd.hcorelib.api.math.Vector2;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.projectzed.mod.ProjectZed;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,12 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
-import com.hockeyhurd.api.math.Vector2;
-import com.hockeyhurd.api.math.Vector3;
-import com.projectzed.mod.ProjectZed;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 
 /**
  * Block class for quarryMarker.

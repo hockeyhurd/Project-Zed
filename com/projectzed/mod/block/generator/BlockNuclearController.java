@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.block.generator;
 
-import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.ChatUtils;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.tileentity.IMultiBlockableController;

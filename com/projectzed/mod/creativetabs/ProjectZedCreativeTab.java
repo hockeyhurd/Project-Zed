@@ -6,13 +6,11 @@
 */
 package com.projectzed.mod.creativetabs;
 
-import net.minecraft.item.Item;
-
-import com.hockeyhurd.api.creativetab.AbstractCreativeTab;
+import com.hockeyhurd.hcorelib.api.creativetab.AbstractCreativeTab;
 import com.projectzed.mod.ProjectZed;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.item.Item;
 
 /**
  * 

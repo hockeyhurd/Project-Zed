@@ -6,10 +6,9 @@
 */
 package com.projectzed.mod.block.ore;
 
-import net.minecraft.block.material.Material;
-
-import com.hockeyhurd.api.block.AbstractBlockOre;
+import com.hockeyhurd.hcorelib.api.block.AbstractBlockOre;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.block.material.Material;
 
 /**
  * Block class for Titanium Ore.

@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.item.tools;
 
-import com.hockeyhurd.api.util.NumberFormatter;
+import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.Reference;

@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.registry;
 
-import com.hockeyhurd.api.util.LogicHelper;
-import com.hockeyhurd.api.util.NumberParser;
+import com.hockeyhurd.hcorelib.api.util.LogicHelper;
+import com.hockeyhurd.hcorelib.api.util.NumberParser;
 import com.projectzed.api.registry.IRegistrable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

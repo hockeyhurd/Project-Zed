@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.proxy;
 
-import com.hockeyhurd.api.handler.config.ConfigChangedEventHandler;
-import com.hockeyhurd.api.handler.input.KeyBindingHandler;
+import com.hockeyhurd.hcorelib.api.handler.config.ConfigChangedEventHandler;
+import com.hockeyhurd.hcorelib.api.handler.input.KeyBindingHandler;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.DrawBlockSelectionHandler;

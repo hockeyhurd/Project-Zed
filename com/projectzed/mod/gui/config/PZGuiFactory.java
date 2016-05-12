@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.gui.config;
 
-import com.hockeyhurd.api.client.gui.AbstractGuiFactory;
+import com.hockeyhurd.hcorelib.api.client.gui.AbstractGuiFactory;
 
 /**
  * Gui factory class for ProjectZed.

@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.energy.storage;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**

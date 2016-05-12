@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.tileentity;
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.Vector4;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearControlPort;
+import net.minecraft.block.Block;
+
+import java.util.List;
 
 /**
  * TileEntity code for 

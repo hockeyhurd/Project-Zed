@@ -6,10 +6,8 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.math.Vector2;
 import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
-
-import com.hockeyhurd.api.math.Vector2;
 
 /**
  * 

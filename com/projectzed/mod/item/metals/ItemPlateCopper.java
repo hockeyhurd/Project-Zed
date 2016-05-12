@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.item.metals;
 
-import com.hockeyhurd.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
 
 /**

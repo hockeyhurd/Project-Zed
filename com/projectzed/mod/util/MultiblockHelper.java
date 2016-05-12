@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.util;
 
-import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;

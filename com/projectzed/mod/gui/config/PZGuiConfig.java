@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.gui.config;
 
-import com.hockeyhurd.api.client.gui.ModGuiConfig;
+import com.hockeyhurd.hcorelib.api.client.gui.ModGuiConfig;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.client.gui.GuiScreen;
 

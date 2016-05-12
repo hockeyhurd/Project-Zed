@@ -10,7 +10,7 @@
 
 package com.projectzed.mod.handler.message;
 
-import com.hockeyhurd.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.mod.container.ContainerPatternEncoder;
 import com.projectzed.mod.tileentity.machine.TileEntityPatternEncoder;
 import cpw.mods.fml.client.FMLClientHandler;

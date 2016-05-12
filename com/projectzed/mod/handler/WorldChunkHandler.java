@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.handler;
 
-import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.Vector4;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
