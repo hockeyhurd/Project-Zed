@@ -6,25 +6,23 @@
  */
 package com.projectzed.mod.block;
 
-import static net.minecraftforge.common.util.ForgeDirection.*;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
-
 import com.hockeyhurd.api.math.Vector3;
 import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 import com.projectzed.mod.util.MultiblockHelper;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
+
+import static net.minecraftforge.common.util.ForgeDirection.*;
 
 /**
  * Class containing code for nuclearChamberWall.
@@ -34,7 +32,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent implements IMetaUpdate {
 
-	private BlockHelper bh;
 	private Block[] blockWhitelist;
 	
 	@SideOnly(Side.CLIENT)
@@ -89,8 +86,7 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
-			if (bh == null) bh = new BlockHelper(world, null);
-			int ret = isActive ? isBlockAdjacent(bh, world, vec.x, vec.y, vec.z) : 0; 
+			int ret = isActive ? isBlockAdjacent(world, vec.x, vec.y, vec.z) : 0;
 			updateMeta(ret, world, vec);
 		}
 	}
@@ -112,14 +108,13 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	/**
 	 * Function to check and get the approrpriate metadata for this block.
 	 * 
-	 * @param bh block helper object.
 	 * @param world world object as reference.
 	 * @param x x-pos
 	 * @param y y-pos
 	 * @param z z-pos
 	 * @return metadata for given block.
 	 */
-	private int isBlockAdjacent(BlockHelper bh, World world, int x, int y, int z) {
+	private int isBlockAdjacent(World world, int x, int y, int z) {
 		if (blockWhitelist == null) blockWhitelist = new Block[] {
 					this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.nuclearPowerPort, ProjectZed.nuclearControlPort,
 					ProjectZed.nuclearIOPort, ProjectZed.fissionController, ProjectZed.fusionController

@@ -131,6 +131,8 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 						te.setInventorySlotContents(i, message.slots[i]);
 					}
 
+					if (cont != null) cont.onCraftMatrixChanged(cont.craftMatrix);
+
 					te.markDirty();
 				}
 			}

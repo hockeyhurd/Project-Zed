@@ -93,8 +93,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			tier = te.getTier();
 		}
 
-		Tessellator tess = tessHelp.tess;
-		tess.startDrawingQuads();
+		tessHelp.startDrawingQuads();
 
 		int counter = 0;
 		for (byte valve : te.getSidedArray()) {
@@ -221,7 +220,7 @@ public class FluidTankRenderer extends TileEntitySpecialRenderer {
 			counter++;
 		}
 
-		tess.draw();
+		tessHelp.draw();
 	}
 
 	/**

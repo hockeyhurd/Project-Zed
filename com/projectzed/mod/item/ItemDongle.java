@@ -6,9 +6,10 @@
 */
 package com.projectzed.mod.item;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.util.BlockUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,11 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.util.BlockHelper;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDongle extends Item {
 
@@ -40,8 +38,7 @@ public class ItemDongle extends Item {
 		boolean used = false;
 		if (!world.isRemote) {
 			Vector4<Integer> vec = new Vector4<Integer>(player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
-			BlockHelper bh = new BlockHelper(world, player);
-			
+
 			int xPos = (int) player.posX;
 			int zPos = (int) player.posZ;
 			Chunk chunk = world.getChunkFromBlockCoords(xPos, zPos);
@@ -55,8 +52,8 @@ public class ItemDongle extends Item {
 				for (int xx = 0; xx < 16; xx++) {
 					for (int zz = 0; zz < 16; zz++) {
 						// Get the block id of the block being analyzed,
-						Block block = bh.getBlock(chunkX + xx, yy, chunkZ + zz);
-						if (!block.getLocalizedName().toLowerCase().contains("ore")) bh.setBlockToAir(chunkX + xx, yy, chunkZ + zz);
+						Block block = BlockUtils.getBlock(world, chunkX + xx, yy, chunkZ + zz);
+						if (!block.getLocalizedName().toLowerCase().contains("ore")) BlockUtils.setBlockToAir(world, chunkX + xx, yy, chunkZ + zz);
 					}
 				}
 			}

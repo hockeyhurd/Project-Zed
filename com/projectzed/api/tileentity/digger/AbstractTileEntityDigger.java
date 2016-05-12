@@ -9,7 +9,6 @@ package com.projectzed.api.tileentity.digger;
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.item.IItemUpgradeComponent;
@@ -56,7 +55,6 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 
 	protected Rect<Integer> quarryRect;
 	protected Vector3<Integer> currentMineVec;
-	protected BlockHelper bh;
 
 	protected Material[] blackList;
 

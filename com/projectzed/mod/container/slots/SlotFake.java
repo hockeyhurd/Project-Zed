@@ -29,6 +29,7 @@ public class SlotFake extends Slot {
 
 	@Override
 	public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
+		putStack(null);
 	}
 
 	@Override
@@ -38,19 +39,21 @@ public class SlotFake extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void putStack(ItemStack stack) {
-		if (stack != null) stack = stack.copy();
+		if (stack != null) {
+			stack = stack.copy();
 
-		super.putStack(stack);
+			super.putStack(stack);
+		}
 	}
 
 	@Override
 	public boolean canTakeStack(EntityPlayer player) {
-		return false;
+		return true;
 	}
 
 }

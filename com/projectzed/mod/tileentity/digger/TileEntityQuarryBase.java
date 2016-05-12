@@ -9,7 +9,7 @@ package com.projectzed.mod.tileentity.digger;
 import com.hockeyhurd.api.math.Rect;
 import com.hockeyhurd.api.math.Vector2;
 import com.hockeyhurd.api.math.Vector3;
-import com.hockeyhurd.api.util.BlockHelper;
+import com.hockeyhurd.api.util.BlockUtils;
 import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumFilterType;
@@ -195,15 +195,14 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 			if (currentTickTime > 0) currentTickTime--;
 			else {
 				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord - 1, quarryRect.min.y);
-				if (bh == null) bh = new BlockHelper(worldObj);
-				
+
 				if (worldObj.getTileEntity(currentMineVec.x, currentMineVec.y, currentMineVec.z) != null) {
 					incrementMineVec();
 					return;
 				}
 				
-				Block currentBlock = bh.getBlock(currentMineVec);
-				int metaData = bh.getBlockMetaData(currentMineVec);
+				Block currentBlock = BlockUtils.getBlock(worldObj, currentMineVec);
+				int metaData = BlockUtils.getBlockMetadata(worldObj, currentMineVec);
 
 				// ProjectZed.logHelper.info("current mat:", currentBlock.getMaterial(), blackListContains(currentBlock.getMaterial(), true));
 				if (currentBlock != ProjectZed.quarryMarker && !blackListContains(currentBlock.getMaterial(), true) && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
@@ -232,7 +231,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 								this.addItemStackToSlots(dropsList.get(i), false);
 							}
 							
-							bh.setBlockToAir(currentMineVec);
+							BlockUtils.setBlockToAir(worldObj, currentMineVec);
 						}
 					}
 				}

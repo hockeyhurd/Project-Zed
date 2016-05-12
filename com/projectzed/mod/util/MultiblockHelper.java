@@ -6,13 +6,12 @@
 */
 package com.projectzed.mod.util;
 
+import com.hockeyhurd.api.math.Vector4;
+import com.hockeyhurd.api.util.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.hockeyhurd.api.math.Vector4;
-import com.hockeyhurd.api.util.BlockHelper;
 
 /**
  * Class mostly used to help with determining what to render with multiblock
@@ -26,7 +25,6 @@ public class MultiblockHelper {
 	private World world;
 	private Vector4<Integer> vec;
 	private Block[] blocks;
-	private BlockHelper bh;
 	private boolean[] connections = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 	private boolean xAxis, yAxis, zAxis;
 	private int counter = 0;
@@ -39,7 +37,6 @@ public class MultiblockHelper {
 	public MultiblockHelper(World world, Vector4<Integer> vec, Block[] blocks) {
 		this.world = world;
 		this.vec = vec;
-		this.bh = new BlockHelper(world, null);
 		this.blocks = new Block[blocks.length];
 		
 		for (int i = 0; i < blocks.length; i++) {
@@ -73,7 +70,7 @@ public class MultiblockHelper {
 	public void calculateConnections() {
 		
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (isBlockValid(bh.getBlock(vec.x + dir.offsetX, vec.y + dir.offsetY, vec.z + dir.offsetZ))) {
+			if (isBlockValid(BlockUtils.getBlock(world, vec.x + dir.offsetX, vec.y + dir.offsetY, vec.z + dir.offsetZ))) {
 				if (dir == ForgeDirection.EAST || dir == ForgeDirection.WEST) xAxis = true;
 				if (dir == ForgeDirection.NORTH || dir == ForgeDirection.SOUTH) zAxis = true;
 				if (dir == ForgeDirection.DOWN || dir == ForgeDirection.UP) yAxis = true;

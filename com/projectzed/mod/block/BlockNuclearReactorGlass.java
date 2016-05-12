@@ -6,19 +6,16 @@
 */
 package com.projectzed.mod.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
-
-import com.hockeyhurd.api.util.BlockHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 
 /**
  * Class containing block code for nuclearReactorGlass.
@@ -28,7 +25,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 
-	private BlockHelper bh;
 	private Block[] blockWhitelist;
 	
 	@SideOnly(Side.CLIENT)
