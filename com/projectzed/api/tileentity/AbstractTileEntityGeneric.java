@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 
 /**
  * Class used for easily creating a generic tile entity.
@@ -19,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author hockeyhurd
  * @version Oct 21, 2014
  */
-public abstract class AbstractTileEntityGeneric extends TileEntity implements ISidedInventory {
+public abstract class AbstractTileEntityGeneric extends TileEntity implements ISidedInventory, ITickable {
 
 	/**
 	 * Include only slots in the UI and specifically not the player's inventory.
@@ -124,8 +125,8 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * Main update method for a given entity. <br>
 	 * NOTE: This should be overriden 99% of the time.
 	 */
-	public void updateEntity() {
-		super.updateEntity();
+	@Override
+	public void update() {
 	}
 
 	/**

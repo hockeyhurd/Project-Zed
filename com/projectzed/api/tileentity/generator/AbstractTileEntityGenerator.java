@@ -17,7 +17,7 @@ import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -204,7 +204,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 	}
 
 	/*
@@ -212,8 +212,8 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
-	public ForgeDirection getLastReceivedDirection() {
-		return ForgeDirection.UNKNOWN;
+	public EnumFacing getLastReceivedDirection() {
+		return null;
 	}
 
 	/*
@@ -238,7 +238,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
 	public void generatePower() {
-		if (this.getWorldObj().isRemote) return;
+		if (worldObj.isRemote) return;
 		if (canProducePower()) {
 			if (this.stored + this.source.getEffectiveSize() <= this.maxStored) this.stored += this.source.getEffectiveSize();
 			else {
@@ -264,7 +264,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	/*
@@ -291,14 +291,14 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		generatePower();
 		transferPower();
 		
 		// If server side and every '1' second, send packet message to all clients.
 		// if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		this.markDirty();
-		super.updateEntity();
+		super.update();
 	}
 
 	@Override

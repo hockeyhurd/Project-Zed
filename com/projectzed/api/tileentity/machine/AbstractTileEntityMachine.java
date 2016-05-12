@@ -20,18 +20,20 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +54,14 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	protected int originalEnergyBurnRate;
 	protected int energyBurnRate;
 	protected boolean powerMode;
-	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	protected EnumFacing lastReceivedDir;
 
 	public int cookTime;
 	public static final int defaultCookTime = 200;
 	public int scaledTime = (defaultCookTime / 10) * 5;
 	public int originalScaledTime = scaledTime;
 
-	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	protected byte[] openSides = new byte[EnumFacing.VALUES.length];
 	protected EnumRedstoneType redstoneType;
 
 	protected ItemStack[] lastTickUpgrades;
@@ -168,9 +170,11 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		IInventory otherInv = null;
 		ItemStack in = null;
 		ItemStack out = null;
+		Vec3i vec3i;
 
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			vec3i = dir.getDirectionVec();
+			te = worldObj.getTileEntity(new BlockPos(worldVec().x + vec3i.getX(), worldVec().y + vec3i.getY(), worldVec().z + vec3i.getZ()));
 			
 			if (te != null && te instanceof IInventory) { 
 				otherInv = (IInventory) te;
@@ -280,15 +284,15 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * Method used to transfer power from one te to another.
 	 */
 	public void transferPower() {
-		if (this.getWorldObj().isRemote) return;
+		if (worldObj.isRemote) return;
 		
 		if (this.stored >= this.maxStorage) {
 			this.stored = this.maxStorage;
 			return;
 		}
 
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, pos.getX(), pos.getY(), pos.getZ(), lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, pos.getX(), pos.getY(), pos.getZ(), lastReceivedDir);
 	}
 
 	/*
@@ -297,7 +301,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	/*
@@ -343,7 +347,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		}
 
 		if (worldObj.getTotalWorldTime() % 20L == 0 && this.blockType != null && this.blockType instanceof AbstractBlockMachine) {
-			((AbstractBlockMachine) this.blockType).updateBlockState(this.isPoweredOn(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+			((AbstractBlockMachine) this.blockType).updateBlockState(this.isPoweredOn(), this.worldObj, pos.getX(), pos.getY(), pos.getZ());
 			// ProjectZed.logHelper.info(this.powerMode);
 		}
 		
@@ -424,10 +428,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.EnumFacing)
 	 */
 	@Override
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 		// this.lastReceivedDir = dir;
 	}
 	
@@ -436,7 +440,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
 	@Override
-	public ForgeDirection getLastReceivedDirection() {
+	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
 	
@@ -600,7 +604,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
 	 */
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
 	}
 	
@@ -612,7 +616,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
 		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
 
-		byte ret = (byte) ForgeDirection.getOrientation(facingDir).getOpposite().ordinal();
+		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
 
 		return ret == currentMeta ? facingDir : ret;
 	}
@@ -667,7 +671,12 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 */
 	@Override
 	public int getRedstoneSignal() {
-		return worldObj.getBlockPowerInput(worldVec().x, worldVec().y, worldVec().z);
+		int max = Integer.MIN_VALUE;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			max = Math.max(worldObj.getRedstonePower(pos, dir), max);
+		}
+
+		return max;
 	}
 	
 	/*
@@ -695,10 +704,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @param value = value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
 	 */
 	@Override
-	public void setSideValve(ForgeDirection dir, byte value) {
+	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
 
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlockOfStateChange(pos, blockType);
 		markDirty();
 	}
 	
@@ -707,10 +716,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @param dir = direction to test.
 	 */
 	@Override
-	public void setSideValveAndRotate(ForgeDirection dir) {
+	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
 
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlockOfStateChange(pos, blockType);
 		markDirty();
 	}
 	
@@ -719,7 +728,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
 	@Override
-	public byte getSideValve(ForgeDirection dir) {
+	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
 	

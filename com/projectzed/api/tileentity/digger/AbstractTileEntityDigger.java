@@ -28,7 +28,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	protected boolean isDone;
 	protected boolean isSilkTouch = false;
 	
-	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	protected byte[] openSides = new byte[EnumFacing.VALUES.length];
 	protected EnumRedstoneType redstoneType;
 
 	protected Rect<Integer> quarryRect;
@@ -199,7 +200,13 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 */
 	@Override
 	public int getRedstoneSignal() {
-		return worldObj.getBlockPowerInput(worldVec().x, worldVec().y, worldVec().z);
+		int max = Integer.MIN_VALUE;
+
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			max = Math.max(max, worldObj.getRedstonePower(pos, dir));
+		}
+
+		return max;
 	}
 
 	/*
@@ -226,10 +233,10 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 * @see com.projectzed.api.tileentity.IModularFrame#setSideValve(net.minecraftforge.common.util.ForgeDirection, byte)
 	 */
 	@Override
-	public void setSideValve(ForgeDirection dir, byte value) {
+	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
 
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlockOfStateChange(pos, blockType);
 		markDirty();
 	}
 
@@ -238,10 +245,10 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 * @see com.projectzed.api.tileentity.IModularFrame#setSideValveAndRotate(net.minecraftforge.common.util.ForgeDirection)
 	 */
 	@Override
-	public void setSideValveAndRotate(ForgeDirection dir) {
+	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
 
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlockOfStateChange(pos, blockType);
 		markDirty();
 	}
 
@@ -250,7 +257,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	 * @see com.projectzed.api.tileentity.IModularFrame#getSideValve(net.minecraftforge.common.util.ForgeDirection)
 	 */
 	@Override
-	public byte getSideValve(ForgeDirection dir) {
+	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
 
@@ -502,8 +509,8 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 	protected abstract void exportContents();
 	
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		
 		if (!worldObj.isRemote) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityDigger(this));
 	}
@@ -516,8 +523,10 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		IInventory otherInv;
 		ItemStack out;
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final BlockPos blockPos = new BlockPos(pos.getX() + dir.getFrontOffsetX(), pos.getY() + dir.getFrontOffsetY(),
+					pos.getZ() + dir.getFrontOffsetZ());
+			te = worldObj.getTileEntity(blockPos);
 			
 			if (te != null && te instanceof IInventory) { 
 				otherInv = (IInventory) te;

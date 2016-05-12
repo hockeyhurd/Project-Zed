@@ -7,7 +7,7 @@
 package com.projectzed.api.energy.storage;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Interface for an object (TileEntity, tool, etc.) that contains power.
@@ -55,12 +55,12 @@ public interface IEnergyContainer {
 	 * Sets the last received direction.
 	 * @param dir = direction received from.
 	 */
-	void setLastReceivedDirection(ForgeDirection dir);
+	void setLastReceivedDirection(EnumFacing dir);
 	
 	/**
 	 * @return the last received direction.
 	 */
-	ForgeDirection getLastReceivedDirection();
+	EnumFacing getLastReceivedDirection();
 
 	/** Gets and stored the vector co-ordinates of this te. */
 	Vector3<Integer> worldVec();

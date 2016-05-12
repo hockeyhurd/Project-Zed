@@ -13,16 +13,15 @@ import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for energy bank cell.
@@ -40,20 +39,10 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 */
 	public BlockEnergyCell(Material material, String name) {
 		super(material, ProjectZed.assetDir, name);
-		this.setBlockName(name);
+		this.setRegistryName(name);
 		this.TIER = Byte.parseByte("" + name.charAt(name.length() - 1));
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		// blockIcon = reg.registerIcon(this.assetDir + name);
-		blockIcon = reg.registerIcon(this.assetDir + "energyCellGeneric_icon");
-	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#renderAsNormalBlock()
@@ -122,7 +111,8 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, x, y, z);
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, x, y, z);
 
 				else return false;
 			}

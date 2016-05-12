@@ -10,20 +10,21 @@ package com.projectzed.mod.block.container;
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Abstract block class for liquiducts.
@@ -44,16 +45,6 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		this.color = color;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "pipe_fluid_item_" + this.color.getColorAsString());
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
@@ -84,9 +75,9 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getSelectedBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
 	 */
 	@Override
-	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
 		// Create tile entity object at world coordinate.
-		TileEntityLiquiductBase pipe = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
+		TileEntityLiquiductBase pipe = (TileEntityLiquiductBase) world.getTileEntity(pos);
 
 		// Check if block exists.
 		if (pipe != null) {
@@ -112,63 +103,26 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 			float maxZ = 1 - CALC + (south ? CALC : 0);
 
 			// Set bounds after calculations completed.
-			this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+			return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 		}
 
-		return AxisAlignedBB.getBoundingBox(x + this.minX, y + this.minY, z + this.minZ, x + this.maxX, y + this.maxY, z + this.maxZ);
+		return super.getBoundingBox(state, world, pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getCollisionBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
-	 */
-	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-		// Create tile entity object at world coordinate.
-		TileEntityLiquiductBase pipe = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
-
-		// Check if block exists.
-		if (pipe != null) {
-			// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
-
-			// Check if same block is next to this block.
-			boolean up = pipe.getConnection(0) != null;
-			boolean down = pipe.getConnection(1) != null;
-			boolean north = pipe.getConnection(2)!= null;
-			boolean east = pipe.getConnection(3) != null;
-			boolean south = pipe.getConnection(4) != null;
-			boolean west = pipe.getConnection(5) != null;
-
-			// Calculate min values.
-			float minX = CALC - (west ? CALC : 0);
-			float minY = CALC - (down ? CALC : 0);
-			float minZ = CALC - (north ? CALC : 0);
-
-			// Calculate max values.
-			float maxX = 1 - CALC + (east ? CALC : 0);
-			float maxY = 1 - CALC + (up ? CALC : 0);
-			float maxZ = 1 - CALC + (south ? CALC : 0);
-
-			// Set bounds after calculations completed.
-			this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
-		}
-
-		return AxisAlignedBB.getBoundingBox(x + this.minX, y + this.minY, z + this.minZ, x + this.maxX, y + this.maxY, z + this.maxZ);
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		if (stack.hasTagCompound() && world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEntityLiquiductBase) {
-			TileEntityLiquiductBase te = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase e, ItemStack stack) {
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if (stack.hasTagCompound() && tileEntity != null && tileEntity instanceof TileEntityLiquiductBase) {
+			TileEntityLiquiductBase te = (TileEntityLiquiductBase) tileEntity;
 			
-			int id = (int) stack.stackTagCompound.getFloat("Fluid Amount");
+			int id = (int) stack.getTagCompound().getFloat("Fluid Amount");
 			if (id == -1) return;
 			
-			int amount = (int) stack.stackTagCompound.getFloat("Fluid ID");
+			int amount = (int) stack.getTagCompound().getFloat("Fluid ID");
 			if (amount <= 0) return;
 			
 			te.getTank().setFluid(new FluidStack(FluidRegistry.getFluid(id), amount));
@@ -180,8 +134,8 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 	 * @see com.projectzed.api.block.AbstractBlockPipe#doBreakBlock(net.minecraft.world.World, int, int, int)
 	 */
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityLiquiductBase duct = (TileEntityLiquiductBase) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos pos) {
+		TileEntityLiquiductBase duct = (TileEntityLiquiductBase) world.getTileEntity(pos);
 		
 		if (duct != null && duct.getNetwork() != null) duct.getNetwork().remove(duct.getNetwork().getNodeAt(duct.worldVec()));
 	}

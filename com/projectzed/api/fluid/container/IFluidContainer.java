@@ -8,7 +8,7 @@ package com.projectzed.api.fluid.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.fluid.FluidNetwork;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -67,14 +67,14 @@ public interface IFluidContainer extends IFluidHandler {
 	 * 
 	 * @param dir direction to set.
 	 */
-	void setLastReceivedDirection(ForgeDirection dir);
+	void setLastReceivedDirection(EnumFacing dir);
 	
 	/**
 	 * Getter function to get last received direction.
 	 * 
 	 * @return last received direction.
 	 */
-	ForgeDirection getLastReceivedDirection();
+	EnumFacing getLastReceivedDirection();
 	
 	/**
 	 * Function to get world coordinate of te.

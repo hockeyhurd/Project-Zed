@@ -12,8 +12,9 @@ import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.util.EnumFrameType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing code for how energy is to transfer from 
@@ -39,20 +40,22 @@ public class EnergyNet {
 	 * @param z z-pos as reference.
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
-	public static void importEnergyFromNeighbors(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+	public static void importEnergyFromNeighbors(IEnergyContainer sourceCont, World world, int x, int y, int z, EnumFacing lastDir) {
 		if (world == null || world.isRemote) return;
 		else {
 			if (sourceCont.getEnergyStored() == sourceCont.getMaxStorage()) return;
-			
+
 			boolean colorDep = sourceCont instanceof IColorComponent;
 			boolean sideDep = sourceCont instanceof IModularFrame && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER;
-			boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+			boolean[] sides = new boolean[EnumFacing.VALUES.length];
 			int count = 0;
 			
 			// Check surrounding blocks.
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-				if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IEnergyContainer) {
-					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+			for (EnumFacing dir : EnumFacing.VALUES) {
+				final BlockPos blockPos = new BlockPos(x + dir.getFrontOffsetX(), y + dir.getFrontOffsetY(), z + dir.getFrontOffsetZ());
+
+				if (world.getTileEntity(blockPos) instanceof IEnergyContainer) {
+					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(blockPos);
 					if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
 					else if (cont instanceof IEnergyMachine) continue;
 					else if (/*sideDep &&*/ cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.POWER && ((IModularFrame) cont).getSideValve(dir.getOpposite()) != 1) continue;
@@ -64,11 +67,13 @@ public class EnergyNet {
 			}
 			
 			// Check this block relative to neighbors.
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (sourceCont.getEnergyStored() >= sourceCont.getMaxStorage()) break;
 				
 				if (sides[dir.ordinal()] && dir != lastDir) {
-					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+					final BlockPos blockPos = new BlockPos(x + dir.getFrontOffsetX(), y + dir.getFrontOffsetY(), z + dir.getFrontOffsetZ());
+
+					IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(blockPos);
 					
 					if (sideDep && ((IModularFrame) sourceCont).getType() == EnumFrameType.POWER && ((IModularFrame) sourceCont).getSideValve(dir) != -1) continue;
 					if (cont.getMaxExportRate() == 0 || sourceCont.getMaxImportRate() == 0) {
@@ -105,10 +110,12 @@ public class EnergyNet {
 	 * @param z z-pos as reference.
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
-	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, EnumFacing lastDir) {
 		// boolean shouldSend = false;
-		
-		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
+
+		final BlockPos blockPos = new BlockPos(x + lastDir.getFrontOffsetX(), y + lastDir.getFrontOffsetY(), z + lastDir.getFrontOffsetZ());
+
+		TileEntity te = world.getTileEntity(blockPos);
 		IEnergyContainer cont = null;
 		if (te != null && te instanceof IEnergyContainer) cont = (IEnergyContainer) te;
 		// if (/*sourceCont.getEnergyStored() >= sourceCont.getMaxStorage() || */ sourceCont.getEnergyStored() == 0 || cont == null) {
@@ -130,7 +137,7 @@ public class EnergyNet {
 	 * @param sourceCont container to send data to.
 	 */
 	public static void clearDirectionalTraffic(IEnergyContainer sourceCont) {
-		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);
+		sourceCont.setLastReceivedDirection(null);
 	}
 
  }

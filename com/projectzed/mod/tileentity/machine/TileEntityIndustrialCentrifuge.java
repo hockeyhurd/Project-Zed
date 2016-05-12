@@ -15,8 +15,8 @@ import com.projectzed.mod.registry.CentrifugeRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -253,7 +253,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
 	 */
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityCentrifuge(this));
 	}
 
@@ -293,16 +293,16 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 
 			int fillAmount = internalTank.fill(resource, doFill);
 
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+				if (blockType != null) worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.internalTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -316,7 +316,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
@@ -325,7 +325,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 
@@ -338,16 +338,15 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @param doDrain = whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
 					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
 					
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, this.internalTank, drainedFluid.amount));
 			}
 			
 			return drainedFluid;
@@ -361,7 +360,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
+	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull()) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -376,7 +375,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -391,7 +390,7 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.ForgeDirection)
 	 */
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { this.internalTank.getInfo() };
 	}
 	

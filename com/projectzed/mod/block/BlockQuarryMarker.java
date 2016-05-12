@@ -8,15 +8,20 @@ package com.projectzed.mod.block;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -32,18 +37,13 @@ public class BlockQuarryMarker extends BlockTorch {
 	
 	public BlockQuarryMarker() {
 		this.setTickRandomly(false);
-		this.setBlockName(name);
+		this.setRegistryName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
-	
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + name);
-	}
-	
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 		else {
 			final int len = ProjectZed.configHandler.getMaxQuarrySize();
@@ -54,10 +54,10 @@ public class BlockQuarryMarker extends BlockTorch {
 			int minZ = 0;
 			int maxZ = 0;
 
-			Vector3<Integer> localVec = new Vector3<Integer>(x, y, z);
+			Vector3<Integer> localVec = new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 			Block currentBlock;
 			for (int xx = 1; xx < len; xx++) {
-				currentBlock = world.getBlock(localVec.x + xx, localVec.y, localVec.z);
+				currentBlock = BlockUtils.getBlock(world, pos).getBlock();
 
 				if (currentBlock != null && currentBlock != Blocks.air) {
 					if (currentBlock == ProjectZed.quarryMarker) {
@@ -73,7 +73,7 @@ public class BlockQuarryMarker extends BlockTorch {
 			}
 
 			for (int xx = 1; xx < len; xx++) {
-				currentBlock = world.getBlock(localVec.x - xx, localVec.y, localVec.z);
+				currentBlock = BlockUtils.getBlock(world, localVec.x - xx, localVec.y, localVec.z).getBlock();
 
 				if (currentBlock != null && currentBlock != Blocks.air) {
 					if (currentBlock == ProjectZed.quarryMarker) {
@@ -89,7 +89,7 @@ public class BlockQuarryMarker extends BlockTorch {
 			}
 
 			for (int zz = 1; zz < len; zz++) {
-				currentBlock = world.getBlock(localVec.x, localVec.y, localVec.z + zz);
+				currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z + zz).getBlock();
 
 				if (currentBlock != null && currentBlock != Blocks.air) {
 					if (currentBlock == ProjectZed.quarryMarker) {
@@ -106,7 +106,7 @@ public class BlockQuarryMarker extends BlockTorch {
 			}
 
 			for (int zz = 1; zz < len; zz++) {
-				currentBlock = world.getBlock(localVec.x, localVec.y, localVec.z - zz);
+				currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z - zz).getBlock();
 
 				if (currentBlock != null && currentBlock != Blocks.air) {
 					if (currentBlock == ProjectZed.quarryMarker) {
@@ -124,8 +124,9 @@ public class BlockQuarryMarker extends BlockTorch {
 			
 			// make sure enough valid connections have been made.
 			if (minX == maxX && minZ == maxZ /*&& minX == localVec.x && maxX == localVec.x && minZ == localVec.z && maxZ == localVec.z*/) return true;
-			
-			Vector2<Integer>[] ret = new Vector2[4];
+
+			@SuppressWarnings("unchecked")
+			Vector2<Integer>[] ret = (Vector2<Integer>[]) new Vector2[4];
 			
 			ret[0] = new Vector2<Integer>(minX, minZ); // x0z0
 			ret[1] = new Vector2<Integer>(maxX, minZ); // x1z0
@@ -154,7 +155,7 @@ public class BlockQuarryMarker extends BlockTorch {
 
 		Block currentBlock;
 		for (int xx = 1; xx < len; xx++) {
-			currentBlock = world.getBlock(localVec.x + xx, localVec.y, localVec.z);
+			currentBlock = BlockUtils.getBlock(world, localVec.x + xx, localVec.y, localVec.z).getBlock();
 
 			if (currentBlock != null && currentBlock != Blocks.air) {
 				if (currentBlock == ProjectZed.quarryMarker) {
@@ -170,7 +171,7 @@ public class BlockQuarryMarker extends BlockTorch {
 		}
 
 		for (int xx = 1; xx < len; xx++) {
-			currentBlock = world.getBlock(localVec.x - xx, localVec.y, localVec.z);
+			currentBlock = BlockUtils.getBlock(world, localVec.x - xx, localVec.y, localVec.z).getBlock();
 
 			if (currentBlock != null && currentBlock != Blocks.air) {
 				if (currentBlock == ProjectZed.quarryMarker) {
@@ -186,7 +187,7 @@ public class BlockQuarryMarker extends BlockTorch {
 		}
 
 		for (int zz = 1; zz < len; zz++) {
-			currentBlock = world.getBlock(localVec.x, localVec.y, localVec.z + zz);
+			currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z + zz).getBlock();
 
 			if (currentBlock != null && currentBlock != Blocks.air) {
 				if (currentBlock == ProjectZed.quarryMarker) {
@@ -203,7 +204,7 @@ public class BlockQuarryMarker extends BlockTorch {
 		}
 
 		for (int zz = 1; zz < len; zz++) {
-			currentBlock = world.getBlock(localVec.x, localVec.y, localVec.z - zz);
+			currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z - zz).getBlock();
 
 			if (currentBlock != null && currentBlock != Blocks.air) {
 				if (currentBlock == ProjectZed.quarryMarker) {
@@ -221,8 +222,9 @@ public class BlockQuarryMarker extends BlockTorch {
 		
 		// make sure enough valid connections have been made.
 		if (minX == maxX && minZ == maxZ /*&& minX == localVec.x && maxX == localVec.x && minZ == localVec.z && maxZ == localVec.z*/) return null;
-		
-		Vector2<Integer>[] ret = new Vector2[4];
+
+		@SuppressWarnings("unchecked")
+		Vector2<Integer>[] ret = (Vector2<Integer>[]) new Vector2[4];
 		
 		ret[0] = new Vector2<Integer>(minX, minZ); // x0z0
 		ret[1] = new Vector2<Integer>(maxX, minZ); // x1z0
@@ -234,7 +236,7 @@ public class BlockQuarryMarker extends BlockTorch {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
+	public void randomDisplayTick(IBlockState worldIn, World world, BlockPos pos, Random random) {
 	}
 
 }

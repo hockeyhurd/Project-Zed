@@ -8,17 +8,17 @@ package com.projectzed.api.block;
 
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -48,21 +48,11 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 		super(material);
 		this.assetDir = assetDir;
 		this.name = name;
-		this.setBlockName(name);
+		this.setRegistryName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(assetDir + name);
-	}
-	
+
 	/**
 	 * Method used to grab exact tile entity associated with this block.
 	 * <br>Example: return new TileEntityRFBridge().
@@ -83,18 +73,19 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
 	@Override
-	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
+	public abstract boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem,
+			EnumFacing side, float hitX, float hitY, float hitZ);
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
-			NBTTagCompound comp = stack.stackTagCompound;
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
+			NBTTagCompound comp = stack.getTagCompound();
 			
-			AbstractTileEntityEnergyContainer te = (AbstractTileEntityEnergyContainer) world.getTileEntity(x, y, z);
+			AbstractTileEntityEnergyContainer te = (AbstractTileEntityEnergyContainer) world.getTileEntity(pos);
 			te.readNBT(comp);
 		}
 	}
@@ -104,19 +95,17 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
 	 */
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
-		doBreakBlock(world, x, y, z);
-		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
+		doBreakBlock(world, pos);
+		super.breakBlock(world, pos, oldBlock);
 	}
 
 	/**
 	 * Method allows for control of behavior of block when being destroyed.
 	 * 
-	 * @param world = world object.
-	 * @param x = x-position.
-	 * @param y = y-position.
-	 * @param z = z-position.
+	 * @param world world object.
+	 * @param pos BlockPos.
 	 */
-	protected abstract void doBreakBlock(World world, int x, int y, int z);
+	protected abstract void doBreakBlock(World world, BlockPos pos);
 
 }

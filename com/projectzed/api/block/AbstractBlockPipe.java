@@ -9,18 +9,19 @@ package com.projectzed.api.block;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.proxy.ClientProxy;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing necessary abstractions for a generic pipe.
@@ -31,8 +32,10 @@ import net.minecraft.world.World;
 public abstract class AbstractBlockPipe extends BlockContainer {
 
 	protected String customName;
-	protected final float PIXEL = 1f / 16f;
-	protected final float CALC = 11 * PIXEL / 2;
+	protected static final float PIXEL = 1f / 16f;
+	protected static final float CALC = 11 * PIXEL / 2;
+	protected static final AxisAlignedBB DEFAULT_BOUNDING_BOX = new AxisAlignedBB(11 * PIXEL / 2, 11 * PIXEL / 2,
+			11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 	/**
 	 * @param material = material of pipe
@@ -41,20 +44,9 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	public AbstractBlockPipe(Material material, String name) {
 		super(material);
 		this.customName = name;
-		this.setBlockName(name);
+		this.setRegistryName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1f);
-		this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + this.customName);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -91,28 +83,39 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	 * @see net.minecraft.block.Block#createTileEntity(net.minecraft.world.World, int)
 	 */
 	@Override
-	public TileEntity createTileEntity(World world, int id) {
+	public TileEntity createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
-			NBTTagCompound comp = stack.stackTagCompound;
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+		// this.setBlockBounds(11 * PIXEL / 2, 11 * PIXEL / 2, 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
-			AbstractTileEntityPipe te = (AbstractTileEntityPipe) world.getTileEntity(x, y, z);
+		return DEFAULT_BOUNDING_BOX;
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
+		return getBoundingBox(state, world, pos);
+	}
+
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
+		return getBoundingBox(state, world, pos);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
+			NBTTagCompound comp = stack.getTagCompound();
+
+			AbstractTileEntityPipe te = (AbstractTileEntityPipe) world.getTileEntity(pos);
 			te.readNBT(comp);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getCollisionBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
-	 */
-	public abstract AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z);
-	
 	protected boolean canConnect(World world, double x, double y, double z) {
-		return world.getBlock((int) x, (int) y, (int) z) == this;
+		return world.getBlockState(new BlockPos((int) x, (int) y, (int) z)).getBlock() == this;
 	}
 	
 	/*
@@ -120,19 +123,17 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
 	 */
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
-		doBreakBlock(world, x, y, z);
-		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
+		doBreakBlock(world, pos);
+		super.breakBlock(world, pos, oldBlock);
 	}
 	
 	/**
 	 * Method allows for control of behavior of block when being destroyed.
 	 * 
-	 * @param world = world object.
-	 * @param x = x-position.
-	 * @param y = y-position.
-	 * @param z = z-position.
+	 * @param world world object.
+	 * @param pos BlockPos.
 	 */
-	protected abstract void doBreakBlock(World world, int x, int y, int z);
+	protected abstract void doBreakBlock(World world, BlockPos pos);
 
 }

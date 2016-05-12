@@ -14,8 +14,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class containing generic abstractions for all containers.
@@ -31,7 +31,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	protected int storedPower;
 	protected boolean powerMode;
 	protected int importRate, exportRate;
-	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	protected EnumFacing lastReceivedDir;
 	
 	/**
 	 * Init class object through parameters.
@@ -179,7 +179,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
 	@Override
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 		this.lastReceivedDir = dir;
 	}
 	
@@ -188,7 +188,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
 	@Override
-	public ForgeDirection getLastReceivedDirection() {
+	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
 	
@@ -206,12 +206,16 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * Method used to transfer power from one te to another.
 	 */
 	public void transferPower() {
-		if (this.getWorldObj().isRemote) return;
+		if (worldObj.isRemote) return;
 
 		if (this.storedPower >= this.maxPowerStorage) {
 			this.storedPower = this.maxPowerStorage;
 			return;
 		}
+
+		int xCoord = pos.getX();
+		int yCoord = pos.getY();
+		int zCoord = pos.getZ();
 
 		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
@@ -240,7 +244,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 */
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
 	
 	/*
@@ -248,7 +252,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		transferPower();
 		importContents();
 		exportContents();
@@ -256,9 +260,9 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		// this.powerMode = this.storedPower > 0;
 		this.markDirty();
 		
-		super.updateEntity();
+		super.update();
 	}
-	
+
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
@@ -289,7 +293,7 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
 		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
 
-		byte ret = (byte) ForgeDirection.getOrientation(facingDir).getOpposite().ordinal();
+		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
 
 		return ret == currentMeta ? facingDir : ret;
 	}

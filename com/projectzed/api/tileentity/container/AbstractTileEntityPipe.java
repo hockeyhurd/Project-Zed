@@ -10,8 +10,8 @@ import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Generic class used for creating new te pipes for transport.
@@ -22,17 +22,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer implements IWrenchable {
 
 	/** UP, DOWN, NORTH, EAST, SOUTH, WEST */
-	protected ForgeDirection[] connections;
+	protected EnumFacing[] connections;
 	
 	/** The last know received direction received from. */
-	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	protected EnumFacing lastReceivedDir;
 
 	/**
 	 * @param name name of tileentity.
 	 */
 	public AbstractTileEntityPipe(String name) {
 		super(name);
-		connections = new ForgeDirection[6];
+		connections = new EnumFacing[6];
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * 
 	 * @return forgedirectional array.
 	 */
-	public ForgeDirection[] getConnections() {
+	public EnumFacing[] getConnections() {
 		return connections;
 	}
 	
@@ -50,7 +50,7 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * @param dir direction to check.
 	 * @return forgedirection connection.
 	 */
-	public ForgeDirection getConnection(ForgeDirection dir) {
+	public EnumFacing getConnection(EnumFacing dir) {
 		return connections[dir.ordinal()];
 	}
 	
@@ -60,8 +60,8 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * @param dir direction to check.
 	 * @return forgedirection connection.
 	 */
-	public ForgeDirection getConnection(int dir) {
-		return dir >= 0 && dir < connections.length ? connections[dir] : ForgeDirection.UNKNOWN;
+	public EnumFacing getConnection(int dir) {
+		return dir >= 0 && dir < connections.length ? connections[dir] : null;
 	}
 
 	/*
@@ -144,9 +144,10 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
 	 */
-	public void updateEntity() {
+	@Override
+	public void update() {
 		updateConnections();
-		super.updateEntity();
+		super.update();
 	}
 	
 	/**
@@ -154,7 +155,7 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * 
 	 * @return last received direction.
 	 */
-	public ForgeDirection getLastReceivedDirection() {
+	public EnumFacing getLastReceivedDirection() {
 		return lastReceivedDir;
 	}
 	
@@ -163,7 +164,7 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 * 
 	 * @param dir direction to set to.
 	 */
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 		this.lastReceivedDir = dir;
 	}
 	

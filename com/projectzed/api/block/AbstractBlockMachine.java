@@ -6,14 +6,13 @@
  */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,10 +20,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
@@ -41,62 +44,12 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	protected static boolean keepInventory;
 	protected Random random = new Random();
 
-	@SideOnly(Side.CLIENT)
-	protected IIcon iconFront, iconFrontOn, iconBottom, iconSide;
-
 	public AbstractBlockMachine(String name) {
 		super(Material.rock);
 		this.name = name;
 		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setBlockName(name);
+		this.setRegistryName(name);
 		this.setHardness(1f);
-	}
-
-	/**
-	 * NOTE: You probably want to overwrite this method if this method is used
-	 * in another mod!
-	 * 
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		this.blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.iconFront = reg.registerIcon(ProjectZed.assetDir + name + "_front");
-		this.iconFrontOn = reg.registerIcon(ProjectZed.assetDir + name + "_front_on");
-		this.iconBottom = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(net.minecraft.world.IBlockAccess, int, int, int, int)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (te.isPoweredOn() ? this.iconFrontOn : this.iconFront));
-	}
-
-	/**
-	 * NOTE: You probably want to overwrite this method if this method is used
-	 * in another mod!
-	 * 
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		if (side == 3 && meta == 0) return this.iconFront;
-		return side == 0 || side == 1 ? this.iconBottom : (side != meta ? this.blockIcon : (this.active ? this.iconFrontOn : this.iconFront));
-	}
-
-	@SideOnly(Side.CLIENT)
-	public final IIcon[] getIconArray() {
-		return new IIcon[] { blockIcon, iconBottom, iconFront, iconFrontOn };
 	}
 
 	/*
@@ -126,12 +79,13 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * @param z = z-pos.
 	 */
 	public void updateBlockState(boolean active, World world, int x, int y, int z) {
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		BlockPos pos = new BlockPos(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
 		keepInventory = true;
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
 			
-			world.markBlockForUpdate(x, y, z);
+			world.notifyBlockOfStateChange(pos, tileEntity.getBlockType());
 			/*this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
 
@@ -168,30 +122,32 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * net.minecraft.block.Block#randomDisplayTick(net.minecraft.world.World,
 	 * int, int, int, java.util.Random)
 	 */
-	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(IBlockState worldIn, World world, BlockPos pos, Random random) {
 		if (this.active) {
-			int metaData = world.getBlockMetadata(x, y, z);
-			float f = (float) x + 0.5F;
-			float f1 = (float) y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float f2 = (float) z + 0.5F;
+			int metaData = worldIn.getActualState(world, pos).getBlock().getMetaFromState(worldIn);
+			float f = (float) pos.getX() + 0.5f;
+			float f1 = (float) pos.getY() + 0.0f + random.nextFloat() * 6.0f / 16.0f;
+			float f2 = (float) pos.getZ() + 0.5f;
 			float f3 = 0.52F;
 			float f4 = random.nextFloat() * 0.6F - 0.3F;
 
 			if (metaData == 4) {
-				world.spawnParticle("smoke", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 5) {
-				world.spawnParticle("smoke", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 2) {
-				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 3) {
-				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
@@ -203,20 +159,27 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
-		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		// if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		if (l == 0) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(2));
+		// if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		if (l == 1) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(5));
+		// if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		if (l == 2) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(3));
+		// if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		if (l == 3) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(4));
 
-		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
-			NBTTagCompound comp = stack.stackTagCompound;
+		BlockUtils.setBlock(world, pos, block);
 
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+
+		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
+			NBTTagCompound comp = stack.getTagCompound();
+
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(pos);
 			te.readNBT(comp);
 		}
 	}
@@ -228,11 +191,14 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * int, int, int, net.minecraft.entity.player.EntityPlayer, int, float,
 	 * float, float)
 	 */
-	public abstract boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ);
+	@Override
+	public abstract boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ);
 
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
 		if (!keepInventory) {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(pos);
 
 			if (te != null) {
 				for (int j1 = 0; j1 < te.getSizeInventory(); j1++) {
@@ -251,8 +217,8 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 							}
 
 							stack.stackSize -= k1;
-							EntityItem entityitem = new EntityItem(world, (double) ((float) x + f), (double) ((float) y + f1),
-									(double) ((float) z + f2), new ItemStack(stack.getItem(), k1, stack.getItemDamage()));
+							EntityItem entityitem = new EntityItem(world, (double) ((float) pos.getX() + f), (double) ((float) pos.getY() + f1),
+									(double) ((float) pos.getZ() + f2), new ItemStack(stack.getItem(), k1, stack.getItemDamage()));
 
 							if (stack.hasTagCompound()) {
 								entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
@@ -267,7 +233,8 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 					}
 				}
 
-				world.func_147453_f(x, y, z, oldBlock);
+				// world.func_147453_f(x, y, z, oldBlock);
+				world.notifyNeighborsOfStateChange(pos, oldBlock.getBlock());
 			}
 		}
 
@@ -279,7 +246,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * @see net.minecraft.block.Block#hasComparatorInputOverride()
 	 */
 	@Override
-	public boolean hasComparatorInputOverride() {
+	public boolean hasComparatorInputOverride(IBlockState block) {
 		return true;
 	}
 
