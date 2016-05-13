@@ -16,8 +16,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
 
@@ -140,12 +140,13 @@ public class WorldUtils {
 				drops[i] = te.getStackInSlot(i);
 			}
 			
-			addItemDrop(drops, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, random);
+			addItemDrop(drops, te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ(), random);
 		}
 	}
 	
 	/**
 	 * Function to create a fake instance of IMultiBlockable TE.
+	 *
 	 * @param block block to reference.
 	 * @return object if valid, else returns false.
 	 */
@@ -153,7 +154,8 @@ public class WorldUtils {
 		IMultiBlockable<?> mb = null;
 		
 		if (block != null && block != Blocks.air) {
-			if (block instanceof AbstractBlockNuclearComponent && ((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
+			if (block instanceof AbstractBlockNuclearComponent &&
+					((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
 				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();
 			}
 			
@@ -170,29 +172,29 @@ public class WorldUtils {
 	 * 
 	 * @param origin starting vector.
 	 * @param other vector to find about the 'origin'.
-	 * @return direction relative to the 'origin' if found, else can return ForgeDirection.UNKNOWN.
+	 * @return direction relative to the 'origin' if found, else can return EnumFacing.UNKNOWN.
 	 */
-	public static ForgeDirection getDirectionRelativeTo(Vector3<Integer> origin, Vector3<Integer> other) {
+	public static EnumFacing getDirectionRelativeTo(Vector3<Integer> origin, Vector3<Integer> other) {
 		
 		// if any vectors are null or are the same, return unknown direction.
-		if (origin == null || other == null || origin.equals(other)) return ForgeDirection.UNKNOWN;
-		
-		ForgeDirection dir = ForgeDirection.UNKNOWN;
+		if (origin == null || other == null || origin.equals(other)) return null;
+
+		EnumFacing dir = null;
 		Vector3<Integer> det = Vector3.zero.getVector3i();
 		
 		det.x = origin.x - other.x;
 		det.y = origin.y - other.y;
 		det.z = origin.z - other.z;
 		
-		if (det.x == 0 && det.y < 0 && det.z == 0) dir = ForgeDirection.DOWN;
-		else if (det.x == 0 && det.y > 0 && det.z == 0) dir = ForgeDirection.UP;
-		else if (det.x == 0 && det.y == 0 && det.z < 0) dir = ForgeDirection.NORTH;
-		else if (det.x == 0 && det.y == 0 && det.z > 0) dir = ForgeDirection.SOUTH;
-		else if (det.x < 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.WEST;
-		else if (det.x > 0 && det.y == 0 && det.z == 0) dir = ForgeDirection.EAST;
+		if (det.x == 0 && det.y < 0 && det.z == 0) dir = EnumFacing.DOWN;
+		else if (det.x == 0 && det.y > 0 && det.z == 0) dir = EnumFacing.UP;
+		else if (det.x == 0 && det.y == 0 && det.z < 0) dir = EnumFacing.NORTH;
+		else if (det.x == 0 && det.y == 0 && det.z > 0) dir = EnumFacing.SOUTH;
+		else if (det.x < 0 && det.y == 0 && det.z == 0) dir = EnumFacing.WEST;
+		else if (det.x > 0 && det.y == 0 && det.z == 0) dir = EnumFacing.EAST;
 		
 		// ensure for w/e reason direction could not be determined, return unknown.
-		else dir = ForgeDirection.UNKNOWN;
+		else dir = null;
 		
 		return dir;
 	}

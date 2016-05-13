@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -14,16 +15,17 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.container.BlockNuclearIOPort;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityNuclearIOPort;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -96,15 +98,15 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
-			byte current = (byte) this.blockMetadata;
+			byte current = (byte) this.getBlockMetadata();
 			if (this.meta != current) setMetaOnUpdate(current);
 
 			PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityNuclearIOPort(this),
-					new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 0x10));
+					new TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 0x10));
 		}
 
 		else if (worldObj.isRemote && burnTime > 0) {
@@ -280,63 +282,43 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		if (meta > 0) this.meta = meta;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
 		this.masterVec = Vector3.zero.getVector3i();
-		
-		setMetaOnUpdate((byte) worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z));
-		((BlockNuclearIOPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
+
+		final Vector3<Integer> vec = worldVec();
+		final IBlockState blockState = BlockUtils.getBlock(worldObj, vec);
+		setMetaOnUpdate((byte) blockState.getBlock().getMetaFromState(blockState));
+		((BlockNuclearIOPort) blockState).updateMeta(false, worldObj, worldVec());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 2;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
 	public Block getBlock() {
 		return ProjectZed.nuclearIOPort;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
-	 */
 	@Override
 	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
 		return (byte) (currentMeta == 1 ? 2 : 1);

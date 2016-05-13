@@ -26,7 +26,14 @@ public interface IFluidContainer extends IFluidHandler {
 	 * @return tank object.
 	 */
 	FluidTank getTank();
-	
+
+	/**
+	 * Function to get fluid name.
+	 *
+	 * @return String fluid name.
+	 */
+	String getFluidName();
+
 	/**
 	 * Shortened function to get the name of the fluid in this tank currently.
 	 * 

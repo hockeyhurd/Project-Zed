@@ -7,14 +7,14 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
-
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Class used for handling specific synching with centrifuge stuffs.
@@ -62,7 +62,7 @@ public class MessageTileEntityCentrifuge implements IMessage, IMessageHandler<Me
 	@Override
 	public IMessage onMessage(MessageTileEntityCentrifuge message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
-			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			if (tileEntity != null && tileEntity instanceof TileEntityIndustrialCentrifuge)
 				((TileEntityIndustrialCentrifuge) tileEntity).setCraftingAmount(message.craftingAmount);
 		}

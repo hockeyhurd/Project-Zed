@@ -7,11 +7,13 @@
 package com.projectzed.api.fluid;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -189,7 +191,8 @@ public final class FluidNetwork {
 	 */
 	private boolean exists(FluidNode node) {
 		if (node == null || node.worldVec() == null) return false;
-		TileEntity te = world.getTileEntity(node.worldVec().x, node.worldVec().y, node.worldVec().z);
+		BlockPos tilePos = VectorHelper.toBlockPos(node.worldVec());
+		TileEntity te = world.getTileEntity(tilePos);
 		
 		return te != null && te instanceof IFluidHandler;
 	}
@@ -203,14 +206,14 @@ public final class FluidNetwork {
 	public FluidNode[] getSurroundingNodes(FluidNode node) {
 		if (node == null) return null;
 		
-		List<FluidNode> list = new ArrayList<FluidNode>(ForgeDirection.VALID_DIRECTIONS.length);
+		List<FluidNode> list = new ArrayList<FluidNode>(EnumFacing.VALUES.length);
 		Vector3<Integer> offset = node.worldVec().copy();
 		FluidNode current;
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			offset.x = node.worldVec().x + dir.offsetX;
-			offset.y = node.worldVec().y + dir.offsetY;
-			offset.z = node.worldVec().z + dir.offsetZ;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			offset.x = node.worldVec().x + dir.getFrontOffsetX();
+			offset.y = node.worldVec().y + dir.getFrontOffsetY();
+			offset.z = node.worldVec().z + dir.getFrontOffsetZ();
 			current = getNodeAt(offset);
 			
 			if (current != null) list.add(current);
@@ -235,14 +238,14 @@ public final class FluidNetwork {
 		FluidNode origin = getNodeAt(vec);
 		if (origin == null) return null;
 		
-		List<FluidNode> list = new ArrayList<FluidNode>(ForgeDirection.VALID_DIRECTIONS.length);
+		List<FluidNode> list = new ArrayList<FluidNode>(EnumFacing.VALUES.length);
 		Vector3<Integer> offset = vec.copy();
 		FluidNode current;
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			offset.x = vec.x + dir.offsetX;
-			offset.y = vec.y + dir.offsetY;
-			offset.z = vec.z + dir.offsetZ;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			offset.x = vec.x + dir.getFrontOffsetX();
+			offset.y = vec.y + dir.getFrontOffsetY();
+			offset.z = vec.z + dir.getFrontOffsetZ();
 			current = getNodeAt(offset);
 			
 			if (current != null) list.add(current);
@@ -318,8 +321,8 @@ public final class FluidNetwork {
 				for (FluidNode srcNode : sourceNodes) {
 					
 					// check each direction of node.
-					// for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-					for (ForgeDirection dir : srcNode.getConnections()) {
+					// for (EnumFacing dir : EnumFacing.VALID_DIRECTIONS) {
+					for (EnumFacing dir : srcNode.getConnections()) {
 						
 						// if valid get all tanks on side.
 						if (srcNode.getFluidContainer().getTankInfo(dir) != null && srcNode.getFluidContainer().getTankInfo(dir).length > 0) {
@@ -357,9 +360,9 @@ public final class FluidNetwork {
 			HashMap<FluidNode, FluidToken> tokens = new HashMap<FluidNode, FluidToken>();
 			
 			for (FluidNode node : sourceNodes) {
-				if (node.getConnections().length > 0 /*&& node.getConnections()[0] != ForgeDirection.UNKNOWN*/) {
-					for (ForgeDirection dir : node.getConnections()) {
-						if (dir == null || dir == ForgeDirection.UNKNOWN) {
+				if (node.getConnections().length > 0 /*&& node.getConnections()[0] != EnumFacing.UNKNOWN*/) {
+					for (EnumFacing dir : node.getConnections()) {
+						if (dir == null || dir == null) {
 							// ProjectZed.logHelper.info(dir);
 							continue;
 						}
@@ -403,8 +406,8 @@ public final class FluidNetwork {
 
 							else if (ProjectZed.configHandler.isDebugMode()) ProjectZed.logHelper.info("Established a path!");
 
-							for (ForgeDirection dir : accNode.getConnections()) {
-								if (dir == ForgeDirection.UNKNOWN) continue;
+							for (EnumFacing dir : accNode.getConnections()) {
+								if (dir == null) continue;
 								FluidTankInfo[] info = accNode.getFluidContainer().getTankInfo(dir);
 
 								for (int i = 0; i < info.length; i++) {
@@ -523,7 +526,7 @@ public final class FluidNetwork {
 	class FluidToken {
 		
 		private FluidStack stack;
-		private ForgeDirection dir;
+		private EnumFacing dir;
 		private int index;
 		
 		/**
@@ -531,7 +534,7 @@ public final class FluidNetwork {
 		 * @param dir direction can drain from.
 		 * @param index index of FluidTankInfo array.
 		 */
-		FluidToken(FluidStack stack, ForgeDirection dir, int index) {
+		FluidToken(FluidStack stack, EnumFacing dir, int index) {
 			this.stack = stack;
 			this.dir = dir;
 			this.index = index;
@@ -567,9 +570,9 @@ public final class FluidNetwork {
 		/**
 		 * Direction to drain from.
 		 * 
-		 * @return ForgeDirection to drain from.
+		 * @return EnumFacing to drain from.
 		 */
-		ForgeDirection getDirection() {
+		EnumFacing getDirection() {
 			return dir;
 		}
 		

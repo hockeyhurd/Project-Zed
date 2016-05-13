@@ -12,10 +12,15 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing code for industrial crusher.
@@ -28,7 +33,7 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 	public BlockIndustrialCrusher() {
 		super("industrialCrusher");
 		this.name = "industrialCrusher";
-		this.setBlockName(name);
+		this.setRegistryName(name);
 	}
 	
 	/*
@@ -55,14 +60,18 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int,
 	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(pos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCrusher.class), world, x, y, z);
+				if (stack == null || !(stack.getItem() instanceof ItemWrench))
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCrusher.class),
+									world, pos.getX(), pos.getY(), pos.getZ());
 
 				else return false;
 			}

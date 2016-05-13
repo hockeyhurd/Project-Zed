@@ -7,15 +7,16 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Messaging class for industrialLoader.
@@ -65,7 +66,7 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 	public IMessage onMessage(MessageTileEntityLoader message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (world != null && te != null && te instanceof TileEntityIndustrialLoader) {
 				TileEntityIndustrialLoader te2 = (TileEntityIndustrialLoader) te;
@@ -75,7 +76,7 @@ public class MessageTileEntityLoader implements IMessage, IMessageHandler<Messag
 		}
 		
 		else if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te != null && te instanceof TileEntityIndustrialLoader) {
 				if (((TileEntityIndustrialLoader) te).getRadii() != message.radii) ((TileEntityIndustrialLoader) te).setRadii(message.radii);

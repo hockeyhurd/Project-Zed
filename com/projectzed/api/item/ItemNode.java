@@ -10,7 +10,7 @@ import com.hockeyhurd.hcorelib.api.math.Vector3;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * 
@@ -22,24 +22,24 @@ public class ItemNode {
 
 	private TileEntity te;
 	private IInventory inv;
-	private ForgeDirection[] connections;
+	private EnumFacing[] connections;
 	private Vector3<Integer> vec = Vector3.zero.getVector3i();
 	
 	private ItemNetwork network;
 	
 	public ItemNode(TileEntity te) {
-		this(te, new ForgeDirection[] { ForgeDirection.UNKNOWN });
+		this(te, new EnumFacing[] { null });
 	}
 	
-	public ItemNode(TileEntity te, ForgeDirection[] connections) {
-		this(te, connections, new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord));
+	public ItemNode(TileEntity te, EnumFacing[] connections) {
+		this(te, connections, new Vector3<Integer>(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
 	}
 	
-	public ItemNode(TileEntity te, ForgeDirection[] connections, Vector3<Integer> vec) {
+	public ItemNode(TileEntity te, EnumFacing[] connections, Vector3<Integer> vec) {
 		this.te = te;
 		this.inv = (IInventory) (te instanceof IInventory ? te : null);
 		this.vec = vec;
-		this.connections = new ForgeDirection[connections.length];
+		this.connections = new EnumFacing[connections.length];
 		
 		for (byte i = 0; i < connections.length; i++) {
 			this.connections[i] = connections[i];
@@ -62,18 +62,18 @@ public class ItemNode {
 		if (connections == null || connections.length == 0) return false;
 		
 		for (byte i = 0; i < connections.length; i++) {
-			if (connections[i] != null || connections[i] != ForgeDirection.UNKNOWN) return true;
+			if (connections[i] != null || connections[i] != null) return true;
 		}
 		
 		return false;
 	}
 	
-	public ForgeDirection[] getConnections() {
+	public EnumFacing[] getConnections() {
 		return connections;
 	}
 	
-	public void setConnection(ForgeDirection dir) {
-		if (connections != null && connections.length > 0 && dir != null && dir != ForgeDirection.UNKNOWN) this.connections[dir.ordinal()] = dir;
+	public void setConnection(EnumFacing dir) {
+		if (connections != null && connections.length > 0 && dir != null && dir != null) this.connections[dir.ordinal()] = dir;
 	}
 	
 	public IInventory getIInventory() {

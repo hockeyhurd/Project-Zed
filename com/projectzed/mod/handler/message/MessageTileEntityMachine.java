@@ -6,20 +6,22 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * 
@@ -29,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class MessageTileEntityMachine implements IMessage, IMessageHandler<MessageTileEntityMachine, IMessage> {
 
 	private AbstractTileEntityMachine te;
-	private int x, y, z;
+	private Vector3<Integer> vec;
 	private int stored, energyBurnRate;
 	private int scaledCookTime;
 	private boolean powerMode;
@@ -38,16 +40,14 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	private int fluidStored;
 	
 	private EnumRedstoneType redstoneType;
-	private byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	private byte[] openSides = new byte[EnumFacing.VALUES.length];
 	
 	public MessageTileEntityMachine() {
 	}
 	
 	public MessageTileEntityMachine(AbstractTileEntityMachine te) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.stored = te.getEnergyStored();
 		this.energyBurnRate = te.getEnergyBurnRate();
 		this.scaledCookTime = te.scaledTime;
@@ -64,9 +64,11 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (this.vec == null) this.vec = new Vector3<Integer>();
+		this.vec.x = buf.readInt();
+		this.vec.y = buf.readInt();
+		this.vec.z = buf.readInt();
+
 		this.stored = buf.readInt();
 		this.energyBurnRate = buf.readInt();
 		this.scaledCookTime = buf.readInt();
@@ -83,9 +85,9 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeInt(energyBurnRate);
 		buf.writeInt(scaledCookTime);
@@ -103,7 +105,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	@Override
 	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
 		if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te instanceof AbstractTileEntityMachine) {
 				((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
@@ -113,16 +115,17 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				((AbstractTileEntityMachine) te).setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {
-					((AbstractTileEntityMachine) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+					((AbstractTileEntityMachine) te).setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 
-				if (message.containsFluid && message.fluidStored > 0) ((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored)); 
+				if (message.containsFluid && message.fluidStored > 0)
+					((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored));
 			}
 		}
 		
 		else if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (world != null && te != null && te instanceof AbstractTileEntityMachine) {
 				AbstractTileEntityMachine te2 = (AbstractTileEntityMachine) te;
@@ -134,7 +137,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				te2.setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {
-					te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+					te2.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 			}
 		}

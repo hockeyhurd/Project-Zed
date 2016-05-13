@@ -6,18 +6,18 @@
 */
 package com.projectzed.mod.renderer;
 
+import com.hockeyhurd.hcorelib.api.client.util.TessellatorHelper;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
-import com.hockeyhurd.hcorelib.api.util.TessellatorHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.util.Connection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -33,7 +33,7 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer {
 	private Vector3<Float> minVec, maxVec;
 	private final float pixel = 1f / 96f;
 	private final float min = 0f, max = 16f * this.pixel;
-	private Connection[] connections = new Connection[ForgeDirection.VALID_DIRECTIONS.length];
+	private Connection[] connections = new Connection[EnumFacing.VALUES.length];
 	
 	private final ResourceLocation texture;
 	

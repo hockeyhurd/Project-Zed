@@ -14,13 +14,13 @@ import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -60,7 +60,8 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	private static NBTTagCompound getOrInitNBT(ItemStack stack) {
 		NBTTagCompound comp = null;
 		if (!stack.hasTagCompound()) {
-			stack.stackTagCompound = comp = new NBTTagCompound();
+			comp = new NBTTagCompound();
+			stack.setTagCompound(comp);
 
 			final ItemCraftingPattern item = (ItemCraftingPattern) stack.getItem();
 
@@ -73,7 +74,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 			comp.setTag(COMP_ITEMS, tagList);
 		}
 
-		else comp = stack.stackTagCompound;
+		else comp = stack.getTagCompound();
 
 		return comp;
 	}
@@ -202,7 +203,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
 		if (!encoded || result == null) return;
 
-		list.add(EnumChatFormatting.GREEN + "Result: " + result.getDisplayName());
+		list.add(TextFormatting.GREEN + "Result: " + result.getDisplayName());
 
 		for (int y = 0; y < size.y; y++) {
 			String[] strings = new String[size.y];

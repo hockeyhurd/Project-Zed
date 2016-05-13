@@ -6,6 +6,8 @@
 */
 package com.projectzed.api.tileentity;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -148,6 +150,15 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	public boolean isUseableByPlayer(EntityPlayer player) {
 		return true;
+	}
+
+	/**
+	 * Gets the world vector3i.
+	 *
+	 * @return Vector3i.
+	 */
+	public Vector3<Integer> worldVec() {
+		return VectorHelper.toVector3i(pos);
 	}
 
 	/**

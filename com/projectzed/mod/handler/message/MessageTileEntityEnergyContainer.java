@@ -6,17 +6,19 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Class containing creation of message to be sent from either side.
@@ -26,17 +28,18 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandler<MessageTileEntityEnergyContainer, IMessage> {
 
-	public IEnergyContainer te;
-	public int x, y, z;
-	public int stored;
-	public int maxStorage;
-	public int maxImportRate, maxExportRate;
-	public ForgeDirection lastReceivedDir;
+	private IEnergyContainer te;
+	private Vector3<Integer> vec;
+	private int stored;
+	private int maxStorage;
+	private int maxImportRate, maxExportRate;
+	private EnumFacing lastReceivedDir;
 
 	// Energy cell specific.
-	public boolean isEnergyCell;
-	public byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	private boolean isEnergyCell;
+	private byte[] openSides = new byte[EnumFacing.VALUES.length];
 
+	@Deprecated
 	public MessageTileEntityEnergyContainer() {
 	}
 
@@ -45,15 +48,13 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 	 */
 	public MessageTileEntityEnergyContainer(IEnergyContainer cont) {
 		this.te = cont;
-		this.x = cont.worldVec().x;
-		this.y = cont.worldVec().y;
-		this.z = cont.worldVec().z;
+		this.vec = cont.worldVec();
 		this.stored = cont.getEnergyStored();
 		this.maxStorage = cont.getMaxStorage();
 		this.maxImportRate = cont.getMaxImportRate();
 		this.maxExportRate = cont.getMaxExportRate();
 
-		this.lastReceivedDir = cont instanceof TileEntityEnergyPipeBase ? ((TileEntityEnergyPipeBase) te).getLastReceivedDirection() : ForgeDirection.UNKNOWN;
+		this.lastReceivedDir = cont instanceof TileEntityEnergyPipeBase ? ((TileEntityEnergyPipeBase) te).getLastReceivedDirection() : null;
 
 		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;
@@ -65,14 +66,13 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cpw.mods.fml.common.network.simpleimpl.IMessage#fromBytes(io.netty.buffer.ByteBuf)
-	 */
+	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.stored = buf.readInt();
 		this.maxStorage = buf.readInt();
 		this.maxImportRate = buf.readInt();
@@ -80,7 +80,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.isEnergyCell = buf.readBoolean();
 
 		byte dir = buf.readByte();
-		this.lastReceivedDir = dir == ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.UNKNOWN : ForgeDirection.VALID_DIRECTIONS[dir];
+		this.lastReceivedDir = dir == EnumFacing.VALUES.length ? null : EnumFacing.VALUES[dir];
 
 		if (isEnergyCell) {
 			for (int i = 0; i < openSides.length; i++) {
@@ -89,14 +89,11 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cpw.mods.fml.common.network.simpleimpl.IMessage#toBytes(io.netty.buffer.ByteBuf)
-	 */
+	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeInt(maxStorage);
 		buf.writeInt(maxImportRate);
@@ -115,7 +112,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 	public IMessage onMessage(MessageTileEntityEnergyContainer message, MessageContext ctx) {
 		
 		if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 
 			if (te instanceof IEnergyContainer) {
 				((IEnergyContainer) te).setEnergyStored(message.stored);
@@ -123,7 +120,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 				
 				if (te instanceof TileEntityEnergyBankBase) {
 					for (int i = 0; i < message.openSides.length; i++) {
-						((TileEntityEnergyBankBase) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+						((TileEntityEnergyBankBase) te).setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 					}
 				}
 
@@ -132,14 +129,14 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		}
 		
 		else if (ctx.side == Side.SERVER && message.isEnergyCell) {
-			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+			TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(VectorHelper.toBlockPos(message.vec));
 
 			if (tileEntity != null) {
 				if (tileEntity instanceof TileEntityEnergyBankBase) {
 					TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) tileEntity;
 
 					for (int i = 0; i < message.openSides.length; i++) {
-						te.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+						te.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 					}
 				}
 

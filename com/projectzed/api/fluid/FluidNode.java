@@ -7,11 +7,13 @@
 package com.projectzed.api.fluid;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -30,7 +32,7 @@ import java.util.List;
 public class FluidNode {
 
 	private IFluidHandler container;
-	private ForgeDirection[] connections;
+	private EnumFacing[] connections;
 	private ValveType valveType;
 
 	@SuppressWarnings("unchecked")
@@ -45,7 +47,7 @@ public class FluidNode {
 	 * @param connections connections with other nodes.
 	 * @param vec coordinate location.
 	 */
-	public FluidNode(IFluidContainer container, ForgeDirection[] connections, Vector3<Integer> vec) {
+	public FluidNode(IFluidContainer container, EnumFacing[] connections, Vector3<Integer> vec) {
 		this(container, connections, vec, ValveType.NEUTRAL);
 	}
 	
@@ -55,9 +57,9 @@ public class FluidNode {
 	 * @param vec coordinate location.
 	 * @param type type of valve.
 	 */
-	public FluidNode(IFluidHandler container, ForgeDirection[] connections, Vector3<Integer> vec, ValveType type) {
+	public FluidNode(IFluidHandler container, EnumFacing[] connections, Vector3<Integer> vec, ValveType type) {
 		this.container = container;
-		this.connections = new ForgeDirection[connections.length];
+		this.connections = new EnumFacing[connections.length];
 		
 		for (int i = 0; i < connections.length; i++) {
 			this.connections[i] = connections[i];
@@ -101,27 +103,27 @@ public class FluidNode {
 		if (connections == null || connections.length == 0) return false;
 		
 		for (int i = 0; i < connections.length; i++) {
-			if (connections[i] != null || connections[i] != ForgeDirection.UNKNOWN) return true;
+			if (connections[i] != null || connections[i] != null) return true;
 		}
 		
 		return false;
 	}
 	
 	/**
-	 * Gets ForgeDirection array of connections to other nodes.
+	 * Gets EnumFacing array of connections to other nodes.
 	 * @return
 	 */
-	public ForgeDirection[] getConnections() {
+	public EnumFacing[] getConnections() {
 		return connections;
 	}
 	
 	/**
-	 * Sets connection on given ForgeDirection.
+	 * Sets connection on given EnumFacing.
 	 * 
 	 * @param dir direction to set.
 	 */
-	public void setConnection(ForgeDirection dir) {
-		if (dir != ForgeDirection.UNKNOWN) this.connections[dir.ordinal()] = dir;
+	public void setConnection(EnumFacing dir) {
+		if (dir != null) this.connections[dir.ordinal()] = dir;
 	}
 	
 	/**
@@ -132,7 +134,7 @@ public class FluidNode {
 	 */
 	public boolean containsFluid(Fluid fluid) {
 		if (container != null) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (container.canDrain(dir, fluid)) return true;
 			}
 		}
@@ -147,7 +149,7 @@ public class FluidNode {
 	 */
 	public boolean containsFluid() {
 		if (container != null) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (container.getTankInfo(dir) != null) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
 						if (info.fluid != null && info.fluid.amount > 0) return true;
@@ -167,7 +169,7 @@ public class FluidNode {
 	 */
 	public static boolean containsFluid(IFluidHandler container) {
 		if (container != null) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (container.getTankInfo(dir) != null) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
 						if (info.fluid != null && info.fluid.amount > 0) return true;
@@ -187,7 +189,7 @@ public class FluidNode {
 	 */
 	public int getAmountStored(Fluid fluid) {
 		if (container != null && containsFluid(fluid)) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (container.canDrain(dir, fluid)) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
 						if (info.fluid != null && info.fluid.getFluid().equals(fluid)) return info.fluid.amount;
@@ -207,7 +209,7 @@ public class FluidNode {
 	 */
 	public int getCapacity(Fluid fluid) {
 		if (container != null) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (container.canDrain(dir, fluid)) {
 					for (FluidTankInfo info : container.getTankInfo(dir)) {
 						if (info.fluid != null && info.fluid.getFluid().equals(fluid)) return info.capacity;
@@ -294,13 +296,13 @@ public class FluidNode {
 	}
 
 	/**
-	 * Helper function to determine and get valve type for said container on ForgeDirection side.
+	 * Helper function to determine and get valve type for said container on EnumFacing side.
 	 * 
 	 * @param container container to reference.
 	 * @param dir directional side to check.
 	 * @return valve type.
 	 */
-	public static ValveType appropriateValveType(IFluidHandler container, ForgeDirection dir) {
+	public static ValveType appropriateValveType(IFluidHandler container, EnumFacing dir) {
 		if (container instanceof IFluidContainer && ((IFluidContainer) container).isPipe()) return ValveType.NEUTRAL;
 		
 		boolean in = false;
@@ -346,7 +348,8 @@ public class FluidNode {
 	 * @return IFluidTile.
 	 */
 	public IFluidTile getTileAt(World world) {
-		return (IFluidTile) world.getTileEntity(vec.x, vec.y, vec.z);
+		BlockPos pos = VectorHelper.toBlockPos(vec);
+		return (IFluidTile) world.getTileEntity(pos);
 	}
 	
 	/**
@@ -365,11 +368,11 @@ public class FluidNode {
 				return;
 			}
 			
-			this.connections = new ForgeDirection[surrounding.length];
+			this.connections = new EnumFacing[surrounding.length];
 			
 			// clear connections.
 			for (int i = 0; i < this.connections.length; i++) {
-				this.connections[i] = ForgeDirection.UNKNOWN;
+				this.connections[i] = null;
 			}
 			
 			// apply surrounding connections to this 'connections'.
@@ -388,14 +391,14 @@ public class FluidNode {
 	public void readFromNBT(NBTTagCompound comp) {
 		int numConnections = comp.getInteger("NumConnections");
 		int val = 0;
-		List<ForgeDirection> list = new ArrayList<ForgeDirection>(numConnections);
+		List<EnumFacing> list = new ArrayList<EnumFacing>(numConnections);
 		
 		for (int i = 0; i < numConnections; i++) {
 			val = comp.getInteger("Direction " + i);
-			if (val != -1) list.add(ForgeDirection.getOrientation(val));
+			if (val != -1) list.add(EnumFacing.getFront(val));
 		}
 		
-		connections = list.toArray(new ForgeDirection[list.size()]);
+		connections = list.toArray(new EnumFacing[list.size()]);
 		comp.getInteger("ValveType");
 	}
 	
@@ -406,7 +409,7 @@ public class FluidNode {
 		comp.setInteger("NumConnections", connections.length);
 		
 		for (int i = 0; i < connections.length; i++) {
-			if (connections[i] != null && connections[i] != ForgeDirection.UNKNOWN) comp.setInteger("Direction " + i, connections[i].ordinal());
+			if (connections[i] != null && connections[i] != null) comp.setInteger("Direction " + i, connections[i].ordinal());
 			else comp.setInteger("Directions " + i, -1);
 		}
 		

@@ -7,19 +7,20 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * 
@@ -45,7 +46,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	
 	public MessageTileEntityStoneCraftingTable(TileEntityStoneCraftingTable te, byte buttonHit) {
 		this.te = te;
-		this.vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
+		this.vec = te.worldVec();
 		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInventory();
 		this.slots = new ItemStack[numSlots];
@@ -70,10 +71,10 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		if (this.vec == null) this.vec = new Vector3<Integer>();
-		
 		this.vec.x = buf.readInt();
 		this.vec.y = buf.readInt();
 		this.vec.z = buf.readInt();
+
 		this.buttonHit = buf.readByte();
 		
 		this.numSlots = buf.readInt();
@@ -101,7 +102,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 	public IMessage onMessage(MessageTileEntityStoneCraftingTable message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te != null && te instanceof TileEntityStoneCraftingTable) {
 				TileEntityStoneCraftingTable te2 = (TileEntityStoneCraftingTable) te;
@@ -127,7 +128,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 		}
 		
 		else if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te != null && te instanceof TileEntityStoneCraftingTable) {
 				TileEntityStoneCraftingTable te2 = (TileEntityStoneCraftingTable) te;

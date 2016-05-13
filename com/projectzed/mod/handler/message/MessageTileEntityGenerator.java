@@ -6,19 +6,21 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.heat.HeatLogic;
 import com.projectzed.api.heat.IHeatable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * TileEntity message handler for packets.
@@ -29,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class MessageTileEntityGenerator implements IMessage, IMessageHandler<MessageTileEntityGenerator, IMessage> {
 
 	private AbstractTileEntityGenerator te;
-	private int x, y, z;
+	private Vector3<Integer> vec;
 	private int stored;
 	private boolean powerMode;
 
@@ -37,7 +39,8 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	private boolean tierable;
 
 	private boolean hasFluidTank;
-	private int fluidID;
+	private String fluidName;
+	private int fluidNameLen;
 	private int fluidAmount;
 
 	private boolean hasHeatLogic;
@@ -51,9 +54,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	
 	public MessageTileEntityGenerator(AbstractTileEntityGenerator te) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.canProducePower();
 		
@@ -62,7 +63,8 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 		if (te instanceof IFluidContainer) {
 			hasFluidTank = true;
-			fluidID = ((IFluidContainer) te).getFluidID();
+			fluidName = ((IFluidContainer) te).getFluidName();
+			fluidNameLen = fluidName.length();
 			fluidAmount = ((IFluidContainer) te).getTank().getFluidAmount();
 		}
 
@@ -76,9 +78,11 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		
@@ -86,7 +90,15 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (this.tierable) this.tier = buf.readByte();
 
 		this.hasFluidTank = buf.readBoolean();
-		this.fluidID = buf.readInt();
+
+		this.fluidNameLen = buf.readInt();
+
+		char[] arr = new char[fluidNameLen];
+		for (int i = 0; i < fluidNameLen; i++)
+			arr[i] = buf.readChar();
+
+		this.fluidName = new String(arr);
+
 		this.fluidAmount = buf.readInt();
 
 		this.hasHeatLogic = buf.readBoolean();
@@ -97,9 +109,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
 		
@@ -107,7 +119,11 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (this.tierable) buf.writeByte(tier);
 
 		buf.writeBoolean(hasFluidTank);
-		buf.writeInt(fluidID);
+		buf.writeInt(fluidNameLen);
+
+		for (int i = 0; i < fluidNameLen; i++)
+			buf.writeChar(fluidName.charAt(i));
+
 		buf.writeInt(fluidAmount);
 
 		buf.writeBoolean(hasHeatLogic);
@@ -118,7 +134,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	@Override
 	public IMessage onMessage(MessageTileEntityGenerator message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
 		if (te != null && te instanceof AbstractTileEntityGenerator) {
 			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
@@ -129,8 +145,8 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 			if (te instanceof IFluidContainer && message.hasFluidTank) {
 				FluidStack fluidStack = null;
 
-				if (message.fluidID >= 0 && message.fluidAmount >= 0)
-					fluidStack = new FluidStack(FluidRegistry.getFluid(message.fluidID), message.fluidAmount);
+				if (message.fluidNameLen >= 0 && message.fluidAmount >= 0)
+					fluidStack = new FluidStack(FluidRegistry.getFluid(message.fluidName), message.fluidAmount);
 
 				((IFluidContainer) te).getTank().setFluid(fluidStack);
 			}

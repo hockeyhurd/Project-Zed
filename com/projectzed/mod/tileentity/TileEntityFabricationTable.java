@@ -13,7 +13,8 @@ import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 
 /**
  * TileEntity code for Fabrication Table.
@@ -101,7 +102,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getAccessibleSlotsFromSide(EnumFacing side) {
 		int[] slots = new int[this.slots.length - (3 * 3 + 1)];
 		
 		for (int i = 0; i < slots.length; i++) {
@@ -117,7 +118,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return isItemValidForSlot(slot, stack);
 	}
 
@@ -127,7 +128,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return slot > 3 * 3 + 1;
 	}
 
@@ -155,7 +156,7 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
 	 */
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
 	}
 

@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
@@ -18,7 +19,9 @@ import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * Class containing code for energy pipe;
@@ -58,113 +61,32 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	public void setColor(EnumColor color) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
-	 */
 	@Override
 	protected void updateConnections() {
-		if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-				if (pipe.getColor() == this.getColor()) connections[0] = ForgeDirection.UP;
-			}
-			
-			else if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-				if (frame.getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[0] = ForgeDirection.UP;
-				else connections[0] = null;
-			}
-			
-			else connections[0] = ForgeDirection.UP;
-		}
-		else connections[0] = null;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final BlockPos tilePos = new BlockPos(pos.getX() + dir.getFrontOffsetX(), pos.getY() + dir.getFrontOffsetY(),
+					pos.getZ() + dir.getFrontOffsetZ());
 
-		if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-				if (pipe.getColor() == this.getColor()) connections[1] = ForgeDirection.DOWN;
-			}
-			
-			else if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-				if (frame.getSideValve(ForgeDirection.DOWN.getOpposite()) != 0) connections[1] = ForgeDirection.DOWN;
-				else connections[1] = null;
-			}
-			
-			else connections[1] = ForgeDirection.DOWN;
-		}
-		else connections[1] = null;
+			final TileEntity tileEntity = worldObj.getTileEntity(tilePos);
+			if (tileEntity instanceof IEnergyContainer) {
+				if (tileEntity instanceof TileEntityEnergyPipeBase) {
+					final TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) tileEntity;
+					if (pipe.getColor() == getColor()) connections[dir.ordinal()] = dir;
+				}
 
-		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-				if (pipe.getColor() == this.getColor()) connections[2] = ForgeDirection.NORTH;
-			}
-			
-			else if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-				if (frame.getSideValve(ForgeDirection.NORTH.getOpposite()) != 0) connections[2] = ForgeDirection.NORTH;
-				else connections[2] = null;
-			}
-			
-			else connections[2] = ForgeDirection.NORTH;
-		}
-		else connections[2] = null;
+				else if (tileEntity instanceof IModularFrame) {
+					final IModularFrame frame = (IModularFrame) tileEntity;
+					if (frame.getSideValve(dir.getOpposite()) != 0) connections[dir.ordinal()] = dir;
+					else connections[dir.ordinal()] = null;
+				}
 
-		if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-				if (pipe.getColor() == this.getColor()) connections[3] = ForgeDirection.EAST;
+				else connections[dir.ordinal()] = dir;
 			}
-			
-			else if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-				if (frame.getSideValve(ForgeDirection.EAST.getOpposite()) != 0) connections[3] = ForgeDirection.EAST;
-				else connections[3] = null;
-			}
-			
-			// else connections[3] = ForgeDirection.EAST;
-		}
-		else connections[3] = null;
 
-		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-				if (pipe.getColor() == this.getColor()) connections[4] = ForgeDirection.SOUTH;
-			}
-			
-			else if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-				if (frame.getSideValve(ForgeDirection.SOUTH.getOpposite()) != 0) connections[4] = ForgeDirection.SOUTH;
-				else connections[4] = null;
-			}
-			
-			else connections[4] = ForgeDirection.SOUTH;
 		}
-		else connections[4] = null;
-
-		if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof IEnergyContainer) {
-			if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-				if (pipe.getColor() == this.getColor()) connections[5] = ForgeDirection.WEST;
-			}
-			
-			else if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof IModularFrame) {
-				IModularFrame frame = (IModularFrame) this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-				if (frame.getSideValve(ForgeDirection.WEST.getOpposite()) != 0) connections[5] = ForgeDirection.WEST;
-				else connections[5] = null;
-			}
-			
-			else connections[5] = ForgeDirection.WEST;
-		}
-		else connections[5] = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
+	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
 			if (this.storedPower - amount >= 0) this.storedPower -= amount;
@@ -177,11 +99,8 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		
 		else return 0;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
+
+	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
 			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
@@ -196,29 +115,19 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		else return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateEntity()
-	 */
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		importContents();
 		exportContents();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
-	 */
+	@Override
 	public int getMaxImportRate() {
 		return this.importRate;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxTransferRate()
-	 */
+	@Override
 	public int getMaxExportRate() {
 		return this.exportRate;
 	}
@@ -227,109 +136,65 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		return this.containerSize;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
-	 */
 	protected void importContents() {
-		if (this.getWorldObj().isRemote) return;
+		if (worldObj.isRemote) return;
 		
 		if (this.storedPower >= this.maxPowerStorage) {
 			this.storedPower = this.maxPowerStorage;
 			return;
 		}
 
-		EnergyNet.importEnergyFromNeighbors(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
-		EnergyNet.tryClearDirectionalTraffic(this, worldObj, xCoord, yCoord, zCoord, lastReceivedDir);
+		EnergyNet.importEnergyFromNeighbors(this, worldObj, pos.getX(), pos.getY(), pos.getZ(), lastReceivedDir);
+		EnergyNet.tryClearDirectionalTraffic(this, worldObj, pos.getX(), pos.getY(), pos.getZ(), lastReceivedDir);
 		
 		// We don't need to send to client every tick! Once/sec. or so should suffice. (no gui)
-		if (this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
+		if (worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
-	 */
 	@Deprecated
 	protected void exportContents() {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setMaxStorage(int)
-	 */
 	@Override
 	public void setMaxStorage(int max) {
 		this.maxPowerStorage = max;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getMaxStorage()
-	 */
 	@Override
 	public int getMaxStorage() {
 		return this.maxPowerStorage;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setEnergyStored(int)
-	 */
 	@Override
 	public void setEnergyStored(int amount) {
 		this.storedPower = amount;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getEnergyStored()
-	 */
 	@Override
 	public int getEnergyStored() {
 		return this.storedPower;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 		this.lastReceivedDir = dir;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
-	 */
 	@Override
-	public ForgeDirection getLastReceivedDirection() {
+	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#worldVec()
-	 */
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return VectorHelper.toVector3i(pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
@@ -338,10 +203,6 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 		this.storedPower = size >= 0 && size <= this.maxPowerStorage ? size : 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);

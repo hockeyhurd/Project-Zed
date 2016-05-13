@@ -6,19 +6,21 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Class containing code for messaging buttons and other various requests for
@@ -30,11 +32,12 @@ import net.minecraft.world.World;
 public class MessageTileEntityFabricationTable implements IMessage, IMessageHandler<MessageTileEntityFabricationTable, IMessage> {
 
 	private TileEntityFabricationTable te;
-	private int x, y, z;
+	private Vector3<Integer> vec;
 	private int buttonHit;
 	private int numSlots;
 	private ItemStack[] slots;
 
+	@Deprecated
 	public MessageTileEntityFabricationTable() {
 	}
 	
@@ -48,9 +51,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 	 */
 	public MessageTileEntityFabricationTable(TileEntityFabricationTable te, int buttonHit) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.buttonHit = buttonHit;
 		this.numSlots = this.te.getSizeInventory();
 		this.slots = new ItemStack[numSlots];
@@ -64,10 +65,13 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 	 * cpw.mods.fml.common.network.simpleimpl.IMessage#fromBytes(io.netty.buffer
 	 * .ByteBuf)
 	 */
+	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.buttonHit = buf.readInt();
 		this.numSlots = buf.readInt();
 		
@@ -83,10 +87,11 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 	 * cpw.mods.fml.common.network.simpleimpl.IMessage#toBytes(io.netty.buffer
 	 * .ByteBuf)
 	 */
+	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(this.x);
-		buf.writeInt(this.y);
-		buf.writeInt(this.z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(this.buttonHit);
 		buf.writeInt(this.numSlots);
 
@@ -117,6 +122,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 	 * mods.fml.common.network.simpleimpl.IMessage,
 	 * cpw.mods.fml.common.network.simpleimpl.MessageContext)
 	 */
+	@Override
 	public IMessage onMessage(MessageTileEntityFabricationTable message, MessageContext ctx) {
 		// TileEntity te =
 		// FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x,
@@ -124,7 +130,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 
 		if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 	
 			if (world != null && te != null && te instanceof TileEntityFabricationTable) {
 				TileEntityFabricationTable te2 = (TileEntityFabricationTable) te;
@@ -149,7 +155,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		}
 		
 		else if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te != null && te instanceof TileEntityFabricationTable) {
 				TileEntityFabricationTable te2 = (TileEntityFabricationTable) te;

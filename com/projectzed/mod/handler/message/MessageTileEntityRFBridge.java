@@ -6,13 +6,15 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Class containing messaging code for rf bridge te.
@@ -22,40 +24,44 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class MessageTileEntityRFBridge implements IMessage, IMessageHandler<MessageTileEntityRFBridge, IMessage> {
 
-	public TileEntityRFBridge te;
-	public int x, y, z;
-	public int stored, storedRF;
-	
+	private TileEntityRFBridge te;
+	private Vector3<Integer> vec;
+	private int stored, storedRF;
+
+	@Deprecated
 	public MessageTileEntityRFBridge() {
 	}
 	
 	public MessageTileEntityRFBridge(TileEntityRFBridge te) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.stored = te.getEnergyStored();
 		this.storedRF = te.storedRF;
 	}
-	
+
+	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.stored = buf.readInt();
 		this.storedRF = buf.readInt();
 	}
 
+	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeInt(storedRF);
 	}
 
+	@Override
 	public IMessage onMessage(MessageTileEntityRFBridge message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
 		if (te instanceof TileEntityRFBridge) {
 			((TileEntityRFBridge) te).setEnergyStored(message.stored);
