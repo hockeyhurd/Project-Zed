@@ -35,7 +35,7 @@ public class ContainerGenerator extends Container {
 
 	public ContainerGenerator(InventoryPlayer inv, AbstractTileEntityGenerator te, int xOffset, int yOffset) {
 		this.te = te;
-		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.NUM_SLOTS = te.getSizeInventory();
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
 
@@ -104,13 +104,13 @@ public class ContainerGenerator extends Container {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 			
-			if (index <= te.getSizeInvenotry() - 1) {
-				if (!this.mergeItemStack(itemstack1, te.getSizeInvenotry(), this.getInventory().size(), true)) return null; 
+			if (index <= te.getSizeInventory() - 1) {
+				if (!this.mergeItemStack(itemstack1, te.getSizeInventory(), this.getInventory().size(), true)) return null;
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 			else {
-				if (!this.mergeItemStack(itemstack1, 0, te.getSizeInvenotry(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 0, te.getSizeInventory(), false)) return null;
 			}
 
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);

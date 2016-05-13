@@ -6,8 +6,13 @@
 */
 package com.projectzed.mod.block;
 
-import java.util.Random;
-
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.registry.TileEntityRegistry;
+import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import com.projectzed.mod.util.WorldUtils;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -18,14 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.registry.TileEntityRegistry;
-import com.projectzed.mod.tileentity.TileEntityFabricationTable;
-import com.projectzed.mod.util.WorldUtils;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 
 /**
  * Class containing code for fabrication table and its properties.
@@ -94,7 +92,7 @@ public class BlockFabricationTable extends BlockContainer {
 		if (!world.isRemote && world.getTileEntity(x, y, z) != null) {
 			TileEntityFabricationTable te = (TileEntityFabricationTable) world.getTileEntity(x, y, z);
 			
-			ItemStack[] stacks = new ItemStack[te.getSizeInvenotry()];
+			ItemStack[] stacks = new ItemStack[te.getSizeInventory()];
 			for (int i = 0; i < te.getSizeInventory(); i++) {
 				if (te.getStackInSlot(i) != null) stacks[i] = te.getStackInSlot(i);
 			}

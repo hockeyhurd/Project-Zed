@@ -47,7 +47,7 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 		this.te = te;
 		this.vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
 		this.buttonHit = buttonHit;
-		this.numSlots = this.te.getSizeInvenotry();
+		this.numSlots = this.te.getSizeInventory();
 		this.slots = new ItemStack[numSlots];
 		
 		syncStacks();

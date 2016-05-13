@@ -6,14 +6,12 @@
 */
 package com.projectzed.mod.block.container;
 
-import net.minecraft.block.material.Material;
-
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier3;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Tier 3 fluid tank block code.

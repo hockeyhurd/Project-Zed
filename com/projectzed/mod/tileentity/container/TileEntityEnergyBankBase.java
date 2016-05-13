@@ -17,8 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Class containing code for energy bank. <br>
@@ -34,7 +34,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		(int) 1e6, (int) 1e7, (int) 1e8, (int) 1e9, 	
 	};
 	
-	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length]; 
+	protected byte[] openSides = new byte[EnumFacing.VALUES.length];
 	
 	public TileEntityEnergyBankBase() {
 		super("energyBank");
@@ -70,26 +70,27 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	
 	/**
 	 * Sets given direction to given value.
-	 * @param dir = direction to set.
-	 * @param value = value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
+	 *
+	 * @param dir direction to set.
+	 * @param value value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
 	 */
-	public void setSideValve(ForgeDirection dir, byte value) {
+	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
 	}
 	
 	/**
 	 * Sets the side value after rotating to next value.
-	 * @param dir = direction to test.
+	 * @param dir direction to test.
 	 */
-	public void setSideValveAndRotate(ForgeDirection dir) {
+	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
 	}
 	
 	/**
-	 * @param dir = direction to test.
+	 * @param dir direction to test.
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
-	public byte getSideValve(ForgeDirection dir) {
+	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
 	
@@ -269,14 +270,14 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		
 		if (!this.worldObj.isRemote) {
 			if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier]; 
 			
 			if (!this.powerMode) this.powerMode = true;
-			if (this.lastReceivedDir != ForgeDirection.UNKNOWN) this.lastReceivedDir = ForgeDirection.UNKNOWN;
+			if (this.lastReceivedDir != null) this.lastReceivedDir = null;
 			
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 		}
@@ -298,7 +299,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 */
 	// NOTE: client -> server
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 	
@@ -310,7 +311,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
 		if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier];
 
-		this.openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+		this.openSides = new byte[EnumFacing.VALUES.length];
 
 		for (int i = 0; i < this.openSides.length; i++) {
 			this.openSides[i] = comp.getByte("ProjectZedEnergyBankSide" + i);
@@ -323,7 +324,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	public void saveNBT(NBTTagCompound comp) {
 		comp.setByte("ProjectZedEnergyBankTier", this.tier);
 
-		if (this.openSides == null) this.openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+		if (this.openSides == null) this.openSides = new byte[EnumFacing.VALUES.length];
 		
 		for (int i = 0; i < this.openSides.length; i++) {
 			comp.setByte("ProjectZedEnergyBankSide" + i, this.openSides[i]);

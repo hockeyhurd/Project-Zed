@@ -12,7 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * Class used for easily creating a generic tile entity.
@@ -50,11 +53,16 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 */
 	protected abstract void initSlotsArray();
 
+	@Override
+	public int getInventoryStackLimit() {
+		return 0x40;
+	}
+
 	/**
 	 * Get the defined size of the inventory.
 	 * @return inventory size as integer.
 	 */
-	public int getSizeInvenotry() {
+	public int getSizeInventory() {
 		return this.slots != null ? this.slots.length : 0;
 	}
 
@@ -90,7 +98,28 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 				return itemstack;
 			}
 		}
-		else return null;
+
+		return null;
+	}
+
+	@Override
+	public ItemStack removeStackFromSlot(int slot) {
+		if (slot < 0 || slot >= getSizeInventory()) return null;
+
+		ItemStack stack = slots[slot].copy();
+
+		slots[slot] = null;
+
+		return stack;
+	}
+
+	@Override
+	public void clear() {
+		if (slots != null) {
+			for (int i = 0; i < slots.length; i++) {
+				slots[i] = null;
+			}
+		}
 	}
 
 	/*
@@ -140,7 +169,7 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	}
 
 	public void readNBT(NBTTagCompound comp) {
-		this.slots = new ItemStack[this.getSizeInvenotry()];
+		this.slots = new ItemStack[this.getSizeInventory()];
 		NBTTagList tagList = comp.getTagList("Items", 10);
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
@@ -185,13 +214,15 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	/**
 	 * Method called when user opens inventory.
 	 */
-	public void openInventory() {
+	@Override
+	public void openInventory(EntityPlayer player) {
 	}
 
 	/**
 	 * Method called when user closes inventory.
 	 */
-	public void closeInventory() {
+	@Override
+	public void closeInventory(EntityPlayer player) {
 	}
 
 	/**
@@ -211,9 +242,25 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	/**
 	 * Method used to set the custom name of the tile entity. <br>
 	 * NOTE: By default, the custom name is set to container.generic.
-	 * @param name = new customized name.
+	 *
+	 * @param name new customized name.
 	 */
 	public abstract void setCustomName(String name);
+
+	@Override
+	public String getName() {
+		return customName;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return hasCustomInventoryName();
+	}
+
+	@Override
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(customName);
+	}
 
 	/**
 	 * Function determines if stated itemstack can be placed in slot defined.
@@ -226,7 +273,8 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * Determines if side of block is accessible from side of said block.
 	 * @param side = side id.
 	 */
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	@Override
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
 	/**
 	 * Determines if said itemstack can be placed in slot from side defined.
@@ -234,7 +282,8 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @param stack = stack to insert.
 	 * @param side = side id.
 	 */
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
 	/**
 	 * Determines if said itemstack can be pulled from in slot to side defined.
@@ -242,5 +291,16 @@ public abstract class AbstractTileEntityGeneric extends TileEntity implements IS
 	 * @param stack = stack to insert.
 	 * @param side = side id.
 	 */
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
+
+	@Override
+	public abstract int getField(int id);
+
+	@Override
+	public abstract void setField(int id, int value);
+
+	@Override
+	public abstract int getFieldCount();
+
 }

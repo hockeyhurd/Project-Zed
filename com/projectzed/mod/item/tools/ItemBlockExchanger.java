@@ -10,6 +10,7 @@
 
 package com.projectzed.mod.item.tools;
 
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
@@ -17,16 +18,20 @@ import com.hockeyhurd.hcorelib.api.util.TimerHelper;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.IItemAdjustable;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,12 +45,12 @@ import java.util.Map;
  */
 public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdjustable {
 
-	private static final String msgType = EnumChatFormatting.GREEN + "[" + Reference.MOD_NAME + "]";
+	private static final String msgType = TextFormatting.GREEN + "[" + Reference.MOD_NAME + "]";
 	private static final String msgBlockSet = msgType + " Block set to: ";
 	private static final String msgRadiiSet = msgType + " Tool radii set to: ";
 
 	private int radii = 1;
-	private Block blockToPlace;
+	private IBlockState blockToPlace;
 	private TimerHelper timer;
 
 	/**
@@ -69,16 +74,18 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
-		String blockName = blockToPlace != null ? blockToPlace.getLocalizedName() : "<empty>";
-		list.add(EnumChatFormatting.GREEN + "Block set to: " + EnumChatFormatting.WHITE + blockName);
-		list.add(EnumChatFormatting.GREEN + "Radii set to: " + EnumChatFormatting.WHITE + radii);
-		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
-		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
+		String blockName = blockToPlace != null ? blockToPlace.getBlock().getLocalizedName() : "<empty>";
+		list.add(TextFormatting.GREEN + "Block set to: " + TextFormatting.WHITE + blockName);
+		list.add(TextFormatting.GREEN + "Radii set to: " + TextFormatting.WHITE + radii);
+		list.add(TextFormatting.GREEN + "Stored: " + TextFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
+		list.add(TextFormatting.GREEN + "Capacity: " + TextFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
-		boolean used = false;
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumHand hand,
+			EnumFacing facing, float hitX, float hitY, float hitZ) {
+
+		EnumActionResult result = EnumActionResult.FAIL;
 
 		if (!world.isRemote) {
 
@@ -112,48 +119,54 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 				// ProjectZed.logHelper.info("Max # can place:", amountToPlace);
 
 				int counter = amountToPlace;
-				Block currentBlock;
+				IBlockState currentBlock;
+				BlockPos pos;
+				final int side = facing.ordinal();
 
 				for (int i = -radii; i <= radii; i++) {
 					for (int j = -radii; j <= radii; j++) {
 						if (counter <= 0) break;
 
 						if (side == 0 || side == 1) {
-							currentBlock = BlockUtils.getBlock(world, x + i, y, z + j);
+							pos = VectorHelper.toBlockPos(blockPos.getX() + i, blockPos.getY(), blockPos.getZ() + j);
+							currentBlock = BlockUtils.getBlock(world, pos);
 
-							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x + i, y, z + j) > 0.0f) {
-								BlockUtils.destroyBlock(world, x + i, y, z + j);
-								BlockUtils.setBlock(world, x + i, y, z + j, blockToPlace);
-								world.markBlockForUpdate(x + i, y, z + j);
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, pos) > 0.0f) {
+								BlockUtils.destroyBlock(world, pos);
+								BlockUtils.setBlock(world, pos, blockToPlace);
+								// world.markBlockForUpdate(x + i, y, z + j);
+								world.notifyBlockOfStateChange(pos, currentBlock.getBlock());
 
 								counter--;
-								used = true;
+								result = EnumActionResult.SUCCESS;
 							}
 						}
 
 						else if (side == 2 || side == 3) {
-							currentBlock = BlockUtils.getBlock(world, x + i, y + j, z);
+							pos = VectorHelper.toBlockPos(blockPos.getX() + i, blockPos.getY() + j, blockPos.getZ());
+							currentBlock = BlockUtils.getBlock(world, pos);
 
-							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x + i, y + j, z) > 0.0f) {
-								BlockUtils.destroyBlock(world, x + i, y + j, z);
-								BlockUtils.setBlock(world, x + i, y + j, z, blockToPlace);
-								world.markBlockForUpdate(x + i, y + j, z);
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, pos) > 0.0f) {
+								BlockUtils.destroyBlock(world, pos);
+								BlockUtils.setBlock(world, pos, blockToPlace);
+								world.notifyBlockOfStateChange(pos, currentBlock.getBlock());
 
 								counter--;
-								used = true;
+								result = EnumActionResult.SUCCESS;
 							}
 						}
 
 						else {
-							currentBlock = BlockUtils.getBlock(world, x, y + j, z + i);
+							pos = VectorHelper.toBlockPos(blockPos.getX(), blockPos.getY() + j, blockPos.getZ() + i);
+							currentBlock = BlockUtils.getBlock(world, pos);
 
-							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, x, y + j, z + i) > 0.0f) {
-								BlockUtils.destroyBlock(world, x, y + j, z + i);
-								BlockUtils.setBlock(world, x, y + j, z + i, blockToPlace);
-								world.markBlockForUpdate(x, y + j, z + i);
+							if (currentBlock != blockToPlace && currentBlock.getBlockHardness(world, pos) > 0.0f) {
+								BlockUtils.destroyBlock(world, pos);
+								BlockUtils.setBlock(world, pos, blockToPlace);
+								world.notifyBlockOfStateChange(pos, currentBlock.getBlock());
 
 								counter--;
-								used = true;
+								result = EnumActionResult.SUCCESS;
 							}
 						}
 
@@ -183,25 +196,25 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 				}
 			}
 
-			else blockToPlace = BlockUtils.getBlock(world, x, y, z);
+			else blockToPlace = BlockUtils.getBlock(world, blockPos);
 		}
 
 		else {
 			if (player.isSneaking()) {
-				final Block newBlock = BlockUtils.getBlock(world, x, y, z);
+				final IBlockState newBlock = BlockUtils.getBlock(world, blockPos);
 
 				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
-					player.addChatComponentMessage(ChatUtils.createComponent(false, msgBlockSet + blockToPlace.getLocalizedName()));
+					player.addChatComponentMessage(ChatUtils.createComponent(false, msgBlockSet + blockToPlace.getBlock().getLocalizedName()));
 				}
 			}
 
-			used = true;
+			result = EnumActionResult.SUCCESS;
 		}
 
-		if (!timer.getUse()) player.swingItem();
+		if (!timer.getUse()) player.swingArm(hand);
 
-		return used;
+		return result;
 	}
 
 	@Override
@@ -233,7 +246,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		// int value = readFromNBT(stack)[0];
 		readFromNBT(stack);
 
-		NBTTagCompound comp = stack.stackTagCompound;
+		NBTTagCompound comp = stack.getTagCompound();
 
 		// if (comp == null) comp = stack.stackTagCompound = new NBTTagCompound();
 
@@ -242,9 +255,12 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 	@Override
 	public Integer[] readFromNBT(ItemStack stack) {
-		NBTTagCompound comp = stack.stackTagCompound;
+		NBTTagCompound comp = stack.getTagCompound();
 
-		if (comp == null) comp = stack.stackTagCompound = new NBTTagCompound();
+		if (comp == null) {
+			comp = new NBTTagCompound();
+			stack.setTagCompound(comp);
+		}
 
 		int num = comp.getInteger("ItemExchangerRadii");
 		Integer[] val = { num };

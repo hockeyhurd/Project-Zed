@@ -14,10 +14,14 @@ import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -100,19 +104,17 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		return te;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
+			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(pos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+				if (stack.getItem() == null || !(stack.getItem() instanceof ItemWrench))
 					FMLNetworkHandler
-							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, x, y, z);
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class), world, pos);
 
 				else return false;
 			}
@@ -126,12 +128,12 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		super.onBlockPlacedBy(world, x, y, z, e, stack);
-		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
-			NBTTagCompound comp = stack.stackTagCompound;
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, block, e, stack);
+		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
+			NBTTagCompound comp = stack.getTagCompound();
 
-			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
+			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(pos);
 			te.readNBT(comp);
 
 			/*for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -140,12 +142,9 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos pos) {
+		TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(pos);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 

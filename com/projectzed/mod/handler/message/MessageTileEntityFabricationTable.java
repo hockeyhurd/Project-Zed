@@ -52,7 +52,7 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 		this.y = te.yCoord;
 		this.z = te.zCoord;
 		this.buttonHit = buttonHit;
-		this.numSlots = this.te.getSizeInvenotry();
+		this.numSlots = this.te.getSizeInventory();
 		this.slots = new ItemStack[numSlots];
 		
 		syncStacks();

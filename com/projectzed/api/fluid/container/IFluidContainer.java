@@ -35,13 +35,6 @@ public interface IFluidContainer extends IFluidHandler {
 	String getLocalizedFluidName();
 	
 	/**
-	 * Shortened function to get the ID of the fluid currently in the tank.
-	 * 
-	 * @return fluid ID of fluid in pipe, else if empty should return '-1'.
-	 */
-	int getFluidID();
-	
-	/**
 	 * Function to get max import rate for te.
 	 * 
 	 * @return max import rate.

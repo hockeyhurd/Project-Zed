@@ -133,8 +133,8 @@ public class WorldUtils {
 	 */
 	public static void dropItemsFromContainerOnBreak(AbstractTileEntityGeneric te) {
 		
-		if (te != null && te.getSizeInvenotry() > 0) {
-			ItemStack[] drops = new ItemStack[te.getSizeInvenotry()];
+		if (te != null && te.getSizeInventory() > 0) {
+			ItemStack[] drops = new ItemStack[te.getSizeInventory()];
 			
 			for (int i = 0; i < drops.length; i++) {
 				drops[i] = te.getStackInSlot(i);

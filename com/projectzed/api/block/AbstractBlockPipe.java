@@ -8,7 +8,6 @@ package com.projectzed.api.block;
 
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.proxy.ClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -49,30 +48,14 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 		this.setHardness(1f);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube() {
+	@Override
+	public boolean isFullyOpaque(IBlockState state) {
 		return false;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public abstract int getRenderType();
 
-	@SideOnly(Side.CLIENT)
-	public boolean canRenderInPass(int pass) {
-		ClientProxy.renderPass = pass;
-		return true;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public int getRenderBlockPass() {
-		return 1;
-	}
-	
 	/**
 	 * @return tileentity object associated with this pipe.
 	 */

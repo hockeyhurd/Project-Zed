@@ -6,13 +6,12 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
 
 /**
  * Class containing, container code for industrial centrifuge.
@@ -51,12 +50,12 @@ public class ContainerCentrifuge extends ContainerMachine {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
 			
-			if (index < te.getSizeInvenotry()) {
-				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
+			if (index < te.getSizeInventory()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInventory(), this.inventorySlots.size(), false)) return null;
 			}
 			
 			else {
-				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
+				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInventory(), false)) return null;
 			}
 
 			if (slotStack.stackSize == 0) slot.putStack((ItemStack) null);

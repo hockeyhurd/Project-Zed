@@ -47,7 +47,7 @@ public class ContainerMachine extends Container {
 	 */
 	public ContainerMachine(InventoryPlayer inv, AbstractTileEntityMachine te, boolean runInitMethods) {
 		this.te = te;
-		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.NUM_SLOTS = te.getSizeInventory();
 		if (runInitMethods) addSlots(inv, te);
 	}
 
@@ -195,12 +195,12 @@ public class ContainerMachine extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
-			if (index < te.getSizeInvenotry()) {
-				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
+			if (index < te.getSizeInventory()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInventory(), this.inventorySlots.size(), false)) return null;
 			}
 			
 			else {
-				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
+				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInventory(), false)) return null;
 			}
 
 			if (slotStack.stackSize == 0) slot.putStack(null);

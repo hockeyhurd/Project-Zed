@@ -188,7 +188,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 						ItemStack invIn = otherInv.getStackInSlot(otherSlot);
 						if (invIn == null || invIn.stackSize == 0) continue;
 						
-						for (int thisSlot = 0; thisSlot < this.getSizeInvenotry() - getSizeUpgradeSlots(); thisSlot++) {
+						for (int thisSlot = 0; thisSlot < this.getSizeInventory() - getSizeUpgradeSlots(); thisSlot++) {
 							// itemstack currently in the 'input' slot.
 							in = this.getStackInSlot(thisSlot);
 							boolean hasStack = in != null && in.stackSize > 0 && in.stackSize <= in.getMaxStackSize();

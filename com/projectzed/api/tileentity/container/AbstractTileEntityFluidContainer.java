@@ -7,6 +7,8 @@
 package com.projectzed.api.tileentity.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.IFluidTile;
 import com.projectzed.api.fluid.container.IFluidContainer;
@@ -16,8 +18,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -33,7 +35,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	protected int maxFluidStorage = 10000;
 
 	protected FluidTank internalTank;
-	protected ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
+	protected EnumFacing lastReceivedDir = null;
 	
 	protected FluidNetwork network;
 	protected boolean isMaster;
@@ -55,15 +57,6 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		return this.internalTank;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.fluid.container.IFluidContainer#getFluidID()
-	 */
-	@Override
-	public int getFluidID() {
-		return getTank().getFluid() != null ? getTank().getFluid().getFluidID() : -1;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidImportRate()
@@ -93,10 +86,10 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.projectzed.api.fluid.container.IFluidContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
+	 * @see com.projectzed.api.fluid.container.IFluidContainer#setLastReceivedDirection(net.minecraftforge.common.util.EnumFacing)
 	 */
 	@Override
-	public void setLastReceivedDirection(ForgeDirection dir) {
+	public void setLastReceivedDirection(EnumFacing dir) {
 		this.lastReceivedDir = dir;
 	}
 	
@@ -105,7 +98,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @see com.projectzed.api.fluid.container.IFluidContainer#getLastReceivedDirection()
 	 */
 	@Override
-	public ForgeDirection getLastReceivedDirection() {
+	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
 	
@@ -174,19 +167,19 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 
 			int fillAmount = internalTank.fill(resource, doFill);
 
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+				if (this.getBlockType() != null) worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.internalTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -197,19 +190,19 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.EnumFacing, int, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 
@@ -222,16 +215,16 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @param doDrain whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
 					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
 					
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, internalTank, drainedFluid.amount));
 			}
 			
 			return drainedFluid;
@@ -242,10 +235,10 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
+	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull()) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -257,10 +250,10 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -272,10 +265,10 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.ForgeDirection)
+	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.EnumFacing)
 	 */
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { this.internalTank.getInfo() };
 	}
 	
@@ -294,7 +287,8 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @return localized name of fluid in the tank.
 	 */
 	public String getLocalizedFluidName() {
-		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ? this.internalTank.getFluid().getFluid().getLocalizedName() : null; 
+		return internalTank.getFluid() != null && internalTank.getFluid().getFluid() != null ?
+				internalTank.getFluid().getLocalizedName() : null;
 	}
 
 	/**
@@ -326,7 +320,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 
 	@Override
 	public Block getTile(World world) {
-		return world != null ? world.getBlock(xCoord, yCoord, zCoord) : null;
+		return world != null ? BlockUtils.getBlock(world, pos).getBlock() : null;
 	}
 
 	@Override
@@ -340,11 +334,11 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		importContents();
 
 		this.markDirty();
-		super.updateEntity();
+		super.update();
 	}
 
 	@Override
@@ -374,7 +368,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
 		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
 
-		byte ret = (byte) ForgeDirection.getOrientation(facingDir).getOpposite().ordinal();
+		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
 
 		return ret == currentMeta ? facingDir : ret;
 	}
@@ -411,7 +405,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 */
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return VectorHelper.toVector3i(pos);
 	}
 	
 	/*

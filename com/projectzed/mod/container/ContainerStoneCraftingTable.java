@@ -34,7 +34,7 @@ public class ContainerStoneCraftingTable extends Container {
 	public ContainerStoneCraftingTable(InventoryPlayer inv, TileEntityStoneCraftingTable te) {
 		this.inv = inv;
 		this.te = te;
-		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.NUM_SLOTS = te.getSizeInventory();
 		
 		addSlots(inv, te);
 

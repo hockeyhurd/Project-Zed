@@ -45,7 +45,7 @@ public class ContainerFabricationTable extends Container {
 	public ContainerFabricationTable(InventoryPlayer inv, TileEntityFabricationTable te) {
 		this.te = te;
 		this.inv = inv;
-		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.NUM_SLOTS = te.getSizeInventory();
 		addSlots(inv, te);
 		
 		this.onCraftMatrixChanged(this.craftMatrix);
@@ -110,11 +110,11 @@ public class ContainerFabricationTable extends Container {
 		
 		int id = 0;
 		String name = "";
-		for (int i = 10; i < te.getSizeInvenotry(); i++) {
+		for (int i = 10; i < te.getSizeInventory(); i++) {
 			if (te.getStackInSlot(i) != null) {
 				id = Item.getIdFromItem(te.getStackInSlot(i).getItem());
 				name = te.getStackInSlot(i).getDisplayName();
-				List<ItemStack> tempList = new ArrayList<ItemStack>(te.getSizeInvenotry() - 10);
+				List<ItemStack> tempList = new ArrayList<ItemStack>(te.getSizeInventory() - 10);
 				
 				if (sortType <= 2 && map.containsKey(id)) tempList = map.get(id);
 				else if (sortType > 2 && map2.containsKey(name)) tempList = map2.get(name);
@@ -162,7 +162,7 @@ public class ContainerFabricationTable extends Container {
 		}
 		
 		for (int i = 0; i < outputList.size(); i++) {
-			if (i + 10 <= this.te.getSizeInvenotry()) this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
+			if (i + 10 <= this.te.getSizeInventory()) this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
 		}
 		
 		ProjectZed.logHelper.info("Completed sorting in " + timeLapse.getEffectiveTimeSince() + " ms!");
@@ -236,17 +236,17 @@ public class ContainerFabricationTable extends Container {
 			itemstack = itemstack1.copy();
 			
 			if (index < 10) {
-				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInventory(), false)) return null;
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 
-			else if (index >= 10 && index < te.getSizeInvenotry()) {
-				if (!this.mergeItemStack(itemstack1, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
+			else if (index >= 10 && index < te.getSizeInventory()) {
+				if (!this.mergeItemStack(itemstack1, te.getSizeInventory(), this.inventorySlots.size(), false)) return null;
 			}
 
 			else {
-				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInvenotry(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInventory(), false)) return null;
 			}
 
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);

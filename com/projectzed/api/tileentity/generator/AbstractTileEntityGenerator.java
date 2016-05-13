@@ -7,6 +7,7 @@
 package com.projectzed.api.tileentity.generator;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -48,6 +49,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
 	 */
+	@Override
 	public abstract int getSizeInventory();
 
 	/*
@@ -55,6 +57,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
 	 */
+	@Override
 	public abstract int getInventoryStackLimit();
 
 	/*
@@ -62,6 +65,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
 	 */
+	@Override
 	protected abstract void initContentsArray();
 
 	/*
@@ -69,6 +73,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
+	@Override
 	protected abstract void initSlotsArray();
 
 	/*
@@ -76,6 +81,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
 	 */
+	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
@@ -85,6 +91,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
 
 	/*
@@ -92,27 +99,31 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	@Override
+	public abstract int[] getAccessibleSlotsFromSide(EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#setMaxStorage(int)
 	 */
+	@Override
 	public void setMaxStorage(int max) {
 		this.maxStored = max;
 	}
@@ -122,6 +133,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxStorage()
 	 */
+	@Override
 	public int getMaxStorage() {
 		return this.maxStored;
 	}
@@ -131,6 +143,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#setEnergyStored(int)
 	 */
+	@Override
 	public void setEnergyStored(int amount) {
 		this.stored = amount;
 	}
@@ -140,6 +153,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getEnergyStored()
 	 */
+	@Override
 	public int getEnergyStored() {
 		return this.stored;
 	}
@@ -149,6 +163,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
 	 */
+	@Override
 	public int getMaxImportRate() {
 		return 0;
 	}
@@ -158,6 +173,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
 	 */
+	@Override
 	public int getMaxExportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * 8;
 	}
@@ -167,6 +183,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
 	 */
+	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
 			if (this.stored - amount >= 0) this.stored -= amount;
@@ -177,7 +194,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 			return amount;
 		}
 
-		else return 0;
+		return 0;
 	}
 
 	/*
@@ -185,6 +202,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
 	 */
+	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
 			if (this.stored + amount <= this.maxStored) this.stored += amount;
@@ -196,7 +214,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 			return amount;
 		}
 
-		else return 0;
+		return 0;
 	}
 
 	/*
@@ -204,6 +222,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
 	 */
+	@Override
 	public void setLastReceivedDirection(EnumFacing dir) {
 	}
 
@@ -212,6 +231,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
 	 */
+	@Override
 	public EnumFacing getLastReceivedDirection() {
 		return null;
 	}
@@ -221,6 +241,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#defineSource()
 	 */
+	@Override
 	public abstract void defineSource();
 
 	/*
@@ -228,6 +249,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#getSource()
 	 */
+	@Override
 	public Source getSource() {
 		return this.source;
 	}
@@ -237,6 +259,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
 	 */
+	@Override
 	public void generatePower() {
 		if (worldObj.isRemote) return;
 		if (canProducePower()) {
@@ -255,6 +278,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
 	 */
+	@Override
 	public void transferPower() {
 	}
 
@@ -263,8 +287,9 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
+	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
+		return VectorHelper.toVector3i(pos);
 	}
 
 	/*
@@ -272,6 +297,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#canProducePower()
 	 */
+	@Override
 	public boolean canProducePower() {
 		return this.powerMode;
 	}
@@ -281,6 +307,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	 * 
 	 * @see com.projectzed.api.generation.IEnergyGeneration#setPowerMode(boolean)
 	 */
+	@Override
 	public void setPowerMode(boolean state) {
 		this.powerMode = state;
 	}

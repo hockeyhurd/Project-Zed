@@ -30,7 +30,7 @@ public class ContainerDigger extends Container {
 	
 	public ContainerDigger(InventoryPlayer inv, AbstractTileEntityDigger te) {
 		this.te = te;
-		this.NUM_SLOTS = te.getSizeInvenotry();
+		this.NUM_SLOTS = te.getSizeInventory();
 		addSlots(inv, te);
 	}
 
@@ -106,12 +106,12 @@ public class ContainerDigger extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
-			if (index < te.getSizeInvenotry()) {
-				if (!this.mergeItemStack(slotStack, te.getSizeInvenotry(), this.inventorySlots.size(), false)) return null;
+			if (index < te.getSizeInventory()) {
+				if (!this.mergeItemStack(slotStack, te.getSizeInventory(), this.inventorySlots.size(), false)) return null;
 			}
 			// TODO: fix this or DIE!! 
 			else {
-				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInvenotry(), false)) return null;
+				if (!this.getSlot(0).isItemValid(slotStack) || !this.mergeItemStack(slotStack, 0, te.getSizeInventory(), false)) return null;
 			}
 
 			if (slotStack.stackSize == 0) slot.putStack((ItemStack) null);

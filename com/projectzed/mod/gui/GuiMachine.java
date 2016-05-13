@@ -63,9 +63,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	public GuiMachine(InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(new ContainerMachine(inv, te));
-		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
-		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
-		// else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		if (te.getSizeInventory() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
+		else if (te.getSizeInventory() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		// else if (te.getSizeInventory() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 		else texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
 		if (te.getSizeUpgradeSlots() > 0) {
@@ -92,9 +92,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	 */
 	public GuiMachine(ContainerMachine containerMachine, InventoryPlayer inv, AbstractTileEntityMachine te) {
 		super(containerMachine);
-		if (te.getSizeInvenotry() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
-		else if (te.getSizeInvenotry() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
-		// else if (te.getSizeInvenotry() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
+		if (te.getSizeInventory() == 1 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachineSingleSlot.png");
+		else if (te.getSizeInventory() == 2 + te.getSizeUpgradeSlots()) texture = new ResourceLocation("projectzed", "textures/gui/GuiMachine_generic.png");
+		// else if (te.getSizeInventory() == 0) texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 		else texture = new ResourceLocation("projectzed", "textures/gui/GuiGenerator_generic0.png");
 
 		if (te.getSizeUpgradeSlots() > 0) {
@@ -146,7 +146,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61, 0, 170, (int) progress, 17);
 	
-		if (this.te.getSizeInvenotry() > 1) {
+		if (this.te.getSizeInventory() > 1) {
 			int i1 = 0;
 			if (this.te.isPoweredOn() && this.te.cookTime > 0) {
 				i1 = this.te.getCookProgressScaled(24);

@@ -6,16 +6,14 @@
 */
 package com.projectzed.mod.container;
 
+import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing 'container' code for energy like containers.
@@ -99,13 +97,13 @@ public class ContainerEnergyContainer extends Container {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 			
-			if (index <= te.getSizeInvenotry() - 1) {
-				if (!this.mergeItemStack(itemstack1, te.getSizeInvenotry(), this.getInventory().size(), true)) return null; 
+			if (index <= te.getSizeInventory() - 1) {
+				if (!this.mergeItemStack(itemstack1, te.getSizeInventory(), this.getInventory().size(), true)) return null;
 
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 			else {
-				if (!this.mergeItemStack(itemstack1, 0, te.getSizeInvenotry(), false)) return null;
+				if (!this.mergeItemStack(itemstack1, 0, te.getSizeInventory(), false)) return null;
 			}
 
 			if (itemstack1.stackSize == 0) slot.putStack((ItemStack) null);

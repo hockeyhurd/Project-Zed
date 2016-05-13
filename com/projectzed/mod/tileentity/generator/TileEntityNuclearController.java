@@ -26,8 +26,6 @@ import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.util.Coolant;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
@@ -38,6 +36,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.HashMap;

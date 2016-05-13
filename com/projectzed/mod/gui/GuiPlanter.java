@@ -52,7 +52,7 @@ public class GuiPlanter extends GuiMachine {
 		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 0x30, 0, 170 + 0x30, (int) progress, 17);
 
-		if (this.te.getSizeInvenotry() > 1) {
+		if (this.te.getSizeInventory() > 1) {
 			/*int i1 = 0;
 			if (this.te.isPoweredOn() && this.te.cookTime > 0) {
 				i1 = this.te.getCookProgressScaled(24);
