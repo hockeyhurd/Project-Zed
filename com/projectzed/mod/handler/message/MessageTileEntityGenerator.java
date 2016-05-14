@@ -63,7 +63,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 		if (te instanceof IFluidContainer) {
 			hasFluidTank = true;
-			fluidName = ((IFluidContainer) te).getFluidName();
+			fluidName = ((IFluidContainer) te).getFluidID();
 			fluidNameLen = fluidName.length();
 			fluidAmount = ((IFluidContainer) te).getTank().getFluidAmount();
 		}

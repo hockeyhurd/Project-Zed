@@ -14,11 +14,11 @@ import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -79,7 +79,7 @@ public abstract class AbstractItemUpgrade extends AbstractHCoreItem implements I
 		addInfo(stack, player, list);
 
 		if (addShiftInfo(stack, player, list, false) > 0)
-			list.add(EnumChatFormatting.GRAY + "<" + EnumChatFormatting.GREEN + "shift for more info" + EnumChatFormatting.GRAY + ">");
+			list.add(TextFormatting.GRAY + "<" + TextFormatting.GREEN + "shift for more info" + TextFormatting.GRAY + ">");
 
 		if (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)) addShiftInfo(stack, player, list, false);
 	}

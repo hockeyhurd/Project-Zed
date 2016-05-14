@@ -9,17 +9,18 @@ package com.projectzed.mod.handler.message;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
 import com.projectzed.api.util.EnumRedstoneType;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Class used to send messages to/from client and server for all digger based machines.
@@ -30,7 +31,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class MessageTileEntityDigger implements IMessage, IMessageHandler<MessageTileEntityDigger, IMessage> {
 
 	protected AbstractTileEntityDigger te;
-	protected int x, y, z;
+	protected Vector3<Integer> vec;
 	protected int stored;
 	protected int energyBurnRate;
 	protected boolean powerMode;
@@ -40,16 +41,14 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 	protected Rect<Integer> quarryRect;
 	
 	protected EnumRedstoneType redstoneType;
-	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	protected byte[] openSides = new byte[EnumFacing.VALUES.length];
 
 	public MessageTileEntityDigger() {
 	}
 
 	public MessageTileEntityDigger(AbstractTileEntityDigger te) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.stored = te.getEnergyStored();
 		this.energyBurnRate = te.getEnergyBurnRate();
 		this.powerMode = te.isPoweredOn();
@@ -68,9 +67,11 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.stored = buf.readInt();
 		this.energyBurnRate = buf.readInt();
 		this.powerMode = buf.readBoolean();
@@ -102,9 +103,9 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeInt(energyBurnRate);
 		buf.writeBoolean(powerMode);
@@ -131,7 +132,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 	@Override
 	public IMessage onMessage(MessageTileEntityDigger message, MessageContext ctx) {
 		if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (te != null && te instanceof AbstractTileEntityDigger) {
 				((AbstractTileEntityDigger) te).setEnergyStored(message.stored);
@@ -145,7 +146,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				}
 
 				for (int i = 0; i < message.openSides.length; i++) {
-					((AbstractTileEntityDigger) te).setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+					((AbstractTileEntityDigger) te).setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 
 			}
@@ -153,7 +154,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 		
 		else if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(message.x, message.y, message.z);
+			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
 			if (world != null && te != null && te instanceof AbstractTileEntityDigger) {
 				AbstractTileEntityDigger te2 = (AbstractTileEntityDigger) te;
@@ -169,7 +170,7 @@ public class MessageTileEntityDigger implements IMessage, IMessageHandler<Messag
 				}
 
 				for (int i = 0; i < message.openSides.length; i++) {
-					te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+					te2.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 
 			}

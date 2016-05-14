@@ -10,11 +10,11 @@ import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.gui.component.HeatLabel;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui class specific to nuclear controllers.

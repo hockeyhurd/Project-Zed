@@ -10,18 +10,21 @@
 
 package com.projectzed.mod.handler;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemBlockExchanger;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -38,13 +41,11 @@ public class DrawBlockSelectionHandler {
 
 	@SubscribeEvent
 	public void onDrawBlockHighlightEvent(DrawBlockHighlightEvent event) {
-		if (event.currentItem != null && event.target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+		final ItemStack stack = event.getPlayer().inventory.getCurrentItem();
+		if (stack != null && event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK) {
 
-			if (event.currentItem.getItem() == ProjectZed.blockExchanger) {
-				drawSelectionBoxQuad(event.context, event.player,
-						new MovingObjectPosition(event.target.blockX, event.target.blockY, event.target.blockZ, event.target.sideHit, event.target.hitVec)
-						, 0, event.partialTicks);
-			}
+			if (stack.getItem() == ProjectZed.blockExchanger)
+				drawSelectionBoxQuad(event.getContext(), event.getPlayer(), event.getTarget(), 0, event.getPartialTicks());
 		}
 	}
 
@@ -57,8 +58,8 @@ public class DrawBlockSelectionHandler {
 	 * @param x int.
 	 * @param partialTicks float partial ticks.
 	 */
-	private void drawSelectionBoxQuad(RenderGlobal context, EntityPlayer player, MovingObjectPosition rayTrace, int x, float partialTicks) {
-		if (x == 0 && context != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+	private void drawSelectionBoxQuad(RenderGlobal context, EntityPlayer player, RayTraceResult rayTrace, int x, float partialTicks) {
+		if (x == 0 && context != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
@@ -69,18 +70,19 @@ public class DrawBlockSelectionHandler {
 			GL11.glDepthMask(false);
 
 			final float offsetY = 0.002f;
-			final int radii = ((ItemBlockExchanger) player.getCurrentEquippedItem().getItem()).getRadii();
+			final int radii = ((ItemBlockExchanger) player.inventory.getCurrentItem().getItem()).getRadii();
 			double xp, yp, zp;
 
-			Block currentBlock;
+			IBlockState currentBlock;
 
 			for (int i = -radii; i <= radii; i++) {
 				for (int j = -radii; j <= radii; j++) {
 					// currentBlock = player.worldObj.getBlock(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ);
 
-					if (rayTrace.sideHit == 0 || rayTrace.sideHit == 1) {
-						currentBlock = player.worldObj.getBlock(rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
-						if (currentBlock.getMaterial() == Material.air) continue;
+					if (rayTrace.sideHit == EnumFacing.DOWN || rayTrace.sideHit == EnumFacing.UP) {
+						currentBlock = BlockUtils.getBlock(player.worldObj, rayTrace.getBlockPos().getX() + i,
+								rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
+						if (currentBlock.getBlock().getMaterial(currentBlock) == Material.air) continue;
 
 						currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
 

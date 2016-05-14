@@ -71,18 +71,19 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 			if (tileEntity instanceof IEnergyContainer) {
 				if (tileEntity instanceof TileEntityEnergyPipeBase) {
 					final TileEntityEnergyPipeBase pipe = (TileEntityEnergyPipeBase) tileEntity;
-					if (pipe.getColor() == getColor()) connections[dir.ordinal()] = dir;
+					if (pipe.getColor() == getColor()) connections[dir.ordinal()] = dir.getOpposite();
 				}
 
 				else if (tileEntity instanceof IModularFrame) {
 					final IModularFrame frame = (IModularFrame) tileEntity;
-					if (frame.getSideValve(dir.getOpposite()) != 0) connections[dir.ordinal()] = dir;
+					if (frame.getSideValve(dir.getOpposite()) != 0) connections[dir.ordinal()] = dir.getOpposite();
 					else connections[dir.ordinal()] = null;
 				}
 
-				else connections[dir.ordinal()] = dir;
+				else connections[dir.ordinal()] = dir.getOpposite();
 			}
 
+			else connections[dir.ordinal()] = null;
 		}
 	}
 

@@ -10,17 +10,19 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 	private int storedPower;
 	private boolean powerMode;
 
+	@Deprecated
 	public MessageTileEntityRefinery() {
 		vec = Vector3.zero.getVector3i();
 	}
@@ -56,8 +59,8 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		FluidTank current;
 		for (int i = 0; i < numTanks; i++) {
 			current = te.getTank(i);
-			if (current == null || current.getFluid() == null) tanks.add(new TankData(i, -1, 0));
-			else tanks.add(new TankData(i, current.getFluid().getFluidID(), current.getFluidAmount()));
+			if (current == null || current.getFluid() == null) tanks.add(new TankData(i, null, 0));
+			else tanks.add(new TankData(i, current.getFluid().getFluid().getName(), current.getFluidAmount()));
 		}
 	}
 
@@ -97,7 +100,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 
 	@Override
 	public IMessage onMessage(MessageTileEntityRefinery message, MessageContext ctx) {
-		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.vec.x, message.vec.y, message.vec.z);
+		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 
 		if (tileEntity != null && tileEntity instanceof TileEntityRefinery) {
 			TileEntityRefinery te = (TileEntityRefinery) tileEntity;
@@ -127,32 +130,42 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 	 */
 	private static final class TankData {
 
-		int tankID, fluidID, fluidAmount;
+		int tankID, fluidAmount;
+		int fluidIDLen;
+		String fluidID;
 
 		private TankData() {
 		}
 
-		TankData(int tankID, int fluidID, int fluidAmount) {
+		TankData(int tankID, String fluidID, int fluidAmount) {
 			this.tankID = tankID;
 			this.fluidID = fluidID;
+			this.fluidIDLen = fluidID.length();
 			this.fluidAmount = fluidAmount;
 		}
 
 		FluidTank generateFluidTank(IFluidContainer cont) {
 			final FluidTank fluidTank = new FluidTank(cont.getTank().getCapacity());
 
-			if (fluidID >= 0 && fluidAmount > 0) fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount));
+			if (StringUtils.nullCheckString(fluidID) && fluidAmount > 0)
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount));
 
 			return fluidTank;
 		}
 
 		FluidStack getFluidStack() {
-			return fluidID >= 0 && fluidAmount > 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
+			return StringUtils.nullCheckString(fluidID) && fluidAmount > 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
 		}
 
 		void writeTankData(ByteBuf buf) {
 			buf.writeInt(tankID);
-			buf.writeInt(fluidID);
+			buf.writeInt(fluidIDLen);
+
+			if (fluidIDLen > 0) {
+				for (char c : fluidID.toCharArray())
+					buf.writeChar(c);
+			}
+
 			buf.writeInt(fluidAmount);
 		}
 
@@ -163,7 +176,14 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 			// ret.fluidAmount = buf.readInt();
 
 			int tankID = buf.readInt();
-			int fluidID = buf.readInt();
+			int fluidIDLen = buf.readInt();
+
+			char[] arr = new char[fluidIDLen];
+			for (int i = 0; i < fluidIDLen; i++)
+				arr[i] = buf.readChar();
+
+			String fluidID = new String(arr);
+
 			int fluidAmount = buf.readInt();
 
 			return new TankData(tankID, fluidID, fluidAmount);

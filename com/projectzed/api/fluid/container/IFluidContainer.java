@@ -32,7 +32,7 @@ public interface IFluidContainer extends IFluidHandler {
 	 *
 	 * @return String fluid name.
 	 */
-	String getFluidName();
+	String getFluidID();
 
 	/**
 	 * Shortened function to get the name of the fluid in this tank currently.

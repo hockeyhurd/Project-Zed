@@ -15,15 +15,15 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Block class for lava generator.
@@ -33,30 +33,8 @@ import net.minecraft.world.World;
  */
 public class BlockLavaGenerator extends AbstractBlockGenerator {
 
-	@SideOnly(Side.CLIENT)
-	private IIcon frontOn;
-
 	public BlockLavaGenerator(Material material) {
 		super(material, "lavaGen");
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
-		this.frontOn = reg.registerIcon(ProjectZed.assetDir + this.name + "_front_on");
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(x, y, z);
-		int meta = world.getBlockMetadata(x, y, z);
-
-		if (side == 3 && meta == 0) return this.front;
-		return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (te.canProducePower() ? this.frontOn : this.front));
 	}
 
 	@Override
@@ -65,20 +43,22 @@ public class BlockLavaGenerator extends AbstractBlockGenerator {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(x, y, z);
+			TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(blockPos);
 			if (te != null) FMLNetworkHandler
-					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityLavaGenerator.class), world, x, y, z);
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityLavaGenerator.class), world,
+							blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(blockPos);
 
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 

@@ -6,14 +6,12 @@
 */
 package com.projectzed.mod.renderer;
 
-import com.hockeyhurd.hcorelib.api.item.AbstractItemRenderer;
-import net.minecraft.util.IIcon;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Simple class extending AbstractItemRenderer.
- * <br><br>For more info on implementation, see: {@link com.hockeyhurd.api.item.AbstractItemRenderer}.
+ * <br><br>For more info on implementation, see: {@link com.hockeyhurd.hcorelib.api.item.AbstractItemRenderer}.
  * 
  * @author hockeyhurd
  * @version Dec 7, 2014

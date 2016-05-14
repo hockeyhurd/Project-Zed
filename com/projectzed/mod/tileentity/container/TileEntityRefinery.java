@@ -20,7 +20,7 @@ import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -133,8 +133,8 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		// transferPower();
 
 		if (!worldObj.isRemote) {
@@ -223,17 +223,17 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 
 	public String getLocalizedFluidName(TankID tankID) {
 		return tanks[tankID.ordinal()].getFluid() != null && tanks[tankID.ordinal()].getFluid().getFluid() != null ?
-				tanks[tankID.ordinal()].getFluid().getFluid().getLocalizedName() :
+				tanks[tankID.ordinal()].getFluid().getFluid().getName() :
 				null;
 	}
 
 	@Override
-	public int getFluidID() {
+	public String getFluidID() {
 		return getFluidID(TankID.OUTPUT);
 	}
 
-	public int getFluidID(TankID tankID) {
-		return getTank(tankID).getFluid() != null ? getTank(tankID).getFluid().getFluidID() : -1;
+	public String getFluidID(TankID tankID) {
+		return getTank(tankID).getFluid() != null ? getTank(tankID).getFluid().getFluid().getName() : null;
 	}
 
 	@Override
@@ -286,16 +286,16 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 
 			int fillAmount = inputTank.fill(resource, doFill);
 
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.inputTank, fillAmount));
+				if (this.getBlockType() != null) worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.inputTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -305,12 +305,12 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 
@@ -323,16 +323,16 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	 * @param doDrain whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(outputTank.getFluid())) ? outputTank.drain(
 					drainFluid.amount, doDrain) : drainAmount >= 0 ? outputTank.drain(drainAmount, doDrain) : null;
 
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.outputTank));
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, this.outputTank, drainedFluid.amount));
 			}
 
 			return drainedFluid;
@@ -342,7 +342,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
+	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull(TankID.INPUT)) {
 			FluidStack tankFluid = this.inputTank.getFluid();
 
@@ -353,7 +353,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.outputTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.outputTank.getFluid();
 
@@ -364,7 +364,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { inputTank.getInfo(), outputTank.getInfo() };
 	}
 

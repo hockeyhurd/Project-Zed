@@ -10,8 +10,8 @@
 
 package com.projectzed.mod.util;
 
-import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
  * Simple class for injecting mod metadata info into mcmod.info file.

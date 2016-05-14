@@ -6,19 +6,20 @@
 */
 package com.projectzed.mod.handler.message;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
+import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import com.projectzed.mod.tileentity.container.TileEntityFluidTankBase;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * TileEntity message handler for packets.
@@ -28,14 +29,16 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
  */
 public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<MessageTileEntityFluidTank, IMessage> {
 
-	public TileEntityFluidTankBase te;
-	public int x, y, z;
-	public int fluidAmount;
-	public int fluidID;
-	public byte tier;
-	
-	public byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
-	
+	private TileEntityFluidTankBase te;
+	private Vector3<Integer> vec;
+	private int fluidAmount;
+	private int fluidIDLen;
+	private String fluidID;
+	private byte tier;
+
+	private byte[] openSides = new byte[EnumFacing.VALUES.length];
+
+	@Deprecated
 	public MessageTileEntityFluidTank() {
 	}
 	
@@ -44,14 +47,13 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	 */
 	public MessageTileEntityFluidTank(TileEntityFluidTankBase te) {
 		this.te = te;
-		this.x = te.xCoord;
-		this.y = te.yCoord;
-		this.z = te.zCoord;
+		this.vec = te.worldVec();
 		this.tier = te.getTier();
 		this.fluidAmount = te.getTank().getFluidAmount();
 		
 		FluidStack fluidStack = te.getTank().getFluid();
-		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluidID() : -1;
+		this.fluidID = fluidStack != null && fluidStack.getFluid() != null ? fluidStack.getFluid().getName() : null;
+		this.fluidIDLen = fluidID != null ? fluidID.length() : -1;
 		
 		for (int i = 0; i < openSides.length; i++) {
 			this.openSides[i] = te.getSideValve(i);
@@ -64,12 +66,20 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	 */
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.x = buf.readInt();
-		this.y = buf.readInt();
-		this.z = buf.readInt();
+		if (vec == null) vec = new Vector3<Integer>();
+		vec.x = buf.readInt();
+		vec.y = buf.readInt();
+		vec.z = buf.readInt();
+
 		this.tier = buf.readByte();
 		this.fluidAmount = buf.readInt();
-		this.fluidID = buf.readInt();
+		this.fluidIDLen = buf.readInt();
+
+		char[] arr = new char[fluidIDLen];
+		for (int i = 0; i < fluidIDLen; i++)
+			arr[i] = buf.readChar();
+
+		this.fluidID = new String(arr);
 		
 		for (int i = 0; i < openSides.length; i++) {
 			openSides[i] = buf.readByte();
@@ -82,12 +92,17 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	 */
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(this.x);
-		buf.writeInt(this.y);
-		buf.writeInt(this.z);
+		buf.writeInt(vec.x);
+		buf.writeInt(vec.y);
+		buf.writeInt(vec.z);
 		buf.writeByte(this.tier);
 		buf.writeInt(this.fluidAmount);
-		buf.writeInt(this.fluidID);
+		buf.writeInt(this.fluidIDLen);
+
+		if (fluidIDLen > 0) {
+			for (char c : fluidID.toCharArray())
+				buf.writeChar(c);
+		}
 		
 		for (byte b : openSides) {
 			buf.writeByte(b);
@@ -100,14 +115,14 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 	 */
 	@Override
 	public IMessage onMessage(MessageTileEntityFluidTank message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
 		if (te != null && te instanceof TileEntityFluidTankBase) {
 			TileEntityFluidTankBase te2 = (TileEntityFluidTankBase) te;
 
 			te2.setTier(message.tier);
 			
-			if (message.fluidID >= 0) {
+			if (StringUtils.nullCheckString(message.fluidID)) {
 				// ProjectZed.logHelper.info(message.fluidID);
 				Fluid fluid = FluidRegistry.getFluid(message.fluidID);
 				FluidStack stack = new FluidStack(fluid, message.fluidAmount);
@@ -119,7 +134,7 @@ public class MessageTileEntityFluidTank implements IMessage, IMessageHandler<Mes
 			else te2.getTank().setFluid((FluidStack) null);
 			
 			for (int i = 0; i < message.openSides.length; i++) {
-				te2.setSideValve(ForgeDirection.VALID_DIRECTIONS[i], message.openSides[i]);
+				te2.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 			}
 		}
 		

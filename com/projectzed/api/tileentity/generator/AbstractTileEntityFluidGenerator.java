@@ -16,7 +16,7 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -64,17 +64,17 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getAccessibleSlotsFromSide(EnumFacing side) {
 		return new int[0];
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
@@ -95,8 +95,8 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		boolean flag = this.stored > 0;
 		boolean flag1 = false;
 
@@ -165,13 +165,13 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	@Override
 	public String getLocalizedFluidName() {
 		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ?
-				this.internalTank.getFluid().getFluid().getLocalizedName() :
+				this.internalTank.getFluid().getLocalizedName() :
 				null;
 	}
 
 	@Override
-	public int getFluidID() {
-		return getTank().getFluid() != null ? getTank().getFluid().getFluidID() : -1;
+	public String getFluidID() {
+		return getTank().getFluid() != null ? getTank().getFluid().getFluid().getName() : null;
 	}
 
 	@Override
@@ -224,16 +224,16 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 
 			int fillAmount = internalTank.fill(resource, doFill);
 
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+				if (this.getBlockType() != null) worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.internalTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -243,12 +243,12 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 
@@ -261,7 +261,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	 * @param doDrain     whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ?
 					internalTank.drain(drainFluid.amount, doDrain) :
@@ -269,9 +269,9 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, this.internalTank, drainedFluid.amount));
 			}
 
 			return drainedFluid;
@@ -281,7 +281,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
+	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull()) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 
@@ -292,7 +292,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 
@@ -303,7 +303,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { this.internalTank.getInfo() };
 	}
 

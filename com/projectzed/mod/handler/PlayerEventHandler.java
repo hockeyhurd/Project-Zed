@@ -7,11 +7,11 @@
 package com.projectzed.mod.handler;
 
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Class containing event code for when user is doing something i should know about.
@@ -44,9 +44,9 @@ public class PlayerEventHandler {
 	 */
 	@SubscribeEvent
 	public void onPlayerUpdate(LivingUpdateEvent event) {
-		if (!(event.entityLiving instanceof EntityPlayer) || event.entityLiving.worldObj.isRemote) return;
+		if (!(event.getEntityLiving() instanceof EntityPlayer) || event.getEntityLiving().worldObj.isRemote) return;
 		else {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			if (player.inventory.hasItem(ProjectZed.enrichedUranium)) {
 				// System.out.println(player.getActivePotionEffect(Potion.poison) != null);
 				if (player.getActivePotionEffect(Potion.poison) != null) return;

@@ -8,6 +8,8 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.FluidNetwork;
@@ -19,15 +21,16 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +93,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * @see com.projectzed.api.fluid.container.IFluidContainer#getFluidID()
 	 */
 	@Override
-	public int getFluidID() {
-		return getTank().getFluid() != null ? getTank().getFluid().getFluidID() : -1;
+	public String getFluidID() {
+		return getTank().getFluid() != null ? getTank().getFluid().getFluid().getName() : null;
 	}
 	
 	/*
@@ -139,7 +142,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 	
 	protected void importContents() {
-		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		if (this.worldObj == null || this.worldObj.isRemote) return;
 		
 		if (this.internalTank.getFluidAmount() > this.maxFluidStorage) {
 			FluidStack copy = this.internalTank.getFluid();
@@ -153,7 +156,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 
 	protected void exportContents() {
-		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		if (this.worldObj == null || this.worldObj.isRemote) return;
 		if (this.internalTank.getFluidAmount() == 0) return;
 		
 		// FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
@@ -164,14 +167,14 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 		updateNetwork();
 		// importContents();
 		// exportContents();
 		
 		if (!this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0) {
-			// if (this.lastReceivedDir != ForgeDirection.UNKNOWN) ProjectZed.logHelper.info(this.lastReceivedDir.name());
+			// if (this.lastReceivedDir != EnumFacing.UNKNOWN) ProjectZed.logHelper.info(this.lastReceivedDir.name());
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityLiquiduct(this));
 		}
 		
@@ -193,7 +196,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 */
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return VectorHelper.toVector3i(pos);
 	}
 
 	/*
@@ -202,104 +205,23 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 */
 	@Override
 	protected void updateConnections() {
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			BlockPos blockPos = VectorHelper.toBlockPos(pos.getX() + dir.getFrontOffsetX(), pos.getY() + dir.getFrontOffsetY(),
+					pos.getZ() + dir.getFrontOffsetZ());
+			TileEntity tileEntity = worldObj.getTileEntity(blockPos);
 
-		IFluidHandler cont = null;
-		
-		if (this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[0] = ForgeDirection.UP;
+			if (tileEntity instanceof IFluidHandler) {
+				IFluidHandler cont = (IFluidHandler) tileEntity;
+
+				if (cont instanceof TileEntityLiquiductBase)
+					if (((TileEntityLiquiductBase) cont).getColor() == getColor()) connections[dir.ordinal()] = dir.getOpposite();
+				else if (cont instanceof IModularFrame)
+						if (((IModularFrame) cont).getSideValve(dir) != 0) connections[dir.ordinal()] = dir.getOpposite();
+				else connections[dir.ordinal()] = dir.getOpposite();
 			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[0] = ForgeDirection.UP;
-			}
-			
-			else connections[0] = ForgeDirection.UP;
+
+			else connections[dir.ordinal()] = null;
 		}
-		
-		else connections[0] = null;
-		
-		if (this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[1] = ForgeDirection.DOWN;
-			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[1] = ForgeDirection.DOWN;
-			}
-			
-			else connections[1] = ForgeDirection.DOWN;
-		}
-		
-		else connections[1] = null;
-		
-		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[2] = ForgeDirection.NORTH;
-			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.NORTH.getOpposite()) != 0) connections[2] = ForgeDirection.NORTH;
-			}
-			
-			else connections[2] = ForgeDirection.NORTH;
-		}
-		
-		else connections[2] = null;
-		
-		if (this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[3] = ForgeDirection.EAST;
-			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.EAST.getOpposite()) != 0) connections[3] = ForgeDirection.EAST;
-			}
-			
-			else connections[3] = ForgeDirection.EAST;
-		}
-		
-		else connections[3] = null;
-		
-		if (this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[4] = ForgeDirection.SOUTH;
-			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.SOUTH.getOpposite()) != 0) connections[4] = ForgeDirection.SOUTH;
-			}
-			
-			else connections[4] = ForgeDirection.SOUTH;
-		}
-		
-		else connections[4] = null;
-		
-		if (this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord) instanceof IFluidHandler) {
-			cont = (IFluidHandler) this.worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-			
-			if (cont instanceof TileEntityLiquiductBase) {
-				if (((TileEntityLiquiductBase) cont).getColor() == this.getColor()) connections[5] = ForgeDirection.WEST;
-			}
-			
-			else if (cont instanceof IModularFrame) {
-				if (((IModularFrame) cont).getSideValve(ForgeDirection.WEST.getOpposite()) != 0) connections[5] = ForgeDirection.WEST;
-			}
-			
-			else connections[5] = ForgeDirection.WEST;
-		}
-		
-		else connections[5] = null;
 		
 	}
 
@@ -325,8 +247,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	}
 
 	@Override
-	public Block getTile(World world) {
-		return world != null ? world.getBlock(xCoord, yCoord, zCoord) : null;
+	public IBlockState getTile(World world) {
+		return world != null ? BlockUtils.getBlock(world, getPos()) : null;
 	}
 
 	@Override
@@ -380,10 +302,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
 			
 			FluidStack altStack = resource.copy();
@@ -396,12 +318,13 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			else fillAmount = internalTank.fill(resource, doFill);
 			
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				// worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				
-				if (useAlt) FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(altStack, worldObj, xCoord, yCoord, zCoord, this.internalTank));
-				else FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+				if (this.getBlockType() != null) worldObj.notifyNeighborsOfStateChange(pos, blockType);
+
+				if (useAlt) FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(altStack, worldObj, pos, this.internalTank, fillAmount));
+				else FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.internalTank, fillAmount));
 			}
 			
 			return fillAmount;
@@ -412,19 +335,19 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.FluidStack, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
+	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.EnumFacing, int, boolean)
 	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 	
@@ -437,7 +360,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * @param doDrain = whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		
 		if (!worldObj.isRemote) {
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
@@ -449,11 +372,11 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
 				
-				if (useAlt) FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(altStack, worldObj, xCoord, yCoord, zCoord, this.internalTank));
-				else FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+				if (useAlt) FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(altStack, worldObj, pos, this.internalTank, altStack.amount));
+				else FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, this.internalTank, altStack.amount));
 			}
 		}
 		
@@ -462,10 +385,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
+	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull()) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -477,10 +400,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
+	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.EnumFacing, net.minecraftforge.fluids.Fluid)
 	 */
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -492,10 +415,10 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.ForgeDirection)
+	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.EnumFacing)
 	 */
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { this.internalTank.getInfo() };
 	}
 	
@@ -615,6 +538,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		
 		// only run if okayed to 
 		if (hadNetworkNBT) {
+			Vector3<Integer> worldVec = worldVec();
 			// ProjectZed.logHelper.info("isMaster:", isMaster);
 			// ProjectZed.logHelper.info("hadNetworkNBT", hadNetworkNBT);
 			if (hasFluidNetwork()) {
@@ -625,10 +549,12 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			else {
 				
 				// get surrounding fluid handlers so that the network can track this node's connections!
-				List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
+				List<EnumFacing> directions = new ArrayList<EnumFacing>(EnumFacing.VALUES.length);
 				
-				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-					TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ); 
+				for (EnumFacing dir : EnumFacing.VALUES) {
+					BlockPos pos = VectorHelper.toBlockPos(worldVec.x + dir.getFrontOffsetX(), worldVec.y + dir.getFrontOffsetY(),
+							worldVec.z + dir.getFrontOffsetZ());
+					TileEntity te = worldObj.getTileEntity(pos);
 					
 					if (te instanceof TileEntityLiquiductBase) {
 						TileEntityLiquiductBase cont = (TileEntityLiquiductBase) te;
@@ -642,8 +568,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					
 					// create new fluid network.
 					if (!hasFluidNetwork()) {
-						directions.add(ForgeDirection.UNKNOWN);
-						network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
+						directions.add(null);
+						network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new EnumFacing[directions.size()]), worldVec()));
 					}
 					
 					hadNetworkNBT = false;
@@ -654,11 +580,11 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					// ProjectZed.logHelper.info("Still waiting for hadNetworkNBT, returning..");
 					if (this.masterVec == null) return;
 					
-					IFluidContainer master = (IFluidContainer) worldObj.getTileEntity(this.masterVec.x, this.masterVec.y, this.masterVec.z);
+					IFluidContainer master = (IFluidContainer) worldObj.getTileEntity(VectorHelper.toBlockPos(masterVec));
 					
 					if (master != null && master.hasFluidNetwork()) {
 						this.network = master.getNetwork();
-						this.network.add(new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
+						this.network.add(new FluidNode(this, directions.toArray(new EnumFacing[directions.size()]), worldVec()));
 						
 						hadNetworkNBT = false;
 					}
@@ -669,11 +595,14 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 		}
 		
 		if (!hasFluidNetwork()) {
-			List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
-			
+			List<EnumFacing> directions = new ArrayList<EnumFacing>(EnumFacing.VALUES.length);
+			Vector3<Integer> worldVec = worldVec();
+
 			// ProjectZed.logHelper.info("Help me find a network!");
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ); 
+			for (EnumFacing dir : EnumFacing.VALUES) {
+				BlockPos pos = VectorHelper.toBlockPos(worldVec.x + dir.getFrontOffsetX(), worldVec.y + dir.getFrontOffsetY(),
+						worldVec.z + dir.getFrontOffsetZ());
+				TileEntity te = worldObj.getTileEntity(pos);
 				
 				if (te instanceof TileEntityLiquiductBase) {
 					TileEntityLiquiductBase cont = (TileEntityLiquiductBase) te;
@@ -687,21 +616,24 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			
 			// create new fluid network.
 			if (!hasFluidNetwork()) {
-				directions.add(ForgeDirection.UNKNOWN);
-				network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
+				directions.add(null);
+				network = new FluidNetwork(this.worldObj, new FluidNode(this, directions.toArray(new EnumFacing[directions.size()]), worldVec()));
 				// ProjectZed.logHelper.info("Network still not found, guess I'll start my own!");
 			}
 			
 			// if has a fluid network, add this node to the current network.
-			else network.add(new FluidNode(this, directions.toArray(new ForgeDirection[directions.size()]), worldVec()));
+			else network.add(new FluidNode(this, directions.toArray(new EnumFacing[directions.size()]), worldVec()));
 		}
 		
 		// if this node is apart of the fluid network check for other nodes to add and update if is master node.
 		else {
+			Vector3<Integer> worldVec = worldVec();
 			
 			// merging networks together if applicable.
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-				TileEntity te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+			for (EnumFacing dir : EnumFacing.VALUES) {
+				BlockPos pos = VectorHelper.toBlockPos(worldVec.x + dir.getFrontOffsetX(), worldVec.y + dir.getFrontOffsetY(),
+						worldVec.z + dir.getFrontOffsetZ());
+				TileEntity te = worldObj.getTileEntity(pos);
 				if (te == null) continue;
 				
 				if (te instanceof IFluidHandler) {
@@ -729,12 +661,12 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					
 					if (!hasFluidNetwork()) continue;
 					
-					Vector3<Integer> vec = new Vector3<Integer>(te.xCoord, te.yCoord, te.zCoord);
-					List<ForgeDirection> directions = new ArrayList<ForgeDirection>(ForgeDirection.VALID_DIRECTIONS.length);
+					Vector3<Integer> vec = VectorHelper.toVector3i(te.getPos());
+					List<EnumFacing> directions = new ArrayList<EnumFacing>(EnumFacing.VALUES.length);
 					FluidNode n = network.getNodeAt(vec);
 					if (n != null) {
-						if (n.getConnections().length >= 1 && n.getConnections()[0] != ForgeDirection.UNKNOWN) {
-							for (ForgeDirection con : n.getConnections()) {
+						if (n.getConnections().length >= 1 && n.getConnections()[0] != null) {
+							for (EnumFacing con : n.getConnections()) {
 								directions.add(con);
 							}
 						}
@@ -742,7 +674,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 					
 					directions.add(dir);
 					
-					network.add(new FluidNode((IFluidHandler) te, directions.toArray(new ForgeDirection[directions.size()]), vec, FluidNode.appropriateValveType((IFluidHandler) te, dir)));
+					network.add(new FluidNode((IFluidHandler) te, directions.toArray(new EnumFacing[directions.size()]), vec, FluidNode.appropriateValveType((IFluidHandler) te, dir)));
 				}
 			}
 			

@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.handler;
 
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.container.*;
 import com.projectzed.mod.gui.*;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
@@ -15,10 +16,10 @@ import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
 import com.projectzed.mod.tileentity.generator.*;
 import com.projectzed.mod.tileentity.machine.*;
-import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 /**
  * Class container for handling all gui or container requests.
@@ -30,7 +31,7 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(x, y, z));
 
 		if (te instanceof TileEntitySolarArray) return new ContainerGenerator(player.inventory, (TileEntitySolarArray) te);
 		else if (te instanceof TileEntityFurnaceGenerator) return new ContainerGenerator(player.inventory, (TileEntityFurnaceGenerator) te);
@@ -60,7 +61,7 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(x, y, z));
 
 		if (te instanceof TileEntitySolarArray) return new GuiGenerator(player.inventory, (TileEntitySolarArray) te);
 		else if (te instanceof TileEntityFurnaceGenerator) return new GuiGenerator(player.inventory, (TileEntityFurnaceGenerator) te);

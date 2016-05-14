@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.block.generator;
 
-import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
@@ -17,18 +17,19 @@ import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing code for nuclear controller, main hub for multi-block structure and used as main source of 'power generation', particle effects,
@@ -61,22 +62,10 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	public BlockNuclearController(Material material, boolean fusion) {
 		super(material, "nuclearController");
-		this.setBlockName("nuclearController" + (fusion ? "Fusion" : "Fission"));
+		this.setRegistryName("nuclearController" + (fusion ? "Fusion" : "Fission"));
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 		this.FUSION_MODE = fusion;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + "nuclearController_front");
 	}
 
 	/*
@@ -105,12 +94,16 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int,
 	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
 	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class), world, x, y, z);
+			TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(blockPos);
+			if (te != null) FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class), world,
+							blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 			return true;
 		}
@@ -121,18 +114,18 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
 	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		TileEntityNuclearController cont = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+	public void onBlockPlacedBy(World world, BlockPos blockPos, EntityLivingBase player, ItemStack stack) {
+		TileEntityNuclearController cont = (TileEntityNuclearController) world.getTileEntity(blockPos);
 		if (cont == null) return;
 		
 		cont.setHasMaster(true);
 		cont.setIsMaster(true);
-		cont.setMasterVec(new Vector3<Integer>(x, y, z));
+		cont.setMasterVec(VectorHelper.toVector3i(blockPos));
 		
 		int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		
 		this.placeDir = (byte) dir;
-		this.size = getSizeFromDir(world, x, y, z, dir);
+		this.size = getSizeFromDir(world, blockPos.getX(), blockPos.getY(), blockPos.getZ(), dir);
 		if (size > 9 && player instanceof EntityPlayer)
 			((EntityPlayer) player).addChatComponentMessage(ChatUtils.createComponent(false, "Block Placed incorrectly!"));
 		// System.out.println("Placed Dir: " + this.placeDir);
@@ -142,7 +135,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
 		if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(blockPos)).setCustomName(stack.getDisplayName());
 	}
 	
 	/**

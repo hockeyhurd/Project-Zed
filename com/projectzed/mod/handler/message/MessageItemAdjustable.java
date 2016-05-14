@@ -11,13 +11,13 @@
 package com.projectzed.mod.handler.message;
 
 import com.projectzed.mod.item.IItemAdjustable;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Generic message handling for IItemAdjustable interfaced items.
@@ -56,7 +56,7 @@ public class MessageItemAdjustable implements IMessage, IMessageHandler<MessageI
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 
 		if (player != null) {
-			final ItemStack stack = player.getCurrentEquippedItem();
+			final ItemStack stack = player.inventory.getCurrentItem();
 
 			if (stack != null) {
 				final Item item = stack.getItem();

@@ -11,13 +11,14 @@
 package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Nuclear IO Port message handler.
@@ -67,7 +68,7 @@ public class MessageTileEntityNuclearIOPort implements IMessage, IMessageHandler
 
 	@Override
 	public IMessage onMessage(MessageTileEntityNuclearIOPort message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.pos.x, message.pos.y, message.pos.z);
+		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.pos));
 
 		if (te != null && te instanceof TileEntityNuclearIOPort) {
 			((TileEntityNuclearIOPort) te).setBurnTime(message.burnTime);
