@@ -6,19 +6,18 @@
 */
 package com.projectzed.mod.block.machines;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for industrialLoader.
@@ -26,7 +25,7 @@ import net.minecraft.world.World;
  * @author hockeyhurd
  * @version Apr 19, 2015
  */
-public class BlockIndustrialLoader extends BlockContainer {
+public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 
 	private final String name;
 	
@@ -59,7 +58,9 @@ public class BlockIndustrialLoader extends BlockContainer {
 			TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(x, y, z);
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y, z);
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y,
+									z);
 
 				else return false;
 			}

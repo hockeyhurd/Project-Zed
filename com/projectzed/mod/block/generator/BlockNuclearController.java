@@ -7,6 +7,7 @@
 package com.projectzed.mod.block.generator;
 
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.energy.source.EnumType;
@@ -68,10 +69,6 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		this.FUSION_MODE = fusion;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityGenerator getTileEntity() {
 		TileEntityNuclearController te = new TileEntityNuclearController();
@@ -88,12 +85,6 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		return index > 0 ? TIERED_MOD[index - 1] : index <= 0 ? TIERED_MOD[index] : 1.0f;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
 			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -109,12 +100,8 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos blockPos, EntityLivingBase player, ItemStack stack) {
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState block, EntityLivingBase player, ItemStack stack) {
 		TileEntityNuclearController cont = (TileEntityNuclearController) world.getTileEntity(blockPos);
 		if (cont == null) return;
 		
@@ -131,10 +118,10 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		// System.out.println("Placed Dir: " + this.placeDir);
 		// System.out.println("Size: " + this.size + "x" + this.size);
 		
-		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(blockPos)).setCustomName(stack.getDisplayName());
 	}
 	
@@ -159,25 +146,25 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		 */
 		
 		if (dir == 0) {
-			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size < 4) {
+			while (BlockUtils.getBlock(world, x, y, z + size).getBlock() != ProjectZed.nuclearReactantCore && size < 4) {
 				size++;
 			}
 		}
 		
 		else if (dir == 2) {
-			while (world.getBlock(x, y, z + size) != ProjectZed.nuclearReactantCore && size > -5) {
+			while (BlockUtils.getBlock(world, x, y, z + size).getBlock() != ProjectZed.nuclearReactantCore && size > -5) {
 				size--;
 			}
 		}
 		
 		else if (dir == 1) {
-			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size > -5) {
+			while (BlockUtils.getBlock(world, x + size, y, z).getBlock() != ProjectZed.nuclearReactantCore && size > -5) {
 				size--;
 			}
 		}
 		
 		else if (dir == 3) {
-			while (world.getBlock(x + size, y, z) != ProjectZed.nuclearReactantCore && size < 4) {
+			while (BlockUtils.getBlock(world, x + size, y, z).getBlock() != ProjectZed.nuclearReactantCore && size < 4) {
 				size++;
 			}
 		}
@@ -191,13 +178,9 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 		else return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onNeighborBlockChange(net.minecraft.world.World, int, int, int, net.minecraft.block.Block)
-	 */
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-		TileEntity te = world.getTileEntity(x, y, z);
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState block, Block neighborBlock) {
+		TileEntity te = world.getTileEntity(pos);
 		if (te != null && te instanceof IMultiBlockableController<?>) {
 			IMultiBlockableController<AbstractTileEntityGenerator> mb = (IMultiBlockableController<AbstractTileEntityGenerator>) te;
 			if (mb.hasMaster()) {
@@ -207,21 +190,18 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 				
 				else if (!mb.checkForMaster()) {
 					mb.reset();
-					world.markBlockForUpdate(x, y, z);
+					// world.markBlockForUpdate(x, y, z);
+					world.notifyBlockOfStateChange(pos, block.getBlock());
 				}
 			}
 		}
 		
-		super.onNeighborBlockChange(world, x, y, z, block);
+		super.onNeighborBlockChange(world, pos, block, neighborBlock);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(x, y, z);
+	@Override
+	protected void doBreakBlock(World world, BlockPos pos) {
+		TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(pos);
 
 		if (te.getMapVec() != null && te.getMapVec().size() > 0) te.resetStructure();
 		

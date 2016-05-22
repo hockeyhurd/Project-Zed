@@ -6,13 +6,15 @@
 */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -30,21 +32,16 @@ import net.minecraft.world.World;
  * @author hockeyhurd
  * @version Oct 28, 2014
  */
-public abstract class AbstractBlockGenerator extends BlockContainer {
-	
-	/** Name of the block */
-	protected String name;
-	
+public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer {
+
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
 	/**
 	 * @param material material of block
 	 * @param name String name.
 	 */
 	public AbstractBlockGenerator(Material material, String name) {
-		super(material);
-		this.name = name;
-		this.setRegistryName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
+		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
 
 	/**
@@ -53,12 +50,28 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 	 */
 	public abstract AbstractTileEntityGenerator getTileEntity();
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	public TileEntity createNewTileEntity(World world, int id) {
+	@Override
+	public AbstractTileEntityGenerator createNewTileEntity(World world, int id) {
 		return getTileEntity();
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos pos) {
+		final TileEntity te = world.getTileEntity(pos);
+		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE())
+			return EnumFacing.HORIZONTALS;
+
+		return super.getValidRotations(world, pos);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+		final TileEntity te = world.getTileEntity(pos);
+
+		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE())
+			return blockState.withProperty(FACING, ((IWrenchable) te).getCurrentFacing());
+
+		return blockState.withProperty(FACING, EnumFacing.NORTH);
 	}
 
 	/**
@@ -97,12 +110,12 @@ public abstract class AbstractBlockGenerator extends BlockContainer {
 	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
-		int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		// int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(pos)).setCustomName(stack.getDisplayName());
 	}
 

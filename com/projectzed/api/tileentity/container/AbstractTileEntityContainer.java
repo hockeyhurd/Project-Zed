@@ -1,8 +1,8 @@
 package com.projectzed.api.tileentity.container;
 
-import net.minecraft.item.ItemStack;
-
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * API class used for general purpose containers.
@@ -61,18 +61,18 @@ public abstract class AbstractTileEntityContainer extends AbstractTileEntityGene
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
 	@Override
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
 	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
 	@Override
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
 	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
+	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
 	@Override
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
 
 }

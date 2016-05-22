@@ -13,7 +13,7 @@ import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.IFluidTile;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IWrenchable;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,6 +32,7 @@ import net.minecraftforge.fluids.*;
 public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntityContainer implements IFluidContainer,
 		IFluidTile, IWrenchable {
 
+	protected EnumFacing frontFacing;
 	protected int maxFluidStorage = 10000;
 
 	protected FluidTank internalTank;
@@ -41,7 +42,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	protected boolean isMaster;
 
 	/**
-	 * @param name = name of te (its custom name).
+	 * @param name name of te (its custom name).
 	 */
 	public AbstractTileEntityFluidContainer(String name) {
 		super(name);
@@ -56,7 +57,12 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	public FluidTank getTank() {
 		return this.internalTank;
 	}
-	
+
+	@Override
+	public String getFluidID() {
+		return internalTank.getFluid().getFluid().getName();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.fluid.container.IFluidContainer#getMaxFluidImportRate()
@@ -106,12 +112,14 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
 	 */
+	@Override
 	public abstract int getSizeInventory();
 
 	/*
 	 * (non-Javadoc)
 	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
 	 */
+	@Override
 	public abstract int getInventoryStackLimit();
 
 	/*
@@ -120,6 +128,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray
 	 * ()
 	 */
+	@Override
 	protected abstract void initContentsArray();
 
 	/*
@@ -127,6 +136,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @see
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
+	@Override
 	protected abstract void initSlotsArray();
 
 	@Override
@@ -140,6 +150,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot
 	 * (int, net.minecraft.item.ItemStack)
 	 */
+	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
 
 	/*
@@ -147,23 +158,26 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#
 	 * getAccessibleSlotsFromSide(int)
 	 */
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	@Override
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
 	 * @see
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem
-	 * (int, net.minecraft.item.ItemStack, int)
+	 * (int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
 	 * @see
 	 * com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem
-	 * (int, net.minecraft.item.ItemStack, int)
+	 * (int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
 
 	/*
 	 * (non-Javadoc)
@@ -319,8 +333,8 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	}
 
 	@Override
-	public Block getTile(World world) {
-		return world != null ? BlockUtils.getBlock(world, pos).getBlock() : null;
+	public IBlockState getTile(World world) {
+		return world != null ? BlockUtils.getBlock(world, pos) : null;
 	}
 
 	@Override
@@ -360,17 +374,39 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	@Override
 	public abstract Packet getDescriptionPacket();
 
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState block) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
+		return (frontFacing = frontFacing.rotateY());
+	}
 
-		return ret == currentMeta ? facingDir : ret;
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing front) {
+		this.frontFacing = front;
 	}
 
 	/*

@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import com.projectzed.api.util.EnumFrameType;
@@ -19,8 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -38,7 +39,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 			(int) 10e3, (int) 10e3 * 4, (int) 10e3 * 4 * 4, (int) 10e3 * 4 * 4 * 4
 	};
 
-	protected byte[] openSides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	protected byte[] openSides = new byte[EnumFacing.VALUES.length];
 
 	/**
 	 * Sets internal fluid tank and appropriate sizes and other useful data.
@@ -48,8 +49,8 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		this.maxFluidStorage = this.TIER_SIZE[this.tier];
 		internalTank = new FluidTank(this.maxFluidStorage);
 		
-		this.openSides[ForgeDirection.UP.ordinal()] = -1;
-		this.openSides[ForgeDirection.DOWN.ordinal()] = 1;
+		this.openSides[EnumFacing.UP.ordinal()] = -1;
+		this.openSides[EnumFacing.DOWN.ordinal()] = 1;
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * .common.util.ForgeDirection, byte)
 	 */
 	@Override
-	public void setSideValve(ForgeDirection dir, byte value) {
+	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
 	}
 
@@ -95,7 +96,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * .minecraftforge.common.util.ForgeDirection)
 	 */
 	@Override
-	public void setSideValveAndRotate(ForgeDirection dir) {
+	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
 	}
 
@@ -106,7 +107,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * .common.util.ForgeDirection)
 	 */
 	@Override
-	public byte getSideValve(ForgeDirection dir) {
+	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
 
@@ -188,7 +189,7 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * #getAccessibleSlotsFromSide(int)
 	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 
@@ -196,10 +197,10 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * (non-Javadoc)
 	 * @see
 	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
-	 * #canInsertItem(int, net.minecraft.item.ItemStack, int)
+	 * #canInsertItem(int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
@@ -207,10 +208,10 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * (non-Javadoc)
 	 * @see
 	 * com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer
-	 * #canExtractItem(int, net.minecraft.item.ItemStack, int)
+	 * #canExtractItem(int, net.minecraft.item.ItemStack, EnumFacing)
 	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
@@ -223,15 +224,17 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		if (!this.worldObj.isRemote) {
 			
 			// export to tank below:
-			if (this.getTank().getFluidAmount() > 0 && this.openSides[ForgeDirection.DOWN.ordinal()] == 1) {
-				TileEntity te = worldObj.getTileEntity(worldVec().x, worldVec().y - 1, worldVec().z);
+			if (this.getTank().getFluidAmount() > 0 && this.openSides[EnumFacing.DOWN.ordinal()] == 1) {
+				final Vector3<Integer> vec = worldVec();
+				vec.y--;
+				TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
 				if (te != null && te instanceof IFluidHandler) {
 					IFluidHandler tank = (IFluidHandler) te;
 					
 					if (this.getTank().getFluid() != null && this.getTank().getFluid().getFluid() != null
-							&& tank.canFill(ForgeDirection.UP, this.getTank().getFluid().getFluid())) {
+							&& tank.canFill(EnumFacing.UP, this.getTank().getFluid().getFluid())) {
 						FluidStack thisStack = this.getTank().getFluid();
-						int amount = getAmountFromTank(tank, thisStack, ForgeDirection.UP);
+						int amount = getAmountFromTank(tank, thisStack, EnumFacing.UP);
 						
 						// if destination tank is empty set to default size.
 						if (amount == 0) amount = Reference.Constants.BASE_FLUID_TRANSFER_RATE;
@@ -243,10 +246,10 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 							FluidStack sendStack = thisStack.copy();
 							sendStack.amount = amount;
 							
-							amount = sendStack.amount = tank.fill(ForgeDirection.UP, sendStack, false);
+							amount = sendStack.amount = tank.fill(EnumFacing.UP, sendStack, false);
 							
 							this.getTank().drain(amount, true);
-							tank.fill(ForgeDirection.UP, sendStack, true);
+							tank.fill(EnumFacing.UP, sendStack, true);
 						}
 						
 					}
@@ -256,8 +259,8 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 		}
 	}
 	
-	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, ForgeDirection dir) {
-		if (tank != null && stack != null && stack.amount > 0 && dir != ForgeDirection.UNKNOWN && tank.getTankInfo(dir) != null &&tank.getTankInfo(dir).length > 0) {
+	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, EnumFacing dir) {
+		if (tank != null && stack != null && stack.amount > 0 && dir != null && tank.getTankInfo(dir) != null &&tank.getTankInfo(dir).length > 0) {
 			for (int i = 0; i < tank.getTankInfo(dir).length; i++) {
 				if (tank.getTankInfo(dir)[i].fluid != null && tank.getTankInfo(dir)[i].fluid.amount > 0
 						&& tank.getTankInfo(dir)[i].fluid.isFluidEqual(stack)) return tank.getTankInfo(dir)[i].fluid.amount; 
@@ -272,9 +275,9 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#updateEntity()
 	 */
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
-		if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFluidTank(this));
+	public void update() {
+		super.update();
+		if (!this.worldObj.isRemote && this.worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFluidTank(this));
 	}
 	
 	/*
@@ -328,11 +331,11 @@ public class TileEntityFluidTankBase extends AbstractTileEntityFluidContainer im
 	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 		if (!world.isRemote && !player.isSneaking()) {
 			
-			ProjectZed.logHelper.info(this.openSides[ForgeDirection.DOWN.ordinal()]);
+			ProjectZed.logHelper.info(this.openSides[EnumFacing.DOWN.ordinal()]);
 			// change valve on tank's bottom size:
-			setSideValveAndRotate(ForgeDirection.DOWN);
+			setSideValveAndRotate(EnumFacing.DOWN);
 			
-			ProjectZed.logHelper.info(this.openSides[ForgeDirection.DOWN.ordinal()]);
+			ProjectZed.logHelper.info(this.openSides[EnumFacing.DOWN.ordinal()]);
 		}
 	}
 	

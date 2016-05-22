@@ -9,13 +9,11 @@ package com.projectzed.mod.gui.component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing code for custom clear button to be used primarily with Fabrication table.
@@ -26,8 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiClearButton extends GuiButton {
 
-	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/clearButton.png");; 
+	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/clearButton.png");;
 	protected final float PIXEL;
 	protected float calc;
 	
@@ -42,8 +39,6 @@ public class GuiClearButton extends GuiButton {
 		this.width = 12;
 		this.height = 12;
 		this.PIXEL = 1f / 12f;
-		
-		this.TESS = Tessellator.instance;
 	}
 
 	/**
@@ -59,8 +54,6 @@ public class GuiClearButton extends GuiButton {
 		this.width = 12;
 		this.height = 12;
 		this.PIXEL = 1f / 12f;
-		
-		this.TESS = Tessellator.instance;
 	}
 	
 	/*
@@ -70,22 +63,33 @@ public class GuiClearButton extends GuiButton {
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontrenderer = minecraft.fontRenderer;
-			GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
+			FontRenderer fontrenderer = minecraft.fontRendererObj;
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
 			calc = width * this.PIXEL;
-			
-			this.TESS.startDrawingQuads();
 
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+					GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+			drawTexturedModalRect(xPosition, yPosition, 0, 0, width, height);
+
+			/*	this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
 				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
 				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
+				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right*/
 
-			this.TESS.draw();
+			mouseDragged(minecraft, x, y);
+			int j = 14737632;
 
-			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!this.enabled) j = 10526880;
+			else if (this.hovered) j = 16777120;
+
+			// this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 

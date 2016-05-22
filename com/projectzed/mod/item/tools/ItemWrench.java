@@ -7,21 +7,24 @@
 package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -43,65 +46,58 @@ public class ItemWrench extends Item {
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setMaxStackSize(1);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#registerIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister reg) {
-		itemIcon = reg.registerIcon(ProjectZed.assetDir + this.NAME);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onItemUse(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)
-	 */
-	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
-		boolean used = false;
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float clickX, float clickY, float clickZ) {
+		EnumActionResult used = EnumActionResult.FAIL;
 		
 		if (!world.isRemote) {
 
-			Vector3<Integer> vecClick = new Vector3<Integer>(x, y, z);
-			Block b = BlockUtils.getBlock(world, vecClick.x, vecClick.y, vecClick.z);
-			TileEntity te = world.getTileEntity(vecClick.x, vecClick.y, vecClick.z);
+			final Vector3<Integer> vecClick = VectorHelper.toVector3i(pos);
+			final IBlockState blockState = BlockUtils.getBlock(world, vecClick.x, vecClick.y, vecClick.z);
+			final Block b = blockState.getBlock();
+			final TileEntity te = world.getTileEntity(pos);
 
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
-				IWrenchable wrench = (IWrenchable) te;
+				IWrenchable wrenchableTE = (IWrenchable) te;
 
 				Waila waila = new Waila(stack, world, player, null, 0);
 				waila.finder(false);
 
-				byte facingDir = (byte) waila.getSideHit();
+				EnumFacing facingDir = waila.getSideHit();
 
-				if (wrench.canRotateTE() && !player.isSneaking()) {
-					used = true;
-					int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
-					world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, wrench.getRotatedMeta(facingDir, (byte) meta), 2);
+				if (wrenchableTE.canRotateTE() && !player.isSneaking()) {
+					used = EnumActionResult.PASS;
+					// int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
+					// world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, wrenchableTE.getRotatedState(facingDir, (byte) meta), 2);
+					wrenchableTE.getRotatedState(facingDir, blockState);
 				}
 
-				else if (player.isSneaking() && wrench.canSaveDataOnPickup()) {
-					used = true;
+				else if (player.isSneaking() && wrenchableTE.canSaveDataOnPickup()) {
+					used = EnumActionResult.PASS;
 					
 					ItemStack itemToDrop = new ItemStack(b, 1);
-					NBTTagCompound comp = itemToDrop.stackTagCompound;
-					if (comp == null) comp = new NBTTagCompound();
 
-					wrench.saveNBT(comp);
-					
-					itemToDrop.stackTagCompound = comp;
+					NBTTagCompound comp;
+					if (itemToDrop.hasTagCompound()) comp = itemToDrop.getTagCompound();
+					else {
+						comp = new NBTTagCompound();
+						itemToDrop.setTagCompound(comp);
+					}
+
+					wrenchableTE.saveNBT(comp);
+
 					BlockUtils.setBlockToAir(world, vecClick);
 					WorldUtils.addItemDrop(itemToDrop, world, vecClick.x, vecClick.y, vecClick.z);
 				}
 				
-				wrench.onInteract(stack, player, world, vecClick);
+				wrenchableTE.onInteract(stack, player, world, vecClick);
 				
 			}
 		}
 		
-		player.swingItem();
+		// player.swingItem();
+		player.swingArm(hand);
 		return used;
 	}
 

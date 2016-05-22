@@ -7,9 +7,11 @@
 package com.projectzed.api.tileentity;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
@@ -20,15 +22,29 @@ import net.minecraft.world.World;
  * @version Feb 3, 2015
  */
 public interface IWrenchable {
-	
+
 	/**
 	 * Helper function to get how the tileentity as a block should be rotated.
 	 * <br><bold>NOTE:</bold> This function can be nullified if 'canRotateTE' is set to false.
 	 * 
-	 * @return byte containing new meta data after being rotated.
+	 * @return EnumFacing containing new meta data after being rotated.
 	 */
-	byte getRotatedMeta(byte facingDir, byte currentMeta);
-	
+	EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState);
+
+	/**
+	 * Gets the current facing.
+	 *
+	 * @return EnumFacing.
+	 */
+	EnumFacing getCurrentFacing();
+
+	/**
+	 * Sets the front facing.
+	 *
+	 * @param face EnumFacing side.
+	 */
+	void setFrontFacing(EnumFacing face);
+
 	/**
 	 * Function to get whether this te can be rotated or not.
 	 * 

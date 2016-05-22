@@ -8,7 +8,7 @@ package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.handler.config.AbstractConfigHandler;
 import com.hockeyhurd.hcorelib.api.util.AbstractReference;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
  * Class used for all config handling needs.

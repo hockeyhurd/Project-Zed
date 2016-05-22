@@ -20,6 +20,7 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityMachine;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -48,6 +49,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		IUpgradeComponent, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotInput, slotRight;
+	protected EnumFacing frontFacing;
 
 	protected int maxStorage = 50000;
 	protected int stored;
@@ -80,6 +82,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
 	 */
+	@Override
 	public abstract int getSizeInventory();
 
 	/*
@@ -87,6 +90,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
 	 */
+	@Override
 	public abstract int getInventoryStackLimit();
 
 	/*
@@ -94,6 +98,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
 	 */
+	@Override
 	protected abstract void initContentsArray();
 
 	/*
@@ -101,6 +106,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
 	 */
+	@Override
 	protected abstract void initSlotsArray();
 
 	/*
@@ -108,6 +114,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
 	 */
+	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
@@ -131,8 +138,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
 	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
-		if (openSides[side] == 0) return new int[0];
+	public int[] getSlotsForFace(EnumFacing side) {
+		if (openSides[side.ordinal()] == 0) return new int[0];
 
 		int[] ret = new int[getSizeInventory() - getSizeUpgradeSlots()];
 
@@ -149,8 +156,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
-		return openSides[side] == -1 && isItemValidForSlot(slot, stack);
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
+		return openSides[side.ordinal()] == -1 && isItemValidForSlot(slot, stack);
 	}
 	
 	/*
@@ -158,8 +166,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
 	 */
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot > 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+		return slot > 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side.ordinal()] == 1;
 	}
 	
 	/**
@@ -217,7 +226,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 				else if (openSides[dir.ordinal()] == 1) {
 					for (int thisSlot = 0; thisSlot < this.getSizeInventory() - getSizeUpgradeSlots(); thisSlot++) {
 						out = this.getStackInSlot(thisSlot);
-						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
+						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir)) continue;
 						
 						int amount = out.stackSize;
 						
@@ -300,6 +309,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
 	 */
+	@Override
 	public Vector3<Integer> worldVec() {
 		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
@@ -309,7 +319,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * 
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
 	 */
-	public void updateEntity() {
+	@Override
+	public void update() {
 		calculateDataFromUpgrades();
 		transferPower();
 		boolean flag = this.stored > 0;
@@ -613,12 +624,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
 	 */
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
-
-		return ret == currentMeta ? facingDir : ret;
+		return (frontFacing = frontFacing.rotateY());
 	}
 
 	/*

@@ -8,10 +8,10 @@ package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.handler.config.AbstractConfigHandler;
 import com.hockeyhurd.hcorelib.api.util.AbstractReference;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.util.ArrayList;
 import java.util.List;
