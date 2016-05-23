@@ -12,13 +12,15 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityRFBridge;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing block code for RF bridge.
@@ -31,51 +33,34 @@ public class BlockRFBridge extends AbstractBlockContainer {
 	private boolean flip;
 
 	public BlockRFBridge(Material material, boolean flip) {
-		super(material, ProjectZed.assetDir, "bridgeMcUToRF");
+		super(material, ProjectZed.assetDir, !flip ? "bridgeMcUToRF" : "bridgeRFToMcU");
 		this.flip = flip;
-		this.setBlockName(!flip ? "bridgeMcUToRF" : "bridgeRFToMcU");
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + (!flip ? "bridgeMcUToRF" : "bridgeRFToMcU"));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
-	 */
+	@Override
 	public AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityRFBridge te = new TileEntityRFBridge();
 		te.setFlip(this.flip);
 		return te;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(x, y, z);
+	@Override
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(blockPos);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(x, y, z);
+			TileEntityRFBridge te = (TileEntityRFBridge) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityRFBridge.class), world, x, y, z);
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
+					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityRFBridge.class), world,
+							blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}

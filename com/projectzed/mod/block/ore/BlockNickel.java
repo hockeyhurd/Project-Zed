@@ -1,6 +1,5 @@
 package com.projectzed.mod.block.ore;
 
-import com.projectzed.api.block.AbstractProjectZedBlock;
 import net.minecraft.block.material.Material;
 
 /**

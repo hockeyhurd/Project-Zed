@@ -80,7 +80,7 @@ public final class ProjectZed implements IForgeMod {
 	public static LogHelper logHelper;
 	public static ConfigHandler configHandler;
 	public static SortingConfigHandler sortingConfigHandler;
-	public static final String assetDir = Reference.MOD_NAME.toLowerCase() + ":";
+	public static final String assetDir = Reference.MOD_NAME.toLowerCase(); // + ":";
 	public static final String modID = Reference.MOD_NAME;
 	private TimeLapse tl;
 	

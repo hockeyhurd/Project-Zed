@@ -6,11 +6,15 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -21,8 +25,8 @@ import net.minecraftforge.fluids.*;
  */
 public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 
-	private ForgeDirection lastReceivedDir = ForgeDirection.UNKNOWN;
-	byte[] sides = new byte[ForgeDirection.VALID_DIRECTIONS.length];
+	private EnumFacing lastReceivedDir = null;
+	byte[] sides = new byte[EnumFacing.VALUES.length];
 	private byte cachedMeta;
 	
 	public TileEntityLiquidNode() {
@@ -34,74 +38,47 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		cachedMeta = -1;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#importContents()
-	 */
 	@Override
 	protected void importContents() {
-		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		if (this.worldObj == null || this.worldObj.isRemote) return;
 		
 		if (this.internalTank.getFluidAmount() > this.maxFluidStorage) {
 			FluidStack copy = this.internalTank.getFluid();
@@ -114,23 +91,27 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	}
 	
 	protected void exportContents() {
-		if (this.getWorldObj() == null || this.getWorldObj().isRemote) return;
+		if (this.worldObj == null || this.worldObj.isRemote) return;
 		if (this.internalTank.getFluidAmount() == 0) return;
 		if (this.internalTank.getFluid() == null || this.internalTank.getFluid().getFluid() == null) return;
 		
 		// FluidNet.exportFluidToNeighbors(this, worldObj, xCoord, yCoord, zCoord);
 		
-		ForgeDirection exportSide = ForgeDirection.UNKNOWN;
+		EnumFacing exportSide = null;
 		
 		for (byte i = 0; i < this.sides.length; i++) {
 			if (this.sides[i] == 1) {
-				exportSide = ForgeDirection.getOrientation(i);
+				// exportSide = ForgeDirection.getOrientation(i);
+				exportSide = EnumFacing.getFront(i);
 				break;
 			}
 		}
 		
-		if (exportSide != ForgeDirection.UNKNOWN) {
-			TileEntity te = worldObj.getTileEntity(worldVec().x + exportSide.offsetX, worldVec().y + exportSide.offsetY, worldVec().z + exportSide.offsetZ);
+		if (exportSide != null) {
+			final Vector3<Integer> vec = worldVec();
+			final Vector3<Integer> addVec = new Vector3<Integer>(exportSide.getFrontOffsetX(), exportSide.getFrontOffsetY(), exportSide.getFrontOffsetZ());
+			vec.add(addVec);
+			TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
 			
 			if (te != null && te instanceof IFluidHandler) {
 				IFluidHandler tank = (IFluidHandler) te;
@@ -159,8 +140,8 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		}
 	}
 	
-	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, ForgeDirection dir) {
-		if (tank != null && stack != null && stack.amount > 0 && dir != ForgeDirection.UNKNOWN && tank.getTankInfo(dir) != null &&tank.getTankInfo(dir).length > 0) {
+	private int getAmountFromTank(IFluidHandler tank, FluidStack stack, EnumFacing dir) {
+		if (tank != null && stack != null && stack.amount > 0 && dir != null && tank.getTankInfo(dir) != null && tank.getTankInfo(dir).length > 0) {
 			for (int i = 0; i < tank.getTankInfo(dir).length; i++) {
 				if (tank.getTankInfo(dir)[i].fluid != null && tank.getTankInfo(dir)[i].fluid.amount > 0
 						&& tank.getTankInfo(dir)[i].fluid.isFluidEqual(stack)) return tank.getTankInfo(dir)[i].fluid.amount; 
@@ -170,20 +151,18 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#updateEntity()
-	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		// super.updateEntity();
 		exportContents();
 		
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
-			byte currentMeta = (byte) (worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z) - 1);
-			
+			// byte currentMeta = (byte) (worldObj.getBlockMetadata(worldVec().x, worldVec().y, worldVec().z) - 1);
+			final IBlockState blockState = BlockUtils.getBlock(worldObj, worldVec());
+			byte currentMeta = (byte) (blockState.getBlock().getMetaFromState(blockState));
+
 			if (currentMeta != this.cachedMeta) {
-				for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				for (EnumFacing dir : EnumFacing.VALUES) {
 					if (dir.ordinal() == currentMeta) sides[dir.ordinal()] = 1;
 					else sides[dir.ordinal()] = -1;
 				}
@@ -191,32 +170,23 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 				this.cachedMeta = currentMeta;
 				
 				this.markDirty();
-				worldObj.markBlockForUpdate(worldVec().x, worldVec().y, worldVec().z);
+				// worldObj.markBlockForUpdate(worldVec().x, worldVec().y, worldVec().z);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeSourceNode()
-	 */
 	@Override
 	public boolean canBeSourceNode() {
 		return true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#canBeMaster()
-	 */
 	@Override
 	public boolean canBeMaster() {
 		return false;
@@ -224,22 +194,20 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	
 	// START FLUID API METHODS AND HANDLERS:
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
-	 */
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
-			if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != -1) return 0;
+			if (from != null && sides[from.ordinal()] != -1) return 0;
 
 			int fillAmount = internalTank.fill(resource, doFill);
 
 			if (doFill) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
+
 				this.markDirty();
-				if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, xCoord, yCoord, zCoord, this.internalTank, fillAmount));
+				// if (this.getBlockType() != null) worldObj.notifyBlockOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
+				FluidEvent.fireEvent(new FluidEvent.FluidFillingEvent(resource, worldObj, pos, this.internalTank, fillAmount));
 			}
 
 			return fillAmount;
@@ -248,21 +216,13 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
-	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
-	 */
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
 	}
 
@@ -275,18 +235,18 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 	 * @param doDrain whether draining should be simulated or not.
 	 * @return type and amount of fluid drained.
 	 */
-	protected FluidStack drain(ForgeDirection from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
+	protected FluidStack drain(EnumFacing from, FluidStack drainFluid, int drainAmount, boolean doDrain) {
 		if (!worldObj.isRemote) {
-			if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != 1) return null;
+			if (from != null && sides[from.ordinal()] != 1) return null;
 			
 			FluidStack drainedFluid = (drainFluid != null && drainFluid.isFluidEqual(internalTank.getFluid())) ? internalTank.drain(
 					drainFluid.amount, doDrain) : drainAmount >= 0 ? internalTank.drain(drainAmount, doDrain) : null;
 					
 			if (doDrain && drainedFluid != null && drainedFluid.amount > 0) {
 				this.markDirty();
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, this.getBlockType());
-				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, xCoord, yCoord, zCoord, this.internalTank));
+				worldObj.notifyBlockOfStateChange(pos, blockType);
+				worldObj.notifyNeighborsOfStateChange(pos, blockType);
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(drainedFluid, worldObj, pos, this.internalTank, drainedFluid.amount));
 			}
 			
 			return drainedFluid;
@@ -295,13 +255,9 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
-	 */
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != -1) return false;
+	public boolean canFill(EnumFacing from, Fluid fluid) {
+		if (from != null && sides[from.ordinal()] != -1) return false;
 		if (fluid != null && !isFull()) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -311,13 +267,9 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
-	 */
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		if (from != ForgeDirection.UNKNOWN && sides[from.ordinal()] != 1) return false;
+	public boolean canDrain(EnumFacing from, Fluid fluid) {
+		if (from != null && sides[from.ordinal()] != 1) return false;
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
 			FluidStack tankFluid = this.internalTank.getFluid();
 			
@@ -327,17 +279,11 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer#getRotationMatrix()
-	 */
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState blockState) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		byte ret = (byte) ForgeDirection.getOrientation(facingDir).getOpposite().ordinal();
-
-		return ret == currentMeta ? facingDir : ret;
+		return (frontFacing = frontFacing.rotateY());
 	}
 
 }

@@ -8,15 +8,15 @@ package com.projectzed.mod.container;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.container.slots.SlotUpgrade;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Generic container class for most machines.
@@ -73,13 +73,13 @@ public class ContainerMachine extends Container {
 		
 		else if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 2) {
 			this.addSlotToContainer(new Slot(te, 0, 41, 21));
-			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+			this.addSlotToContainer(new SlotFurnaceOutput(inv.player, te, 1, 121, 21));
 		}
 		
 		else if (this.NUM_SLOTS - te.getSizeUpgradeSlots() == 3) {
 			this.addSlotToContainer(new Slot(te, 0, 30, 21));
 			this.addSlotToContainer(new Slot(te, 2, 55, 21));
-			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+			this.addSlotToContainer(new SlotFurnaceOutput(inv.player, te, 1, 121, 21));
 		}
 
 		addUpgradeInventorySlots(te);
@@ -119,30 +119,17 @@ public class ContainerMachine extends Container {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#addCraftingToCrafters(net.minecraft.inventory.ICrafting)
-	 */
 	@Override
-	public void addCraftingToCrafters(ICrafting craft) {
-		super.addCraftingToCrafters(craft);
+	public void onCraftGuiOpened(ICrafting craft) {
+		super.onCraftGuiOpened(craft);
 		if (this.NUM_SLOTS > 1) craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
-	 */
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
-	 */
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
@@ -157,10 +144,6 @@ public class ContainerMachine extends Container {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#updateProgressBar(int, int)
-	 */
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateProgressBar(int slot, int newVal) {
@@ -175,10 +158,6 @@ public class ContainerMachine extends Container {
 		return this.te;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
-	 */
 	@Override
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);

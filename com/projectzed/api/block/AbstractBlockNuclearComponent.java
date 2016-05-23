@@ -6,19 +6,17 @@
 */
 package com.projectzed.api.block;
 
-import java.util.Random;
-
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 
 /**
  * Framework for nuclear chamber parts.
@@ -26,29 +24,35 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Feb 23, 2015
  */
-public abstract class AbstractBlockNuclearComponent extends BlockContainer {
+public abstract class AbstractBlockNuclearComponent extends AbstractHCoreBlockContainer {
 
-	/** Name of the block */
-	protected String name;
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
-	/** Asset directory of block. */
-	protected String assetDir;
-	
-	protected Random random = new Random();
+	protected static final Random random = new Random();
 	
 	/**
 	 * @param material
 	 * @param name
 	 */
 	public AbstractBlockNuclearComponent(Material material, String name) {
-		super(material);
-		this.assetDir = ProjectZed.assetDir;
-		this.name = name;
-		this.setBlockName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
+		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
-	
+
+	@Override
+	public Block getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
 	/**
 	 * @param name
 	 */
@@ -56,22 +60,8 @@ public abstract class AbstractBlockNuclearComponent extends BlockContainer {
 		this(Material.iron, name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
 	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(assetDir + name);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
+	public AbstractTileEntityNuclearComponent createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}
 

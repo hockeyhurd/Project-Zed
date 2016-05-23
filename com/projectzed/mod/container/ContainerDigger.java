@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -46,7 +46,7 @@ public class ContainerDigger extends Container {
 
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 9; x++) {
-					this.addSlotToContainer(new SlotFurnace(inv.player, te, x + y * 9, 8 + x * 18, 1 + 53 + y * 18));
+					this.addSlotToContainer(new SlotFurnaceOutput(inv.player, te, x + y * 9, 8 + x * 18, 1 + 53 + y * 18));
 				}
 			}
 		}

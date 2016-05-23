@@ -7,7 +7,7 @@
 package com.projectzed.mod.util;
 
 import com.hockeyhurd.hcorelib.api.util.LogHelper;
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.Loader;
 
 import java.util.HashMap;
 import java.util.Iterator;

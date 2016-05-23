@@ -94,8 +94,10 @@ public class ContainerFabricationTable extends Container {
 	/**
 	 * Callback for when the crafting matrix is changed.
 	 */
+	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		if (craftMatrix != null)
+			craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
 		super.onCraftMatrixChanged(inv);
 	}
 	
@@ -174,24 +176,25 @@ public class ContainerFabricationTable extends Container {
 	public void clearCraftingGrid() {
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
-				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, this.NUM_SLOTS, false)) {
-					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
-					this.te.setInventorySlotContents(i, (ItemStack) null);
+				if (this.mergeItemStack(craftMatrix.getStackInSlot(i), 3 * 3 + 1, NUM_SLOTS, false)) {
+					this.craftMatrix.setInventorySlotContents(i, null);
+					this.te.setInventorySlotContents(i, null);
 				}
 				else {
-					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
-					this.craftMatrix.setInventorySlotContents(i, (ItemStack) null);
+					final int xCoord = te.getPos().getX();
+					final int yCoord = te.getPos().getY();
+					final int zCoord = te.getPos().getZ();
+
+					WorldUtils.addItemDrop(craftMatrix.getStackInSlot(i), te.getWorld(), xCoord, yCoord, zCoord);
+					craftMatrix.setInventorySlotContents(i, null);
 				}
 			}
 		}
 		
 		this.onCraftMatrixChanged(craftMatrix);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#onContainerClosed(net.minecraft.entity.player.EntityPlayer)
-	 */
+
+	@Override
 	public void onContainerClosed(EntityPlayer player) {
 		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 			this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
@@ -200,26 +203,17 @@ public class ContainerFabricationTable extends Container {
 		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
-	 */
+	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
-	 */
+	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#mergeItemStack(net.minecraft.item.ItemStack, int, int, boolean)
-	 */
+	@Override
 	public boolean mergeItemStack(ItemStack stack, int start, int end, boolean reverse) {
 		return super.mergeItemStack(stack, start, end, reverse);
 	}
@@ -228,6 +222,7 @@ public class ContainerFabricationTable extends Container {
 	 * Player shift-clicking a slot.
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
 	 */
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack itemstack = null;
 		Slot slot = (Slot) this.inventorySlots.get(index);

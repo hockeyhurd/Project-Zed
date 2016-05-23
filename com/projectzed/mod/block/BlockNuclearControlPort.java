@@ -7,16 +7,17 @@
 package com.projectzed.mod.block;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -28,54 +29,38 @@ import net.minecraft.world.World;
 public class BlockNuclearControlPort extends AbstractBlockNuclearComponent implements IMetaUpdate {
 
 	private boolean active;
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon activeIcon;
-	
+
 	public BlockNuclearControlPort() {
 		super(Material.rock, "nuclearControlPort");
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
+
 	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		super.registerBlockIcons(reg);
-		activeIcon = reg.registerIcon(this.assetDir + this.name + "_on");
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return meta == 0 ? blockIcon : activeIcon;
+	public Block getBlock() {
+		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearControlPort();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onNeighborBlockChange(net.minecraft.world.World, int, int, int, net.minecraft.block.Block)
-	 */
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block b) {
+	public void onNeighborBlockChange(World world, BlockPos blockPos, IBlockState state, Block neighborBlock) {
 		if (!world.isRemote) {
-			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(x, y, z);
+			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(blockPos);
 			
 			if (te != null) {
-				boolean active = world.isBlockIndirectlyGettingPowered(x, y, z);
+				boolean active = world.isBlockIndirectlyGettingPowered(blockPos) > 0;
 				te.setRedstoneSignal(active);
 				updateMeta(active ? 1 : 0, world, te.worldVec());
 				if (active) this.setLightLevel(0.75f);
@@ -84,10 +69,6 @@ public class BlockNuclearControlPort extends AbstractBlockNuclearComponent imple
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector3)
-	 */
 	@Override
 	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
 		// updateMeta(isActive ? 1 : 0, world, vec);
@@ -95,11 +76,16 @@ public class BlockNuclearControlPort extends AbstractBlockNuclearComponent imple
 
 	@Override
 	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
-		TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		final TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(blockPos);
 		
 		if (te != null) {
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			final IBlockState blockState = BlockUtils.getBlock(world, blockPos).getBlock().getStateFromMeta(meta);
+			BlockUtils.setBlock(world, blockPos, blockState);
+			world.notifyBlockOfStateChange(blockPos, blockState.getBlock());
+			world.notifyNeighborsOfStateChange(blockPos, blockState.getBlock());
 		}
 	}
 

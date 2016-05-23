@@ -6,12 +6,12 @@
 */
 package com.projectzed.mod.util;
 
-import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Class mostly used to help with determining what to render with multiblock
@@ -23,9 +23,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class MultiblockHelper {
 
 	private World world;
-	private Vector4<Integer> vec;
+	private Vector3<Integer> vec;
 	private Block[] blocks;
-	private boolean[] connections = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+	private boolean[] connections = new boolean[EnumFacing.VALUES.length];
 	private boolean xAxis, yAxis, zAxis;
 	private int counter = 0;
 	
@@ -34,7 +34,7 @@ public class MultiblockHelper {
 	 * @param vec global position of current block.
 	 * @param blocks white-listed blocks.
 	 */
-	public MultiblockHelper(World world, Vector4<Integer> vec, Block[] blocks) {
+	public MultiblockHelper(World world, Vector3<Integer> vec, Block[] blocks) {
 		this.world = world;
 		this.vec = vec;
 		this.blocks = new Block[blocks.length];
@@ -69,11 +69,12 @@ public class MultiblockHelper {
 	 */
 	public void calculateConnections() {
 		
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (isBlockValid(BlockUtils.getBlock(world, vec.x + dir.offsetX, vec.y + dir.offsetY, vec.z + dir.offsetZ))) {
-				if (dir == ForgeDirection.EAST || dir == ForgeDirection.WEST) xAxis = true;
-				if (dir == ForgeDirection.NORTH || dir == ForgeDirection.SOUTH) zAxis = true;
-				if (dir == ForgeDirection.DOWN || dir == ForgeDirection.UP) yAxis = true;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			if (isBlockValid(BlockUtils.getBlock(world, vec.x + dir.getFrontOffsetX(), vec.y + dir.getFrontOffsetY(),
+					vec.z + dir.getFrontOffsetZ()).getBlock())) {
+				if (dir == EnumFacing.EAST || dir == EnumFacing.WEST) xAxis = true;
+				if (dir == EnumFacing.NORTH || dir == EnumFacing.SOUTH) zAxis = true;
+				if (dir == EnumFacing.DOWN || dir == EnumFacing.UP) yAxis = true;
 				
 				connections[dir.ordinal()] = true;
 				counter++;

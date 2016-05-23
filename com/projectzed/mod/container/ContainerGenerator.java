@@ -65,11 +65,6 @@ public class ContainerGenerator extends Container {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
-	 */
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
@@ -97,6 +92,7 @@ public class ContainerGenerator extends Container {
 	 * Player shift-clicking a slot.
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
 	 */
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack itemstack = null;
 		Slot slot = (Slot) this.inventorySlots.get(index);

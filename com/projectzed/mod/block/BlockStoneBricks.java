@@ -9,7 +9,9 @@
 
 package com.projectzed.mod.block;
 
-import com.projectzed.api.block.AbstractProjectZedBlock;
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
 
 /**
@@ -18,11 +20,19 @@ import net.minecraft.block.material.Material;
  * @author hockeyhurd
  * @version 7/9/2015.
  */
-public class BlockStoneBricks extends AbstractProjectZedBlock {
+public class BlockStoneBricks extends AbstractHCoreBlock {
 
 	public BlockStoneBricks(String name) {
-		super(Material.rock, name);
-		this.setHardness(1.5f);
+		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
 
+	@Override
+	public float getBlockHardness() {
+		return 1.5f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
 }

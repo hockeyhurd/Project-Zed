@@ -6,14 +6,9 @@
 */
 package com.projectzed.mod.block.container;
 
-import net.minecraft.block.material.Material;
-
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityFluidTankTier0;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
 
 /**
  * Tier 0 fluid tank block code.
@@ -31,20 +26,6 @@ public class BlockTankTier0 extends AbstractBlockTankBase {
 		this.tier = (byte) 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.block.container.BlockTankBase#getRenderType()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.fluidTankTier0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.block.container.BlockTankBase#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityFluidContainer getTileEntity() {
 		return new TileEntityFluidTankTier0();

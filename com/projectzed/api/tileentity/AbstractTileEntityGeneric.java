@@ -7,7 +7,10 @@
 package com.projectzed.api.tileentity;
 
 import com.hockeyhurd.hcorelib.api.tileentity.AbstractTileContainer;
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * Class used for easily creating a generic tile entity.
@@ -26,6 +29,21 @@ public abstract class AbstractTileEntityGeneric extends AbstractTileContainer im
 	 */
 	@Override
 	public void update() {
+	}
+
+	@Override
+	public String getName() {
+		return customName;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return StringUtils.nullCheckString(customName);
+	}
+
+	@Override
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(customName);
 	}
 
 }

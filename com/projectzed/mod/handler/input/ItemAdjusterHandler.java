@@ -12,13 +12,13 @@ package com.projectzed.mod.handler.input;
 
 import com.hockeyhurd.hcorelib.api.handler.input.AbstractKeyBinding;
 import com.projectzed.mod.item.IItemAdjustable;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Input handler class for adjustable items.
@@ -53,7 +53,8 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 		protected void activate(InputEvent.KeyInputEvent event) {
 			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
-			ItemStack current = player.getCurrentEquippedItem();
+			// ItemStack current = player.getCurrentEquippedItem();
+			ItemStack current = player.getActiveItemStack();
 
 			if (current != null) {
 				Item item = current.getItem();
@@ -79,7 +80,8 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 		protected void activate(InputEvent.KeyInputEvent event) {
 			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
-			ItemStack current = player.getCurrentEquippedItem();
+			// ItemStack current = player.getCurrentEquippedItem();
+			ItemStack current = player.getActiveItemStack();
 
 			if (current != null) {
 				Item item = current.getItem();

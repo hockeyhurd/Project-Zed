@@ -8,11 +8,11 @@ package com.projectzed.mod.item;
 
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class ItemForgingHammer extends AbstractHCoreItem {
 
 	public ItemForgingHammer() {
 		super(ProjectZed.modCreativeTab, "forgingHammer", ProjectZed.assetDir);
-		this.setMaxDamage(255);
+		this.setMaxDamage(0xff);
 		this.setMaxStackSize(1);
 	}
 
@@ -35,15 +35,15 @@ public class ItemForgingHammer extends AbstractHCoreItem {
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack) {
-		/*final int itemDamage = stack.getItemDamage();
+		*//*final int itemDamage = stack.getItemDamage();
 		if (itemDamage >= 256) return false;
 
-		stack.setItemDamage(itemDamage + 1);*/
+		stack.setItemDamage(itemDamage + 1);*//*
 
 		return false;
-	}
+	}*/
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
@@ -55,8 +55,8 @@ public class ItemForgingHammer extends AbstractHCoreItem {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
-		list.add(EnumChatFormatting.GREEN + "Uses left " + EnumChatFormatting.GRAY + (stack.getMaxDamage() - stack.getItemDamage() + 1));
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
+		list.add(TextFormatting.GREEN + "Uses left " + TextFormatting.GRAY + (stack.getMaxDamage() - stack.getItemDamage() + 1));
 	}
 
 }

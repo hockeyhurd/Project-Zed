@@ -7,22 +7,20 @@
 package com.projectzed.mod.block;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
-import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberWall;
 import com.projectzed.mod.util.MultiblockHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static net.minecraftforge.common.util.ForgeDirection.*;
+import static net.minecraft.util.EnumFacing.*;
 
 /**
  * Class containing code for nuclearChamberWall.
@@ -34,74 +32,42 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 
 	private Block[] blockWhitelist;
 	
-	@SideOnly(Side.CLIENT)
-	private IIcon vert, horiz, both;
-
 	public BlockNuclearChamberWall() {
 		super("nuclearChamberWall");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer
-	 * .texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
+	/*@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister reg) {
 		blockIcon = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_normal"); 
 		vert = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_vert");
 		horiz = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_horiz");
 		both = reg.registerIcon(ProjectZed.assetDir + "nuclearChamberWall_both");
-	}
+	}*/
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		// if (side == 0 && meta == 0) return blockIcon;
-		// return meta == 0 ? blockIcon : (meta == 1 ? vert : (meta == 2 ? horiz : both));
-		
-		if (meta == 0) return blockIcon;
-		else if (meta == 1) return vert;
-		else if (meta == 2) return horiz;
-		else if (meta == 3) return both;
-		else if (meta == 4) {
-			if (side != 0 && side != 1) return horiz;
-			else return vert;
-		}
-		else return blockIcon;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
-		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		TileEntity te = world.getTileEntity(blockPos);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
-			int ret = isActive ? isBlockAdjacent(world, vec.x, vec.y, vec.z) : 0;
+			int ret = isActive ? isBlockAdjacent(world, vec) : 0;
 			updateMeta(ret, world, vec);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
-		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		TileEntity te = world.getTileEntity(blockPos);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberWall) {
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			Block currentBlock = ((TileEntityNuclearChamberWall) te).getBlock();
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			BlockUtils.setBlock(world, vec, currentBlock.getStateFromMeta(meta));
+			world.notifyBlockOfStateChange(blockPos, currentBlock);
+			world.notifyNeighborsOfStateChange(blockPos, currentBlock);
 		}
 	}
 
@@ -109,18 +75,16 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 	 * Function to check and get the approrpriate metadata for this block.
 	 * 
 	 * @param world world object as reference.
-	 * @param x x-pos
-	 * @param y y-pos
-	 * @param z z-pos
+	 * @param vec Vec3i.
 	 * @return metadata for given block.
 	 */
-	private int isBlockAdjacent(World world, int x, int y, int z) {
+	private int isBlockAdjacent(World world, Vector3<Integer> vec) {
 		if (blockWhitelist == null) blockWhitelist = new Block[] {
 					this, ProjectZed.nuclearChamberLock, ProjectZed.nuclearReactorGlass, ProjectZed.nuclearPowerPort, ProjectZed.nuclearControlPort,
 					ProjectZed.nuclearIOPort, ProjectZed.fissionController, ProjectZed.fusionController
 		};
 		
-		MultiblockHelper mb = new MultiblockHelper(world, new Vector4<Integer>(x, y, z), blockWhitelist);
+		MultiblockHelper mb = new MultiblockHelper(world, vec.copy(), blockWhitelist);
 		mb.calculateConnections();
 
 		int counter = mb.getCounter();
@@ -207,11 +171,6 @@ public class BlockNuclearChamberWall extends AbstractBlockNuclearComponent imple
 		return ret;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearChamberWall();

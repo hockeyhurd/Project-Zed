@@ -6,16 +6,17 @@
 */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -29,28 +30,32 @@ import java.util.Random;
  * @author hockeyhurd
  * @version Nov 29, 2014
  */
-public abstract class AbstractBlockContainer extends BlockContainer {
+public abstract class AbstractBlockContainer extends AbstractHCoreBlockContainer {
 
-	/** Name of the block */
-	protected String name;
-
-	/** Asset directory of block. */
-	protected String assetDir;
-	
-	protected Random random = new Random();
+	protected static final Random random = new Random();
 	
 	/**
-	 * @param material = material of block.
-	 * @param assetDir = asset directory to find icon img.
-	 * @param name = name of block.
+	 * @param material material of block.
+	 * @param assetDir asset directory to find icon img.
+	 * @param name name of block.
 	 */
 	public AbstractBlockContainer(Material material, String assetDir, String name) {
-		super(material);
-		this.assetDir = assetDir;
-		this.name = name;
-		this.setRegistryName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
+		super(material, ProjectZed.modCreativeTab, assetDir, name);
+	}
+
+	@Override
+	public Block getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
 	}
 
 	/**
@@ -59,27 +64,15 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 	 */
 	public abstract AbstractTileEntityEnergyContainer getTileEntity();
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
 	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
+	public AbstractTileEntityEnergyContainer createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
 	public abstract boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem,
 			EnumFacing side, float hitX, float hitY, float hitZ);
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
 		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
@@ -90,10 +83,6 @@ public abstract class AbstractBlockContainer extends BlockContainer {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
-	 */
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
 		doBreakBlock(world, pos);

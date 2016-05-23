@@ -7,17 +7,22 @@
 package com.projectzed.mod.block.machines;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for industrialLoader.
@@ -27,40 +32,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 
-	private final String name;
-	
-	public BlockIndustrialLoader() {
-		super(Material.rock);
-		this.name = "industrialLoader";
-		this.setBlockName(this.name);
-		this.setHardness(1.0f);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + name);
-	}
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
+	public BlockIndustrialLoader() {
+		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, "industrialLoader");
+	}
+	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(x, y, z);
+			TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(pos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
 					FMLNetworkHandler
-							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class), world, x, y,
-									z);
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialLoader.class),
+									world, pos.getX(), pos.getY(), pos.getZ());
 
 				else return false;
 			}
@@ -68,13 +57,29 @@ public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 		}
 	}
 
-	/*
-	* (non-Javadoc)
-	* @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	*/
 	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
+	public Block getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
+	@Override
+	public TileEntityIndustrialLoader getTileEntity() {
 		return new TileEntityIndustrialLoader();
+	}
+
+	@Override
+	public TileEntityIndustrialLoader createNewTileEntity(World world, int id) {
+		return getTileEntity();
 	}
 
 }

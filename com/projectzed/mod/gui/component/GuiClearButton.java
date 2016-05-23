@@ -56,10 +56,6 @@ public class GuiClearButton extends GuiButton {
 		this.PIXEL = 1f / 12f;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
@@ -82,11 +78,11 @@ public class GuiClearButton extends GuiButton {
 				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right*/
 
 			mouseDragged(minecraft, x, y);
-			int j = 14737632;
+			int j = 0xe0e0e0;
 
 			if (packedFGColour != 0) j = packedFGColour;
-			else if (!this.enabled) j = 10526880;
-			else if (this.hovered) j = 16777120;
+			else if (!this.enabled) j = 0xa0a0a0;
+			else if (this.hovered) j = 0xffffa0;
 
 			// this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
 			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);

@@ -15,6 +15,7 @@ import com.projectzed.mod.tileentity.generator.AbstractTileEntityKineticGenerato
 import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.block.material.Material;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -37,8 +38,8 @@ public abstract class AbstractBlockKineticGenerator extends AbstractBlockGenerat
 	public abstract AbstractTileEntityKineticGenerator getTileEntity();
 
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityLavaGenerator te = (TileEntityLavaGenerator) world.getTileEntity(blockPos);
 
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 

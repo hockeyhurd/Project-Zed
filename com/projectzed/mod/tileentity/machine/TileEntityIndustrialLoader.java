@@ -9,6 +9,7 @@ package com.projectzed.mod.tileentity.machine;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.ChunkHelper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.util.IChunkLoadable;
@@ -19,7 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -53,89 +55,63 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		chunkBoundary = new Rect<Integer>(0, 0, 0, 0);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
@@ -143,10 +119,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		this.lastRadii = this.radii;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
@@ -154,21 +126,13 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		// unloadChunk();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
 	}
 
@@ -191,8 +155,8 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
 
@@ -210,10 +174,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 	
 	// DO CHUNK LOADING HERE:
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#invalidate()
-	 */
 	@Override
 	public void invalidate() {
 		// forceChunkLoading(null);
@@ -221,10 +181,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		super.invalidate();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#validate()
-	 */
 	@Override
 	public void validate() {
 		// forceChunkLoading(null);
@@ -232,10 +188,6 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		super.validate();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IChunkLoadable#loadChunk(net.minecraftforge.common.ForgeChunkManager.Ticket)
-	 */
 	@Override
 	public void loadChunk(Ticket ticket) {
 
@@ -244,7 +196,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 
 			this.heldChunk = ticket;
 
-			Vector2<Integer> vec = new Vector2<Integer>(this.xCoord >> 4, this.zCoord >> 4);
+			Vector2<Integer> vec = new Vector2<Integer>(pos.getX() >> 4, pos.getZ() >> 4);
 
 			chunkBoundary.min.x = -this.radii + 1;
 			chunkBoundary.min.y = -this.radii + 1;
@@ -268,13 +220,13 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 			if (this.heldChunk != null) unloadChunk();
 
 			Ticket newTicket = ForgeChunkManager.requestTicket(ProjectZed.instance, this.worldObj, Type.NORMAL);
-			newTicket.getModData().setInteger("xCoord", this.xCoord);
-			newTicket.getModData().setInteger("yCoord", this.yCoord);
-			newTicket.getModData().setInteger("zCoord", this.zCoord);
+			newTicket.getModData().setInteger("xCoord", pos.getX());
+			newTicket.getModData().setInteger("yCoord", pos.getY());
+			newTicket.getModData().setInteger("zCoord", pos.getZ());
 			
 			this.heldChunk = newTicket;
 			
-			Vector2<Integer> vec = new Vector2<Integer>(this.xCoord >> 4, this.zCoord >> 4);
+			Vector2<Integer> vec = new Vector2<Integer>(pos.getX() >> 4, pos.getZ() >> 4);
 
 			chunkBoundary.min.x = -this.radii + 1;
 			chunkBoundary.min.y = -this.radii + 1;
@@ -305,7 +257,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		final int calculatedSize = getCalculatedArrayLength();
 		if (chunksLoaded == null || chunksLoaded.length != calculatedSize) chunksLoaded = new Chunk[calculatedSize];
 
-		Vector2<Integer> vec = new Vector2<Integer>(this.xCoord >> 4, this.zCoord >> 4);
+		Vector2<Integer> vec = new Vector2<Integer>(pos.getX() >> 4, pos.getZ() >> 4);
 		Vector2<Integer> current = new Vector2<Integer>();
 		int counter = 0;
 
@@ -347,7 +299,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(xCoord, yCoord, zCoord);
+		return VectorHelper.toVector3i(pos);
 	}
 
 	@Override
