@@ -7,6 +7,7 @@
 package com.projectzed.mod.block.ore;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractBlockOre;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
 
@@ -22,4 +23,8 @@ public class BlockCopperOre extends AbstractBlockOre {
 		super(material, ProjectZed.modCreativeTab, assetDir, name);
 	}
 
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
 }

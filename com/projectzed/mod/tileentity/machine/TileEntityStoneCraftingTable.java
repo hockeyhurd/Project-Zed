@@ -12,7 +12,8 @@ import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Class containing tileentity code for 
@@ -26,84 +27,67 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 		this.customName = "craftingStoneTable";
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return this.slots.length;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0x40;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 		this.slots = new ItemStack[3 * 3 + 1];
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot != 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
-	 */
+
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void update() {
+		super.update();
 		
 		// if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) {
 
@@ -113,25 +97,12 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 	}
 
 	@Override
-	public boolean canUpdate() {
-		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
-	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStoneCraftingTable(this));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
 	@Override
-	public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStoneCraftingTable(this));
 	}
 

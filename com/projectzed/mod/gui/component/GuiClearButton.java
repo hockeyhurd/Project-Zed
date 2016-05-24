@@ -58,7 +58,7 @@ public class GuiClearButton extends GuiButton {
 	
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
-		if (this.visible) {
+			if (this.visible) {
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 			FontRenderer fontrenderer = minecraft.fontRendererObj;
 			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);

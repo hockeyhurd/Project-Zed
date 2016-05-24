@@ -14,7 +14,6 @@ import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,12 +31,10 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
  */
 public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 
-	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-
 	public BlockIndustrialLoader() {
 		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, "industrialLoader");
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing side, float hitX, float hitY, float hitZ) {

@@ -12,10 +12,14 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialMetalPress;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing block code for industrialMetalPress
@@ -27,37 +31,25 @@ public class BlockIndustrialMetalPress extends AbstractBlockMachine {
 
 	public BlockIndustrialMetalPress() {
 		super("industrialMetalPress");
-		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialMetalPress();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
-	 */
 	@Override
-	protected Block getBlockInstance() {
-		return this;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialMetalPress.class), world, x, y, z);
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialMetalPress.class),
+									world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}

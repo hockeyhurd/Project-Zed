@@ -7,6 +7,7 @@
 package com.projectzed.mod.tileentity.container.pipe;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.tileentity.IModularFrame;
@@ -14,7 +15,7 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.api.util.EnumFrameType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * 
@@ -31,42 +32,21 @@ public class TileEntityItemPipeBase extends AbstractTileEntityPipe implements IC
 		this.color = color;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.source.IColorComponent#getColor()
-	 */
 	@Override
 	public EnumColor getColor() {
 		return this.color;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.source.IColorComponent#setColor(com.projectzed.api.energy.source.EnumColor)
-	 */
 	@Override
 	public void setColor(EnumColor color) {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#worldVec()
-	 */
-	@Override
-	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityPipe#updateConnections()
-	 */
 	@Override
 	protected void updateConnections() {
-		
-		TileEntity te = null;
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			te = worldObj.getTileEntity(worldVec().x + dir.offsetX, worldVec().y + dir.offsetY, worldVec().z + dir.offsetZ);
+		final Vector3<Integer> vec = worldVec();
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec.x + dir.getFrontOffsetX(), vec.y + dir.getFrontOffsetY(),
+					vec.z + dir.getFrontOffsetZ()));
 			
 			if (te == null) connections[dir.ordinal()] = null;
 			else {
@@ -75,7 +55,7 @@ public class TileEntityItemPipeBase extends AbstractTileEntityPipe implements IC
 				}
 				
 				else if (te instanceof IModularFrame && ((IModularFrame) te).getType() == EnumFrameType.ITEM) {
-					if (((IModularFrame) te).getSideValve(ForgeDirection.UP.getOpposite()) != 0) connections[dir.ordinal()] = ForgeDirection.UP;
+					if (((IModularFrame) te).getSideValve(EnumFacing.UP.getOpposite()) != 0) connections[dir.ordinal()] = EnumFacing.UP;
 				}
 				
 				else if (te instanceof IInventory && ((IInventory) te).getSizeInventory() > 0) connections[dir.ordinal()] = dir;

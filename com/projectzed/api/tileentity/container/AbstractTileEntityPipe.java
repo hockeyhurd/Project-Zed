@@ -8,6 +8,7 @@ package com.projectzed.api.tileentity.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IWrenchable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -64,74 +65,56 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		return dir >= 0 && dir < connections.length ? connections[dir] : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getAccessibleSlotsFromSide(int)
-	 */
-	public int[] getAccessibleSlotsFromSide(int side) {
+	@Override
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
 	}
 
 	/**
@@ -139,11 +122,6 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 	 */
 	protected abstract void updateConnections();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
-	 */
 	@Override
 	public void update() {
 		updateConnections();
@@ -168,36 +146,30 @@ public abstract class AbstractTileEntityPipe extends AbstractTileEntityContainer
 		this.lastReceivedDir = dir;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
-	 */
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		return currentMeta;
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
+		// return currentMeta;
+		return facingDir;
+	}
+
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return null;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing face) {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
-	 */
 	@Override
 	public boolean canRotateTE() {
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
-	 */
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;

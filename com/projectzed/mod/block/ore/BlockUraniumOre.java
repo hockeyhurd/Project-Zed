@@ -7,6 +7,7 @@
 package com.projectzed.mod.block.ore;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractBlockOre;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
 
@@ -26,5 +27,9 @@ public class BlockUraniumOre extends AbstractBlockOre {
 	public BlockUraniumOre(Material material, String assetDir, String name) {
 		super(material, ProjectZed.modCreativeTab, assetDir, name);
 	}
-	
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return null;
+	}
 }

@@ -6,12 +6,14 @@
  */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
+import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -25,6 +27,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,28 +40,36 @@ import java.util.Random;
  * @author hockeyhurd
  * @version Oct 23, 2014
  */
-public abstract class AbstractBlockMachine extends BlockContainer {
+public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
-	protected String name;
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
 	protected boolean active;
 	protected static boolean keepInventory;
-	protected Random random = new Random();
+
+	protected static final Random random = new Random();
 
 	public AbstractBlockMachine(String name) {
-		super(Material.rock);
-		this.name = name;
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setRegistryName(name);
-		this.setHardness(1f);
+		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft
-	 * .world.World, int)
-	 */
-	public TileEntity createNewTileEntity(World world, int id) {
+	@Override
+	public AbstractBlockMachine getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
+	@Override
+	public AbstractTileEntityMachine createNewTileEntity(World world, int id) {
 		return getTileEntity();
 	}
 
@@ -67,6 +78,7 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 	 * 
 	 * @return tile entity instance.
 	 */
+	@Override
 	public abstract AbstractTileEntityMachine getTileEntity();
 
 	/**
@@ -99,29 +111,11 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		}
 	}
 
-	/**
-	 * Gets the exact instance of extended class.
-	 * 
-	 * @return block object.
-	 */
-	protected abstract Block getBlockInstance();
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getItem(net.minecraft.world.World, int,
-	 * int, int)
-	 */
 	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int x, int y, int z) {
-		return Item.getItemFromBlock(getBlockInstance());
+		return Item.getItemFromBlock(getBlock());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.minecraft.block.Block#randomDisplayTick(net.minecraft.world.World,
-	 * int, int, int, java.util.Random)
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(IBlockState worldIn, World world, BlockPos pos, Random random) {
@@ -184,13 +178,6 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World,
-	 * int, int, int, net.minecraft.entity.player.EntityPlayer, int, float,
-	 * float, float)
-	 */
 	@Override
 	public abstract boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing side, float hitX, float hitY, float hitZ);
@@ -241,13 +228,29 @@ public abstract class AbstractBlockMachine extends BlockContainer {
 		// super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#hasComparatorInputOverride()
-	 */
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState block) {
 		return true;
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
+		TileEntity tileEntity = world.getTileEntity(blockPos);
+
+		if (tileEntity instanceof IWrenchable && ((IWrenchable) tileEntity).canRotateTE())
+			return EnumFacing.HORIZONTALS;
+
+		return super.getValidRotations(world, blockPos);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
+		TileEntity tileEntity = world.getTileEntity(blockPos);
+
+		if (tileEntity instanceof IWrenchable && ((IWrenchable) tileEntity).canRotateTE())
+			return blockState.withProperty(FACING, ((IWrenchable) tileEntity).getCurrentFacing());
+
+		return blockState.withProperty(FACING, EnumFacing.NORTH);
 	}
 
 }

@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -40,7 +40,7 @@ public class ContainerNuclearIOPort extends Container {
 		
 		if (this.NUM_SLOTS == 2) {
 			this.addSlotToContainer(new Slot(te, 0, 41, 21));
-			this.addSlotToContainer(new SlotFurnace(inv.player, te, 1, 121, 21));
+			this.addSlotToContainer(new SlotFurnaceOutput(inv.player, te, 1, 121, 21));
 		}
 
 		// Adds the player inventory to furnace's gui.

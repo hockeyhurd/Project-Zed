@@ -7,15 +7,15 @@
 package com.projectzed.mod.block;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearChamberLock;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -26,63 +26,32 @@ import net.minecraft.world.World;
  */
 public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent implements IMetaUpdate {
 	
-	@SideOnly(Side.CLIENT)
-	private IIcon locked;
-	
 	public BlockNuclearChamberLock() {
 		super("nuclearChamberLock");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(this.assetDir + this.name + "_locked");
-		locked = reg.registerIcon(this.assetDir + this.name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return meta == 0 ? blockIcon : locked;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearChamberLock();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(boolean isConnected, World world, Vector3<Integer> vec) {
 		updateMeta(isConnected ? 1 : 0, world, vec);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
-		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		final TileEntity te = world.getTileEntity(blockPos);
 		
 		if (te != null && te instanceof TileEntityNuclearChamberLock) {
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			final Block block = ((TileEntityNuclearChamberLock) te).getBlock();
+			BlockUtils.setBlock(world, blockPos, block.getStateFromMeta(meta));
+			world.notifyBlockOfStateChange(blockPos, block);
+			world.notifyNeighborsOfStateChange(blockPos, block);
 		}
 	}
 	 

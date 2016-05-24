@@ -16,10 +16,10 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityPatternEncoder;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Block class for pattern encoder.
@@ -51,8 +51,8 @@ public class BlockPatternEncoder extends AbstractBlockMachine {
 			TileEntityPatternEncoder te = (TileEntityPatternEncoder) world.getTileEntity(x, y, z);
 			if (te != null) {
 				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
-					FMLNetworkHandler.openGui(player, ProjectZed.instance,
-							TileEntityRegistry.instance().getID(TileEntityPatternEncoder.class), world, x, y, z);
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityPatternEncoder.class), world, x, y, z);
 
 				else return false;
 			}

@@ -32,8 +32,6 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 
 	public BlockIndustrialCrusher() {
 		super("industrialCrusher");
-		this.name = "industrialCrusher";
-		this.setRegistryName(name);
 	}
 	
 	/*

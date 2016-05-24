@@ -8,14 +8,9 @@ package com.projectzed.mod.block;
 
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
 
 /**
  * Class containing block code for nuclearReactorGlass.
@@ -25,93 +20,23 @@ import net.minecraft.util.IIcon;
  */
 public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 
-	private Block[] blockWhitelist;
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icons;
-	
 	public BlockNuclearReactorGlass() {
 		super(Material.glass, "nuclearReactorGlass");
-		this.setHardness(0.75f);
 		this.setResistance(2000.0f);
-		this.setStepSound(soundTypeGlass);
+		this.setStepSound(SoundType.GLASS);
 		this.setLightOpacity(0);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
+
 	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(this.assetDir + this.name + "_normal"); 
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return blockIcon;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#renderAsNormalBlock()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockBreakable#isOpaqueCube()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube() {
-		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getRenderType()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.reactorGlass;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#canRenderInPass(int)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean canRenderInPass(int pass) {
-		ClientProxy.renderPass = pass;
-		return true;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#getRenderBlockPass()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderBlockPass() {
-		return 1;
+	public float getBlockHardness() {
+		return 0.75f;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
+	@Override
+	public boolean isVisuallyOpaque() {
+		return false;
+	}
+	
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityReactorGlass();

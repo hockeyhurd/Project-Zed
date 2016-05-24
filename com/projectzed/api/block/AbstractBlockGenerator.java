@@ -9,6 +9,7 @@ package com.projectzed.api.block;
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
@@ -44,10 +45,26 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
 
+	@Override
+	public AbstractBlockGenerator getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 2.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
 	/**
 	 * Method used to grab exact tile entity associated with this block.
 	 * <br>Example: return new TileEntityRFBridge().
 	 */
+	@Override
 	public abstract AbstractTileEntityGenerator getTileEntity();
 
 	@Override
@@ -104,10 +121,6 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
 		// int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -119,18 +132,10 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(pos)).setCustomName(stack.getDisplayName());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
 	public abstract boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing side, float hitX, float hitY, float hitZ);
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
-	 */
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
 		doBreakBlock(world, pos);

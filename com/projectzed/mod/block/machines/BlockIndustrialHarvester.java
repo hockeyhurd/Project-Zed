@@ -12,20 +12,22 @@ package com.projectzed.mod.block.machines;
 
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockMachine;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialHarvester;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Block class for industrialHarvester.
@@ -45,21 +47,17 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 	}
 
 	@Override
-	protected Block getBlockInstance() {
-		return this;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
 					FMLNetworkHandler
-							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialHarvester.class), world, x, y,
-									z);
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialHarvester.class),
+									world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}
@@ -69,8 +67,8 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		super.onBlockPlacedBy(world, x, y, z, player, stack);
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase player, ItemStack stack) {
+		super.onBlockPlacedBy(world, blockPos, blockState, player, stack);
 
 		/*
 		 * Facing direction from block metadata.
@@ -83,14 +81,17 @@ public class BlockIndustrialHarvester extends AbstractBlockMachine {
 
 		if (!world.isRemote) {
 			// ProjectZed.logHelper.info(world.getBlockMetadata(x, y, z));
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity == null || !(tileEntity instanceof TileEntityIndustrialHarvester)) return;
 
-			TileEntityIndustrialHarvester te = (TileEntityIndustrialHarvester) tileEntity;
+			final TileEntityIndustrialHarvester te = (TileEntityIndustrialHarvester) tileEntity;
+			final int x = blockPos.getX();
+			final int y = blockPos.getY();
+			final int z = blockPos.getZ();
 
 			final int distNorm = TileEntityIndustrialHarvester.DEFAULT_NORMALIZED_RECT_SIZE;
 			final int dist = TileEntityIndustrialHarvester.DEFAULT_RECT_SIZE;
-			byte meta = (byte) BlockUtils.getBlockMetadata(world, x, y, z);
+			byte meta = (byte) blockState.getBlock().getMetaFromState(blockState);
 			Rect<Integer> rect = null;
 
 			// SOUTH:
