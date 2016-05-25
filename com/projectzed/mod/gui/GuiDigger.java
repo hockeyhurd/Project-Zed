@@ -16,17 +16,17 @@ import com.projectzed.mod.gui.component.*;
 import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityDigger;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		
 		waila.finder(false);
 		
-		getLayoutFromFacingDirection(getFacingDirection(waila.getSideHit()), counter, guiLeft - 72, guiTop + 38);
+		getLayoutFromFacingDirection(waila.getSideHit(), counter, guiLeft - 72, guiTop + 38);
 		
 		IGuiButton current;
 		
@@ -163,7 +163,8 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 			current = buttons.get(i);
 			if (!(current instanceof GuiConfigButton)) ((GuiButton) current).visible = false;
 			
-			if (current instanceof GuiButton) this.buttonList.add(current);
+			// if (current instanceof GuiButton) this.buttonList.add((GuiButton) current);
+			this.buttonList.add((GuiButton) current);
 		}
 		
 	}
@@ -239,7 +240,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 			
 			else if (button instanceof GuiIOButton) {
 				if (!this.isShiftKeyDown()) {
-					ForgeDirection dirToSet = getDirectionFromName(button.displayString);
+					EnumFacing dirToSet = getDirectionFromName(button.displayString);
 
 					// ProjectZed.logHelper.info("Pre-Val:\t" + te.getSideValve(dirToSet));
 					te.setSideValveAndRotate(dirToSet);
@@ -255,7 +256,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 						}
 					}
 
-					for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+					for (EnumFacing dir : EnumFacing.VALUES) {
 						te.setSideValve(dir, (byte) 0);
 					}
 
@@ -268,19 +269,11 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 		else return;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoContainer#getComponents()
-	 */
 	@Override
 	public List<IInfoLabel> getComponents() {
 		return this.labelList;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoContainer#visibleComp()
-	 */
 	@Override
 	public IInfoLabel visibleComp() {
 		if (getComponents() != null && getComponents().size() > 0) {
@@ -330,66 +323,66 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param posY = position y to start drawing button.
 	 * @return gui button array for side player is currently facing.
 	 */
-	protected void getLayoutFromFacingDirection(ForgeDirection dir, int index, int posX, int posY) {
+	protected void getLayoutFromFacingDirection(EnumFacing dir, int index, int posX, int posY) {
 		
-		if (dir == ForgeDirection.SOUTH) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+		if (dir == EnumFacing.SOUTH) {
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
 		}
 
-		else if (dir == ForgeDirection.NORTH) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+		else if (dir == EnumFacing.NORTH) {
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 
-		else if (dir == ForgeDirection.EAST) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+		else if (dir == EnumFacing.EAST) {
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 		}
 
-		else if (dir == ForgeDirection.WEST) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
+		else if (dir == EnumFacing.WEST) {
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
 		}
 
-		else if (dir == ForgeDirection.DOWN) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+		else if (dir == EnumFacing.DOWN) {
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 
 		else {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(ForgeDirection.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(ForgeDirection.NORTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(ForgeDirection.UP)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(ForgeDirection.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(ForgeDirection.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(ForgeDirection.WEST)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 		
 	}
@@ -397,28 +390,18 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 	/**
 	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
 	 * 
-	 * @param side = side to get.
-	 * @return opposite direction of side 'side'.
-	 */
-	protected ForgeDirection getFacingDirection(int side) {
-		return side >= 0 && side < ForgeDirection.VALID_DIRECTIONS.length ? ForgeDirection.VALID_DIRECTIONS[side].getOpposite() : ForgeDirection.UNKNOWN;
-	}
-	
-	/**
-	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
-	 * 
-	 * @param name = name of side.
+	 * @param name name of side.
 	 * @return direction associated by button's name.
 	 */
-	protected ForgeDirection getDirectionFromName(String name) {
-		ForgeDirection dir = ForgeDirection.UNKNOWN;
+	protected EnumFacing getDirectionFromName(String name) {
+		EnumFacing dir = null;
 		
-		if (name.equalsIgnoreCase("n")) dir = ForgeDirection.NORTH;
-		else if (name.equalsIgnoreCase("s")) dir = ForgeDirection.SOUTH;
-		else if (name.equalsIgnoreCase("e")) dir = ForgeDirection.EAST;
-		else if (name.equalsIgnoreCase("w")) dir = ForgeDirection.WEST;
-		else if (name.equalsIgnoreCase("t")) dir = ForgeDirection.UP;
-		else if (name.equalsIgnoreCase("b")) dir = ForgeDirection.DOWN;
+		if (name.equalsIgnoreCase("n")) dir = EnumFacing.NORTH;
+		else if (name.equalsIgnoreCase("s")) dir = EnumFacing.SOUTH;
+		else if (name.equalsIgnoreCase("e")) dir = EnumFacing.EAST;
+		else if (name.equalsIgnoreCase("w")) dir = EnumFacing.WEST;
+		else if (name.equalsIgnoreCase("t")) dir = EnumFacing.UP;
+		else if (name.equalsIgnoreCase("b")) dir = EnumFacing.DOWN;
 		
 		return dir;
 	}
@@ -429,7 +412,7 @@ public abstract class GuiDigger extends GuiContainer implements IInfoContainer {
 	 * @param dir = direction to get.
 	 * @return value of the 'valve' on side specified.
 	 */
-	protected byte getSideValueFromTE(ForgeDirection dir) {
+	protected byte getSideValueFromTE(EnumFacing dir) {
 		return te instanceof AbstractTileEntityDigger ? ((AbstractTileEntityDigger) te).getSideValve(dir) : 0;
 	}
 	

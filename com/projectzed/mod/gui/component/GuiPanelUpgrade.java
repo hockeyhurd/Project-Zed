@@ -10,12 +10,12 @@
 package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui class for rendering upgrade panel.
@@ -28,24 +28,18 @@ public class GuiPanelUpgrade {
 
 	private final ResourceLocation texture;
 	private int numSlots;
-	public Vector2<Double> location, thisSize;
+	public Vector2<Integer> location, thisSize;
 
-	private final Tessellator TESS;
-	private final double calcX, calcY;
-
-	public GuiPanelUpgrade(Vector2<Double> location) {
-		this(location, new Vector2<Double>(32d, 86d), 4);
+	public GuiPanelUpgrade(Vector2<Integer> location) {
+		this(location, new Vector2<Integer>(32, 86), 4);
 	}
 
-	public GuiPanelUpgrade(Vector2<Double> location, Vector2<Double> thisSize, int numSlots) {
+	public GuiPanelUpgrade(Vector2<Integer> location, Vector2<Integer> thisSize, int numSlots) {
 		this.location = location;
 		this.thisSize = thisSize;
 		this.numSlots = numSlots;
 
 		this.texture = new ResourceLocation("projectzed", "textures/gui/GuiDefaultUpgradeSlots.png");
-		this.TESS = Tessellator.instance;
-		this.calcX = (1d / 96d * thisSize.x);
-		this.calcY = (1d / 96d * thisSize.y);
 	}
 
 	public int getNumSlots() {
@@ -56,21 +50,28 @@ public class GuiPanelUpgrade {
 		this.numSlots = numSlots;
 	}
 
-	public void renderContainer(float f, int x, int y) {
-		GL11.glColor4f(1f, 1f, 1f, 1f);
+	public void renderContainer(Gui gui, float f, int x, int y) {
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+				GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+		gui.drawTexturedModalRect(location.x, location.y, 0, 0, thisSize.x, thisSize.y);
 
 		// ProjectZed.logHelper.info(thisSize.toString());
 		// gui.drawTexturedModalRect(location.x, location.y, 0, 0, thisSize.x, thisSize.y);
 
-		TESS.startDrawingQuads();
+		/*TESS.startDrawingQuads();
 
 		TESS.addVertexWithUV(location.x, location.y, 0d, 0d, 0d);
 		TESS.addVertexWithUV(location.x, location.y + thisSize.y, 0d, 0d, calcY);
 		TESS.addVertexWithUV(location.x + thisSize.x, location.y + thisSize.y, 0d, calcX, calcY);
 		TESS.addVertexWithUV(location.x + thisSize.x, location.y, 0d, calcX, 0d);
 
-		TESS.draw();
+		TESS.draw();*/
 	}
 
 }

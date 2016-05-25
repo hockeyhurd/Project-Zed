@@ -146,12 +146,6 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World,
-	 * int, int, int, net.minecraft.entity.EntityLivingBase,
-	 * net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
 		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;

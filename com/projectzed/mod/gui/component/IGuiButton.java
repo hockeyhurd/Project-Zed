@@ -10,7 +10,7 @@ import com.hockeyhurd.hcorelib.api.math.Vector2;
 import net.minecraft.client.Minecraft;
 
 /**
- * 
+ * Interfacing for GuiButtons.
  * 
  * @author hockeyhurd
  * @version May 23, 2015
@@ -48,5 +48,5 @@ public interface IGuiButton {
 	 * @return vector position of button.
 	 */
 	Vector2<Integer> getPos();
-	
+
 }

@@ -8,15 +8,14 @@ package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui buttons for controlling tabs/widgets.
@@ -27,7 +26,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiConfigButton extends GuiButton implements IGuiButton {
 
-	protected static final Tessellator TESS = Tessellator.instance;
+	// protected static final Tessellator TESS = Tessellator.instance;
 	protected static final ResourceLocation DEFFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFFAULT_TEXTURE;
 	protected final float PIXEL;
@@ -37,9 +36,9 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	protected static final int rateOfMovement = 8;
 	protected final Rect<Integer> rect;
 	protected boolean active;
-	protected float calc, calc2, dif;
+	protected int calc, calc2, dif;
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
-	protected static final float SIZE = 16f;
+	protected static final int SIZE = 16;
 	
 	public enum EnumConfigType {
 		SIDED_IO, REDSTONE
@@ -94,24 +93,20 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		return this.type;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontRenderer = minecraft.fontRenderer;
-			GL11.glColor4f(1f, 1f, 1f, 1f);
+			FontRenderer fontRenderer = minecraft.fontRendererObj;
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			minecraft.getTextureManager().bindTexture(this.TEXTURE);
 			
-			calc = (SIZE * this.stateID) * this.PIXEL;
-			dif = 3f * SIZE * this.PIXEL;
-			calc2 = (SIZE * (this.stateID + 1)) * this.PIXEL;
+			// calc = (SIZE * this.stateID) * this.PIXEL;
+			// dif = 3f * SIZE * this.PIXEL;
+			// calc2 = (SIZE * (this.stateID + 1)) * this.PIXEL;
 			//ProjectZed.logHelper.info("calc2:", calc2 / this.PIXEL, dif);
 			// need to offset height by '2 * 16'
 			
-			this.TESS.startDrawingQuads();
+			/*this.TESS.startDrawingQuads();
 
 			if (this.stateID == 0) {
 				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, calc2);// bottom left texture
@@ -127,8 +122,28 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, dif - calc2);// bottom right
 			}
 			
-			this.TESS.draw();
-			
+			this.TESS.draw();*/
+
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+					GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+			calc = SIZE * stateID;
+			dif = 3 * SIZE;
+			calc2 = SIZE * (stateID + 1);
+
+			// drawTexturedModalRect();
+			if (stateID == 0) drawTexturedModalRect(xPosition, yPosition, 0, 0, calc2, calc2);
+			else drawTexturedModalRect(xPosition, yPosition, 0, 0, dif - calc2, dif - calc2);
+
+			mouseDragged(minecraft, x, y);
+			int j = 0xe0e0e0;
+
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!enabled) j = 0xa0a0a0;
+			else if (hovered) j = 0xffffa0;
+
 			if (active) {
 				if (this.x < rect.max.x) this.x += rateOfMovement;
 				if (this.y < rect.max.y) this.y += rateOfMovement;
@@ -143,14 +158,10 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 				Gui.drawRect(rect.min.x, rect.min.y, rect.min.x - this.x, rect.min.y + this.y, rect.getColor());
 			}
 			
-			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#mousePressed(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public boolean mousePressed(Minecraft minecraft, int x, int y) {
 		boolean ret = super.mousePressed(minecraft, x, y);
@@ -189,19 +200,11 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		return (this.x != 16 && this.x != rect.max.x) || (this.y != 16 && this.y != rect.max.y);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IGuiButton#getPos()
-	 */
 	@Override
 	public Vector2<Integer> getPos() {
 		return pos;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -213,10 +216,6 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
