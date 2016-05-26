@@ -32,43 +32,26 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		super("nuclearChamberWall");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
 	public AbstractHCoreBlock getBlock() {
-		return ProjectZed.nuclearChamberWall;
+		return (AbstractHCoreBlock) ProjectZed.nuclearChamberWall;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return width * height * depth - 11 - ((width - 2) * (height - 2) * (depth - 2));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		if (subList == null) {
@@ -81,17 +64,13 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 		return this.subList;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
 		this.masterVec = Vector3.zero.getVector3i();
 		
-		((BlockNuclearChamberWall) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
+		((BlockNuclearChamberWall) blockType).updateMeta(false, worldObj, worldVec());
 	}
 	
 	@Override

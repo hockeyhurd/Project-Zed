@@ -8,6 +8,7 @@ package com.projectzed.api.util;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -33,7 +34,7 @@ public class ChunkPair {
 		this.chunkVec3 = vec;
 		this.chunkVec = new Vector2<Integer>(vec.x, vec.z);
 		
-		if (world != null) this.chunk = world.getChunkFromBlockCoords(vec.x, vec.z);
+		if (world != null) this.chunk = world.getChunkFromBlockCoords(VectorHelper.toBlockPos(vec.x, 0, vec.z));
 		else this.chunk = null;
 	}
 	
@@ -46,7 +47,7 @@ public class ChunkPair {
 		this.chunkVec = vec;
 		this.chunkVec3 = new Vector3<Integer>(vec.x, 0, vec.y);
 		
-		if (world != null) this.chunk = world.getChunkFromBlockCoords(vec.x, vec.y);
+		if (world != null) this.chunk = world.getChunkFromBlockCoords(VectorHelper.toBlockPos(vec.x, 0, vec.y));
 		else this.chunk = null;
 	}
 

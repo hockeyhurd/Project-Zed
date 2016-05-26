@@ -6,14 +6,15 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
+import com.hockeyhurd.hcorelib.api.math.Color4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Code for buttons to handle inventory sorting.
@@ -24,27 +25,25 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiSortButton extends GuiButton {
 
-	protected final Tessellator TESS;
-	protected final ResourceLocation TEXTURE; 
-	protected final float PIXEL;
-	protected float calc;
+	protected final ResourceLocation TEXTURE;
 	protected final String NAME;
-	
+	protected final Gui parentGui;
+
 	/**
 	 * @param id
 	 * @param x
 	 * @param y
 	 * @param name
 	 */
-	public GuiSortButton(int id, int x, int y, String name) {
+	public GuiSortButton(Gui parentGui, int id, int x, int y, String name) {
 		super(id, x, y, "");
+
+		this.parentGui = parentGui;
 		this.width = 16;
 		this.height = 16;
-		this.PIXEL = 1f / 16f;
 		this.NAME = name;
-		
-		this.TEXTURE = new ResourceLocation("projectzed", "textures/gui/" + name + "Button.png");
-		this.TESS = Tessellator.instance;
+
+		TEXTURE = new ResourceLocation("projectzed", "textures/gui/" + name + "Button.png");
 	}
 
 	/**
@@ -55,26 +54,22 @@ public class GuiSortButton extends GuiButton {
 	 * @param height
 	 * @param name
 	 */
-	public GuiSortButton(int id, int x, int y, int width, int height, String name) {
+	public GuiSortButton(Gui parentGui, int id, int x, int y, int width, int height, String name) {
 		super(id, x, y, width, height, "");
+
+		this.parentGui = parentGui;
 		this.width = 16;
 		this.height = 16;
-		this.PIXEL = 1f / 16f;
 		this.NAME = name;
-		
-		this.TEXTURE = new ResourceLocation("projectzed", "textures/gui/" + name + "Button.png");
-		this.TESS = Tessellator.instance;
+
+		TEXTURE = new ResourceLocation("projectzed", "textures/gui/" + name + "Button.png");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontrenderer = minecraft.fontRenderer;
-			GL11.glColor4f(1f, 1f, 1f, 1f);
+			FontRenderer fontrenderer = minecraft.fontRendererObj;
+			/*GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 
 			calc = width * this.PIXEL;
@@ -86,9 +81,18 @@ public class GuiSortButton extends GuiButton {
 				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
 				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
 
-			this.TESS.draw();
+			this.TESS.draw();*/
 
-			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
+			mouseDragged(minecraft, x, y);
+
+			int j = 0xe0e0e0;
+
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!this.enabled) j = 0xa0a0a0;
+			else if (this.hovered) j = 0xffffa0;
+
+			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 

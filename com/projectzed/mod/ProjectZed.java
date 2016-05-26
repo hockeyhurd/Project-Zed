@@ -10,6 +10,7 @@ import com.hockeyhurd.hcorelib.api.creativetab.AbstractCreativeTab;
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
 import com.hockeyhurd.hcorelib.api.util.FluidFactory;
 import com.hockeyhurd.hcorelib.api.util.LogHelper;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumArmorType;
 import com.hockeyhurd.hcorelib.api.util.interfaces.IForgeMod;
 import com.hockeyhurd.hcorelib.api.worldgen.HCWorldGenFluid;
 import com.projectzed.api.energy.source.EnumColor;
@@ -45,10 +46,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -200,7 +203,8 @@ public final class ProjectZed implements IForgeMod {
 	// Material:
 	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
 	public static final Material MATERIAL_PETROL = new MaterialLiquid(MapColor.airColor);
-	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", 100, new int[] { 3, 8, 6, 3 },  25);
+	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", "ZPlated", 100, new int[] { 3, 8, 6, 3 }, 25,
+			SoundEvents.item_armor_equip_iron);
 
 	// Armor:
 	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
@@ -367,7 +371,9 @@ public final class ProjectZed implements IForgeMod {
 
 		// Fluids:
 		if (!FluidRegistry.isFluidRegistered("oil")) {
-			fluidOil = FluidFactory.createNewFluid("oil");
+			// fluidOil = FluidFactory.createNewFluid("oil");
+			fluidOil = FluidFactory.createNewFluid("oil", new ResourceLocation(assetDir, "blockFluidOil.sill"),
+					new ResourceLocation(assetDir, "blockFluidOil.flowing"));
 			fluidOil.setDensity(800);
 			fluidOil.setViscosity(10000);
 
@@ -378,7 +384,9 @@ public final class ProjectZed implements IForgeMod {
 		else fluidOil = FluidRegistry.getFluid("oil");
 
 		if (!FluidRegistry.isFluidRegistered("fuel")) {
-			fluidPetrol = FluidFactory.createNewFluid("fuel");
+			// fluidPetrol = FluidFactory.createNewFluid("fuel");
+			fluidPetrol = FluidFactory.createNewFluid("fuel", new ResourceLocation(assetDir, "blockFluidPetrol.still"),
+					new ResourceLocation(assetDir, "blockFluidPetrol.flowing"));
 			FluidRegistry.registerFluid(fluidPetrol);
 		}
 
@@ -488,10 +496,10 @@ public final class ProjectZed implements IForgeMod {
 		craftingPattern = new ItemCraftingPattern("craftingPattern", true);
 
 		// Armor:
-		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, 0).setUnlocalizedName("zPlatedHelmet");
-		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, 1).setUnlocalizedName("zPlatedChestplate");
-		zPlatedLeg = new ArmorSetZPlated(zPlatedMat, 0, 2).setUnlocalizedName("zPlatedLeggings");
-		zPlatedBoot = new ArmorSetZPlated(zPlatedMat, 0, 3).setUnlocalizedName("zPlatedBoots");
+		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.HELMET).setUnlocalizedName("zPlatedHelmet");
+		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.CHEST).setUnlocalizedName("zPlatedChestplate");
+		zPlatedLeg = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.LEGGINGS).setUnlocalizedName("zPlatedLeggings");
+		zPlatedBoot = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.BOOTS).setUnlocalizedName("zPlatedBoots");
 		
 		// Tools:
 		wrench = new ItemWrench("wrench");

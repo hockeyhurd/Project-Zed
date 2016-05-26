@@ -87,7 +87,7 @@ public class ContainerPatternEncoder extends ContainerMachine {
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
 		if (craftMatrix != null) craftResult.setInventorySlotContents(0,
-				CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorldObj()));
+				CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
 	}
 
 	@Override

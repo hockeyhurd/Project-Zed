@@ -22,13 +22,9 @@ import net.minecraft.block.BlockStairs;
 public class BlockStairsMaker extends BlockStairs {
 
 	public BlockStairsMaker(Block block) {
-		this(block, 0);
-	}
-
-	public BlockStairsMaker(Block block, int id) {
-		super(block, id);
+		super(block.getDefaultState());
 		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setBlockName(getName(block) + "Stairs");
+		this.setRegistryName(getName(block) + "Stairs");
 	}
 
 	private String getName(Block block) {

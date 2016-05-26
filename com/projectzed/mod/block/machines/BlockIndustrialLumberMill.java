@@ -12,7 +12,6 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLumberMill;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -40,10 +39,6 @@ public class BlockIndustrialLumberMill extends AbstractBlockMachine {
 	}
 
 	@Override
-	protected Block getBlockInstance() {
-		return this;
-	}
-
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;

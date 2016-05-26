@@ -189,9 +189,9 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		buttons.addLast(redstonToggleButton); 
 		
 		GuiRedstoneButton[] redstoneButtons = new GuiRedstoneButton[] {
-			new GuiRedstoneButton(counter++, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED),
-			new GuiRedstoneButton(counter++, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW),
-			new GuiRedstoneButton(counter++, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH)
+			new GuiRedstoneButton(this, counter++, guiLeft - 72 - 8, guiTop + 24 + 20, null, EnumRedstoneType.DISABLED),
+			new GuiRedstoneButton(this, counter++, guiLeft - 72 + 16 - 4, guiTop + 24 + 20, null, EnumRedstoneType.LOW),
+			new GuiRedstoneButton(this, counter++, guiLeft - 72 + 32 - 0, guiTop + 24 + 20, null, EnumRedstoneType.HIGH)
 		};
 		
 		for (int i = 0; i < redstoneButtons.length; i++) {
@@ -381,63 +381,63 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	private void getLayoutFromFacingDirection(EnumFacing dir, int index, int posX, int posY) {
 		
 		if (dir == EnumFacing.SOUTH) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
 		}
 
 		else if (dir == EnumFacing.NORTH) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 
 		else if (dir == EnumFacing.EAST) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 		}
 
 		else if (dir == EnumFacing.WEST) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
 		}
 
 		else if (dir == EnumFacing.DOWN) {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 
 		else {
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY + 16 + 2, 16, 16, "S", getSideValueFromTE(EnumFacing.SOUTH)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY - 16 - 2, 16, 16, "N", getSideValueFromTE(EnumFacing.NORTH)));
 
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
-			buttons.addLast(new GuiIOButton(index++, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
-			buttons.addLast(new GuiIOButton(index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
-			buttons.addLast(new GuiIOButton(index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY + 16 + 2, 16, 16, "T", getSideValueFromTE(EnumFacing.UP)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 16 + 2, posY, 16, 16, "B", getSideValueFromTE(EnumFacing.DOWN)));
+			buttons.addLast(new GuiIOButton(this, index++, posX + 32 + 4, posY, 16, 16, "E", getSideValueFromTE(EnumFacing.EAST)));
+			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 		
 	}

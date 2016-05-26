@@ -10,6 +10,7 @@
 
 package com.projectzed.api.util;
 
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fluids.Fluid;
@@ -75,7 +76,7 @@ public final class FluidUtils {
 
 		NBTTagCompound temp = list.getCompoundTagAt(0);
 
-		final int fluidID = temp.getInteger(FLUID_ID);
+		final String fluidID = temp.getString(FLUID_ID);
 		final int fluidAmount = temp.getInteger(FLUID_AMOUNT);
 
 		tank.setFluid(createFluidStack(fluidID, fluidAmount));
@@ -91,7 +92,7 @@ public final class FluidUtils {
 	 * @return FluidStack from NBT if successful, else may return NULL.
 	 */
 	public static FluidStack readNBT(NBTTagCompound compound, String prefixTag) {
-		final int fluidID = compound.getInteger(prefixTag + ": Fluid ID");
+		final String fluidID = compound.getString(prefixTag + ": Fluid ID");
 		final int fluidAmount = compound.getInteger(prefixTag + ": Fluid Amount");
 
 		return createFluidStack(fluidID, fluidAmount);
@@ -137,7 +138,7 @@ public final class FluidUtils {
 		FluidStack fluidStack = tank.getFluid();
 
 		NBTTagCompound temp = new NBTTagCompound();
-		temp.setInteger(FLUID_ID, fluidStack != null ? fluidStack.getFluidID() : -1);
+		temp.setString(FLUID_ID, fluidStack != null ? fluidStack.getFluid().getName() : "<missing ID name>");
 		temp.setInteger(FLUID_AMOUNT, fluidStack != null ? fluidStack.amount : 0);
 
 		list.appendTag(temp);
@@ -154,7 +155,7 @@ public final class FluidUtils {
 	 * @param prefixTag Prefix tag to ensure tag uniqueness.
 	 */
 	public static void saveNBT(NBTTagCompound compound, FluidStack fluidStack, String prefixTag) {
-		compound.setInteger(prefixTag + ": Fluid ID", fluidStack.getFluidID());
+		compound.setString(prefixTag + ": Fluid ID", fluidStack.getFluid().getName());
 		compound.setInteger(prefixTag + ": Fluid Amount", fluidStack.amount);
 	}
 
@@ -165,8 +166,8 @@ public final class FluidUtils {
 	 * @param fluidAmount amount of fluid that should be contained.
 	 * @return FluidStack object if has sufficient parameters, else returns NULL.
 	 */
-	public static FluidStack createFluidStack(final int fluidID, final int fluidAmount) {
-		return fluidID > 0 && fluidAmount >= 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
+	public static FluidStack createFluidStack(final String fluidID, final int fluidAmount) {
+		return StringUtils.nullCheckString(fluidID) && fluidAmount >= 0 ? new FluidStack(FluidRegistry.getFluid(fluidID), fluidAmount) : null;
 	}
 
 	/**

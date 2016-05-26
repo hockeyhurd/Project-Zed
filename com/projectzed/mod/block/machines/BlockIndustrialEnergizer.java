@@ -12,7 +12,6 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialEnergizer;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -37,11 +36,6 @@ public class BlockIndustrialEnergizer extends AbstractBlockMachine {
 	@Override
 	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialEnergizer();
-	}
-
-	@Override
-	protected Block getBlockInstance() {
-		return this;
 	}
 
 	@Override

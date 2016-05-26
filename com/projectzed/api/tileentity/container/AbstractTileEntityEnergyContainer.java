@@ -246,4 +246,18 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		return true;
 	}
 
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		 return 0;
+	}
+
 }

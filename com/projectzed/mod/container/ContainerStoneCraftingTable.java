@@ -81,9 +81,6 @@ public class ContainerStoneCraftingTable extends Container {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#canInteractWith(net.minecraft.entity.player.EntityPlayer)
-	 */
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return true;
@@ -94,14 +91,11 @@ public class ContainerStoneCraftingTable extends Container {
 	 */
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (this.craftMatrix != null) this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.te.getWorldObj()));
+		if (this.craftMatrix != null)
+			craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
 		super.onCraftMatrixChanged(inv);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.Container#detectAndSendChanges()
-	 */
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
@@ -121,7 +115,7 @@ public class ContainerStoneCraftingTable extends Container {
 				}
 				
 				else {
-					WorldUtils.addItemDrop(this.craftMatrix.getStackInSlot(i), this.te.getWorldObj(), this.te.xCoord, this.te.yCoord, this.te.zCoord);
+					WorldUtils.addItemDrop(craftMatrix.getStackInSlot(i), te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 					this.craftMatrix.setInventorySlotContents(i, null);
 				}
 			}

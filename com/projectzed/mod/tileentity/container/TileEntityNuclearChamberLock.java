@@ -28,62 +28,38 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 		super("nuclearChamberLock");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
 	public AbstractHCoreBlock getBlock() {
-		return ProjectZed.nuclearChamberLock;
+		return (AbstractHCoreBlock) ProjectZed.nuclearChamberLock;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
+
 	@Override
 	public boolean isUnique() {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 8;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;
 		this.hasMaster = false;
 		this.masterVec = Vector3.zero.getVector3i();
 		
-		((BlockNuclearChamberLock) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
+		((BlockNuclearChamberLock) blockType).updateMeta(false, worldObj, worldVec());
 	}
 	
 	@Override

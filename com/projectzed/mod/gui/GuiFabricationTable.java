@@ -6,20 +6,18 @@
 */
 package com.projectzed.mod.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.projectzed.mod.container.ContainerFabricationTable;
 import com.projectzed.mod.gui.component.GuiClearButton;
 import com.projectzed.mod.gui.component.GuiSortButton;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Class containing gui code for fabrication table.
@@ -47,11 +45,8 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiFabricationTable.png");
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#initGui()
-	 */
+
+	@Override
 	public void initGui() {
 		super.initGui();
 		
@@ -59,17 +54,14 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 		final int posY = (this.height - this.ySize) / 2 + 8;
 		
 		this.buttonList.add(new GuiClearButton(0, posX, posY, ""));
-		this.buttonList.add(new GuiSortButton(1, posX - 24, posY + 16, "sort123"));
-		this.buttonList.add(new GuiSortButton(2, posX - 4, posY + 16, "sort321"));
-		this.buttonList.add(new GuiSortButton(3, posX - 24, posY + 34, "sortAZ"));
-		this.buttonList.add(new GuiSortButton(4, posX - 4, posY + 34, "sortZA"));
+		this.buttonList.add(new GuiSortButton(this, 1, posX - 24, posY + 16, "sort123"));
+		this.buttonList.add(new GuiSortButton(this, 2, posX - 4, posY + 16, "sort321"));
+		this.buttonList.add(new GuiSortButton(this, 3, posX - 24, posY + 34, "sortAZ"));
+		this.buttonList.add(new GuiSortButton(this, 4, posX - 4, posY + 34, "sortZA"));
 		// this.buttonList.add(new GuiButton(1, posX - 20, posY + 20, 32, 20, "Sort"));
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiScreen#actionPerformed(net.minecraft.client.gui.GuiButton)
-	 */
+
+	@Override
 	public void actionPerformed(GuiButton button) {
 			if (button.id == 0) {
 				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
@@ -82,18 +74,11 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 			}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerForegroundLayer(int, int)
-	 */
 	@Override
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#drawGuiContainerBackgroundLayer(float, int, int)
-	 */
+	@Override
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);

@@ -25,7 +25,7 @@ import net.minecraft.util.EnumFacing;
  * @author hockeyhurd
  * @version Nov 29, 2014
  */
-public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implements IEnergyStorage {
+public class  TileEntityRFBridge extends AbstractTileEntityEnergyContainer implements IEnergyStorage {
 
 	private int maxStorageRF;
 	public int storedRF;
@@ -54,109 +54,54 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		this.flip = flip;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(EnumFacing side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxImportRate()
-	 */
 	@Override
 	public int getMaxImportRate() {
 		return this.importRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxExportRate()
-	 */
 	@Override
 	public int getMaxExportRate() {
 		return this.exportRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (flip && cont != null && this.getMaxExportRate() >= amount) {
@@ -171,10 +116,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		else return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
@@ -190,11 +131,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		else return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
-	 */
 	@Override
 	protected void importContents() {
 		if (worldObj.isRemote) return;
@@ -315,11 +251,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
-	 */
 	@Override
 	protected void exportContents() {
 		if (worldObj.isRemote) return;
@@ -405,10 +336,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 
 	// RF STUFF:
 	
-	/*
-	 * (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyStorage#receiveEnergy(int, boolean)
-	 */
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		/*
@@ -421,10 +348,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyStorage#extractEnergy(int, boolean)
-	 */
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
 		int energyExtracted = Math.min(this.storedRF, Math.min(this.exportRateRF, maxExtract));
@@ -433,10 +356,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		return energyExtracted;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cofh.api.energy.IEnergyStorage#getMaxEnergyStored()
-	 */
 	@Override
 	public int getMaxEnergyStored() {
 		return this.maxStorageRF;
@@ -451,10 +370,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		this.storedRF = amount >= 0 && amount <= getMaxEnergyStored() ? amount : 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
-	 */
 	@Override
 	public void update() {
 		importContents();
@@ -478,10 +393,6 @@ public class TileEntityRFBridge extends AbstractTileEntityEnergyContainer implem
 		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));

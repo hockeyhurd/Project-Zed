@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.registry.tools;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
+import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
-import com.google.common.collect.Sets;
-import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Class containing code for chainsaw material set.
@@ -46,9 +45,6 @@ public class ChainsawSetRegistry implements IToolSetRegistry {
 		return reg;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#init()
-	 */
 	@Override
 	public void init() {
 		Iterator iter = Block.blockRegistry.iterator();
@@ -56,40 +52,27 @@ public class ChainsawSetRegistry implements IToolSetRegistry {
 		
 		while (iter.hasNext()) {
 			Block b = (Block) iter.next();
-			if (b != null && matContains(b.getMaterial())) temp.add(b);
+			if (b != null && matContains(b.getMaterial(b.getDefaultState()))) temp.add(b);
 		}
 		
 		set = Sets.newHashSet(temp.toArray(new Block[temp.size()]));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#getSet()
-	 */
 	@Override
 	public Set getSet() {
 		return set;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#setContainsBlock(net.minecraft.block.Block)
-	 */
 	@Override
 	public boolean setContainsBlock(Block block) {
 		return set.contains(block);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#matContains(net.minecraft.block.Block)
-	 */
 	@Override
 	public boolean matContains(Block b) {
-		return matContains(b.getMaterial());
+		return matContains(b.getMaterial(b.getDefaultState()));
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.registry.interfaces.IToolSetRegistry#matContains(net.minecraft.block.material.Material)
-	 */
 	@Override
 	public boolean matContains(Material mat) {
 		if (mats == null || mats.length == 0) return false;

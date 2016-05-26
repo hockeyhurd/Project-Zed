@@ -33,8 +33,8 @@ public class TileEntityPetrolGenerator extends AbstractTileEntityFluidGenerator 
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (!worldObj.isRemote) {
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored && this.burnTime > 0;

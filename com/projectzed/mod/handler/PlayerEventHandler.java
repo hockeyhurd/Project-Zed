@@ -8,6 +8,7 @@ package com.projectzed.mod.handler;
 
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -25,7 +26,7 @@ public class PlayerEventHandler {
 	private static final PlayerEventHandler HANLDER = new PlayerEventHandler();
 	
 	/** Effect player gets when holding enriched (radioactive) uranium. */
-	private static final PotionEffect POISON = new PotionEffect(Potion.poison.id, 100, 1);
+	private static final PotionEffect POISON = new PotionEffect(Potion.getPotionById(19), 100, 1);
 
 	private PlayerEventHandler() {
 	}
@@ -47,9 +48,9 @@ public class PlayerEventHandler {
 		if (!(event.getEntityLiving() instanceof EntityPlayer) || event.getEntityLiving().worldObj.isRemote) return;
 		else {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			if (player.inventory.hasItem(ProjectZed.enrichedUranium)) {
+			if (player.inventory.hasItemStack(new ItemStack(ProjectZed.enrichedUranium))) {
 				// System.out.println(player.getActivePotionEffect(Potion.poison) != null);
-				if (player.getActivePotionEffect(Potion.poison) != null) return;
+				if (player.getActivePotionEffect(Potion.getPotionById(19)) != null) return;
 				else player.addPotionEffect(POISON);
 			}
 		}

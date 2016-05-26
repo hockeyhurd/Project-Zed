@@ -31,78 +31,44 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		// this.slots = new ItemStack[10 + 6 * 12];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return this.slots.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setInventorySlotContents(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		if (slot >= 0 && slot < this.slots.length) this.slots[slot] = stack;
 		else ProjectZed.logHelper.warn("Error! Please check you are placing in the correct slot index!\t" + slot);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[10 + 6 * 12];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 		// this.craftingMatrix = new ItemStack[9];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
+	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot > 3 * 3 + 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(EnumFacing side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		int[] slots = new int[this.slots.length - (3 * 3 + 1)];
 		
 		for (int i = 0; i < slots.length; i++) {
@@ -112,52 +78,43 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		return slots;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return slot > 3 * 3 + 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#canUpdate()
-	 */
 	@Override
 	public boolean canUpdate() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
 	}
 
 }

@@ -33,7 +33,7 @@ public class SoundHandler {
 	 * @param pitch = pitch of sound to play.
 	 */
 	public static void playAtEntity(String name, World world, Entity entity, float volume, float pitch) {
-		world.playSoundAtEntity(entity, ProjectZed.assetDir + name, volume, pitch);
+		world.playSoundAt(entity, ProjectZed.assetDir + name, volume, pitch);
 	}
 	
 	/**
