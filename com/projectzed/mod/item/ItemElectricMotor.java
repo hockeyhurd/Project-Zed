@@ -22,7 +22,7 @@ public class ItemElectricMotor extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemElectricMotor(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

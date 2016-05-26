@@ -25,7 +25,7 @@ import java.util.List;
 public class ItemForgingHammer extends AbstractHCoreItem {
 
 	public ItemForgingHammer() {
-		super(ProjectZed.modCreativeTab, "forgingHammer", ProjectZed.assetDir);
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, "forgingHammer");
 		this.setMaxDamage(0xff);
 		this.setMaxStackSize(1);
 	}

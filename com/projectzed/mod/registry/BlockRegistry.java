@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.registry;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import net.minecraft.block.Block;
 
 import java.lang.reflect.Field;
@@ -20,13 +21,13 @@ import java.util.List;
  */
 public final class BlockRegistry {
 
-	private static List<Block> blocks;
-	private static List<Block> blockOres;
+	private static List<AbstractHCoreBlock> blocks;
+	private static List<AbstractHCoreBlock> blockOres;
 	private static BlockRegistry reg = new BlockRegistry();
 
 	private BlockRegistry() {
-		blocks = new LinkedList<Block>();
-		blockOres = new LinkedList<Block>();
+		blocks = new LinkedList<AbstractHCoreBlock>();
+		blockOres = new LinkedList<AbstractHCoreBlock>();
 	}
 
 	/**
@@ -39,14 +40,15 @@ public final class BlockRegistry {
 
 		for (Field f : fields) {
 			try {
-				if (f.get(mainClass) instanceof Block) {
-					Block block = (Block) f.get(mainClass); // cast object to a block.
+				if (f.get(mainClass) instanceof AbstractHCoreBlock) {
+					AbstractHCoreBlock block = (AbstractHCoreBlock) f.get(mainClass); // cast object to a block.
 					if (block != null) {
 						blocks.add(block); // add block to list if not null.
 						if (block.getUnlocalizedName().toLowerCase().contains("ore") || block.getUnlocalizedName().toLowerCase().contains("block")) blockOres.add(block);
 					}
 				}
 			}
+
 			catch (Exception e) {
 				e.printStackTrace();
 				break;
@@ -67,7 +69,7 @@ public final class BlockRegistry {
 	 * Gets the list of registered blocks.
 	 * @return list of blocks registered in this current instance.
 	 */
-	public List<Block> getBlocks() {
+	public List<AbstractHCoreBlock> getBlocks() {
 		return blocks;
 	}
 	
@@ -75,7 +77,7 @@ public final class BlockRegistry {
 	 * Gets the list for ore dictionary.
 	 * @return list of blocks to be registered in ore dictionary.
 	 */
-	public List<Block> getOreBlocks() {
+	public List<AbstractHCoreBlock> getOreBlocks() {
 		return blockOres;
 	}
 	

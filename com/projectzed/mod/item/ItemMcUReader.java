@@ -36,8 +36,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ItemMcUReader extends AbstractHCoreItem {
 
 	public ItemMcUReader() {
-		super(ProjectZed.modCreativeTab, "mcuReader", ProjectZed.assetDir);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, "mcuReader");
 		this.setMaxStackSize(1);
 	}
 	

@@ -21,7 +21,7 @@ public class ItemDustNickel extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemDustNickel(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

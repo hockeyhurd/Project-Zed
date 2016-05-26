@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.proxy;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
 import com.projectzed.api.util.Sound;
@@ -82,15 +83,18 @@ public class CommonProxy {
 	
 	private void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
-		for (Block b : BlockRegistry.instance().getBlocks()) {
-			if (b != null) GameRegistry.registerBlock(b, b.getUnlocalizedName());
+		for (AbstractHCoreBlock b : BlockRegistry.instance().getBlocks()) {
+			if (b != null) {
+				GameRegistry.register(b);
+				GameRegistry.register(b.getItemBlock().setRegistryName(b.getRegistryName()));
+			}
 		}
 	}
 	
 	private void registerItems() {
 		ItemRegistry.instance().init(ProjectZed.class);
 		for (Item i : ItemRegistry.instance().getItems()) {
-			if (i != null) GameRegistry.registerItem(i, i.getUnlocalizedName());
+			if (i != null) GameRegistry.register(i);
 		}
 	}
 	

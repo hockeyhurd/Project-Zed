@@ -21,7 +21,7 @@ public class ItemIngotNickel extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemIngotNickel(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

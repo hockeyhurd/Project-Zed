@@ -6,13 +6,13 @@
 */
 package com.projectzed.api.registry;
 
-import java.util.List;
-
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.ItemRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import com.projectzed.mod.registry.BlockRegistry;
-import com.projectzed.mod.registry.ItemRegistry;
+import java.util.List;
 
 /**
  * Goal of this class is to provide a simplistic
@@ -24,7 +24,7 @@ import com.projectzed.mod.registry.ItemRegistry;
  */
 public class ProjectZedRegistry {
 
-	private static List<Block> blockReg;
+	private static List<AbstractHCoreBlock> blockReg;
 	private static List<Item> itemReg;
 	private static ProjectZedRegistry reg = new ProjectZedRegistry();
 	

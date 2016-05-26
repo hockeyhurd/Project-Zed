@@ -65,6 +65,7 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 		this.chargeRate = chargeRate;
 
 		this.setUnlocalizedName(name);
+		this.setRegistryName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.canRepair = false;
 		this.setMaxStackSize(1);

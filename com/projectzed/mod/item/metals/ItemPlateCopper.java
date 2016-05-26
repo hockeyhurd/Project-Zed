@@ -22,6 +22,6 @@ import com.projectzed.mod.ProjectZed;
 public class ItemPlateCopper extends AbstractHCoreItem {
 
 	public ItemPlateCopper(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 }

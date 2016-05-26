@@ -62,8 +62,7 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 * @param fusion toggle whether is fusion controller or not.
 	 */
 	public BlockNuclearController(Material material, boolean fusion) {
-		super(material, "nuclearController");
-		this.setRegistryName("nuclearController" + (fusion ? "Fusion" : "Fission"));
+		super(material, "nuclearController" + (fusion ? "Fusion" : "Fission"));
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(1.0f);
 		this.FUSION_MODE = fusion;

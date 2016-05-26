@@ -32,7 +32,7 @@ public class ItemFuelRod extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemFuelRod(String name, String assetDir, boolean isEmpty) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 		this.name = name;
 		this.assetDir = assetDir;
 		this.isEmpty = isEmpty;

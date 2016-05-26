@@ -21,7 +21,7 @@ public class ItemDustCopper extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemDustCopper(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

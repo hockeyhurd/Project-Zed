@@ -21,6 +21,6 @@ import com.projectzed.mod.ProjectZed;
 public class ItemNuggetIron extends AbstractHCoreItem {
 
 	public ItemNuggetIron(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 }

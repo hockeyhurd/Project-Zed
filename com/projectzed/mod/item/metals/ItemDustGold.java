@@ -18,7 +18,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemDustGold extends AbstractHCoreItem {
 
 	public ItemDustGold(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -22,7 +22,7 @@ public class ItemPlateReinforced extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemPlateReinforced(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -48,7 +48,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	}
 
 	public ItemCraftingPattern(String name, boolean encoded, int size) {
-		super(ProjectZed.modCreativeTab, name, ProjectZed.assetDir);
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 		this.encoded = encoded;
 
 		this.size = new Vector2<Integer>(size, size);

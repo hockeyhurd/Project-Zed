@@ -18,7 +18,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemPlateAluminium extends AbstractHCoreItem {
 
 	public ItemPlateAluminium(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

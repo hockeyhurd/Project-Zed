@@ -70,7 +70,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.7.10]", name = Reference.MOD_NAME,
+@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.9]", name = Reference.MOD_NAME,
 		version = Reference.VERSION, dependencies = "required-after:HCoreLib", guiFactory = "com.projectzed.mod.gui.config.PZGuiFactory")
 public final class ProjectZed implements IForgeMod {
 
@@ -88,7 +88,7 @@ public final class ProjectZed implements IForgeMod {
 	private TimeLapse tl;
 	
 	// Creative Tabs:
-	public static AbstractCreativeTab modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
+	public static final AbstractCreativeTab modCreativeTab = new ProjectZedCreativeTab(CreativeTabs.getNextID(), "Project-Zed");
 	
 	// Blocks:
 	public static Block machineContainer;

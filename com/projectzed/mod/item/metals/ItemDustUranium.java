@@ -30,7 +30,7 @@ public class ItemDustUranium extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemDustUranium(String name, String assetDir, boolean enriched) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 		this.ENRICHED = enriched;
 	}
 

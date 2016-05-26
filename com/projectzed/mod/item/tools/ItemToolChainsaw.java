@@ -30,7 +30,6 @@ public class ItemToolChainsaw extends AbstractItemToolPowered {
 	 * @param name name of chainsaw.
 	 * @param capacity capacity of chainsaw.
 	 * @param chargeRate charge rate of chainsaw. 
-	 * @param set set of materials to reference.
 	 */
 	public ItemToolChainsaw(ToolMaterial mat, String name, int capacity, int chargeRate, IToolSetRegistry reg) {
 		super(mat, name, capacity, chargeRate, reg);

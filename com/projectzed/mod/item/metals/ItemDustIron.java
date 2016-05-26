@@ -17,7 +17,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemDustIron extends AbstractHCoreItem {
 
 	public ItemDustIron(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -10,12 +10,12 @@
 
 package com.projectzed.mod.item.tools;
 
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,9 +29,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version 3/11/2016.
  */
-public abstract class AbstractItemPowered extends Item implements IItemChargeable {
-
-	public final String name;
+public abstract class AbstractItemPowered extends AbstractHCoreItem implements IItemChargeable {
 
 	// energies
 	protected int capacity;
@@ -42,12 +40,11 @@ public abstract class AbstractItemPowered extends Item implements IItemChargeabl
 	}
 
 	public AbstractItemPowered(String name, int capacity, int chargeRate) {
-		this.name = name;
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+
 		this.capacity = capacity;
 		this.chargeRate = chargeRate;
 
-		this.setUnlocalizedName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.canRepair = false;
 		this.setMaxStackSize(1);
 		this.setMaxDamage(capacity / 10);

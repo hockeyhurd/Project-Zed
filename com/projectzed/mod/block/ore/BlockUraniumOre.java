@@ -30,6 +30,6 @@ public class BlockUraniumOre extends AbstractBlockOre {
 
 	@Override
 	public EnumHarvestLevel getHarvestLevel() {
-		return null;
+		return EnumHarvestLevel.PICKAXE_IRON;
 	}
 }

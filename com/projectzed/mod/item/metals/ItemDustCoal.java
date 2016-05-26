@@ -22,7 +22,7 @@ public class ItemDustCoal extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemDustCoal(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

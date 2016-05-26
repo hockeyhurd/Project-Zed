@@ -20,18 +20,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ProjectZedCreativeTab extends AbstractCreativeTab {
 
-	/**
-	 * @param par1
-	 * @param par2
-	 */
-	public ProjectZedCreativeTab(int par1, String par2) {
-		super(par1, par2);
+	public ProjectZedCreativeTab(int id, String text) {
+		super(id, text);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
-		return Item.getItemFromBlock(ProjectZed.industrialFurnace);
+		// return Item.getItemFromBlock(ProjectZed.industrialFurnace);
+		return ProjectZed.wrench;
 	}
 
 }

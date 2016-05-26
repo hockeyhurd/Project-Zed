@@ -21,7 +21,7 @@ public class ItemIngotTitanium extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemIngotTitanium(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -21,7 +21,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemNuggetCopper extends AbstractHCoreItem {
 
 	public ItemNuggetCopper(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

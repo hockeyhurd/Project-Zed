@@ -22,7 +22,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemPlateNickel extends AbstractHCoreItem {
 
 	public ItemPlateNickel(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

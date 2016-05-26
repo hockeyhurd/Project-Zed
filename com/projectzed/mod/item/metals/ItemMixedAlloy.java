@@ -22,7 +22,7 @@ public class ItemMixedAlloy extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemMixedAlloy(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

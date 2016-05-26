@@ -43,7 +43,6 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 */
 	public BlockEnergyCell(Material material, String name) {
 		super(material, ProjectZed.assetDir, name);
-		this.setRegistryName(name);
 		this.TIER = Byte.parseByte("" + name.charAt(name.length() - 1));
 	}
 

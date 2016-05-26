@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.item.tools;
 
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
@@ -17,7 +18,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -33,17 +33,13 @@ import net.minecraft.world.World;
  * @author hockeyhurd
  * @version Feb 3, 2015
  */
-public class ItemWrench extends Item {
-
-	private final String NAME;
+public class ItemWrench extends AbstractHCoreItem {
 
 	/**
 	 * @param name name of wrench.
 	 */
 	public ItemWrench(String name) {
-		this.NAME = name;
-		this.setUnlocalizedName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 		this.setMaxStackSize(1);
 	}
 

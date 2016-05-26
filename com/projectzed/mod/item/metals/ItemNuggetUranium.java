@@ -21,7 +21,7 @@ import com.projectzed.mod.ProjectZed;
 public class ItemNuggetUranium extends AbstractHCoreItem {
 
 	public ItemNuggetUranium(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -43,7 +43,7 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 	 * @param armorType armor type ordinal.
 	 */
 	public ArmorSetZPlated(ArmorMaterial material, int renderIndex, EnumArmorType armorType) {
-		super(material, renderIndex, armorType, ProjectZed.assetDir, PATH_MAT);
+		super(material, renderIndex, armorType, ProjectZed.assetDir, "zPlatedArmor", PATH_MAT);
 
 		// energies stuff:
 		capacity = (int) 1e5;

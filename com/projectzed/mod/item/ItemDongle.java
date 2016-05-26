@@ -6,11 +6,12 @@
 */
 package com.projectzed.mod.item;
 
+import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.hockeyhurd.hcorelib.api.math.Vector4;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -22,16 +23,14 @@ import net.minecraft.world.chunk.Chunk;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemDongle extends Item {
+public class ItemDongle extends AbstractHCoreItem {
 
 	public ItemDongle() {
-		super();
-		this.setUnlocalizedName("itemDongle");
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, "itemDongle");
 	}
 
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumHand hand, EnumFacing side, float clickX, float clickY, float clickZ) {
-		boolean used = false;
 		if (!world.isRemote) {
 			Vector4<Integer> vec = new Vector4<Integer>(player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
 
@@ -54,7 +53,6 @@ public class ItemDongle extends Item {
 				}
 			}
 			
-			used = true;
 			return EnumActionResult.SUCCESS;
 		}
 		

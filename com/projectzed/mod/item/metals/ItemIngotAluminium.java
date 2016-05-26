@@ -21,7 +21,7 @@ public class ItemIngotAluminium extends AbstractHCoreItem {
 	 * @param assetDir
 	 */
 	public ItemIngotAluminium(String name, String assetDir) {
-		super(ProjectZed.modCreativeTab, name, assetDir);
+		super(ProjectZed.modCreativeTab, assetDir, name);
 	}
 
 }

@@ -38,7 +38,7 @@ public abstract class AbstractItemUpgrade extends AbstractHCoreItem implements I
 	 * @param name name of upgrade component.
 	 */
 	public AbstractItemUpgrade(String name) {
-		super(ProjectZed.modCreativeTab, name, ProjectZed.assetDir);
+		super(ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 		this.setMaxStackSize(0x10); // 16
 
 		this.burnRateModifier = ProjectZed.configHandler.getBurnRateModifier();
