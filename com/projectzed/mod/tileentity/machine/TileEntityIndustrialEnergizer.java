@@ -10,6 +10,7 @@ import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * TileEntity code for industrialEnergizer.
@@ -23,33 +24,21 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		super("industrialEnergizer");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return this.slots.length;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 1;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
@@ -64,33 +53,21 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		return stack.stackSize == 1 && stack.getItem() instanceof IItemChargeable && stack.getItemDamage() > 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot != 1 && isItemValid(stack);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : new int[0];
+	public int[] getSlotsForFace(EnumFacing side) {
+		return openSides[side.ordinal()] == 1 ? this.slotRight : openSides[side.ordinal()] == -1 ? this.slotTop : new int[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return super.canExtractItem(slot, stack, side) && slot == 1;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
-	 */
 	@Override
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
@@ -131,9 +108,6 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
-	 */
 	@Override
 	public void smeltItem() {
 		if (this.canSmelt()) {
@@ -150,9 +124,6 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
-	 */
 	@Override
 	public Sound getSound() {
 		return Sound.ENERGIZER;

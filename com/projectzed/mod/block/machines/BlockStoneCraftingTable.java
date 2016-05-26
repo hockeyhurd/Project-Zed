@@ -6,26 +6,22 @@
 */
 package com.projectzed.mod.block.machines;
 
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Block class for stone crafting table.
@@ -33,93 +29,72 @@ import net.minecraft.world.World;
  * @author hockeyhurd
  * @version Mar 31, 2015
  */
-public class BlockStoneCraftingTable extends BlockContainer {
-
-	private String name;
-	
-	@SideOnly(Side.CLIENT)
-	private IIcon base, top, front;
+public class BlockStoneCraftingTable extends AbstractHCoreBlockContainer {
 
 	/**
 	 * @param material
 	 */
 	public BlockStoneCraftingTable(Material material) {
-		super(material);
-		this.name = "stoneCraftingTable";
-		this.setBlockName(this.name);
-		this.setHardness(1.0f);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + this.name + "_side");
-		this.top = reg.registerIcon(ProjectZed.assetDir + this.name + "_top");
-		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
-		this.base = Blocks.stone.getBlockTextureFromSide(0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return side == 1 ? this.top : (side == 0 ? this.base : side != meta ? this.blockIcon : this.front);
+		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, "stoneCraftingTable");
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase player, ItemStack stack) {
+		/*int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
 		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);*/
 
-		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		final EnumFacing dir = player.getHorizontalFacing();
+		final TileEntityStoneCraftingTable tileEntity = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
+		tileEntity.setFrontFacing(dir);
+
+		if (stack.hasDisplayName()) tileEntity.setCustomName(stack.getDisplayName());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityStoneCraftingTable.class), world, x, y, z);
+			TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
+			if (te != null) FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityStoneCraftingTable.class),
+							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
-	 */
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
-		TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(x, y, z);
+	public void breakBlock(World world, BlockPos blockPos, IBlockState oldBlock) {
+		TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
 		
 		if (te != null) WorldUtils.dropItemsFromContainerOnBreak(te);
 		
-		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+		super.breakBlock(world, blockPos, oldBlock);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
 	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
+	public TileEntityStoneCraftingTable getTileEntity() {
 		return new TileEntityStoneCraftingTable();
+	}
+
+	@Override
+	public BlockStoneCraftingTable getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_WOOD;
 	}
 
 }

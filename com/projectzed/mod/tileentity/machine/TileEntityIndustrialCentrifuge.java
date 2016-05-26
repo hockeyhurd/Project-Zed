@@ -54,41 +54,21 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		this.craftingAmount = craftingAmount;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return slots.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[3 + getSizeUpgradeSlots()];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
@@ -107,41 +87,21 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot != 2 && super.isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotInput : new int[0];
+	public int[] getSlotsForFace(EnumFacing side) {
+		return openSides[side.ordinal()] == 1 ? this.slotRight : openSides[side.ordinal()] == -1 ? this.slotInput : new int[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot > 1 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+		return slot > 1 && slot < slots.length - getSizeUpgradeSlots() && openSides[side.ordinal()] == 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
-	 */
 	@Override
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.slots[2] == null || this.stored - this.energyBurnRate <= 0 || !hasWaterInTank()) return false;
@@ -193,11 +153,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		return this.internalTank;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
-	 */
 	@Override
 	public void smeltItem() {
 		if (this.canSmelt()) {
@@ -247,29 +202,17 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 			this.internalTank.drain(1000, true);
 		}
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
+
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityCentrifuge(this));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
-	 */
 	@Override
 	public Sound getSound() {
 		return null;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#readFromNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void readFromNBT(NBTTagCompound comp) {
 		super.readFromNBT(comp);
@@ -277,10 +220,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		this.craftingAmount = comp.getByte("ProjectZedCentrifugeCraftingAmount");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
@@ -288,10 +227,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		comp.setByte("ProjectZedCentrifugeCraftingAmount", this.craftingAmount);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#fill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
-	 */
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
 		if (!worldObj.isRemote) {
@@ -311,19 +246,11 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.FluidStack, boolean)
-	 */
 	@Override
 	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
 		return drain(from, resource, -1, doDrain);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#drain(net.minecraftforge.common.util.ForgeDirection, int, boolean)
-	 */
 	@Override
 	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
 		return drain(from, null, maxDrain, doDrain);
@@ -355,10 +282,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canFill(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
-	 */
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid) {
 		if (fluid != null && !isFull()) {
@@ -370,10 +293,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#canDrain(net.minecraftforge.common.util.ForgeDirection, net.minecraftforge.fluids.Fluid)
-	 */
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid) {
 		if (fluid != null && this.internalTank.getFluidAmount() > 0) {
@@ -385,10 +304,6 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraftforge.fluids.IFluidHandler#getTankInfo(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from) {
 		return new FluidTankInfo[] { this.internalTank.getInfo() };
@@ -409,7 +324,8 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	 * @return localized name of fluid in the tank.
 	 */
 	public String getLocalizedFluidName() {
-		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ? this.internalTank.getFluid().getFluid().getLocalizedName() : null;
+		return this.internalTank.getFluid() != null && this.internalTank.getFluid().getFluid() != null ?
+				this.internalTank.getFluid().getLocalizedName() : null;
 	}
 	
 }

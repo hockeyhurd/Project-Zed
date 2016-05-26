@@ -6,12 +6,14 @@
 */
 package com.projectzed.api.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 
@@ -33,196 +35,123 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 		setCustomName("container." + name);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#canUpdate()
-	 */
 	@Override
 	public boolean canUpdate() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isUnique()
-	 */
 	@Override
 	public abstract boolean isUnique();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isSubstituable()
-	 */
 	@Override
 	public abstract boolean isSubstituable();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getSubList()
-	 */
 	@Override
 	public abstract List<IMultiBlockable> getSubList();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public abstract int getAmountFromSize(int width, int height, int depth);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isMaster()
-	 */
 	@Override
 	public boolean isMaster() {
 		return isMaster;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setIsMaster(boolean)
-	 */
 	@Override
 	public void setIsMaster(boolean master) {
 		this.isMaster = master;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#hasMaster()
-	 */
 	@Override
 	public boolean hasMaster() {
 		return hasMaster;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setHasMaster(boolean)
-	 */
 	@Override
 	public void setHasMaster(boolean master) {
 		this.hasMaster = master;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector3)
-	 */
 	@Override
 	public void setMasterVec(Vector3<Integer> vec) {
 		this.masterVec = vec;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
-	 */
 	@Override
 	public Vector3<Integer> getMasterVec() {
 		return masterVec;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getInstance()
-	 */
 	@Override
 	public AbstractTileEntityGeneric getInstance() {
 		return this;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getBlock()
-	 */
 	@Override
-	public abstract Block getBlock();
+	public abstract AbstractHCoreBlock getBlock();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#worldVec()
-	 */
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
 	@Override
 	public Vector3<Integer> worldVec() {
-		return new Vector3<Integer>(this.xCoord, this.yCoord, this.zCoord);
+		return VectorHelper.toVector3i(pos);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
-	 */
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);

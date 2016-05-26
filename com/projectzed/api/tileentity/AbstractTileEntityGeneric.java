@@ -29,6 +29,7 @@ public abstract class AbstractTileEntityGeneric extends AbstractTileContainer im
 	 */
 	@Override
 	public void update() {
+		if (!canUpdate()) return;
 	}
 
 	@Override
@@ -44,6 +45,10 @@ public abstract class AbstractTileEntityGeneric extends AbstractTileContainer im
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TextComponentTranslation(customName);
+	}
+
+	protected boolean canUpdate() {
+		return true;
 	}
 
 }

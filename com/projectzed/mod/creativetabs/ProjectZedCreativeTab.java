@@ -8,12 +8,13 @@ package com.projectzed.mod.creativetabs;
 
 import com.hockeyhurd.hcorelib.api.creativetab.AbstractCreativeTab;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * 
+ * Project-Zed creative tab.
+ *
  * @author hockeyhurd
  * @version Oct 20, 2014
  */
@@ -26,7 +27,8 @@ public class ProjectZedCreativeTab extends AbstractCreativeTab {
 	public ProjectZedCreativeTab(int par1, String par2) {
 		super(par1, par2);
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
 		return Item.getItemFromBlock(ProjectZed.industrialFurnace);

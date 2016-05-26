@@ -163,7 +163,8 @@ public class CrusherRecipesRegistry implements IRegistrable {
 			ItemStack inputStack = new ItemStack(blockKey, blockAmount, blockMeta);
 
 			Block blockValue = Block.getBlockFromName(value[0]);
-			Item itemValue = (Item) Item.itemRegistry.getObject(value[0]);
+			// Item itemValue = (Item) Item.itemRegistry.getObject(value[0]);
+			Item itemValue = Item.getByNameOrId(value[0]);
 			ItemStack outStack;
 
 			int outAmount = NumberParser.parseInt(value[1]);
@@ -215,7 +216,7 @@ public class CrusherRecipesRegistry implements IRegistrable {
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
 
-			int currentID = OreDictionary.getOreID(stack);
+			int currentID = OreDictionary.getOreIDs(stack)[0];
 			if (currentID == -1) return (ItemStack) null;
 			
 			String inputName = OreDictionary.getOreName(currentID);

@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -15,13 +16,13 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.container.BlockNuclearIOPort;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityNuclearIOPort;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -43,60 +44,37 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 
 	private byte meta;
 	private int burnTime;
+	protected boolean isInputMode;
 	
 	public TileEntityNuclearIOPort() {
 		super("nuclearIOPort");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getInventoryName()
-	 */
 	@Override
 	public String getInventoryName() {
 		return "container.nuclearIOPort";
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2];
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return this.slots.length;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#canUpdate()
-	 */
 	@Override
 	public boolean canUpdate() {
 		return true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
-	 */
 	@Override
 	public void update() {
 		super.update();
@@ -114,40 +92,24 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[] { 0, 1 };
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		if (slot != 0 || stack == null) return false;
 		return stack.getItem() == ProjectZed.fullFuelRod || stack.getItemDamage() < stack.getMaxDamage();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return this.getBlockMetadata() == 1 && isItemValidForSlot(slot, stack);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return /*this.getBlockMetadata() == 2 &&*/ slot == 1;
 	}
 	
@@ -315,36 +277,34 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	}
 
 	@Override
-	public Block getBlock() {
-		return ProjectZed.nuclearIOPort;
+	public AbstractHCoreBlock getBlock() {
+		return (AbstractHCoreBlock) ProjectZed.nuclearIOPort;
 	}
 
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		return (byte) (currentMeta == 1 ? 2 : 1);
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState blockState) {
+		return EnumFacing.NORTH;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
-	 */
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return EnumFacing.NORTH;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing facing) {
+	}
+
 	@Override
 	public boolean canRotateTE() {
-		return true;
+		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
+		if (!worldObj.isRemote) isInputMode = !isInputMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
-	 */
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;

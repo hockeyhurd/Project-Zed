@@ -6,14 +6,16 @@
 */
 package com.projectzed.mod.handler;
 
-import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,20 +55,18 @@ public class WorldChunkHandler implements LoadingCallback {
 		return INSTANCE;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraftforge.common.ForgeChunkManager.LoadingCallback#ticketsLoaded(java.util.List, net.minecraft.world.World)
-	 */
 	@Override
 	public void ticketsLoaded(List<Ticket> tickets, World world) {
 		for (Ticket ticket : tickets) {
-			Vector4<Integer> vec = new Vector4<Integer>();
+			Vector3<Integer> vec = new Vector3<Integer>();
 			vec.x = ticket.getModData().getInteger("xCoord");
 			vec.y = ticket.getModData().getInteger("yCoord");
 			vec.z = ticket.getModData().getInteger("zCoord");
-			
-			if (world.getTileEntity(vec.x, vec.y, vec.z) != null && world.getTileEntity(vec.x, vec.y, vec.z) instanceof TileEntityIndustrialLoader) {
+
+			final TileEntity tileEntity = world.getTileEntity(VectorHelper.toBlockPos(vec));
+			if (tileEntity != null && tileEntity instanceof TileEntityIndustrialLoader) {
 				// ((TileEntityIndustrialLoader) world.getTileEntity(vec.x, vec.y, vec.z)).forceChunkLoading(ticket);
-				((TileEntityIndustrialLoader) world.getTileEntity(vec.x, vec.y, vec.z)).loadChunk(ticket);
+				((TileEntityIndustrialLoader) tileEntity).loadChunk(ticket);
 			}
 		}
 	}

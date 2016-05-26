@@ -17,14 +17,15 @@ import com.projectzed.mod.block.container.AbstractBlockLiquiduct;
 import com.projectzed.mod.block.container.BlockEnergyCell;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static com.hockeyhurd.hcorelib.api.util.NumberFormatter.format;
 
@@ -57,15 +58,15 @@ public class ItemHoverEventHandler {
 	// @SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onItemHover(ItemTooltipEvent event) {
-		ItemStack stack = event.itemStack;
+		ItemStack stack = event.getItemStack();
 		if (stack != null) {
 			insertTileEntityInfo(event, stack);
 			
 			Block b = Block.getBlockFromItem(stack.getItem());
 			
 			if (b instanceof BlockAtomicBomb) {
-				event.toolTip.add(EnumChatFormatting.GOLD + "WARNING: " + EnumChatFormatting.WHITE + "Highly Destructive!");
-				event.toolTip.add(EnumChatFormatting.GREEN + "Unbreakable");
+				event.getToolTip().add(TextFormatting.GOLD + "WARNING: " + TextFormatting.WHITE + "Highly Destructive!");
+				event.getToolTip().add(TextFormatting.GREEN + "Unbreakable");
 			}
 		}
 	}
@@ -79,11 +80,14 @@ public class ItemHoverEventHandler {
 				type = 0;
 				if (b instanceof BlockEnergyCell && ((BlockEnergyCell) b).getTileEntity() != null) {
 					TileEntityEnergyBankBase bank = (TileEntityEnergyBankBase) ((BlockEnergyCell) b).getTileEntity();
-					if (stack.hasTagCompound() && stack.stackTagCompound.getInteger("ProjectZedPowerStored") > 0) {
-						event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(stack.stackTagCompound.getInteger("ProjectZedPowerStored")) + " McU");
+					if (stack.hasTagCompound() && stack.getTagCompound().getInteger("ProjectZedPowerStored") > 0) {
+						event.getToolTip().add(TextFormatting.GREEN + "Stored: " + TextFormatting.WHITE + format(
+								stack.getTagCompound().getInteger("ProjectZedPowerStored")) + " McU");
 					}
-					event.toolTip.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
+
+					event.getToolTip().add(TextFormatting.GREEN + "Capacity: " + TextFormatting.WHITE + format(bank.getMaxStorage()) + " McU");
 				}
+
 				amount = ((AbstractBlockContainer) b).getTileEntity().getMaxExportRate();
 			}
 			
@@ -128,12 +132,13 @@ public class ItemHoverEventHandler {
 				type = 4;
 				AbstractTileEntityFluidContainer te = ((AbstractBlockFluidContainer) b).getTileEntity();
 
-				if (stack.hasTagCompound() && stack.stackTagCompound.getFloat("Fluid ID") >= 0 && stack.stackTagCompound.getFloat("Fluid Amount") > 0) {
-					Fluid fluidStack = FluidRegistry.getFluid((int) stack.stackTagCompound.getFloat("Fluid ID"));
-					int fluidAmount = (int) stack.stackTagCompound.getFloat("Fluid Amount");
+				if (stack.hasTagCompound() && stack.getTagCompound().getFloat("Fluid ID") >= 0 && stack.getTagCompound().getFloat("Fluid Amount") > 0) {
+					Fluid fluidStack = FluidRegistry.getFluid((int) stack.getTagCompound().getFloat("Fluid ID"));
+					int fluidAmount = (int) stack.getTagCompound().getFloat("Fluid Amount");
 
-					event.toolTip.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + format(fluidAmount) + " mb");
-					event.toolTip.add(EnumChatFormatting.GREEN + "Fluid: " + EnumChatFormatting.WHITE + fluidStack.getLocalizedName());
+					event.getToolTip().add(TextFormatting.GREEN + "Stored: " + TextFormatting.WHITE + format(fluidAmount) + " mb");
+					event.getToolTip().add(TextFormatting.GREEN + "Fluid: " + TextFormatting.WHITE +
+							fluidStack.getLocalizedName(new FluidStack(fluidStack, fluidAmount)));
 				}
 				
 				amount = te.getTank().getCapacity();
@@ -144,7 +149,7 @@ public class ItemHoverEventHandler {
 			// TODO: make this applicable for fluid pipes!
 			String prefix = type == 0 ? "Transfer Rate: " : (type == 1 ? "Generation Rate: " : (type == 4 ? "Max Storage: " : "Burn Rate: "));
 			String suffix = type < 3 ? " McU/t" : (type == 4 ? " mb" : "TO_BE_DEFINED");
-			event.toolTip.add(EnumChatFormatting.GREEN + prefix + EnumChatFormatting.WHITE + format(amount) + suffix);
+			event.getToolTip().add(TextFormatting.GREEN + prefix + TextFormatting.WHITE + format(amount) + suffix);
 		}
 	}
 	

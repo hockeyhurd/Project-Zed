@@ -10,6 +10,7 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.EnumFacing;
 
 /**
  * 
@@ -22,38 +23,22 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		super("industrialFurnace");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return slots.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
 			0
@@ -63,43 +48,27 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot != 1 && super.isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
-	 */
-	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : new int[0];
+	@Override
+	public int[] getSlotsForFace(EnumFacing side) {
+		return openSides[side.ordinal()] == 1 ? this.slotRight : openSides[side.ordinal()] == -1 ? this.slotTop : new int[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return super.canExtractItem(slot, stack, side) && slot == 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
-	 */
+	@Override
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+			ItemStack stack = FurnaceRecipes.instance().getSmeltingResult(this.slots[0]);
 			if (stack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(stack)) return false;
@@ -112,14 +81,10 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#smeltItem()
-	 */
+	@Override
 	public void smeltItem() {
 		if (this.canSmelt()) {
-			ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.slots[0]);
+			ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.slots[0]);
 
 			if (this.slots[1] == null) this.slots[1] = itemstack.copy();
 			else if (this.slots[1].isItemEqual(itemstack)) slots[1].stackSize += itemstack.stackSize;
@@ -131,11 +96,8 @@ public class TileEntityIndustrialFurnace extends AbstractTileEntityMachine {
 			}
 		}
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSound()
-	 */
+
+	@Override
 	public Sound getSound() {
 		return null;
 	}

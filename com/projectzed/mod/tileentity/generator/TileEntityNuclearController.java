@@ -6,7 +6,10 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.SidedHelper;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
@@ -33,6 +36,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -129,63 +134,45 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return this.size;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
-	 */
-	public int[] getAccessibleSlotsFromSide(int side) {
+	@Override
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
-	 */
+	@Override
 	public void defineSource() {
 		this.source = new Source(EnumType.FISSION);
 	}
@@ -207,10 +194,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		this.source = new Source(type, modifier);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canProducePower()
-	 */
 	@Override
 	public boolean canProducePower() {
 		if (worldObj.isRemote) return false;
@@ -267,10 +250,6 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return mbMapVec;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#generatePower()
-	 */
 	@Override
 	public void generatePower() {
 		// if (poweredLastUpdate && this.stored + this.source.getEffectiveSize() <= this.maxStored && inputPort.getBurnTime() > 0) {
@@ -308,11 +287,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearIOPort)) {
 			
 			for (Vector3<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
-				byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+				// byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+				int meta = BlockUtils.getBlockMetadata(worldObj, vec);
 
 				// it is input!
-				if (meta == 1 && worldObj.getTileEntity(vec.x, vec.y, vec.z) instanceof TileEntityNuclearIOPort) {
-					te = (TileEntityNuclearIOPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+				final TileEntity tileEntity = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
+				if (meta == 1 && tileEntity instanceof TileEntityNuclearIOPort) {
+					te = (TileEntityNuclearIOPort) tileEntity;
 					break;
 				}
 			}
@@ -332,10 +313,12 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearIOPort)) {
 
 			for (Vector3<Integer> vec : mbMapVec.get(ProjectZed.nuclearIOPort)) {
-				byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+				// byte meta = (byte) worldObj.getBlockMetadata(vec.x, vec.y, vec.z);
+				int meta = BlockUtils.getBlockMetadata(worldObj, vec);
 
-				if (meta == 2 && worldObj.getTileEntity(vec.x, vec.y, vec.z) instanceof  TileEntityNuclearIOPort) {
-					te = (TileEntityNuclearIOPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+				final TileEntity tileEntity = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
+				if (meta == 2 && tileEntity instanceof  TileEntityNuclearIOPort) {
+					te = (TileEntityNuclearIOPort) tileEntity;
 					break;
 				}
 			}
@@ -408,12 +391,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		heatLogic.update(powerMode, dif != 0 ? dif : -1, getReactorVolume());
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#updateEntity()
-	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 			
 			// Small, yet significant optimization to call checking of multiblock structure 1/sec instead of 20/sec.
@@ -464,7 +443,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		this.lastStored = this.stored;
 
 		byte dir = comp.getByte("ProjectZedNuclearDir");
-		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.blockMetadata);
+		this.placeDir = (byte) (dir >= 0 && dir < 6 ? dir : this.getBlockMetadata());
 
 		byte rel = comp.getByte("ProjectZedNuclearRel");
 		this.rel = rel > -5 && rel < 5 ? rel : 0;
@@ -520,7 +499,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		
 		if (mbMapVec != null && mbMapVec.size() > 0 && mbMapVec.containsKey(ProjectZed.nuclearControlPort)) {
 			Vector3<Integer> vec = mbMapVec.get(ProjectZed.nuclearControlPort).get(0);
-			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
 			
 			if (te != null && te.hasRedstoneSignal()) flag = false;
 		}
@@ -528,22 +507,14 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return flag;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getInstance()
-	 */
 	@Override
 	public AbstractTileEntityGenerator getInstance() {
 		return this;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getBlock()
-	 */
 	@Override
-	public Block getBlock() {
-		return !this.fusionMode ? ProjectZed.fissionController : ProjectZed.fusionController;
+	public AbstractHCoreBlock getBlock() {
+		return (AbstractHCoreBlock) (!this.fusionMode ? ProjectZed.fissionController : ProjectZed.fusionController);
 	}
 
 	/**
@@ -580,7 +551,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		for (Block b : ref.keySet()) {
 			if (ref.containsKey(b) && refVec.containsKey(b)) {
 				for (Vector3<Integer> vec : refVec.get(b)) { 
-					tile = (IMultiBlockable) worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					tile = (IMultiBlockable) worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
 					if (tile != null) {
 						if (!tile.getMasterVec().x.equals(worldVec().x) || !tile.getMasterVec().y.equals(worldVec().y) || !tile.getMasterVec().z.equals(worldVec().z) || !tile.hasMaster()) {
 							flag = false;
@@ -643,100 +614,56 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return flag;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#isMaster()
-	 */
 	@Override
 	public boolean isMaster() {
 		return isMaster;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setIsMaster(boolean)
-	 */
 	@Override
 	public void setIsMaster(boolean master) {
 		this.isMaster = master;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#hasMaster()
-	 */
 	@Override
 	public boolean hasMaster() {
 		return hasMaster;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setHasMaster(boolean)
-	 */
 	@Override
 	public void setHasMaster(boolean master) {
 		this.hasMaster = master;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#setMasterVec(com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void setMasterVec(Vector3<Integer> vec) {
 		this.masterVec = vec;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#getMasterVec()
-	 */
 	@Override
 	public Vector3<Integer> getMasterVec() {
 		return masterVec;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockableController#checkMultiBlockForm()
-	 */
 	@Override
 	public boolean checkMultiBlockForm() {
 		boolean flag = false;
@@ -749,10 +676,10 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			if (maxVec == null) maxVec = Vector3.zero.getVector3i();
 
 			// int xp = this.xCoord - (placeDir == 1 ? 2 : (placeDir == 3 ? 0 : 1));
-			minVec.x = this.xCoord - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
-			minVec.y = this.yCoord + ((size - 1) / 2);
+			minVec.x = pos.getX() - (placeDir == 1 ? size - 1 : (placeDir == 3 ? 0 : size / 2));
+			minVec.y = pos.getY() + ((size - 1) / 2);
 			// int zp = this.zCoord - (placeDir == 3 ? 1 : (placeDir == 2 ? 2 : (placeDir == 1 ? 1 : 0)));
-			minVec.z = this.zCoord - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
+			minVec.z = pos.getZ() - (placeDir == 3 ? size / 2 : (placeDir == 2 ? size - 1 : (placeDir == 1 ? size / 2 : 0)));
 			
 			maxVec.x = minVec.x + size - 1;
 			maxVec.y = minVec.y - size + 1;
@@ -760,6 +687,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			
 			int counterMaster = 0;
 			Vector3<Integer> currentVec;
+			BlockPos currentBlockPos;
 			Block currentBlock;
 
 			int counter = 0;
@@ -791,7 +719,9 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 					for (int z = 0; z < size; z++) {
 						
 						currentVec = new Vector3<Integer>(minVec.x + x, minVec.y - y, minVec.z + z);
-						currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
+						currentBlockPos = VectorHelper.toBlockPos(currentVec);
+						// currentBlock = worldObj.getBlock(currentBlockPos);
+						currentBlock = BlockUtils.getBlock(worldObj, currentBlockPos).getBlock();
 						// ProjectZed.logHelper.info(currentBlock.getUnlocalizedName());
 						
 						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
@@ -861,7 +791,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							}
 						}
 
-						te = worldObj.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+						te = worldObj.getTileEntity(currentBlockPos);
 						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
 							counter++;
 							b = te.getBlockType();
@@ -932,19 +862,11 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		return flag;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockableController#checkForMaster()
-	 */
 	@Override
 	public boolean checkForMaster() {
 		return this.isMaster;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockableController#resetStructure()
-	 */
 	@Override
 	public void resetStructure() {
 		if (mbMapVec != null && mbMapVec.size() > 0) {
@@ -952,17 +874,13 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 			for (Block b : mbMapVec.keySet()) {
 				
 				for (Vector3<Integer> vec : mbMapVec.get(b)) {
-					te = worldObj.getTileEntity(vec.x, vec.y, vec.z);
+					te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
 					if (te != null && te instanceof IMultiBlockable && !(te instanceof TileEntityNuclearController)) ((IMultiBlockable) te).reset();
 				}
 			}
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;

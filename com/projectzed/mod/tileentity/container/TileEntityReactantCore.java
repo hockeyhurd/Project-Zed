@@ -6,11 +6,11 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -27,51 +27,31 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 		super("nuclearReactantCore");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
-	public Block getBlock() {
-		return ProjectZed.nuclearReactantCore;
+	public AbstractHCoreBlock getBlock() {
+		return (AbstractHCoreBlock) ProjectZed.nuclearReactantCore;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 1;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;

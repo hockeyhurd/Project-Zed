@@ -22,6 +22,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -139,11 +140,10 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 			}
 		}
 
-		// TODO: re-implement particles for 1.9!
-		/*if (quarryRect != null && currentMineVec != null) {
-			worldObj.spawnParticle("smoke", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
-			worldObj.spawnParticle("flame", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
-		}*/
+		if (quarryRect != null && currentMineVec != null) {
+			worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
+			worldObj.spawnParticle(EnumParticleTypes.FLAME, currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
+		}
 	}
 	
 	/**

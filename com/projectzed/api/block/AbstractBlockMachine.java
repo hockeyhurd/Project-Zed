@@ -7,7 +7,6 @@
 package com.projectzed.api.block;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
-import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -26,7 +25,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -148,26 +146,18 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
-		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		final TileEntity tileEntity = world.getTileEntity(pos);
+		if (!(tileEntity instanceof AbstractTileEntityMachine)) return;
 
+		final AbstractTileEntityMachine te = (AbstractTileEntityMachine) tileEntity;
 
-		// if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (l == 0) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(2));
-		// if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (l == 1) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(5));
-		// if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 2) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(3));
-		// if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		if (l == 3) block.getBlock().rotateBlock(world, pos, EnumFacing.getFront(4));
+		te.setFrontFacing(player.getHorizontalFacing().getOpposite());
 
-		BlockUtils.setBlock(world, pos, block);
-
-		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+		if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 
 		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
 			NBTTagCompound comp = stack.getTagCompound();
 
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(pos);
 			te.readNBT(comp);
 		}
 	}

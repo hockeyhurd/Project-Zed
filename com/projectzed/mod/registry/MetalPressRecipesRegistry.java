@@ -109,7 +109,7 @@ public class MetalPressRecipesRegistry {
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
 
-			int currentID = OreDictionary.getOreID(stack);
+			int currentID = OreDictionary.getOreIDs(stack)[0];
 			if (currentID == -1) return (ItemStack) null;
 			
 			String inputName = OreDictionary.getOreName(currentID);

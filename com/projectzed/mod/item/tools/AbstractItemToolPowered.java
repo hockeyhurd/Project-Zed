@@ -12,14 +12,19 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.util.Reference.Constants;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract class for creating chargeable item tools.
@@ -50,8 +55,9 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 	 * @param capacity capacity of tool.
 	 * @param chargeRate charge rate of tool. 
 	 */
+	@SuppressWarnings("unchecked")
 	public AbstractItemToolPowered(ToolMaterial mat, String name, int capacity, int chargeRate, IToolSetRegistry reg) {
-		super(2.0f, mat, reg.getSet());
+		super(2.0f, 2.0f, mat, (Set<Block>) reg.getSet());
 		this.name = name;
 
 		// energies stuff:
@@ -67,61 +73,41 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 		this.reg = reg;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#registerIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister reg) {
-		itemIcon = reg.registerIcon(ProjectZed.assetDir + this.name);
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
+		list.add(TextFormatting.GREEN + "Stored: " + TextFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
+		list.add(TextFormatting.GREEN + "Capacity: " + TextFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#addInformation(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, java.util.List, boolean)
-	 */
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-		list.add(EnumChatFormatting.GREEN + "Stored: " + EnumChatFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
-		list.add(EnumChatFormatting.GREEN + "Capacity: " + EnumChatFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.ItemTool#func_150893_a(net.minecraft.item.ItemStack, net.minecraft.block.Block)
-	 */
-	@Override
-	public float func_150893_a(ItemStack stack, Block block) {
-		return reg.setContainsBlock(block) && stack.getItemDamage() < stack.getMaxDamage() ? this.efficiencyOnProperMaterial : 1.0f;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#func_150897_b(net.minecraft.block.Block)
-	 */
-	@Override
-	public boolean func_150897_b(Block block) {
-		return reg.setContainsBlock(block);
+	public float getStrVsBlock(ItemStack stack, IBlockState block) {
+		return reg.setContainsBlock(block.getBlock()) && stack.getItemDamage() < stack.getMaxDamage() ? this.efficiencyOnProperMaterial : 1.0f;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onBlockStartBreak(net.minecraft.item.ItemStack, int, int, int, net.minecraft.entity.player.EntityPlayer)
-	 */
+	// TODO: Does commenting this out break anything? If so find correct function to solve this?
+	/*@Override
+	public boolean func_150897_b(Block block) {
+		return reg.setContainsBlock(block);
+	}*/
+
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos blockPos, EntityPlayer player) {
 		return stack.getItemDamage() > stack.getMaxDamage();
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase e) {
-		if ((double)block.getBlockHardness(world, x, y, z) != 0.0d) {
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos blockPos, EntityLivingBase e) {
+		if (blockState.getBlockHardness(world, blockPos) != 0.0f) {
 			if (stack.getItemDamage() + 1 <= stack.getMaxDamage()) stack.damageItem(1, e);
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+		return false;
 	}
 
 	// start energy related things:

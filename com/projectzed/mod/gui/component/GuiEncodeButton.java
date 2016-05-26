@@ -10,15 +10,17 @@
 
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
+import com.hockeyhurd.hcorelib.api.math.Color4f;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import com.hockeyhurd.hcorelib.api.util.TessellatorHelper;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Encode button for gui interfaces.
@@ -29,17 +31,17 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiEncodeButton extends GuiButton implements IGuiButton {
 
-	protected static final TessellatorHelper tessHelp = new TessellatorHelper();
 	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(Reference.MOD_NAME.toLowerCase(),
 			"textures/gui/encodeButton.png");
 	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
-	protected static final float PIXEL = 1.0f / 32.0f;
 	protected Vector2<Integer> pos;
 	protected boolean active;
+	protected final Gui parentGui;
 
-	public GuiEncodeButton(int id, int x, int y, String text) {
+	public GuiEncodeButton(Gui parentGui, int id, int x, int y, String text) {
 		super(id, x, y, text);
 
+		this.parentGui = parentGui;
 		this.width = 30;
 		this.height = 11;
 
@@ -49,7 +51,7 @@ public class GuiEncodeButton extends GuiButton implements IGuiButton {
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			/*GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			minecraft.getTextureManager().bindTexture(TEXTURE);
 
 			tessHelp.startDrawingQuads();
@@ -57,7 +59,20 @@ public class GuiEncodeButton extends GuiButton implements IGuiButton {
 			tessHelp.addVertUV(xPosition, yPosition + height, 0, 0.0f, 0.0f);
 			tessHelp.addVertUV(xPosition + width, yPosition + height, 0, width * PIXEL, 0.0f);
 			tessHelp.addVertUV(xPosition + width, yPosition, 0, width * PIXEL, height * PIXEL);
-			tessHelp.draw();
+			tessHelp.draw();*/
+
+			FontRenderer fontRenderer = minecraft.fontRendererObj;
+			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
+			mouseDragged(minecraft, x, y);
+
+			int j = 0xe0e0e0;
+
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!this.enabled) j = 0xa0a0a0;
+			else if (this.hovered) j = 0xffffa0;
+
+			// this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 

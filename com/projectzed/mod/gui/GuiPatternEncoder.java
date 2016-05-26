@@ -56,7 +56,7 @@ public class GuiPatternEncoder extends GuiMachine {
 			// encodeButton = new GuiButton(buttonList.size(), pos.x + 70, pos.y - 0x10, "Encode");
 			// encodeButton.width = 41;
 			// encodeButton.height = 10;
-			encodeButton = new GuiEncodeButton(buttonList.size(), pos.x + 70, pos.y - 0x10, "");
+			encodeButton = new GuiEncodeButton(this, buttonList.size(), pos.x + 70, pos.y - 0x10, "");
 		}
 
 		buttonList.add(clearButton);

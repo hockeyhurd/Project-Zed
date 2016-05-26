@@ -6,12 +6,12 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
-import net.minecraft.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +30,11 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 		super("nuclearReactorGlass");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
-	public Block getBlock() {
-		return ProjectZed.nuclearReactorGlass;
+	public AbstractHCoreBlock getBlock() {
+		return (AbstractHCoreBlock) ProjectZed.nuclearReactorGlass;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isMaster = false;
@@ -49,9 +42,6 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 		this.masterVec = Vector3.zero.getVector3i();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return false;

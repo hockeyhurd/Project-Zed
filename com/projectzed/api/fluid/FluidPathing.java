@@ -11,10 +11,12 @@
 package com.projectzed.api.fluid;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.math.pathfinding.AStarAlogirthm;
 import com.hockeyhurd.hcorelib.api.math.pathfinding.IPathTile;
 import com.hockeyhurd.hcorelib.api.math.pathfinding.PathNode;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import java.util.List;
 
 /**
  * Adjusted A* algorithm for fluid tiles specifically.
- *
- * @see com.hockeyhurd.api.math.pathfinding.AStarAlogirthm
  *
  * @author hockeyhurd
  * @version 4/14/2016.
@@ -141,27 +141,33 @@ public final class FluidPathing extends AStarAlogirthm {
 		List<IFluidTile> tiles = new ArrayList<IFluidTile>(6);
 
 		Vector3<Integer> currentVec = origin.getOffsetVec(-1, 0, 0);
-		TileEntity te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		BlockPos blockPos = VectorHelper.toBlockPos(currentVec);
+		TileEntity te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		currentVec = origin.getOffsetVec(1, 0, 0);
-		te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		blockPos = VectorHelper.toBlockPos(currentVec);
+		te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		currentVec = origin.getOffsetVec(0, 0, -1);
-		te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		blockPos = VectorHelper.toBlockPos(currentVec);
+		te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		currentVec = origin.getOffsetVec(0, 0, 1);
-		te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		blockPos = VectorHelper.toBlockPos(currentVec);
+		te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		currentVec = origin.getOffsetVec(0, -1, 0);
-		te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		blockPos = VectorHelper.toBlockPos(currentVec);
+		te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		currentVec = origin.getOffsetVec(0, 1, 0);
-		te = world.getTileEntity(currentVec.x, currentVec.y, currentVec.z);
+		blockPos = VectorHelper.toBlockPos(currentVec);
+		te = world.getTileEntity(blockPos);
 		if (te instanceof IFluidTile) tiles.add((IFluidTile) te);
 
 		return tiles.toArray(new IFluidTile[tiles.size()]);

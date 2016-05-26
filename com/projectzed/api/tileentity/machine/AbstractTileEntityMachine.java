@@ -77,53 +77,23 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		this.originalEnergyBurnRate = this.energyBurnRate = Reference.Constants.BASE_MACH_USAGE;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
 	@Override
 	public abstract int getSizeInventory();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public abstract int getInventoryStackLimit();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected abstract void initContentsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected abstract void initSlotsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		if (stack == null || stack.stackSize == 0) return false;
@@ -132,11 +102,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
 		if (openSides[side.ordinal()] == 0) return new int[0];
@@ -151,21 +116,11 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return openSides[side.ordinal()] == -1 && isItemValidForSlot(slot, stack);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return slot > 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side.ordinal()] == 1;
@@ -304,21 +259,11 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		EnergyNet.tryClearDirectionalTraffic(this, worldObj, pos.getX(), pos.getY(), pos.getZ(), lastReceivedDir);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
-	 */
 	@Override
 	public Vector3<Integer> worldVec() {
 		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
-	 */
 	@Override
 	public void update() {
 		calculateDataFromUpgrades();
@@ -389,39 +334,21 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return this.stored;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
-	 */
 	@Override
 	public int getMaxImportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
-	 */
 	@Override
 	public int getMaxExportRate() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		return 0;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
+
 	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
@@ -437,69 +364,36 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		else return 0;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.EnumFacing)
-	 */
 	@Override
 	public void setLastReceivedDirection(EnumFacing dir) {
 		// this.lastReceivedDir = dir;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
-	 */
 	@Override
 	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.machine.IEnergyMachine#setEnergyBurnRate(int)
-	 */
 	@Override
 	public void setEnergyBurnRate(int val) {
 		this.energyBurnRate = val;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.machine.IEnergyMachine#getEnergyBurnRate()
-	 */
 	@Override
 	public int getEnergyBurnRate() {
 		return energyBurnRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.machine.IEnergyMachine#setBurning(boolean)
-	 */
 	@Override
 	public void setPowerMode(boolean val) {
 		this.powerMode = val;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.machine.IEnergyMachine#isBurning()
-	 */
 	@Override
 	public boolean isPoweredOn() {
 		return this.powerMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.machine.IEnergyMachine#burnEnergy()
-	 */
 	@Override
 	public void burnEnergy() {
 		if (isPoweredOn() && this.cookTime > 0) this.stored -= this.energyBurnRate;
@@ -601,28 +495,30 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
 	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
-	 */
 	@Override
 	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
 		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
@@ -630,54 +526,40 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return (frontFacing = frontFacing.rotateY());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
-	 */
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing facing) {
+		this.frontFacing = facing;
+	}
+
 	@Override
 	public boolean canRotateTE() {
 		return true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
-	 */
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()
-	 */
 	@Override
 	public EnumRedstoneType getRedstoneType() {
 		return redstoneType;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#setRedstoneType(com.projectzed.api.util.EnumRedstoneType)
-	 */
 	@Override
 	public void setRedstoneType(EnumRedstoneType type) {
 		this.redstoneType = type;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneSignal()
-	 */
 	@Override
 	public int getRedstoneSignal() {
 		int max = Integer.MIN_VALUE;
@@ -688,20 +570,12 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return max;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#isActiveFromRedstoneSignal()
-	 */
 	@Override
 	public boolean isActiveFromRedstoneSignal() {
 		return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
 				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
-	 */
 	@Override
 	public EnumFrameType getType() {
 		return EnumFrameType.ITEM;
@@ -709,8 +583,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	
 	/**
 	 * Sets given direction to given value.
-	 * @param dir = direction to set.
-	 * @param value = value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
+	 *
+	 * @param dir direction to set.
+	 * @param value value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
 	 */
 	@Override
 	public void setSideValve(EnumFacing dir, byte value) {
@@ -722,7 +597,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	
 	/**
 	 * Sets the side value after rotating to next value.
-	 * @param dir = direction to test.
+	 *
+	 * @param dir direction to test.
 	 */
 	@Override
 	public void setSideValveAndRotate(EnumFacing dir) {
@@ -733,7 +609,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	}
 	
 	/**
-	 * @param dir = direction to test.
+	 * @param dir direction to test.
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
 	@Override
@@ -742,7 +618,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	}
 	
 	/**
-	 * @param dir = direction to test.
+	 * @param dir direction to test.
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
 	@Override
@@ -750,10 +626,6 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return openSides[dir];
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
-	 */
 	@Override
 	public byte[] getSidedArray() {
 		return openSides;

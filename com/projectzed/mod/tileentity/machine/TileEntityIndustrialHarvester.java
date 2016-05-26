@@ -13,6 +13,7 @@ package com.projectzed.mod.tileentity.machine;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -22,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -169,7 +171,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 					bufferVec.y = y;
 					bufferVec.z = z;
 
-					currentBlock = BlockUtils.getBlock(worldObj, bufferVec);
+					currentBlock = BlockUtils.getBlock(worldObj, bufferVec).getBlock();
 
 					if (currentBlock == Blocks.air) continue;
 					if (currentBlock instanceof BlockLog || currentBlock instanceof BlockLeaves || currentBlock instanceof BlockCrops) {
@@ -193,7 +195,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 		createChopList(chopList, currentVec);
 
 		if (!chopList.isEmpty()) {
-			Block block;
+			IBlockState block;
 			List<ItemStack> dropsList;
 			for (Vector3<Integer> vec : chopList) {
 				/*if (vec != null) {
@@ -203,7 +205,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 
 				block = BlockUtils.getBlock(worldObj, vec);
 
-				dropsList = block.getDrops(worldObj, vec.x, vec.y, vec.z, BlockUtils.getBlockMetadata(worldObj, vec), 0);
+				dropsList = block.getBlock().getDrops(worldObj, VectorHelper.toBlockPos(vec), block, 0);
 
 				if (dropsList != null && !dropsList.isEmpty()) {
 					for (ItemStack stack : dropsList) {
@@ -231,16 +233,16 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
-			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), yCoord, boundedRect.min.y.intValue());
+			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY(), boundedRect.min.y.intValue());
 
 			// ProjectZed.logHelper.info(boundedRect.min, currentCheckingVec);
 			// ProjectZed.logHelper.info(boundedRect.min, boundedRect.max);
 
-			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
+			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec).getBlock();
 			final int currentMeta = BlockUtils.getBlockMetadata(worldObj, currentCheckingVec);
 
 			// ProjectZed.logHelper.info(currentCheckingVec);

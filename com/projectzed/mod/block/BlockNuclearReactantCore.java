@@ -6,15 +6,9 @@
 */
 package com.projectzed.mod.block;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityReactantCore;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for nuclearReactantCore.
@@ -28,20 +22,6 @@ public class BlockNuclearReactantCore extends AbstractBlockNuclearComponent {
 		super("nuclearReactantCore");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "nuclearReactantCore");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityReactantCore();

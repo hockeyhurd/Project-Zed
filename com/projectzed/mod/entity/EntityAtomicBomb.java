@@ -9,6 +9,7 @@ package com.projectzed.mod.entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 /**
@@ -57,13 +58,15 @@ public class EntityAtomicBomb extends EntityTNTPrimed {
 			this.motionY *= -0.5D;
 		}
 
-		if (this.fuse-- <= 0) {
+		int fuse = getFuse();
+		if (fuse-- <= 0) {
+			setFuse(fuse);
 			this.setDead();
 
 			if (!this.worldObj.isRemote) this.explode();
 		}
-		
-		else this.worldObj.spawnParticle("smoke", this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
+
+		else this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 	}
 	
 	private void explode() {
@@ -75,15 +78,17 @@ public class EntityAtomicBomb extends EntityTNTPrimed {
 	/**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
+	@Override
     protected void writeEntityToNBT(NBTTagCompound comp) {
-        comp.setByte("AtomicBombFuse", (byte)this.fuse);
+        comp.setInteger("AtomicBombFuse", this.getFuse());
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
+	@Override
     protected void readEntityFromNBT(NBTTagCompound comp) {
-        this.fuse = comp.getByte("AtomicBombFuse");
+		setFuse(comp.getInteger("AtomicBombFuse"));
     }
 
 }

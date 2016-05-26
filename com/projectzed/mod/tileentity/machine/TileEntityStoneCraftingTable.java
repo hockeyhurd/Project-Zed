@@ -6,14 +6,19 @@
 */
 package com.projectzed.mod.tileentity.machine;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 /**
  * Class containing tileentity code for 
@@ -21,7 +26,9 @@ import net.minecraft.util.EnumFacing;
  * @author hockeyhurd
  * @version Mar 31, 2015
  */
-public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
+public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric implements IWrenchable {
+
+	private EnumFacing frontFacing;
 
 	public TileEntityStoneCraftingTable() {
 		this.customName = "craftingStoneTable";
@@ -106,4 +113,34 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityStoneCraftingTable(this));
 	}
 
+	@Override
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
+
+		return (frontFacing = frontFacing.rotateY());
+	}
+
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing face) {
+		this.frontFacing = face;
+	}
+
+	@Override
+	public boolean canRotateTE() {
+		return true;
+	}
+
+	@Override
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
+	}
+
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
+	}
 }

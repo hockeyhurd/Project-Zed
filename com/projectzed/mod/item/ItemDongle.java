@@ -8,14 +8,14 @@ package com.projectzed.mod.item;
 
 import com.hockeyhurd.hcorelib.api.math.Vector4;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -28,20 +28,16 @@ public class ItemDongle extends Item {
 		super();
 		this.setUnlocalizedName("itemDongle");
 	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister reg) {
-		this.itemIcon = Items.stick.getIconFromDamage(0);
-	}
-	
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
+
+	@Override
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumHand hand, EnumFacing side, float clickX, float clickY, float clickZ) {
 		boolean used = false;
 		if (!world.isRemote) {
 			Vector4<Integer> vec = new Vector4<Integer>(player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
 
 			int xPos = (int) player.posX;
 			int zPos = (int) player.posZ;
-			Chunk chunk = world.getChunkFromBlockCoords(xPos, zPos);
+			Chunk chunk = world.getChunkFromBlockCoords(BlockUtils.createBlockPos(xPos, 0, zPos));
 			List<Block> list = new ArrayList<Block>();
 			
 			int chunkX = chunk.xPosition * 16;
@@ -52,18 +48,19 @@ public class ItemDongle extends Item {
 				for (int xx = 0; xx < 16; xx++) {
 					for (int zz = 0; zz < 16; zz++) {
 						// Get the block id of the block being analyzed,
-						Block block = BlockUtils.getBlock(world, chunkX + xx, yy, chunkZ + zz);
+						Block block = BlockUtils.getBlock(world, chunkX + xx, yy, chunkZ + zz).getBlock();
 						if (!block.getLocalizedName().toLowerCase().contains("ore")) BlockUtils.setBlockToAir(world, chunkX + xx, yy, chunkZ + zz);
 					}
 				}
 			}
 			
 			used = true;
-			return used;
+			return EnumActionResult.SUCCESS;
 		}
 		
-		player.swingItem();
-		return used;
+		player.swingArm(hand);
+
+		return EnumActionResult.FAIL;
 	}
 
 }

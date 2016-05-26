@@ -26,8 +26,7 @@ public class GuiClearButton extends GuiButton {
 
 	protected final ResourceLocation TEXTURE = new ResourceLocation("projectzed", "textures/gui/clearButton.png");;
 	protected final float PIXEL;
-	protected float calc;
-	
+
 	/**
 	 * @param id
 	 * @param x
@@ -59,33 +58,31 @@ public class GuiClearButton extends GuiButton {
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 			if (this.visible) {
-			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
-			FontRenderer fontrenderer = minecraft.fontRendererObj;
-			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+				Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
+				FontRenderer fontRenderer = minecraft.fontRendererObj;
+				GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-			calc = width * this.PIXEL;
+				GlStateManager.enableBlend();
+				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+						GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-					GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+				drawTexturedModalRect(xPosition, yPosition, 0, 0, width, height);
 
-			drawTexturedModalRect(xPosition, yPosition, 0, 0, width, height);
+				/*	this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
+					this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
+					this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
+					this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right*/
 
-			/*	this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right*/
+				mouseDragged(minecraft, x, y);
+				int j = 0xe0e0e0;
 
-			mouseDragged(minecraft, x, y);
-			int j = 0xe0e0e0;
+				if (packedFGColour != 0) j = packedFGColour;
+				else if (!this.enabled) j = 0xa0a0a0;
+				else if (this.hovered) j = 0xffffa0;
 
-			if (packedFGColour != 0) j = packedFGColour;
-			else if (!this.enabled) j = 0xa0a0a0;
-			else if (this.hovered) j = 0xffffa0;
-
-			// this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
-			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+				// this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+				this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 

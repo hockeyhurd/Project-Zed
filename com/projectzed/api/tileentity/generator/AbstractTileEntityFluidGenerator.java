@@ -64,7 +64,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(EnumFacing side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 

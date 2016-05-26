@@ -8,13 +8,11 @@ package com.projectzed.mod.item;
 
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -28,8 +26,7 @@ public class ItemFuelRod extends AbstractHCoreItem {
 
 	private boolean isEmpty;
 	private String name, assetDir;
-	private IIcon[] icons = new IIcon[10];
-	
+
 	/**
 	 * @param name
 	 * @param assetDir
@@ -42,44 +39,14 @@ public class ItemFuelRod extends AbstractHCoreItem {
 		this.setMaxDamage(10);
 		if (!isEmpty) this.maxStackSize = 1;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.hockeyhurd.api.item.AbstractItemMetalic#registerIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister reg) {
-		if (isEmpty) itemIcon = reg.registerIcon(this.assetDir + name);
-		
-		// if (!isEmpty) {
-		else {
-			for (int i = 0; i < icons.length; i++) {
-				icons[i] = reg.registerIcon(this.assetDir + name + "_" + i);
-			}
-		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#getIconFromDamage(int)
-	 */
-	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int meta) {
-		if (this.isEmpty || meta >= this.getMaxDamage()) return this.itemIcon;
-		else if (meta >= 0 && meta < this.icons.length) return this.icons[this.icons.length - meta - 1];
-		else return null;
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#addInformation(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, java.util.List, boolean)
-	 */
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
 		
 		if (!isEmpty && stack.getItemDamage() < stack.getMaxDamage()) {
-			int left = this.icons.length - stack.getItemDamage();
-			list.add(EnumChatFormatting.GREEN + "Uses left: " + EnumChatFormatting.WHITE + left);
+			int left = 10 - stack.getItemDamage();
+			list.add(TextFormatting.GREEN + "Uses left: " + TextFormatting.WHITE + left);
 		}
 	}
 	

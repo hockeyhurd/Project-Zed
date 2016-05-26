@@ -7,14 +7,14 @@
 package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class used to implement input, ouput, off, gui interface. <br>
@@ -27,15 +27,13 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiIOButton extends GuiButton implements IGuiButton {
 
-	protected static final Tessellator TESS = Tessellator.instance;
 	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
 	protected byte stateID;
-	protected final float PIXEL;
-	
+
 	protected boolean active;
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
-	protected float calc, calc2, dif;
+	protected final Gui parentGui;
 
 	/**
 	 * @param id
@@ -43,12 +41,13 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 	 * @param y
 	 * @param text
 	 */
-	public GuiIOButton(int id, int x, int y, String text, byte state) {
+	public GuiIOButton(Gui parentGui, int id, int x, int y, String text, byte state) {
 		super(id, x, y, text);
+
+		this.parentGui = parentGui;
 		this.width = 16;
 		this.height = 16;
-		this.PIXEL = 1f / 64f;
-		
+
 		this.stateID = state;
 		this.pos.x = x;
 		this.pos.y = y;
@@ -62,54 +61,40 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiIOButton(int id, int x, int y, int width, int height, String text, byte state) {
+	public GuiIOButton(Gui parentGui, int id, int x, int y, int width, int height, String text, byte state) {
 		super(id, x, y, 16, 16, text);
+
+		this.parentGui = parentGui;
 		this.width = 16;
 		this.height = 16;
-		this.PIXEL = 1f / 64f;
-		
+
 		this.stateID = state;
 		this.pos.x = x;
 		this.pos.y = y;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontrenderer = minecraft.fontRenderer;
-			GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
+			FontRenderer fontrenderer = minecraft.fontRendererObj;
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-			calc = (width * (this.stateID + 2)) * this.PIXEL;
-			dif = 16f * this.PIXEL; 
-			calc2 = this.width * (this.stateID + 1) * this.PIXEL;
-			
-			// ProjectZed.logHelper.info(x, xPosition);
-			
-			this.TESS.startDrawingQuads();
-			
-			if (this.stateID == -1) {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, calc);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
-			}
-			
-			else {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc2, 0);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc2, dif);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc, dif);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc, 0);// bottom right
-			}
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+					GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-			this.TESS.draw();
+			drawTexturedModalRect(xPosition, yPosition, 0, 0, width, height);
 
-			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			mouseDragged(minecraft, x, y);
+			int j = 0xe0e0e0;
+
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!this.enabled) j = 0xa0a0a0;
+			else if (this.hovered) j = 0xffffa0;
+
+			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 

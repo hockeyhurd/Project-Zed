@@ -8,23 +8,14 @@ package com.projectzed.mod.proxy;
 
 import com.hockeyhurd.hcorelib.api.handler.config.ConfigChangedEventHandler;
 import com.hockeyhurd.hcorelib.api.handler.input.KeyBindingHandler;
-import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
-import com.projectzed.mod.renderer.*;
-import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
-import com.projectzed.mod.tileentity.container.*;
-import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.util.Reference;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -82,7 +73,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerRenderInformation() {
 		
-		energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
+		/*energyPipeRed = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeOrange = RenderingRegistry.getNextAvailableRenderId();
 		energyPipeClear = RenderingRegistry.getNextAvailableRenderId();
 		energyCell = RenderingRegistry.getNextAvailableRenderId();
@@ -135,7 +126,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.thickenedGlass), new ThickenedGlassItemRenderer(ProjectZed.thickenedGlass.getBlockTextureFromSide(0)));
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.wickedClearGlass), new WickedClearGlassItemRenderer(ProjectZed.wickedClearGlass.getBlockTextureFromSide(0)));
 		
-		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());
+		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());*/
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());

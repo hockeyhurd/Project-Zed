@@ -16,9 +16,14 @@ import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static net.minecraft.util.EnumChatFormatting.*;
+import static net.minecraft.util.text.TextFormatting.*;
 
 /**
  * Class containing code for item mcu reader
@@ -36,14 +41,13 @@ public class ItemMcUReader extends AbstractHCoreItem {
 		this.setMaxStackSize(1);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onItemUseFirst(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)
-	 */
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (world.getTileEntity(x, y, z) instanceof IEnergyContainer) {
-			IEnergyContainer cont = (IEnergyContainer) world.getTileEntity(x, y, z);
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumFacing side,
+			float hitX, float hitY, float hitZ, EnumHand hand) {
+
+		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		if (tileEntity instanceof IEnergyContainer) {
+			IEnergyContainer cont = (IEnergyContainer) tileEntity;
 			boolean full = cont.getEnergyStored() == cont.getMaxStorage();
 			
 			if (world.isRemote) {
@@ -67,8 +71,8 @@ public class ItemMcUReader extends AbstractHCoreItem {
 
 		}
 		
-		else if (world.getTileEntity(x, y, z) instanceof IFluidContainer) {
-			IFluidContainer cont = (IFluidContainer) world.getTileEntity(x, y, z);
+		else if (tileEntity instanceof IFluidContainer) {
+			IFluidContainer cont = (IFluidContainer) tileEntity;
 			if (world.isRemote) {
 				player.addChatComponentMessage(ChatUtils.createComponent(false, AQUA + "Stored: " + cont.getTank().getFluidAmount()));
 			}
@@ -76,7 +80,7 @@ public class ItemMcUReader extends AbstractHCoreItem {
 			else ProjectZed.logHelper.info("Stored: " + cont.getTank().getFluidAmount());
 		}
 		
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 }

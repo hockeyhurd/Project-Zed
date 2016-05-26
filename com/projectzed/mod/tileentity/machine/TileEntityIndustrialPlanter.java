@@ -19,9 +19,11 @@ import com.projectzed.api.util.Sound;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 /**
  * TileEntity class for industrialPlanter.
@@ -75,7 +77,7 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return slot >= 9 && super.canExtractItem(slot, stack, side);
 	}
 
@@ -137,26 +139,27 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		return -1;
 	}
 
-	private boolean canPlaceSapling(Block currentBlock, Block blockBelow, Block sapling) {
-		return currentBlock == Blocks.air && sapling != Blocks.air && (blockBelow.getMaterial() == Material.grass || blockBelow.getMaterial() == Material.ground);
+	private boolean canPlaceSapling(IBlockState currentBlock, IBlockState blockBelow, Block sapling) {
+		return currentBlock == Blocks.air && sapling != Blocks.air &&
+				(blockBelow.getMaterial() == Material.grass || blockBelow.getMaterial() == Material.ground);
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
-			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), yCoord + 2, boundedRect.min.y.intValue());
+			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY() + 2, boundedRect.min.y.intValue());
 
-			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
-			final Block blockBelow = BlockUtils.getBlock(worldObj, currentCheckingVec.x, currentCheckingVec.y - 1, currentCheckingVec.z);
+			final IBlockState currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
+			final IBlockState blockBelow = BlockUtils.getBlock(worldObj, currentCheckingVec.x, currentCheckingVec.y - 1, currentCheckingVec.z);
 			final int saplingIndex = getFirstSapling();
 
 			if (saplingIndex != -1) {
 				final Block sapling = BlockUtils.getBlockFromItem(slots[saplingIndex]);
 
 				if (canPlaceSapling(currentBlock, blockBelow, sapling)) {
-					BlockUtils.setBlock(worldObj, currentCheckingVec, sapling);
+					BlockUtils.setBlock(worldObj, currentCheckingVec, sapling.getDefaultState());
 					decrStackSize(saplingIndex, 1);
 				}
 			}

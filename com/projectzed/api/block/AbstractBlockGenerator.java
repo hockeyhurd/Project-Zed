@@ -7,13 +7,11 @@
 package com.projectzed.api.block;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
-import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
@@ -95,18 +93,15 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 	 * Method used to update block's state
 	 * @param active whether currently active or not.
 	 * @param world world object.
-	 * @param x x-position.
-	 * @param y y-position.
-	 * @param z z-position.
+	 * @param blockPos Block position.
 	 */
-	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
-		final BlockPos blockPos = VectorHelper.toBlockPos(x, y, z);
+	public static void updateBlockState(boolean active, World world, BlockPos blockPos) {
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		// keepInventory = true;
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityGenerator) {
 
-			IBlockState blockState = BlockUtils.getBlock(world, x, y, z);
+			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
 			world.notifyBlockOfStateChange(blockPos, blockState.getBlock());
 			/*this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
@@ -129,7 +124,11 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
 		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+
+		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
+		// te.setFrontFacing
+
+		if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 	}
 
 	@Override

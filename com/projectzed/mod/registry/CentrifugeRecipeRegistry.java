@@ -6,15 +6,14 @@
 */
 package com.projectzed.mod.registry;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.StackMapper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.StackMapper;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class containing code for initializing the centrifuge's smelting recipe list.
@@ -126,7 +125,8 @@ public class CentrifugeRecipeRegistry {
 			current = s.getKey();
 			current2 = s.getValue();
 
-			if (current.contains(OreDictionary.getOreName(OreDictionary.getOreID(stack))) && current.contains(OreDictionary.getOreName(OreDictionary.getOreID(stack2)))) {
+			if (current.contains(OreDictionary.getOreName(OreDictionary.getOreIDs(stack)[0])) &&
+					current.contains(OreDictionary.getOreName(OreDictionary.getOreIDs(stack2)[0]))) {
 				flag = true;
 				temp = OreDictionary.getOres(current2).get(0);
 				break;

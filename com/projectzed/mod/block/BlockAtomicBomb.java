@@ -6,18 +6,16 @@
 */
 package com.projectzed.mod.block;
 
-import net.minecraft.block.BlockTNT;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.entity.EntityAtomicBomb;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.BlockTNT;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 
 /**
  * Class containing block code for atomicBomb.
@@ -28,44 +26,34 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockAtomicBomb extends BlockTNT {
 
 	public BlockAtomicBomb() {
-		this.setBlockName("atomicBomb");
+		this.setRegistryName("atomicBomb");
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setBlockUnbreakable();
 	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "atomicBomb");
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return blockIcon;
-	}
-	
+
 	/**
      * Called upon the block being destroyed by an explosion
      */
 	@Override
-	public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion) {
+	public void onBlockDestroyedByExplosion(World world, BlockPos blockPos, Explosion explosion) {
 		if (!world.isRemote) {
-			EntityAtomicBomb bomb = new EntityAtomicBomb(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F),
-					(double) ((float) z + 0.5F), explosion.getExplosivePlacedBy());
-			bomb.fuse = world.rand.nextInt(bomb.fuse / 4) + bomb.fuse / 8;
+			EntityAtomicBomb bomb = new EntityAtomicBomb(world, (double) ((float) blockPos.getX() + 0.5f), (double) ((float) blockPos.getY() + 0.5f),
+					(double) ((float) blockPos.getZ() + 0.5f), explosion.getExplosivePlacedBy());
+			final int fuse = bomb.getFuse();
+			bomb.setFuse(world.rand.nextInt(fuse / 4) + fuse / 8);
 			world.spawnEntityInWorld(bomb);
 		}
 	}
 	
     @Override
-	public void func_150114_a(World world, int x, int y, int z, int ignition, EntityLivingBase entity) {
+	public void explode(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entity) {
 		if (!world.isRemote) {
-			if ((ignition & 1) == 1) {
-				EntityAtomicBomb bomb = new EntityAtomicBomb(world, (double) ((float) x + 0.5F), (double) ((float) y + 0.5F),
-						(double) ((float) z + 0.5F), entity);
+			if (((Boolean) blockState.getValue(EXPLODE)).booleanValue()) {
+				EntityAtomicBomb bomb = new EntityAtomicBomb(world, (double) ((float) blockPos.getX() + 0.5f), (double) ((float) blockPos.getY() + 0.5f),
+						(double) ((float) blockPos.getZ() + 0.5f), entity);
 				world.spawnEntityInWorld(bomb);
-				world.playSoundAtEntity(bomb, "game.tnt.primed", 1.0F, 1.0F);
+				// world.playSoundAtEntity(bomb, "game.tnt.primed", 1.0f, 1.0f);
+				world.playSound(null, bomb.posX, bomb.posY, bomb.posZ, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			}
 		}
 	}

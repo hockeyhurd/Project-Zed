@@ -18,12 +18,15 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialPlanter;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Block class for industrialPlanter.
@@ -43,15 +46,10 @@ public class BlockIndustrialPlanter extends AbstractBlockMachine {
 	}
 
 	@Override
-	protected Block getBlockInstance() {
-		return this;
-	}
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, blockPos, blockState, e, stack);
 
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		super.onBlockPlacedBy(world, x, y, z, e, stack);
-
-		TileEntityIndustrialPlanter te = (TileEntityIndustrialPlanter) world.getTileEntity(x, y, z);
+		TileEntityIndustrialPlanter te = (TileEntityIndustrialPlanter) world.getTileEntity(blockPos);
 		if (te != null && te.getBoundedRect() == null) {
 			final int defaultRectSize = TileEntityIndustrialPlanter.DEFAULT_NORMALIZED_RECT_SIZE;
 
@@ -61,27 +59,28 @@ public class BlockIndustrialPlanter extends AbstractBlockMachine {
 			@SuppressWarnings("unchecked")
 			Vector2<Integer> max = Vector2.zero.getVector2i();
 
-			min.x = x - defaultRectSize;
-			min.y = z - defaultRectSize;
+			min.x = blockPos.getX() - defaultRectSize;
+			min.y = blockPos.getZ() - defaultRectSize;
 
-			max.x = x + defaultRectSize;
-			max.y = z + defaultRectSize;
+			max.x = blockPos.getX() + defaultRectSize;
+			max.y = blockPos.getZ() + defaultRectSize;
 
 			te.setBoundedRect(new Rect<Integer>(min, max));
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(x, y, z);
+			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench))
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
 					FMLNetworkHandler
-							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialPlanter.class), world, x, y,
-									z);
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialPlanter.class),
+									world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}

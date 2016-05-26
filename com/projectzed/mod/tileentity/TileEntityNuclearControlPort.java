@@ -6,12 +6,12 @@
 */
 package com.projectzed.mod.tileentity;
 
-import com.hockeyhurd.hcorelib.api.math.Vector4;
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearControlPort;
-import net.minecraft.block.Block;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearCompo
 
 	private boolean isActive;
 	private boolean hasMaster;
-	private Vector4<Integer> masterVec = Vector4.zero.getVector4i();
+	private Vector3<Integer> masterVec = Vector3.zero.getVector3i();
 	
 	public TileEntityNuclearControlPort() {
 		super("nuclearControlPort");
@@ -49,56 +49,38 @@ public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearCompo
 		return isActive;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IMultiBlockable#reset()
-	 */
 	@Override
 	public void reset() {
 		this.isActive = false;
 		this.hasMaster = false;
-		this.masterVec = Vector4.zero.getVector4i();
+		this.masterVec = Vector3.zero.getVector3i();
 		
-		((BlockNuclearControlPort) worldObj.getBlock(worldVec().x, worldVec().y, worldVec().z)).updateMeta(false, worldObj, worldVec());
+		((BlockNuclearControlPort) blockType).updateMeta(false, worldObj, worldVec());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isUnique()
-	 */
 	@Override
 	public boolean isUnique() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
-	 */
 	@Override
 	public boolean isSubstituable() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getSubList()
-	 */
 	@Override
 	public List<IMultiBlockable> getSubList() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getAmountFromSize(int, int, int)
-	 */
 	@Override
 	public int getAmountFromSize(int width, int height, int depth) {
 		return 1;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
-	 */
 	@Override
-	public Block getBlock() {
-		return ProjectZed.nuclearControlPort;
+	public AbstractHCoreBlock getBlock() {
+		return (AbstractHCoreBlock) ProjectZed.nuclearControlPort;
 	}
 
 }

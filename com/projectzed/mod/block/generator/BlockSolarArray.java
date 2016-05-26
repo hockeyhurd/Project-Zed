@@ -6,25 +6,25 @@
 */
 package com.projectzed.mod.block.generator;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing solar block array.
@@ -37,115 +37,77 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 	private final byte TIER;
 	
 	/**
-	 * @param material = material of block
+	 * @param material material of block
 	 */
 	public BlockSolarArray(Material material, byte tier) {
 		super(material, "solarArray" + (tier > 0 ? tier : ""));
-		this.setBlockName("solarArray" + (tier > 0 ? tier : ""));
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
 		this.TIER = tier;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "solar_side");
-		this.top = reg.registerIcon(ProjectZed.assetDir + "solar_top" + (this.TIER > 0 ? "_" + this.TIER : ""));
-		this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = this.blockIcon;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int metadata) {
-		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityGenerator getTileEntity() {
 		TileEntitySolarArray te = new TileEntitySolarArray();
-		if (this.TIER > 0) te.setTier(this.TIER);
+		/*if (this.TIER > 0) */te.setTier(this.TIER);
 		return te;
 	}
 
-	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
-		int metaData = world.getBlockMetadata(x, y, z);
-		TileEntity tileentity = world.getTileEntity(x, y, z);
+	public static void updateBlockState(boolean active, World world, BlockPos blockPos) {
+		final TileEntity tileentity = world.getTileEntity(blockPos);
+		final IBlockState metaState = tileentity.getBlockType().getStateFromMeta(tileentity.getBlockMetadata());
 
-		world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
+		BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 
 		if (tileentity != null) {
 			tileentity.validate();
-			world.setTileEntity(x, y, z, tileentity);
+			world.setTileEntity(blockPos, tileentity);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockPlacedBy(net.minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
-		int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase player, ItemStack stack) {
+		/*int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
 		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(x, y, z)).setCustomName(stack.getDisplayName());
+		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);*/
+
+		if (stack.hasDisplayName()) ((TileEntitySolarArray) world.getTileEntity(blockPos)).setCustomName(stack.getDisplayName());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class), world, x, y, z);
+			TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(blockPos);
+			if (te != null) FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntitySolarArray.class),
+							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(x, y, z);
+	@Override
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntitySolarArray te = (TileEntitySolarArray) world.getTileEntity(blockPos);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 
 	/**
 	 * Method used to detect if a block is above this block (blocking our sunlight).
-	 * @param world = world object.
-	 * @param x = x-pos.
-	 * @param y = y-pos.
-	 * @param z = z-pos.
+	 *
+	 * @param world world object.
+	 * @param blockPos Block position.
 	 */
-	public boolean canSeeAbove(World world, int x, int y, int z) {
+	public boolean canSeeAbove(World world, BlockPos blockPos) {
 		boolean clear = true;
 		
 		if (!world.isRemote) {
-			for (int yy = y + 1; yy < 255; yy++) {
-				Block b = world.getBlock(x, yy, z);
+			for (int yy = blockPos.getY() + 1; yy < 255; yy++) {
+				// Block b = world.getBlock(x, yy, z);
+				Block b = BlockUtils.getBlock(world, blockPos.getX(), yy, blockPos.getZ()).getBlock();
 				if (b != null && !(b instanceof BlockAir)) {
 					clear = false;
 					break;

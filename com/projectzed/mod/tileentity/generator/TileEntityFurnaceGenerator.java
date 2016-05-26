@@ -6,18 +6,22 @@
 */
 package com.projectzed.mod.tileentity.generator;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Class containing te code for furnace generator.
@@ -34,98 +38,53 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		this.slots = new ItemStack[1];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return this.slots.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[1];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[] {
 			0
 		};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return this.isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
-	 */
 	@Override
 	public void defineSource() {
 		this.source = new Source(EnumType.BURNABLE);
 	}
 
-	protected static int getItemBurnTime(ItemStack stack) {
+	protected static int getItemBurnTime(ItemStack stack, World world, BlockPos blockPos) {
 		if (stack == null) return 0;
 		else {
 			Item item = stack.getItem();
@@ -135,14 +94,14 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 
 				if (block == Blocks.wooden_slab) return 150 / 4;
 
-				if (block.getMaterial() == Material.wood) return 300 / 4;
+				if (BlockUtils.getBlockMaterial(world, blockPos) == Material.wood) return 300 / 4;
 
 				if (block == Blocks.coal_block) return 16000 / 4;
 			}
 
 			if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
 			if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
-			if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
+			if (item instanceof ItemHoe && ((ItemHoe) item).getMaterialName().equals("WOOD")) return 200 / 4;
 			if (item == Items.stick) return 100 / 4;
 			if (item == Items.coal) return 1600 / 4;
 			if (item == Items.lava_bucket) return 20000 / 4;
@@ -153,7 +112,7 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	}
 
 	protected boolean isFuel() {
-		return getItemBurnTime(this.slots[0]) > 0;
+		return getItemBurnTime(this.slots[0], worldObj, pos) > 0;
 	}
 
 	protected void consumeFuel() {
@@ -174,15 +133,15 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (this.worldObj != null && !this.worldObj.isRemote) {
 
 			if (getEnergyStored() + source.getEffectiveSize() <= maxStored) {
 				if (this.slots[0] != null && isFuel()) {
 					if (this.burnTime == 0) {
-						this.burnTime = getItemBurnTime(this.slots[0]) + 1;
+						this.burnTime = getItemBurnTime(this.slots[0], worldObj, pos) + 1;
 						/*if (this.stored < this.maxStored) */consumeFuel();
 					}
 				}

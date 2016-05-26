@@ -7,17 +7,20 @@
 package com.projectzed.mod.block.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearPowerPort;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -28,79 +31,44 @@ import net.minecraft.world.World;
  */
 public class BlockNuclearPowerPort extends AbstractBlockContainer implements IMetaUpdate {
 
-	@SideOnly(Side.CLIENT)
-	private IIcon activeIcon;
-	
 	public BlockNuclearPowerPort() {
 		super(Material.rock, ProjectZed.assetDir, "nuclearPowerPort");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		super.registerBlockIcons(reg);
-		activeIcon = reg.registerIcon(this.assetDir + this.name + "_on");
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return meta == 0 ? blockIcon : activeIcon;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
 		updateMeta(isActive ? 1 : 0, world, vec);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
-		TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(vec.x, vec.y, vec.z);
-		
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		final TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(blockPos);
+
 		if (te != null) {
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			IBlockState blockState = te.getBlock().getStateFromMeta(meta);
+			BlockUtils.setBlock(world, blockPos, blockState);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityEnergyContainer getTileEntity() {
 		return new TileEntityNuclearPowerPort();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityNuclearPowerPort te = (TileEntityNuclearPowerPort) world.getTileEntity(blockPos);
 		if (te != null && te.hasMaster()) ProjectZed.logHelper.info("Broke TE @:", te.worldVec().toString(), "with stored power of:", te.getEnergyStored());
 	}
 

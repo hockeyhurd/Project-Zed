@@ -7,12 +7,10 @@
 package com.projectzed.mod.block.machines;
 
 import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCentrifuge;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -45,13 +43,8 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 	}
 
 	@Override
-	public AbstractTileEntityMachine getTileEntity() {
+	public TileEntityIndustrialCentrifuge getTileEntity() {
 		return new TileEntityIndustrialCentrifuge();
-	}
-
-	@Override
-	protected Block getBlockInstance() {
-		return this;
 	}
 
 	@Override

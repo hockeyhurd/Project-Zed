@@ -6,16 +6,17 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
+import com.hockeyhurd.hcorelib.api.math.Color4f;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.util.EnumRedstoneType;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui buttons for redstone conrol.
@@ -23,18 +24,18 @@ import org.lwjgl.opengl.GL11;
  * @author hockeyhurd
  * @version May 20, 2015
  */
+@SuppressWarnings("unchecked")
 @SideOnly(Side.CLIENT)
 public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 
-	protected static final Tessellator TESS = Tessellator.instance;
 	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
-	protected static final float PIXEL = 1.0f / 64.0f;
 	protected EnumRedstoneType type;
-	
+
+	protected final Gui parentGui;
 	protected boolean active;
-	protected Vector2<Float> min = Vector2.zero.getVector2f();
-	protected Vector2<Float> max = Vector2.zero.getVector2f(); 
+	protected Vector2<Integer> min = Vector2.zero.getVector2i();
+	protected Vector2<Integer> max = Vector2.zero.getVector2i();
 	
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected static final float SIZE = 16f;
@@ -45,8 +46,10 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 	 * @param y
 	 * @param text
 	 */
-	public GuiRedstoneButton(int id, int x, int y, String text, EnumRedstoneType type) {
+	public GuiRedstoneButton(Gui parentGui, int id, int x, int y, String text, EnumRedstoneType type) {
 		super(id, x, y, text);
+
+		this.parentGui = parentGui;
 		this.width = 16;
 		this.height = 16;
 
@@ -63,23 +66,21 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiRedstoneButton(int id, int x, int y, int width, int height, String text, EnumRedstoneType type) {
+	public GuiRedstoneButton(Gui parentGui, int id, int x, int y, int width, int height, String text, EnumRedstoneType type) {
 		super(id, x, y, 16, 16, text);
+
+		this.parentGui = parentGui;
 		this.width = width;
 		this.height = height;
 
 		this.type = type;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#drawButton(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			FontRenderer fontRenderer = minecraft.fontRenderer;
-			GL11.glColor4f(1f, 1f, 1f, 1f);
+			FontRenderer fontRenderer = minecraft.fontRendererObj;
+			/*GL11.glColor4f(1f, 1f, 1f, 1f);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 			
 			min.x = (SIZE * (this.type.ordinal() + 0)) * this.PIXEL;
@@ -96,14 +97,21 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 			
 			this.TESS.draw();
 			
-			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);
+			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);*/
+
+			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, max.x, max.y);
+			mouseDragged(minecraft, x, y);
+
+			int j = 0xe0e0e0;
+
+			if (packedFGColour != 0) j = packedFGColour;
+			else if (!this.enabled) j = 0xa0a0a0;
+			else if (this.hovered) j = 0xffffa0;
+
+			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.client.gui.GuiButton#mousePressed(net.minecraft.client.Minecraft, int, int)
-	 */
 	@Override
 	public boolean mousePressed(Minecraft minecraft, int x, int y) {
 		boolean ret = super.mousePressed(minecraft, x, y);
@@ -121,28 +129,16 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 		this.type = type;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IGuiButton#isActive()
-	 */
 	@Override
 	public boolean isActive() {
 		return active;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IGuiButton#setActive(boolean)
-	 */
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IGuiButton#getPos()
-	 */
 	@Override
 	public Vector2<Integer> getPos() {
 		return pos;

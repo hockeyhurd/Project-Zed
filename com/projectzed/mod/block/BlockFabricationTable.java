@@ -6,22 +6,24 @@
 */
 package com.projectzed.mod.block;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.tileentity.AbstractTile;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -31,75 +33,65 @@ import java.util.Random;
  * @author hockeyhurd
  * @version Nov 22, 2014
  */
-public class BlockFabricationTable extends BlockContainer {
+public class BlockFabricationTable extends AbstractHCoreBlockContainer {
 
 	private String name;
 	private static Random random = new Random();
 
-	@SideOnly(Side.CLIENT)
-	private IIcon base, top;
-	
 	public BlockFabricationTable(Material material) {
-		super(material);
-		this.name = "fabricationTable";
-		this.setBlockName(this.name);
-		this.setHardness(1.0f);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
+		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, "fabricationTable");
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + this.name + "_side");
-		this.top = reg.registerIcon(ProjectZed.assetDir + this.name + "_top");
-		this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
+	@Override
+	public Block getBlock() {
+		return this;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return side == 1 ? this.top : (side == 0 ? this.base : this.blockIcon);
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float,
-	 * float, float)
-	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_WOOD;
+	}
+
+	@Override
+	public AbstractTile getTileEntity() {
+		return new TileEntityFabricationTable();
+	}
+
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityFabricationTable te = (TileEntityFabricationTable) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityFabricationTable.class), world, x, y, z);
+			TileEntityFabricationTable te = (TileEntityFabricationTable) world.getTileEntity(blockPos);
+			if (te != null) FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityFabricationTable.class),
+							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntityFabricationTable();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
-	 */
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetaData) {
-		if (!world.isRemote && world.getTileEntity(x, y, z) != null) {
-			TileEntityFabricationTable te = (TileEntityFabricationTable) world.getTileEntity(x, y, z);
+	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
+		final TileEntity tileEntity = world.getTileEntity(pos);
+
+		if (!world.isRemote && tileEntity != null) {
+			TileEntityFabricationTable te = (TileEntityFabricationTable) tileEntity;
 			
 			ItemStack[] stacks = new ItemStack[te.getSizeInventory()];
 			for (int i = 0; i < te.getSizeInventory(); i++) {
 				if (te.getStackInSlot(i) != null) stacks[i] = te.getStackInSlot(i);
 			}
 			
-			WorldUtils.addItemDrop(stacks, world, x, y, z, random);
+			WorldUtils.addItemDrop(stacks, world, pos.getX(), pos.getY(), pos.getZ(), random);
 		}
-		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetaData);
+		super.breakBlock(world, pos, oldBlock);
 	}
 
 }

@@ -8,7 +8,7 @@ package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.util.Reference;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +44,9 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		this.list = new ArrayList<String>();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoLabel#getLabel()
-	 */
 	@Override
 	public List<String> getLabel() {
-		String text0 = EnumChatFormatting.AQUA + "Stored: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.FLUID_UNIT;
+		String text0 = TextFormatting.AQUA + "Stored: " + TextFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.FLUID_UNIT;
 		
 		// float percent = ((Number) this.stored).floatValue() / ((Number) this.max).floatValue() * 100.0f;
 		float percent = getPercent();
@@ -68,19 +65,11 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		return list;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoLabel#getPercent()
-	 */
 	@Override
 	public float getPercent() {
 		return ((Number) this.stored).floatValue() / ((Number) this.max).floatValue() * 100.0f;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoLabel#isVisible(int, int, int, int, int, int, boolean)
-	 */
 	public boolean isVisible(boolean ignoreMouse) {
 		if (ignoreMouse) return (visible = ignoreMouse);
 		else {
@@ -89,9 +78,6 @@ public class FluidLabel<N> implements IInfoLabel<N> {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.gui.component.IInfoLabel#update()
-	 */
 	@Override
 	public void update(Vector2<Integer> mouseVec, Vector2<Integer> pos, Vector2<Integer> minMax, N[] data) {
 		this.mouseVec = mouseVec;

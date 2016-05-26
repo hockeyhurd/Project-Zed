@@ -14,6 +14,7 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Class used for creating a new tile entity in the form of a solar array.
@@ -37,7 +38,7 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	/**
 	 * Updates tier to said value.
 	 * 
-	 * @param tier = tier to set.
+	 * @param tier tier to set.
 	 */
 	public void setTier(byte tier) {
 		this.tier = tier >= 0 && tier < this.TIER_MODIFIER.length ? tier : 0;
@@ -52,85 +53,55 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 		return this.tier;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#getAccessibleSlotsFromSide(int)
-	 */
-	public int[] getAccessibleSlotsFromSide(int side) {
+	@Override
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#defineSource()
-	 */
+	@Override
 	public void defineSource() {
 		this.source = new Source(EnumType.SOLAR);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator#updateEntity()
-	 */
-	public void updateEntity() {
+	@Override
+	public void update() {
 		if (this.worldObj != null && !this.worldObj.isRemote /*&& this.worldObj.getTotalWorldTime() % 20L == 0L*/) {
 			if (this.getBlockType() instanceof BlockSolarArray) {
 				BlockSolarArray b = (BlockSolarArray) this.getBlockType();
-				boolean clear = b.canSeeAbove(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+				boolean clear = b.canSeeAbove(this.worldObj, pos);
 				this.powerMode = worldObj.isDaytime() && clear;
 				
 				if (this.source.getEffectiveSize() != this.TIER_MODIFIER[this.tier] * EnumType.SOLAR.getSize()) this.source.setModifier(this.TIER_MODIFIER[this.tier]);
@@ -139,7 +110,7 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 			}
 		}
 		
-		super.updateEntity();
+		super.update();
 	}
 	
 	@Override

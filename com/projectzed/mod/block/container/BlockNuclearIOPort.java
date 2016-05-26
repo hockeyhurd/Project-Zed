@@ -7,6 +7,8 @@
 package com.projectzed.mod.block.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
@@ -14,17 +16,17 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityNuclearIOPort;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class containing block code for nuclearIOPort.
@@ -34,103 +36,73 @@ import net.minecraft.world.World;
  */
 public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements IMetaUpdate {
 
-	@SideOnly(Side.CLIENT)
-	private IIcon input, output;
-	
 	public BlockNuclearIOPort() {
 		super("nuclearIOPort");
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerBlockIcons(IIconRegister reg) {
-		super.registerBlockIcons(reg);
-		input = reg.registerIcon(this.assetDir + this.name + "_input");
-		output = reg.registerIcon(this.assetDir + this.name + "_output");
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getIcon(int, int)
-	 */
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(int side, int meta) {
-		return meta == 1 ? input : meta == 2 ? output : blockIcon;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(boolean, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
+
 	@Override
 	public void updateMeta(boolean isActive, World world, Vector3<Integer> vec) {
-		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		final TileEntity te = world.getTileEntity(blockPos);
 		
 		if (te != null && te instanceof TileEntityNuclearIOPort) {
 			byte meta = ((TileEntityNuclearIOPort) te).getStoredMeta();
 			
 			if (meta == 0) meta = 1;
 			
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
-			
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			final IBlockState blockState = ((TileEntityNuclearIOPort) te).getBlock().getStateFromMeta(te.getBlockMetadata());
+			BlockUtils.setBlock(world, blockPos, blockState);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+
 			((TileEntityNuclearIOPort) te).setMetaOnUpdate(meta);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.IMetaUpdate#updateMeta(int, net.minecraft.world.World, com.hockeyhurd.api.math.Vector4)
-	 */
 	@Override
 	public void updateMeta(int meta, World world, Vector3<Integer> vec) {
-		TileEntity te = world.getTileEntity(vec.x, vec.y, vec.z);
+		final BlockPos blockPos = VectorHelper.toBlockPos(vec);
+		TileEntity te = world.getTileEntity(blockPos);
 		
 		if (te != null && te instanceof TileEntityNuclearIOPort) {
 			
-			world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
-			world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			// world.setBlockMetadataWithNotify(vec.x, vec.y, vec.z, meta, 2);
+			// world.markBlockForUpdate(vec.x, vec.y, vec.z);
+			final IBlockState blockState = ((TileEntityNuclearIOPort) te).getBlock().getStateFromMeta(te.getBlockMetadata());
+			BlockUtils.setBlock(world, blockPos, blockState);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 			
 			((TileEntityNuclearIOPort) te).setMetaOnUpdate((byte) meta);
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		if (stack.hasTagCompound() && stack.stackTagCompound != null) {
-			NBTTagCompound comp = stack.stackTagCompound;
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase e, ItemStack stack) {
+		if (stack.hasTagCompound()) {
+			NBTTagCompound comp = stack.getTagCompound();
 			byte meta = comp.getByte("Meta");
 			
-			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(x, y, z);
+			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(blockPos);
 			
-			if (meta == 0) updateMeta(1, world, new Vector3<Integer>(x, y, z));
+			if (meta == 0) updateMeta(1, world, VectorHelper.toVector3i(blockPos));
 			
-			else updateMeta(meta, world, new Vector3<Integer>(x, y, z));
+			else updateMeta(meta, world, VectorHelper.toVector3i(blockPos));
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(x, y, z);
+			TileEntityNuclearIOPort te = (TileEntityNuclearIOPort) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getHeldItem() == null || !(player.getHeldItem().getItem() instanceof ItemWrench)) FMLNetworkHandler
-						.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearIOPort.class), world, x, y, z);
+				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench)) FMLNetworkHandler
+						.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearIOPort.class),
+								world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}
@@ -139,9 +111,6 @@ public class BlockNuclearIOPort extends AbstractBlockNuclearComponent implements
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockNuclearComponent#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearIOPort();

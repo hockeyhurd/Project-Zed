@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.handler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 /**
  * Class containing code for recipes that return more than one item.
@@ -15,7 +15,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
  * @author hockeyhurd
  * @version Dec 9, 2014
  */
-public class CraftingEventHandler {
+public final class CraftingEventHandler {
 
 	/** Only static instance of this class. */
 	private static final CraftingEventHandler HANLDER = new CraftingEventHandler();

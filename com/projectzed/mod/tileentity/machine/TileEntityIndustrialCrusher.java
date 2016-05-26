@@ -10,6 +10,7 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.registry.CrusherRecipesRegistry;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Class containing code for te data for industrial crusher.
@@ -23,38 +24,22 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 		super("industrialCrusher");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getSizeInventory()
-	 */
+	@Override
 	public int getSizeInventory() {
 		return slots.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getInventoryStackLimit()
-	 */
+	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initContentsArray()
-	 */
+	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2 + getSizeUpgradeSlots()];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#initSlotsArray()
-	 */
+	@Override
 	protected void initSlotsArray() {
 		this.slotTop = new int[] {
 			0
@@ -64,40 +49,22 @@ public class TileEntityIndustrialCrusher extends AbstractTileEntityMachine {
 		};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return slot != 1 && super.isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
-		return openSides[side] == 1 ? this.slotRight : openSides[side] == -1 ? this.slotTop : new int[0];
+	public int[] getSlotsForFace(EnumFacing side) {
+		return openSides[side.ordinal()] == 1 ? this.slotRight : openSides[side.ordinal()] == -1 ? this.slotTop : new int[0];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return super.canExtractItem(slot, stack, side);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.machine.AbstractTileEntityMachine#canSmelt()
-	 */
+
+	@Override
 	protected boolean canSmelt() {
 		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
 		else {

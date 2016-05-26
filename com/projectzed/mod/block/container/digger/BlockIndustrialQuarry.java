@@ -12,10 +12,15 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.digger.TileEntityIndustrialQuarry;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
  * Class for industrialQuarry.
@@ -30,28 +35,24 @@ public class BlockIndustrialQuarry extends AbstractBlockContainer {
 	 */
 	public BlockIndustrialQuarry(Material material) {
 		super(material, ProjectZed.assetDir, "industrialQuarry");
-		this.setBlockName("industrialQuarry");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityEnergyContainer getTileEntity() {
 		return new TileEntityIndustrialQuarry();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 		
 		else {
-			TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(x, y, z);
+			TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(blockPos);
 			if (te != null) {
-				FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialQuarry.class), world, x, y, z);
+				FMLNetworkHandler
+						.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialQuarry.class),
+								world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 				player.addChatComponentMessage(ChatUtils.createComponent(false, "is done: " + te.isDone()));
 			}
 
@@ -67,12 +68,9 @@ public class BlockIndustrialQuarry extends AbstractBlockContainer {
 		}
 	}*/
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityIndustrialQuarry te = (TileEntityIndustrialQuarry) world.getTileEntity(blockPos);
 		ProjectZed.logHelper.info("Stored:", te.getEnergyStored());
 	}
 

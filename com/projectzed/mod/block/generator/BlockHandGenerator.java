@@ -11,14 +11,15 @@
 package com.projectzed.mod.block.generator;
 
 import com.projectzed.api.block.AbstractBlockKineticGenerator;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.generator.AbstractTileEntityKineticGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntityHandGenerator;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -37,29 +38,22 @@ public class BlockHandGenerator extends AbstractBlockKineticGenerator {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + name + "_front");
-	}
-
-	@Override
 	public AbstractTileEntityKineticGenerator getTileEntity() {
 		return new TileEntityHandGenerator();
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			TileEntityHandGenerator te = (TileEntityHandGenerator) world.getTileEntity(x, y, z);
+			TileEntityHandGenerator te = (TileEntityHandGenerator) world.getTileEntity(blockPos);
 
 			if (te != null) te.incrementHandCounter();
 
 			return true;
 		}
 
-		player.swingItem();
+		player.swingArm(hand);
 
 		return false;
 	}

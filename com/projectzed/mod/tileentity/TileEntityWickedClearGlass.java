@@ -6,8 +6,8 @@
 */
 package com.projectzed.mod.tileentity;
 
-import com.hockeyhurd.hcorelib.api.tileentity.AbstractTileContainer;
 import com.hockeyhurd.hcorelib.api.util.StringUtils;
+import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
@@ -19,7 +19,7 @@ import net.minecraft.util.text.TextComponentTranslation;
  * @author hockeyhurd
  * @version Mar 26, 2015
  */
-public class TileEntityWickedClearGlass extends AbstractTileContainer {
+public class TileEntityWickedClearGlass extends AbstractTileEntityGeneric {
 
 	public TileEntityWickedClearGlass() {
 		setCustomName("wickedClearGlass");
@@ -96,5 +96,10 @@ public class TileEntityWickedClearGlass extends AbstractTileContainer {
 	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
-	
+
+	@Override
+	protected boolean canUpdate() {
+		return false;
+	}
+
 }

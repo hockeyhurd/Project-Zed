@@ -12,6 +12,7 @@ package com.projectzed.mod.tileentity.generator;
 
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Abstract TileEntity class for kinetic based generation.
@@ -53,17 +54,17 @@ public abstract class AbstractTileEntityKineticGenerator extends AbstractTileEnt
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return new int[0];
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 

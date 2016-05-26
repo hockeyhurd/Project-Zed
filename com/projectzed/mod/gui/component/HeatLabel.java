@@ -12,7 +12,7 @@ package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.util.Reference;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +50,13 @@ public class HeatLabel<N> implements IInfoLabel<N> {
 
 	@Override
 	public List<String> getLabel() {
-		String text0 = EnumChatFormatting.RED + "Amount: " + EnumChatFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.HEAT_UNIT;
+		String text0 = TextFormatting.RED + "Amount: " + TextFormatting.WHITE + format((Number) this.stored) + " / " + format((Number) this.max) + " " + Reference.Constants.HEAT_UNIT;
 
 		float percent = getPercent();
 		String text2 = String.format("%.2f%%", percent);
 
-		String text1 = EnumChatFormatting.RED + "Status: " + (percent < 50f ? EnumChatFormatting.GREEN + "Good!" : percent < 75f ? EnumChatFormatting.YELLOW + "Fair!" :
-				EnumChatFormatting.RED + "Critical!");
+		String text1 = TextFormatting.RED + "Status: " + (percent < 50f ? TextFormatting.GREEN + "Good!" : percent < 75f ? TextFormatting.YELLOW + "Fair!" :
+				TextFormatting.RED + "Critical!");
 
 		if (list.size() == 0) {
 			list.add(text0);

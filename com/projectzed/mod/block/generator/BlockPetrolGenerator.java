@@ -16,15 +16,16 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityPetrolGenerator;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -36,56 +37,11 @@ import java.util.Random;
  */
 public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
-	/*@SideOnly(Side.CLIENT)
-	private IIcon frontOn;*/
-
-	// @SideOnly(Side.CLIENT)
-	private IIcon[] frontIcons = new IIcon[9];
-
 	/**
-	 * @param material = material of block
+	 * @param material material of block
 	 */
 	public BlockPetrolGenerator(Material material) {
 		super(material, "petrolGen");
-		this.setBlockName("petrolGen");
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
-	}
-
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		// this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
-		// this.frontOn = reg.registerIcon(ProjectZed.assetDir + this.name + "_front_on");
-
-		for (int i = 0; i < frontIcons.length; i++) {
-			frontIcons[i] = reg.registerIcon(ProjectZed.assetDir + this.name + '_' + i);
-		}
-
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		return side == 0 || side == 1 ? this.base : (side != meta && side != 3 ? this.blockIcon : frontIcons[0]);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
-		int progress = (int) ((te.getTank().getFluidAmount() / (float) te.getTank().getCapacity()) * (te.getTank().getCapacity() / 2f / 1000f));
-
-		// ensure nothing weird can happen, i.e. array index out of bound exceptions.
-		if (progress < 0) progress = 0;
-		else if (progress >= frontIcons.length) progress = frontIcons.length - 1;
-
-		int meta = world.getBlockMetadata(x, y, z);
-
-		return side == 0 || side == 1 ? this.base : (side != meta ? this.blockIcon : (this.frontIcons[progress]));
 	}
 
 	@Override
@@ -94,49 +50,52 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
+			TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(blockPos);
 			if (te != null) FMLNetworkHandler
-					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityPetrolGenerator.class), world, x, y, z);
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityPetrolGenerator.class),
+							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
 	@Override
-	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-		if (((TileEntityPetrolGenerator) world.getTileEntity(x, y, z)).isPowered()) {
-			int metaData = world.getBlockMetadata(x, y, z);
-			float f = (float) x + 0.5F;
-			float f1 = (float) y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float f2 = (float) z + 0.5F;
+	public void randomTick(World world, BlockPos blockPos, IBlockState blockState, Random random) {
+		if (((TileEntityPetrolGenerator) world.getTileEntity(blockPos)).isPowered()) {
+			// int metaData = world.getBlockMetadata(x, y, z);
+			int metaData = blockState.getBlock().getMetaFromState(blockState);
+			float f = (float) blockPos.getX() + 0.5F;
+			float f1 = (float) blockPos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+			float f2 = (float) blockPos.getZ() + 0.5F;
 			float f3 = 0.52F;
 			float f4 = random.nextFloat() * 0.6F - 0.3F;
 
 			if (metaData == 4) {
-				world.spawnParticle("smoke", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 5) {
-				world.spawnParticle("smoke", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 2) {
-				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
 			}
 			else if (metaData == 3) {
-				world.spawnParticle("smoke", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("flame", (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(blockPos);
 
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 

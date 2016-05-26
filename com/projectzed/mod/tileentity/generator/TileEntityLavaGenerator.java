@@ -32,11 +32,11 @@ public class TileEntityLavaGenerator extends AbstractTileEntityFluidGenerator {
 	}
 
 	@Override
-	public void updateEntity() {
-		super.updateEntity();
+	public void update() {
+		super.update();
 
 		if (worldObj.getTotalWorldTime() % 20L == 0 && this.blockType != null && this.blockType instanceof BlockLavaGenerator) {
-			((BlockLavaGenerator) this.blockType).updateBlockState(this.canProducePower(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+			((BlockLavaGenerator) this.blockType).updateBlockState(this.canProducePower(), this.worldObj, pos);
 		}
 	}
 

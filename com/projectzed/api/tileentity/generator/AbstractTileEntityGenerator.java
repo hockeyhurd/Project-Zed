@@ -36,7 +36,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 	/**
 	 * Default constructor.
-	 * @param name = name of container. <br>
+	 * @param name name of container. <br>
 	 *            Example: 'solarArray = container.solarArray'.
 	 */
 	public AbstractTileEntityGenerator(String name) {
@@ -44,145 +44,65 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		defineSource();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
 	@Override
 	public abstract int getSizeInventory();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public abstract int getInventoryStackLimit();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected abstract void initContentsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected abstract void initSlotsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public abstract int[] getAccessibleSlotsFromSide(EnumFacing side);
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
 	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#setMaxStorage(int)
-	 */
 	@Override
 	public void setMaxStorage(int max) {
 		this.maxStored = max;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxStorage()
-	 */
 	@Override
 	public int getMaxStorage() {
 		return this.maxStored;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#setEnergyStored(int)
-	 */
 	@Override
 	public void setEnergyStored(int amount) {
 		this.stored = amount;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getEnergyStored()
-	 */
 	@Override
 	public int getEnergyStored() {
 		return this.stored;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
-	 */
 	@Override
 	public int getMaxImportRate() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
-	 */
 	@Override
 	public int getMaxExportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * 8;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
@@ -197,11 +117,6 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
@@ -217,48 +132,23 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
 	public void setLastReceivedDirection(EnumFacing dir) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
-	 */
 	@Override
 	public EnumFacing getLastReceivedDirection() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#defineSource()
-	 */
 	@Override
 	public abstract void defineSource();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#getSource()
-	 */
 	@Override
 	public Source getSource() {
 		return this.source;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#generatePower()
-	 */
 	@Override
 	public void generatePower() {
 		if (worldObj.isRemote) return;
@@ -273,50 +163,25 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		if (this.stored > this.maxStored) this.stored = this.maxStored; // Redundancy check.
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#transferPower()
-	 */
 	@Override
 	public void transferPower() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
-	 */
 	@Override
 	public Vector3<Integer> worldVec() {
 		return VectorHelper.toVector3i(pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#canProducePower()
-	 */
 	@Override
 	public boolean canProducePower() {
 		return this.powerMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.generation.IEnergyGeneration#setPowerMode(boolean)
-	 */
 	@Override
 	public void setPowerMode(boolean state) {
 		this.powerMode = state;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
-	 */
 	@Override
 	public void update() {
 		generatePower();
@@ -346,6 +211,20 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityGenerator(this));
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
 	}
 
 }

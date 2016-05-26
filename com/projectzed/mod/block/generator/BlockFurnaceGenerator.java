@@ -12,16 +12,19 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityFurnaceGenerator;
 import com.projectzed.mod.util.WorldUtils;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 /**
- * 
+ * Block class for furnace generator.
+ *
  * @author hockeyhurd
  * @version Nov 18, 2014
  */
@@ -29,45 +32,30 @@ public class BlockFurnaceGenerator extends AbstractBlockGenerator {
 	
 	public BlockFurnaceGenerator(Material material) {
 		super(material, "furnaceGen");
-		this.setBlockName("furnaceGen");
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "generic_side");
-		this.top = this.base = reg.registerIcon(ProjectZed.assetDir + "generic_base");
-		this.front = reg.registerIcon(ProjectZed.assetDir + this.name + "_front");
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityGenerator getTileEntity() {
 		return new TileEntityFurnaceGenerator();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#onBlockActivated(net.minecraft.world.World, int, int, int, net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand,
+			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote) return true;
 
 		else {
-			TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
-			if (te != null) FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityFurnaceGenerator.class), world, x, y, z);
+			TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(blockPos);
+			if (te != null) FMLNetworkHandler
+					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityFurnaceGenerator.class),
+							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockGenerator#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(x, y, z);
+	@Override
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityFurnaceGenerator te = (TileEntityFurnaceGenerator) world.getTileEntity(blockPos);
 		
 		WorldUtils.dropItemsFromContainerOnBreak(te);
 		

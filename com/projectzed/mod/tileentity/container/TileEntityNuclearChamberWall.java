@@ -6,13 +6,13 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.tileentity.IMultiBlockable;
 import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockNuclearChamberWall;
 import com.projectzed.mod.util.WorldUtils;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class TileEntityNuclearChamberWall extends AbstractTileEntityNuclearCompo
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#getBlock()
 	 */
 	@Override
-	public Block getBlock() {
+	public AbstractHCoreBlock getBlock() {
 		return ProjectZed.nuclearChamberWall;
 	}
 
