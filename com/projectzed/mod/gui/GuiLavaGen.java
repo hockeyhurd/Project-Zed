@@ -12,10 +12,10 @@ import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.container.ContainerGenerator;
 import com.projectzed.mod.gui.component.FluidLabel;
 import com.projectzed.mod.tileentity.generator.TileEntityLavaGenerator;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui class for TileEntityLavaGenerator.

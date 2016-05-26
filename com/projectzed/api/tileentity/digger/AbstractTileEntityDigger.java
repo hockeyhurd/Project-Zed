@@ -70,6 +70,20 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		initBlackList();
 	}
 
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
 	/**
 	 * @return quarry rectanlge.
 	 */
@@ -176,28 +190,16 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneType()
-	 */
 	@Override
 	public EnumRedstoneType getRedstoneType() {
 		return redstoneType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#setRedstoneType(com.projectzed.api.util.EnumRedstoneType)
-	 */
 	@Override
 	public void setRedstoneType(EnumRedstoneType type) {
 		this.redstoneType = type;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#getRedstoneSignal()
-	 */
 	@Override
 	public int getRedstoneSignal() {
 		int max = Integer.MIN_VALUE;
@@ -209,29 +211,17 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return max;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.util.IRedstoneComponent#isActiveFromRedstoneSignal()
-	 */
 	@Override
 	public boolean isActiveFromRedstoneSignal() {
 		return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
 				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
-	 */
 	@Override
 	public EnumFrameType getType() {
 		return EnumFrameType.ITEM;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#setSideValve(net.minecraftforge.common.util.ForgeDirection, byte)
-	 */
 	@Override
 	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
@@ -240,10 +230,6 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		markDirty();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#setSideValveAndRotate(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
 	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
@@ -252,19 +238,11 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		markDirty();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getSideValve(net.minecraftforge.common.util.ForgeDirection)
-	 */
 	@Override
 	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getSideValve(int)
-	 */
 	@Override
 	public byte getSideValve(int dir) {
 		return openSides[dir];
@@ -322,64 +300,36 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return component.effectOnDiggers(this, true) && component.maxSize() >= stack.stackSize;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
-	 */
 	@Override
 	public byte[] getSidedArray() {
 		return openSides;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.machine.IEnergyMachine#setPowerMode(boolean)
-	 */
 	@Override
 	public void setPowerMode(boolean val) {
 		this.powerMode = val;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.machine.IEnergyMachine#isPoweredOn()
-	 */
 	@Override
 	public boolean isPoweredOn() {
 		return this.powerMode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.machine.IEnergyMachine#setEnergyBurnRate(int)
-	 */
 	@Override
 	public void setEnergyBurnRate(int val) {
 		this.energyBurnRate = val;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.machine.IEnergyMachine#getEnergyBurnRate()
-	 */
 	@Override
 	public int getEnergyBurnRate() {
 		return energyBurnRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.machine.IEnergyMachine#burnEnergy()
-	 */
 	@Override
 	public void burnEnergy() {
 		if (isPoweredOn() && currentTickTime == 0 && storedPower - energyBurnRate >= 0) storedPower -= energyBurnRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return slots != null ? slots.length : 0;
@@ -392,93 +342,49 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#initContentsArray()
-	 */
 	@Override
 	protected abstract void initContentsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return slot >= slots.length - getSizeUpgradeSlots() && slot < slots.length &&isItemValidForSlot(slot, stack);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
-		return slot >= 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side] == 1;
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
+		return slot >= 0 && slot < slots.length - getSizeUpgradeSlots() && openSides[side.ordinal()] == 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getMaxImportRate()
-	 */
 	@Override
 	public int getMaxImportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * Reference.Constants.TIER3_ENERGY_PIPE_MULTIPLIER;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getMaxExportRate()
-	 */
 	@Override
 	public int getMaxExportRate() {
 		return Reference.Constants.BASE_PIPE_TRANSFER_RATE * Reference.Constants.TIER3_ENERGY_PIPE_MULTIPLIER;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#requestPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
@@ -494,17 +400,9 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		else return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#importContents()
-	 */
 	@Override
 	protected abstract void importContents();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#exportContents()
-	 */
 	@Override
 	protected abstract void exportContents();
 	
@@ -569,7 +467,7 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 				if (openSides[dir.ordinal()] == 1) {
 					for (int thisSlot = 0; thisSlot < this.getSizeInventory() - this.getSizeUpgradeSlots(); thisSlot++) {
 						out = this.getStackInSlot(thisSlot);
-						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir.ordinal())) continue;
+						if (out == null || out.stackSize == 0 || !this.canExtractItem(thisSlot, out, dir)) continue;
 						
 						int amount = out.stackSize;
 						

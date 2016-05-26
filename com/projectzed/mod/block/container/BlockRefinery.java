@@ -9,18 +9,20 @@
 
 package com.projectzed.mod.block.container;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -36,34 +38,8 @@ public class BlockRefinery extends AbstractBlockContainer {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderAsNormalBlock() {
+	public boolean isVisuallyOpaque() {
 		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean canRenderInPass(int pass) {
-		ClientProxy.renderPass = pass;
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderBlockPass() {
-		return 1;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.refinery;
 	}
 
 	@Override
@@ -72,25 +48,34 @@ public class BlockRefinery extends AbstractBlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
 		return false;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase e, ItemStack stack) {
-		super.onBlockPlacedBy(world, x, y, z, e, stack);
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, state, e, stack);
 
-		int dir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		// int dir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-		if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+
+		final EnumFacing dir = e.getHorizontalFacing();
+		final TileEntity tileEntity = world.getTileEntity(pos);
+
+		if (tileEntity instanceof AbstractTileEntityEnergyContainer) {
+			((AbstractTileEntityEnergyContainer) tileEntity).setFrontFacing(dir);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
+		}
 	}
 
 	@Override
-	protected void doBreakBlock(World world, int x, int y, int z) {
-		TileEntityRefinery te = (TileEntityRefinery) world.getTileEntity(x, y, z);
+	protected void doBreakBlock(World world, BlockPos blockPos) {
+		TileEntityRefinery te = (TileEntityRefinery) world.getTileEntity(blockPos);
 		ProjectZed.logHelper.info("Stored McU:", te.getEnergyStored());
 		ProjectZed.logHelper.info("Stored Oil (mb):", te.getTank(TileEntityRefinery.TankID.INPUT).getFluidAmount());
 		ProjectZed.logHelper.info("Stored Petrol (mb):", te.getTank(TileEntityRefinery.TankID.OUTPUT).getFluidAmount());

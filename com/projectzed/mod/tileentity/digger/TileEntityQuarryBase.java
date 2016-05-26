@@ -9,6 +9,7 @@ package com.projectzed.mod.tileentity.digger;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.digger.AbstractTileEntityDigger;
@@ -18,8 +19,10 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.block.BlockQuarryMarker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +51,6 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		this.itemFilterType = EnumFilterType.WHITELIST;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 		this.slots = new ItemStack[2 * 9 + filterMaxSize + getSizeUpgradeSlots()];
@@ -63,21 +63,15 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return stack != null && stack.stackSize > 0 && slot >= getSizeInventory() - getSizeUpgradeSlots() && slot < getSizeInventory() && stack
 				.getItem() instanceof IItemUpgradeComponent && canInsertItemUpgrade((IItemUpgradeComponent) stack.getItem(), stack);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
-		if (openSides[side] == 0) return new int[0];
+	public int[] getSlotsForFace(EnumFacing side) {
+		if (openSides[side.ordinal()] == 0) return new int[0];
 
 		int[] ret = new int[getSizeInventory() - getSizeUpgradeSlots() - filterMaxSize];
 
@@ -88,9 +82,6 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		return ret;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#importContents()
-	 */
 	@Override
 	protected void importContents() {
 		if (!worldObj.isRemote) {
@@ -133,9 +124,6 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.digger.AbstractTileEntityDigger#exportContents()
-	 */
 	@Override
 	protected void exportContents() {
 		if (!worldObj.isRemote) {
@@ -151,10 +139,11 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 			}
 		}
 
-		if (quarryRect != null && currentMineVec != null) {
+		// TODO: re-implement particles for 1.9!
+		/*if (quarryRect != null && currentMineVec != null) {
 			worldObj.spawnParticle("smoke", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
 			worldObj.spawnParticle("flame", currentMineVec.x + 0.5d, currentMineVec.y + 0.5d, currentMineVec.z + 0.5d, 0d, 0d, 0d);
-		}
+		}*/
 	}
 	
 	/**
@@ -169,13 +158,14 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 			Block currentBlock;
 			Vector2<Integer>[] markerCons;
 			Vector3<Integer> currentVec = new Vector3<Integer>();
-			for (int i = 2; i < ForgeDirection.VALID_DIRECTIONS.length; i++) {
-				currentVec.x = worldVec().x + ForgeDirection.getOrientation(i).offsetX;
+			for (int i = 2; i < EnumFacing.VALUES.length; i++) {
+				currentVec.x = worldVec().x + EnumFacing.getFront(i).getFrontOffsetX();
 				currentVec.y = worldVec().y;
-				currentVec.z = worldVec().z + ForgeDirection.getOrientation(i).offsetZ;
-				
-				currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
-				
+				currentVec.z = worldVec().z + EnumFacing.getFront(i).getFrontOffsetZ();
+
+				// currentBlock = worldObj.getBlock(currentVec.x, currentVec.y, currentVec.z);
+				currentBlock = BlockUtils.getBlock(worldObj, currentVec).getBlock();
+
 				if (currentBlock != null && currentBlock == ProjectZed.quarryMarker) {
 					markerCons = ((BlockQuarryMarker) currentBlock).getBounds(worldObj, currentVec);
 					if (markerCons != null && markerCons.length == 4) {
@@ -194,24 +184,26 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 		else {
 			if (currentTickTime > 0) currentTickTime--;
 			else {
-				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, this.yCoord - 1, quarryRect.min.y);
+				if (currentMineVec == null) currentMineVec = new Vector3<Integer>(quarryRect.min.x, pos.getY() - 1, quarryRect.min.y);
 
-				if (worldObj.getTileEntity(currentMineVec.x, currentMineVec.y, currentMineVec.z) != null) {
+				if (worldObj.getTileEntity(VectorHelper.toBlockPos(currentMineVec)) != null) {
 					incrementMineVec();
 					return;
 				}
-				
-				Block currentBlock = BlockUtils.getBlock(worldObj, currentMineVec);
+
+				final BlockPos currentMinePos = VectorHelper.toBlockPos(currentMineVec);
+				IBlockState currentBlock = BlockUtils.getBlock(worldObj, currentMineVec);
 				int metaData = BlockUtils.getBlockMetadata(worldObj, currentMineVec);
 
 				// ProjectZed.logHelper.info("current mat:", currentBlock.getMaterial(), blackListContains(currentBlock.getMaterial(), true));
-				if (currentBlock != ProjectZed.quarryMarker && !blackListContains(currentBlock.getMaterial(), true) && currentBlock.getBlockHardness(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z) > 0f) {
+				if (currentBlock != ProjectZed.quarryMarker && !blackListContains(currentBlock.getMaterial(), true) &&
+						currentBlock.getBlockHardness(worldObj, currentMinePos) > 0f) {
 					List<ItemStack> dropsList;
 
-					if (!isSilkTouch) dropsList = currentBlock.getDrops(worldObj, currentMineVec.x, currentMineVec.y, currentMineVec.z, metaData, 0);
+					if (!isSilkTouch) dropsList = currentBlock.getBlock().getDrops(worldObj, currentMinePos, currentBlock, 0);
 					else {
 						dropsList = new ArrayList<ItemStack>(1);
-						dropsList.add(new ItemStack(currentBlock, 1));
+						dropsList.add(new ItemStack(currentBlock.getBlock(), 1));
 					}
 
 					if (dropsList != null && !dropsList.isEmpty()) {

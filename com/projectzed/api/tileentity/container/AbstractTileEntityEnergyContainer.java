@@ -10,6 +10,7 @@ import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IWrenchable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +28,8 @@ import net.minecraft.world.World;
  */
 public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEntityContainer implements IEnergyContainer, IWrenchable {
 
+	protected EnumFacing frontFacing;
+
 	protected int maxPowerStorage = 100000;
 	protected int storedPower;
 	protected boolean powerMode;
@@ -41,107 +44,57 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		super(name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
+	@Override
 	public abstract int getSizeInventory();
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
+	@Override
 	public abstract int getInventoryStackLimit();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
+	@Override
 	protected abstract void initContentsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
+	@Override
 	protected abstract void initSlotsArray();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
+	@Override
 	public abstract boolean isItemValidForSlot(int slot, ItemStack stack);
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
-	public abstract int[] getAccessibleSlotsFromSide(int side);
+	@Override
+	public abstract int[] getSlotsForFace(EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public abstract boolean canInsertItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canInsertItem(int slot, ItemStack stack, EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
-	public abstract boolean canExtractItem(int slot, ItemStack stack, int side);
+	@Override
+	public abstract boolean canExtractItem(int slot, ItemStack stack, EnumFacing side);
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#setMaxStorage(int)
-	 */
+	@Override
 	public void setMaxStorage(int max) {
 		this.maxPowerStorage = max;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxStorage()
-	 */
+	@Override
 	public int getMaxStorage() {
 		return this.maxPowerStorage;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#setEnergyStored(int)
-	 */
+	@Override
 	public void setEnergyStored(int amount) {
 		this.storedPower = amount;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#getEnergyStored()
-	 */
+	@Override
 	public int getEnergyStored() {
 		return this.storedPower;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxImportRate()
-	 */
+
+	@Override
 	public abstract int getMaxImportRate();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#getMaxTransferRate()
-	 */
+
+	@Override
 	public abstract int getMaxExportRate();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#requestPower(com.projectzed.api.storage.IEnergyContainer, int)
-	 */
+
+	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
 			if (this.storedPower - amount >= 0) this.storedPower -= amount;
@@ -155,11 +108,8 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 
 		return 0;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
+
+	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
 			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
@@ -173,20 +123,12 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 
 		return 0;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#setLastReceivedDirection(net.minecraftforge.common.util.ForgeDirection)
-	 */
+
 	@Override
 	public void setLastReceivedDirection(EnumFacing dir) {
 		this.lastReceivedDir = dir;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.energy.storage.IEnergyContainer#getLastReceivedDirection()
-	 */
 	@Override
 	public EnumFacing getLastReceivedDirection() {
 		return this.lastReceivedDir;
@@ -238,19 +180,11 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		this.powerMode = powered;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.storage.IEnergyContainer#worldVec()
-	 */
 	@Override
 	public Vector3<Integer> worldVec() {
 		return new Vector3<Integer>(pos.getX(), pos.getY(), pos.getZ());
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#updateEntity()
-	 */
 	@Override
 	public void update() {
 		transferPower();
@@ -278,47 +212,35 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
 	@Override
 	public abstract Packet getDescriptionPacket();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#getRotationMatrix()
-	 */
 	@Override
-	public byte getRotatedMeta(byte facingDir, byte currentMeta) {
-		if (facingDir == 0 ^ facingDir == 1) return currentMeta;
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		byte ret = (byte) EnumFacing.getFront(facingDir).getOpposite().ordinal();
-
-		return ret == currentMeta ? facingDir : ret;
+		return (frontFacing = frontFacing.rotateY());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canRotateTE()
-	 */
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing face) {
+		this.frontFacing = face;
+	}
+
 	@Override
 	public boolean canRotateTE() {
 		return true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#onInteract(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IWrenchable#canSaveDataOnPickup()
-	 */
 	@Override
 	public boolean canSaveDataOnPickup() {
 		return true;

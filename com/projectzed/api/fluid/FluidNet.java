@@ -6,20 +6,21 @@
 */
 package com.projectzed.api.fluid;
 
-import java.util.HashMap;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
-
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.source.IColorComponent;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
+
+import java.util.HashMap;
 
 /**
  * Class containing code for how fluid is to transfer from
@@ -43,26 +44,28 @@ public class FluidNet {
 	 *
 	 * @param sourceCont container requesting fluid.
 	 * @param world world object as reference.
-	 * @param x x-pos as reference.
-	 * @param y y-pos as reference.
-	 * @param z z-pos as reference.
+	 * @param thisPos Block position.
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
-	public static void importFluidFromNeighbors(IFluidContainer sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+	public static void importFluidFromNeighbors(IFluidContainer sourceCont, World world, BlockPos thisPos, EnumFacing lastDir) {
 		if (sourceCont == null || world == null || world.isRemote) return;
 
 		boolean colorDep = sourceCont instanceof IColorComponent;
 		boolean sideDep = sourceCont instanceof IModularFrame;
-		boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+		boolean[] sides = new boolean[EnumFacing.VALUES.length];
 		int counter = 0;
 		int maxTransfer = sourceCont instanceof TileEntityLiquiductBase ? sourceCont.getMaxFluidImportRate() : 1000;
 
-		HashMap<ForgeDirection, Integer> map = new HashMap<ForgeDirection, Integer>();
+		HashMap<EnumFacing, Integer> map = new HashMap<EnumFacing, Integer>();
 
 		// Check surrounding blocks.
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IFluidHandler && dir != lastDir) {
-				IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final BlockPos blockPos = BlockUtils.createBlockPos(thisPos.getX() + dir.getFrontOffsetX(), thisPos.getY() + dir.getFrontOffsetY(),
+					thisPos.getZ() + dir.getFrontOffsetZ());
+			final TileEntity tileEntity = world.getTileEntity(blockPos);
+
+			if (tileEntity instanceof IFluidHandler && dir != lastDir) {
+				IFluidHandler cont = (IFluidHandler) tileEntity;
 				if (colorDep && cont instanceof IColorComponent && ((IColorComponent) cont).getColor() != ((IColorComponent) sourceCont).getColor()) continue;
 				if (cont instanceof IModularFrame && ((IModularFrame) cont).getType() == EnumFrameType.FLUID && ((IModularFrame) cont).getSideValve(
 						dir.getOpposite()) != 1) continue;
@@ -95,8 +98,11 @@ public class FluidNet {
 
 		// Check this block relative to neighbors.
 		if (!map.isEmpty()) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				// if (sourceCont.getTankInfo(dir.getOpposite())[0] != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid != null && sourceCont.getTankInfo(dir.getOpposite())[0].fluid.amount == sourceCont.getTankInfo(dir.getOpposite())[0].capacity) break;
+				final BlockPos blockPos = BlockUtils.createBlockPos(thisPos.getX() + dir.getFrontOffsetX(), thisPos.getY() + dir.getFrontOffsetY(),
+						thisPos.getZ() + dir.getFrontOffsetZ());
+				final TileEntity tileEntity = world.getTileEntity(blockPos);
 
 				if (sides[dir.ordinal()] && dir != lastDir && map.containsKey(dir)) {
 
@@ -106,7 +112,7 @@ public class FluidNet {
 						continue;
 					}*/
 					
-					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+					IFluidHandler cont = (IFluidHandler) tileEntity;
 					
 					int value = map.get(dir);
 
@@ -155,25 +161,27 @@ public class FluidNet {
 
 	}
 
-	private static boolean hasDestination(ForgeDirection vecDir, World world, int x, int y, int z) {
-		ForgeDirection[] blackList = new ForgeDirection[] {
+	private static boolean hasDestination(EnumFacing vecDir, World world, BlockPos blockPos) {
+		EnumFacing[] blackList = new EnumFacing[] {
 			vecDir/*, vecDir.getOpposite()*/
 		};
 		
-		if (world.getTileEntity(x, y, z) == null) return false;
+		if (world.getTileEntity(blockPos) == null) return false;
 		
 		ProjectZed.logHelper.info("vec dir:", vecDir.name());
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+		for (EnumFacing dir : EnumFacing.VALUES) {
 			if (dir == blackList[0] /*|| dir == blackList[1]*/) continue;
-			
-			TileEntity te = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+
+			final BlockPos pos = BlockUtils.createBlockPos(blockPos.getX() + dir.getFrontOffsetX(), blockPos.getY() + dir.getFrontOffsetY(),
+					blockPos.getZ() + dir.getFrontOffsetZ());
+			final TileEntity te = world.getTileEntity(pos);
 			if (te != null && te instanceof IFluidHandler) {
-				if (te instanceof IFluidContainer && ((IFluidContainer) te).isPipe()) return hasDestination(dir, world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+				if (te instanceof IFluidContainer && ((IFluidContainer) te).isPipe()) return hasDestination(dir, world, pos);
 				return true;
 			}
 		}
 		
-		// return hasDestination(vecDir, world, x + vecDir.offsetX, y + vecDir.offsetY, z + vecDir.offsetZ);
+		// return hasDestination(vecDir, world, x + vecDir.getFrontOffsetX(), y + vecDir.getFrontOffsetY(), z + vecDir.getFrontOffsetZ());
 		return false;
 	}
 	
@@ -183,25 +191,26 @@ public class FluidNet {
 	 *
 	 * @param sourceCont container requesting fluid.
 	 * @param world world object as reference.
-	 * @param x x-pos as reference.
-	 * @param y y-pos as reference.
-	 * @param z z-pos as reference.
+	 * @param blockPos BlockPosition.
 	 */
-	public static void exportFluidToNeighbors(IFluidContainer sourceCont, World world, int x, int y, int z) {
+	public static void exportFluidToNeighbors(IFluidContainer sourceCont, World world, BlockPos blockPos) {
 		if (world == null || world.isRemote || sourceCont == null || sourceCont.getTank().getFluid() == null) return;
 
 		boolean colorDep = sourceCont instanceof IColorComponent;
 		boolean sideDep = sourceCont instanceof IModularFrame;
-		boolean[] sides = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
+		boolean[] sides = new boolean[EnumFacing.VALUES.length];
 		int counter = 0;
 		int maxTransfer = sourceCont instanceof IFluidContainer ? sourceCont.getMaxFluidExportRate() : 1000;
 
-		HashMap<ForgeDirection, Integer> map = new HashMap<ForgeDirection, Integer>();
+		HashMap<EnumFacing, Integer> map = new HashMap<EnumFacing, Integer>();
 
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-			if (!(world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ) instanceof IFluidHandler)) continue;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final BlockPos pos = BlockUtils.createBlockPos(blockPos.getX()+ dir.getFrontOffsetX(), blockPos.getY() + dir.getFrontOffsetY(),
+					blockPos.getZ() + dir.getFrontOffsetZ());
+			final TileEntity tileEntity = world.getTileEntity(pos);
+			if (!(tileEntity instanceof IFluidHandler)) continue;
 			
-			IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+			IFluidHandler cont = (IFluidHandler) tileEntity;
 			if (cont == null) continue;
 			// if (cont instanceof IFluidContainer && ((IFluidContainer) cont).isPipe()) continue;
 			if (cont instanceof IFluidContainer && !sourceCont.isPipe() && !((IFluidContainer) cont).isPipe()) continue;
@@ -226,9 +235,13 @@ public class FluidNet {
 		}
 
 		if (!map.isEmpty()) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
+				final BlockPos pos = BlockUtils.createBlockPos(blockPos.getX()+ dir.getFrontOffsetX(), blockPos.getY() + dir.getFrontOffsetY(),
+						blockPos.getZ() + dir.getFrontOffsetZ());
+				final TileEntity tileEntity = world.getTileEntity(pos);
+
 				if (sides[dir.ordinal()] && map.containsKey(dir)) {
-					IFluidHandler cont = (IFluidHandler) world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+					IFluidHandler cont = (IFluidHandler) tileEntity;
 					FluidStack contStack = null;
 
 					if (map.get(dir) > 0) {
@@ -273,15 +286,15 @@ public class FluidNet {
 	 *
 	 * @param sourceCont container requesting fluid.
 	 * @param world world object as reference.
-	 * @param x x-pos as reference.
-	 * @param y y-pos as reference.
-	 * @param z z-pos as reference.
+	 * @param blockPos BlockPosition.
 	 * @param lastDir last direction received from (prevent continuous looping).
 	 */
-	public static void tryClearDirectionalTraffic(IFluidHandler sourceCont, World world, int x, int y, int z, ForgeDirection lastDir) {
+	public static void tryClearDirectionalTraffic(IFluidHandler sourceCont, World world, BlockPos blockPos, EnumFacing lastDir) {
 		boolean shouldSend = false;
 
-		TileEntity te = world.getTileEntity(x + lastDir.offsetX, y + lastDir.offsetY, z + lastDir.offsetZ);
+		final BlockPos pos = BlockUtils.createBlockPos(blockPos.getX() + lastDir.getFrontOffsetX(), blockPos.getY() + lastDir.getFrontOffsetY(),
+				blockPos.getZ() + lastDir.getFrontOffsetZ());
+		final TileEntity te = world.getTileEntity(pos);
 		IFluidHandler cont = null;
 		if (te != null && te instanceof IFluidContainer) cont = (IFluidContainer) te;
 		if (cont == null || sourceCont.getTankInfo(lastDir)[0] == null || sourceCont.getTankInfo(lastDir)[0].fluid == null || sourceCont.getTankInfo(lastDir)[0].fluid.amount == 0) {
@@ -308,7 +321,7 @@ public class FluidNet {
 	 * @param sourceCont container to send data to.
 	 */
 	public static void clearDirectionalTraffic(IFluidContainer sourceCont) {
-		sourceCont.setLastReceivedDirection(ForgeDirection.UNKNOWN);
+		sourceCont.setLastReceivedDirection(null);
 	}
 
 	/**
@@ -322,7 +335,7 @@ public class FluidNet {
 		boolean flag = false;
 
 		if (cont != null) {
-			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			for (EnumFacing dir : EnumFacing.VALUES) {
 				if (cont.getTankInfo(dir) != null && cont.getTankInfo(dir).length > 0) {
 					for (int i = 0; i < cont.getTankInfo(dir).length; i++) {
 						if (cont.getTankInfo(dir)[i] != null && cont.getTankInfo(dir)[i].fluid != null && cont.getTankInfo(dir)[i].fluid.amount > 0) {

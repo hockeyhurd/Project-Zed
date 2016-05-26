@@ -6,20 +6,16 @@
 */
 package com.projectzed.mod.block;
 
-import java.util.Random;
-
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.tileentity.AbstractTile;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 
 /**
  * Block class for wickedClearGlass.
@@ -27,95 +23,43 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Mar 26, 2015
  */
-public class BlockWickedClearGlass extends BlockContainer {
+public class BlockWickedClearGlass extends AbstractHCoreBlockContainer {
 
 	public BlockWickedClearGlass() {
-		super(Material.glass);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setBlockName("wickedClearGlass");
-		this.setHardness(0.75f);
+		super(Material.glass, ProjectZed.modCreativeTab, ProjectZed.assetDir, "wickedClearGlass");
 		this.setResistance(2000.0f);
-		this.setStepSound(soundTypeGlass);
+		this.setStepSound(SoundType.GLASS);
 		this.setLightOpacity(0);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockBreakable#registerBlockIcons(net.minecraft.client.renderer.texture.IIconRegister)
-	 */
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister reg) {
-		blockIcon = reg.registerIcon(ProjectZed.assetDir + "wickedClearGlassItem");
+	public Block getBlock() {
+		return this;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#renderAsNormalBlock()
-	 */
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean renderAsNormalBlock() {
+	public float getBlockHardness() {
+		return 0.75f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
+	}
+
+	@Override
+	public AbstractTile getTileEntity() {
+		return new TileEntityWickedClearGlass();
+	}
+
+	@Override
+	public boolean isVisuallyOpaque() {
 		return false;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockBreakable#isOpaqueCube()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube() {
-		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getRenderType()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.wickedClearGlass;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#canRenderInPass(int)
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean canRenderInPass(int pass) {
-		ClientProxy.renderPass = pass;
-		return true;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#getRenderBlockPass()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderBlockPass() {
-		return 1;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockGlass#quantityDropped(java.util.Random)
-	 */
+
 	@Override
 	public int quantityDropped(Random random) {
 		return 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
-		return new TileEntityWickedClearGlass();
-	}
-	
 }

@@ -15,12 +15,12 @@ import com.projectzed.mod.gui.component.GuiConfigButton.EnumConfigType;
 import com.projectzed.mod.gui.component.GuiRedstoneButton;
 import com.projectzed.mod.gui.component.IGuiButton;
 import com.projectzed.mod.gui.component.PowerLabel;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.LinkedList;
@@ -44,9 +44,6 @@ public class GuiQuarry extends GuiDigger {
 		this.ySize = 198;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.mod.gui.GuiDigger#getResourceTexture()
-	 */
 	@Override
 	protected ResourceLocation getResourceTexture() {
 		return new ResourceLocation("projectzed", "textures/gui/GuiQuarry.png");
@@ -100,7 +97,7 @@ public class GuiQuarry extends GuiDigger {
 		
 		waila.finder(false);
 		
-		getLayoutFromFacingDirection(getFacingDirection(waila.getSideHit()), counter, guiLeft - 72, guiTop + 38);
+		getLayoutFromFacingDirection(waila.getSideHit(), counter, guiLeft - 72, guiTop + 38);
 		
 		IGuiButton current;
 		
@@ -108,7 +105,8 @@ public class GuiQuarry extends GuiDigger {
 			current = buttons.get(i);
 			if (!(current instanceof GuiConfigButton)) ((GuiButton) current).visible = false;
 			
-			if (current instanceof GuiButton) this.buttonList.add(current);
+			// if (current instanceof GuiButton) this.buttonList.add(current);
+			this.buttonList.add((GuiButton) current);
 		}
 		
 	}
@@ -126,7 +124,7 @@ public class GuiQuarry extends GuiDigger {
 		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 32, 0, 170 + 32, (int) progress, 17);
 
-		upgradePanel.renderContainer(f, x, y);
+		upgradePanel.renderContainer(this, f, x, y);
 	}
 
 	@Override

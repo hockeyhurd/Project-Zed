@@ -12,11 +12,11 @@ package com.projectzed.mod.gui;
 
 import com.projectzed.mod.container.ContainerPlanter;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialPlanter;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -60,7 +60,7 @@ public class GuiPlanter extends GuiMachine {
 				this.drawTexturedModalRect(guiLeft + 78, guiTop + 21, 176, 14, i1 + 1, 16);
 			}*/
 
-			upgradePanel.renderContainer(f, x, y);
+			upgradePanel.renderContainer(this, f, x, y);
 		}
 	}
 

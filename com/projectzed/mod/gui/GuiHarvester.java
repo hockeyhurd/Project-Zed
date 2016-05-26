@@ -12,11 +12,11 @@ package com.projectzed.mod.gui;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.container.ContainerHarvester;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -52,7 +52,7 @@ public class GuiHarvester extends GuiMachine {
 		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 0x30, 0, 170 + 0x30, (int) progress, 17);
 
-		if (this.te.getSizeInventory() > 1) upgradePanel.renderContainer(f, x, y);
+		if (this.te.getSizeInventory() > 1) upgradePanel.renderContainer(this, f, x, y);
 	}
 
 	@Override

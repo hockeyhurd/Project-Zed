@@ -6,9 +6,12 @@
 */
 package com.projectzed.mod.tileentity;
 
+import com.hockeyhurd.hcorelib.api.tileentity.AbstractTileContainer;
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import net.minecraft.item.ItemStack;
-
-import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * TileEntity class for wickedClearGlass.
@@ -16,89 +19,82 @@ import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
  * @author hockeyhurd
  * @version Mar 26, 2015
  */
-public class TileEntityWickedClearGlass extends AbstractTileEntityGeneric {
+public class TileEntityWickedClearGlass extends AbstractTileContainer {
 
 	public TileEntityWickedClearGlass() {
 		setCustomName("wickedClearGlass");
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getSizeInventory()
-	 */
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public String getName() {
+		return customName;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return StringUtils.nullCheckString(customName);
+	}
+
+	@Override
+	public ITextComponent getDisplayName() {
+		return new TextComponentTranslation(customName);
+	}
+
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.minecraft.inventory.IInventory#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#setCustomName(java.lang.String)
-	 */
 	@Override
 	public void setCustomName(String name) {
 		this.customName = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#canUpdate()
-	 */
-	@Override
-	public boolean canUpdate() {
-		return false;
-	}
-
 }

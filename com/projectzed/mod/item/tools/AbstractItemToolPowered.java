@@ -11,16 +11,13 @@ import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.util.Reference.Constants;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 

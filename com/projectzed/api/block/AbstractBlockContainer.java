@@ -70,7 +70,7 @@ public abstract class AbstractBlockContainer extends AbstractHCoreBlockContainer
 	}
 	
 	@Override
-	public abstract boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem,
+	public abstract boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem,
 			EnumFacing side, float hitX, float hitY, float hitZ);
 	
 	@Override
