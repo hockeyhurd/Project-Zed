@@ -20,6 +20,8 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -74,55 +76,69 @@ public class DrawBlockSelectionHandler {
 			double xp, yp, zp;
 
 			IBlockState currentBlock;
+			BlockPos blockPos;
 
 			for (int i = -radii; i <= radii; i++) {
 				for (int j = -radii; j <= radii; j++) {
 					// currentBlock = player.worldObj.getBlock(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ);
 
 					if (rayTrace.sideHit == EnumFacing.DOWN || rayTrace.sideHit == EnumFacing.UP) {
-						currentBlock = BlockUtils.getBlock(player.worldObj, rayTrace.getBlockPos().getX() + i,
+						blockPos = BlockUtils.createBlockPos(rayTrace.getBlockPos().getX() + i,
 								rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
+						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
 						if (currentBlock.getBlock().getMaterial(currentBlock) == Material.air) continue;
 
-						currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
+						// currentBlock.getBlock().setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
+						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);
 
 						xp = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
 						yp = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
 						zp = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 
-						RenderGlobal.drawOutlinedBoundingBox(
-								currentBlock.getSelectedBoundingBoxFromPool(player.worldObj, rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j)
-										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);
-						}
+						// RenderGlobal.drawOutlinedBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+						RenderGlobal.drawSelectionBoundingBox(
+								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+					}
 
-					else if (rayTrace.sideHit == 2 || rayTrace.sideHit == 3) {
-						currentBlock = player.worldObj.getBlock(rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
+					else if (rayTrace.sideHit == EnumFacing.NORTH || rayTrace.sideHit == EnumFacing.SOUTH) {
+						blockPos = BlockUtils
+								.createBlockPos(rayTrace.getBlockPos().getX() + i, rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
+						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
 						if (currentBlock.getMaterial() == Material.air) continue;
 
-						currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY + j, rayTrace.blockZ);
+						// currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY + j, rayTrace.blockZ);
+						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);
 
 						xp = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
 						yp = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
 						zp = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 
-						RenderGlobal.drawOutlinedBoundingBox(
+						/*RenderGlobal.drawOutlinedBoundingBox(
 								currentBlock.getSelectedBoundingBoxFromPool(player.worldObj, rayTrace.blockX + i, rayTrace.blockY + j, rayTrace.blockZ)
-										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);
-						}
+										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
+						RenderGlobal.drawSelectionBoundingBox(
+								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+					}
 
 					else {
-						currentBlock = player.worldObj.getBlock(rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i);
+						blockPos = BlockUtils
+								.createBlockPos(rayTrace.getBlockPos().getX(), rayTrace.getBlockPos().getY() + j, rayTrace.getBlockPos().getZ() + i);
+						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
 						if (currentBlock.getMaterial() == Material.air) continue;
 
-						currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i);
+						// currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i);
+						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);
 
 						xp = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
 						yp = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
 						zp = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 
-						RenderGlobal.drawOutlinedBoundingBox(
+						/*RenderGlobal.drawOutlinedBoundingBox(
 								currentBlock.getSelectedBoundingBoxFromPool(player.worldObj, rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i)
-										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);
+										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
+
+						RenderGlobal.drawSelectionBoundingBox(
+								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
 				}
 			}

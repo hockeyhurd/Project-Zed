@@ -7,6 +7,12 @@
 package com.projectzed.api.util;
 
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class containing code for creating a sound for sound handler.
@@ -17,7 +23,11 @@ import com.projectzed.mod.ProjectZed;
  * @version Dec 30, 2014
  */
 public final class Sound {
-	
+
+	// Registry code:
+	private static final List<Sound> registryList = new LinkedList<Sound>();
+	private static boolean isRegistered = false;
+
 	/** Name of file (NOTE: Already includes assetDir) */
 	public final String NAME;
 	
@@ -30,20 +40,33 @@ public final class Sound {
 	/** Approximate length of sound in whole seconds (best to round up). */
 	public final int LENGTH;
 
+	/**
+	 * The registered sound event.
+	 */
+	public final SoundEvent SOUND_EVENT;
+
+	/**
+	 * ResourceLocation contained
+	 */
+	public final ResourceLocation RESOURCE;
+
 	public static final Sound METAL_PRESS = new Sound("industrialMetalPressSound", 1.0f, 1.0f, 2);
 	public static final Sound ENERGIZER = new Sound("industrialEnergizerSound", 1.0f, 1.0f, 2);
-	
+
 	/**
-	 * @param name = name of sound.
-	 * @param volume = volume of sound.
-	 * @param pitch = pitch of sound.
-	 * @param length = length of sound.
+	 * @param name name of sound.
+	 * @param volume volume of sound.
+	 * @param pitch pitch of sound.
+	 * @param length length of sound.
 	 */
 	private Sound(String name, float volume, float pitch, int length) {
 		this.NAME = ProjectZed.assetDir + name;
 		this.VOLUME = volume;
 		this.PITCH = pitch;
 		this.LENGTH = length;
+
+		this.RESOURCE = new ResourceLocation(ProjectZed.assetDir, name);
+		this.SOUND_EVENT = new SoundEvent(RESOURCE);
 	}
 	
 	/**
@@ -52,18 +75,45 @@ public final class Sound {
 	 * <br>Although not recommended, you could create sound object in TileEntity class
 	 * <br>should the class extend AbstractTileEntityMachine for instance.
 	 * @see com.projectzed.mod.handler.SoundHandler
-	 * 
-	 * @param assetDir = usually "<your modid (in lowercase)>:"; ex. ' "projectzed:"; '
-	 * @param name = name of sound.
-	 * @param volume = volume of sound.
-	 * @param pitch = pitch of sound.
-	 * @param length = length of sound.
+	 *
+	 * @param assetDir usually "<your modid (in lowercase)>:"; ex. ' "projectzed:"; '
+	 * @param name name of sound.
+	 * @param volume volume of sound.
+	 * @param pitch pitch of sound.
+	 * @param length length of sound.
 	 */
-	public Sound(String assetDir, String name, float volume, float pitch, int length) {
+	private Sound(String assetDir, String name, float volume, float pitch, int length) {
 		this.NAME = assetDir + name;
 		this.VOLUME = volume;
 		this.PITCH = pitch;
 		this.LENGTH = length;
+
+		this.RESOURCE = new ResourceLocation(ProjectZed.assetDir, name);
+		this.SOUND_EVENT = new SoundEvent(RESOURCE);
+	}
+
+	/**
+	 * Handles registering of new sound.
+	 *
+	 * @param soundEvent ResourceLocation.
+	 */
+	private static void registerSound(SoundEvent soundEvent) {
+		GameRegistry.register(soundEvent, soundEvent.getRegistryName());
+	}
+
+	/**
+	 * Handles initialization of sounds.
+	 */
+	public static void init() {
+		if (isRegistered) return;
+		isRegistered = true;
+
+		registryList.add(METAL_PRESS);
+		registryList.add(ENERGIZER);
+
+		for (Sound sound : registryList) {
+			GameRegistry.register(sound.SOUND_EVENT, sound.RESOURCE);
+		}
 	}
 	
 }

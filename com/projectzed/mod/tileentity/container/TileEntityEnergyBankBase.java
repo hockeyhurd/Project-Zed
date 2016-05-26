@@ -59,11 +59,8 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	public byte getTier() {
 		return this.tier;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getType()
-	 */
+
+	@Override
 	public EnumFrameType getType() {
 		return EnumFrameType.POWER;
 	}
@@ -74,6 +71,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * @param dir direction to set.
 	 * @param value value to set (-1 = import, 0 = neutral or nothing allowed, 1 = export).
 	 */
+	@Override
 	public void setSideValve(EnumFacing dir, byte value) {
 		openSides[dir.ordinal()] = value;
 	}
@@ -82,6 +80,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * Sets the side value after rotating to next value.
 	 * @param dir direction to test.
 	 */
+	@Override
 	public void setSideValveAndRotate(EnumFacing dir) {
 		openSides[dir.ordinal()] = (byte) (openSides[dir.ordinal()] == -1 ? 0 : (openSides[dir.ordinal()] == 0 ? 1 : -1));
 	}
@@ -90,6 +89,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * @param dir direction to test.
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
+	@Override
 	public byte getSideValve(EnumFacing dir) {
 		return openSides[dir.ordinal()];
 	}
@@ -98,121 +98,64 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	 * @param dir = direction to test.
 	 * @return -1 if can input, 0 neutral/nothing, or 1 to export.
 	 */
+	@Override
 	public byte getSideValve(int dir) {
 		return openSides[dir];
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.IModularFrame#getSidedArray()
-	 */
+
+	@Override
 	public byte[] getSidedArray() {
 		return openSides;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getSizeInventory()
-	 */
 	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getInventoryStackLimit()
-	 */
 	@Override
 	public int getInventoryStackLimit() {
 		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initContentsArray()
-	 */
 	@Override
 	protected void initContentsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#initSlotsArray()
-	 */
 	@Override
 	protected void initSlotsArray() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#isItemValidForSlot(int, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getAccessibleSlotsFromSide(int)
-	 */
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) {
+	public int[] getSlotsForFace(EnumFacing side) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canInsertItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#canExtractItem(int, net.minecraft.item.ItemStack, int)
-	 */
 	@Override
-	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing side) {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxImportRate()
-	 */
 	@Override
 	public int getMaxImportRate() {
 		return this.importRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getMaxExportRate()
-	 */
 	@Override
 	public int getMaxExportRate() {
 		return this.exportRate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#requestPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
 	@Override
 	public int requestPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxExportRate() >= amount) {
@@ -227,11 +170,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		else return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#addPower(com.projectzed.api.energy.storage.IEnergyContainer, int)
-	 */
+	@Override
 	public int addPower(IEnergyContainer cont, int amount) {
 		if (cont != null && this.getMaxImportRate() >= amount) {
 			if (this.storedPower + amount <= this.maxPowerStorage) this.storedPower += amount;
@@ -246,29 +185,15 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		else return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#importContents()
-	 */
 	@Override
 	protected void importContents() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#exportContents()
-	 */
 	@Override
 	@Deprecated
 	protected void exportContents() {
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#updateEntity()
-	 */
 	@Override
 	public void update() {
 		super.update();
@@ -283,20 +208,12 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityContainer#getDescriptionPacket()
-	 */
 	// NOTE: server -> client
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#onDataPacket(net.minecraft.network.NetworkManager, net.minecraft.network.play.server.S35PacketUpdateTileEntity)
-	 */
 	// NOTE: client -> server
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {

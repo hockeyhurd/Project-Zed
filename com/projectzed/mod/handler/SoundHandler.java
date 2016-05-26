@@ -8,8 +8,9 @@ package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
 /**
@@ -25,39 +26,43 @@ public class SoundHandler {
 	
 	/**
 	 * Plays sound at entity.
-	 * 
-	 * @param name = name of sound.
-	 * @param world = world object as reference.
-	 * @param entity = entity to play at as reference.
-	 * @param volume = volume of sound to play.
-	 * @param pitch = pitch of sound to play.
+	 *
+	 * @param soundEvent sound event.
+	 * @param soundCategory sound's category.
+	 * @param world world object as reference.
+	 * @param entity entity to play at as reference.
+	 * @param volume volume of sound to play.
+	 * @param pitch pitch of sound to play.
 	 */
-	public static void playAtEntity(String name, World world, Entity entity, float volume, float pitch) {
-		world.playSoundAt(entity, ProjectZed.assetDir + name, volume, pitch);
+	public static void playAtEntity(SoundEvent soundEvent, SoundCategory soundCategory, World world, EntityPlayer entity, float volume, float pitch) {
+		world.playSound(entity, entity.getPosition(), soundEvent, soundCategory, volume, pitch);
 	}
 	
 	/**
 	 * Plays sound at entity.
-	 * 
-	 * @param sound = sound to play.
-	 * @param world = world object as reference.
-	 * @param entity = entity to play at as reference.
+	 *
+	 * @param sound sound to play.
+	 * @param world world object as reference.
+	 * @param entity entity to play at as reference.
 	 */
-	public static void playAtEntity(Sound sound, World world, Entity entity) {
-		playAtEntity(sound.NAME, world, entity, sound.VOLUME, sound.PITCH);
+	public static void playAtEntity(Sound sound, World world, EntityPlayer entity) {
+		playAtEntity(sound.SOUND_EVENT, SoundCategory.AMBIENT, world, entity, sound.VOLUME, sound.PITCH);
 	}
 	
 	/**
 	 * Plays sound effect in world.
-	 * 
-	 * @param name = name of sound.
-	 * @param world = world object as reference.
-	 * @param pos = position in world to play.
-	 * @param volume = volume to play at.
-	 * @param pitch = pitch to play at.
+	 *
+	 * @param soundEvent sound event.
+	 * @param soundCategory sound's category.
+	 * @param world world object as reference.
+	 * @param pos position in world to play.
+	 * @param volume volume to play at.
+	 * @param pitch pitch to play at.
 	 */
-	public static void playEffect(String name, World world, Vector3<Integer> pos, float volume, float pitch) {
-		world.playSoundEffect(pos.x, pos.y, pos.z, name, volume, pitch);
+	public static void playEffect(SoundEvent soundEvent, SoundCategory soundCategory, World world, Vector3<Integer> pos, float volume, float pitch) {
+		// world.playSoundEffect(pos.x, pos.y, pos.z, name, volume, pitch);
+		final Vector3<Double> vec3d = pos.getVector3d();
+		world.playSound(null, vec3d.x, vec3d.y, vec3d.z, soundEvent, soundCategory, volume, pitch);
 	}
 	
 	/**
@@ -68,7 +73,7 @@ public class SoundHandler {
 	 * @param pos = position in world to play.
 	 */
 	public static void playEffect(Sound sound, World world, Vector3<Integer> pos) {
-		playEffect(sound.NAME, world, pos, sound.VOLUME, sound.PITCH);
+		playEffect(sound.SOUND_EVENT, SoundCategory.AMBIENT, world, pos, sound.VOLUME, sound.PITCH);
 	}
 
 }

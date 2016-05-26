@@ -15,6 +15,10 @@ import net.minecraft.block.BlockTorch;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -47,13 +51,10 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered {
 		th = new TimerHelper(20, 2);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onItemUse(net.minecraft.item.ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)
-	 */
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float clickX, float clickY, float clickZ) {
-		boolean used = false;
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumHand hand, EnumFacing side,
+			float clickX, float clickY, float clickZ) {
+		EnumActionResult used = EnumActionResult.FAIL;
 		if (!world.isRemote) {
 
 			int slot = 0;
@@ -72,17 +73,17 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered {
 			
 			if (!th.getUse() || th.excuser()) {
 				th.setUse(true);
-				used = torchStack.getItem().onItemUse(torchStack, player, world, x, y, z, side, clickX, clickY, clickZ);
-				
-				if (used) {
+				used = torchStack.getItem().onItemUse(torchStack, player, world, blockPos, hand, side, clickX, clickY, clickZ);
+
+				if (used != EnumActionResult.FAIL) {
 					player.inventory.decrStackSize(slot, 1);
 					player.inventory.markDirty();
 					player.inventoryContainer.detectAndSendChanges();
 				}
 			}
 		}
-		
-		if (!th.getUse()) player.swingItem();
+
+		if (!th.getUse()) player.swingArm(hand);
 		return used;
 	}
 	

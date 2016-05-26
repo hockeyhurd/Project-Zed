@@ -8,6 +8,7 @@ package com.projectzed.mod.proxy;
 
 import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
+import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.*;
 import com.projectzed.mod.registry.*;
@@ -74,6 +75,7 @@ public class CommonProxy {
 		registerEntities();
 		registerTileEntities();
 		registerGuiHandler();
+		registerSounds();
 		registerRegisters();
 		registerEventHandlers();
 	}
@@ -161,6 +163,10 @@ public class CommonProxy {
 			guiHandler = new GuiHandler();
 			NetworkRegistry.INSTANCE.registerGuiHandler(ProjectZed.instance, guiHandler);
 		}
+	}
+
+	private void registerSounds() {
+		Sound.init();
 	}
 
 	protected void registerRegisters() {

@@ -25,6 +25,8 @@ import net.minecraft.world.World;
  */
 public class EnergyNet {
 
+	// TODO: update methods to use either Vector3i or BlockPos!
+
 	// Mostly static class, no need to instantiate outside of this class!
 	private EnergyNet() {
 	}
