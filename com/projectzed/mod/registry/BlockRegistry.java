@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.registry;
 
-import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import net.minecraft.block.Block;
 
 import java.lang.reflect.Field;
@@ -21,13 +21,13 @@ import java.util.List;
  */
 public final class BlockRegistry {
 
-	private static List<AbstractHCoreBlock> blocks;
-	private static List<AbstractHCoreBlock> blockOres;
+	private static List<IHBlock> blocks;
+	private static List<IHBlock> blockOres;
 	private static BlockRegistry reg = new BlockRegistry();
 
 	private BlockRegistry() {
-		blocks = new LinkedList<AbstractHCoreBlock>();
-		blockOres = new LinkedList<AbstractHCoreBlock>();
+		blocks = new LinkedList<IHBlock>();
+		blockOres = new LinkedList<IHBlock>();
 	}
 
 	/**
@@ -40,11 +40,12 @@ public final class BlockRegistry {
 
 		for (Field f : fields) {
 			try {
-				if (f.get(mainClass) instanceof AbstractHCoreBlock) {
-					AbstractHCoreBlock block = (AbstractHCoreBlock) f.get(mainClass); // cast object to a block.
+				if (f.get(mainClass) instanceof IHBlock) {
+					IHBlock block = (IHBlock) f.get(mainClass); // cast object to a block.
 					if (block != null) {
 						blocks.add(block); // add block to list if not null.
-						if (block.getUnlocalizedName().toLowerCase().contains("ore") || block.getUnlocalizedName().toLowerCase().contains("block")) blockOres.add(block);
+						if (block.getBlock().getUnlocalizedName().toLowerCase().contains("ore") || block.getBlock().getUnlocalizedName().toLowerCase()
+								.contains("block")) blockOres.add(block);
 					}
 				}
 			}
@@ -69,7 +70,7 @@ public final class BlockRegistry {
 	 * Gets the list of registered blocks.
 	 * @return list of blocks registered in this current instance.
 	 */
-	public List<AbstractHCoreBlock> getBlocks() {
+	public List<IHBlock> getBlocks() {
 		return blocks;
 	}
 	
@@ -77,22 +78,23 @@ public final class BlockRegistry {
 	 * Gets the list for ore dictionary.
 	 * @return list of blocks to be registered in ore dictionary.
 	 */
-	public List<AbstractHCoreBlock> getOreBlocks() {
+	public List<IHBlock> getOreBlocks() {
 		return blockOres;
 	}
 	
 	/**
 	 * Gets the block by name specified.
-	 * @param name = name of block to find.
+	 *
+	 * @param name name of block to find.
 	 * @return block if found, else null.
 	 */
 	public Block getBlockByName(String name) {
 		Block block = null;
 		if (reg == null || blocks == null || blocks.size() == 0) return null; // if null or no objects, return null.
-		
-		for (Block b : blocks) {
-			if (b.getUnlocalizedName().equals(name)) { // if found, exit loop.
-				block = b;
+
+		for (IHBlock b : blocks) {
+			if (b.getBlock().getUnlocalizedName().equals(name)) { // if found, exit loop.
+				block = b.getBlock();
 				break;
 			}
 		}
@@ -102,7 +104,8 @@ public final class BlockRegistry {
 	
 	/**
 	 * Returns the actual unlocalized name for said block.
-	 * @param b = block to get name for.
+	 *
+	 * @param b block to get name for.
 	 * @return block's unlocalized name.
 	 */
 	public static String getBlockName(Block b) {

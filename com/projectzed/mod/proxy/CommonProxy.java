@@ -6,7 +6,7 @@
 */
 package com.projectzed.mod.proxy;
 
-import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
 import com.projectzed.api.util.Sound;
@@ -80,18 +80,18 @@ public class CommonProxy {
 		registerRegisters();
 		registerEventHandlers();
 	}
-	
-	private void registerBlocks() {
+
+	protected void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
-		for (AbstractHCoreBlock b : BlockRegistry.instance().getBlocks()) {
+		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) {
-				GameRegistry.register(b);
-				GameRegistry.register(b.getItemBlock().setRegistryName(b.getRegistryName()));
+				GameRegistry.register(b.getBlock());
+				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
 			}
 		}
 	}
-	
-	private void registerItems() {
+
+	protected void registerItems() {
 		ItemRegistry.instance().init(ProjectZed.class);
 		for (Item i : ItemRegistry.instance().getItems()) {
 			if (i != null) GameRegistry.register(i);
@@ -99,8 +99,8 @@ public class CommonProxy {
 	}
 	
 	private void registerOreDictionaryEntries() {
-		for (Block b : BlockRegistry.instance().getOreBlocks()) {
-			if (b != null) OreDictionary.registerOre(BlockRegistry.getBlockName(b), b);
+		for (IHBlock b : BlockRegistry.instance().getOreBlocks()) {
+			if (b != null) OreDictionary.registerOre(BlockRegistry.getBlockName(b.getBlock()), b.getBlock());
 		}
 		
 		for (Item i : ItemRegistry.instance().getItemOres()) {

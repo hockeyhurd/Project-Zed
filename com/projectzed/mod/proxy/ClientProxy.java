@@ -6,14 +6,21 @@
 */
 package com.projectzed.mod.proxy;
 
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
+import com.hockeyhurd.hcorelib.api.client.util.ModelRegistry;
 import com.hockeyhurd.hcorelib.api.handler.config.ConfigChangedEventHandler;
 import com.hockeyhurd.hcorelib.api.handler.input.KeyBindingHandler;
+import com.hockeyhurd.hcorelib.api.item.IHItem;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
+import com.projectzed.mod.registry.BlockRegistry;
+import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -58,6 +65,30 @@ public class ClientProxy extends CommonProxy {
 	/*public static KeyBindingHandler getKeyBindingHandler() {
 		return keyBindingHandler;
 	}*/
+	@Override
+	protected void registerBlocks() {
+		BlockRegistry.instance().init(ProjectZed.class);
+		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
+			if (b != null) {
+				GameRegistry.register(b.getBlock());
+				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
+				ModelRegistry.registerBlock(b);
+			}
+		}
+	}
+
+	@Override
+	protected void registerItems() {
+		ItemRegistry.instance().init(ProjectZed.class);
+		for (Item i : ItemRegistry.instance().getItems()) {
+			if (i != null) {
+				GameRegistry.register(i);
+
+				if (i instanceof IHItem) ModelRegistry.registerItem((IHItem) i);
+				else ProjectZed.logHelper.warn("Item:", i.getUnlocalizedName(), "is not an IHItem!");
+			}
+		}
+	}
 
 	@Override
 	protected void registerEventHandlers() {

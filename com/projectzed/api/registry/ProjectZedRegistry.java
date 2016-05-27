@@ -6,7 +6,7 @@
 */
 package com.projectzed.api.registry;
 
-import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import net.minecraft.block.Block;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class ProjectZedRegistry {
 
-	private static List<AbstractHCoreBlock> blockReg;
+	private static List<IHBlock> blockReg;
 	private static List<Item> itemReg;
 	private static ProjectZedRegistry reg = new ProjectZedRegistry();
 	
