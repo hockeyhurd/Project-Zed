@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.item.tools;
 
+import com.hockeyhurd.hcorelib.api.item.IHItem;
 import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.projectzed.api.energy.IItemChargeable;
 import com.projectzed.mod.ProjectZed;
@@ -15,8 +16,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -32,7 +35,7 @@ import java.util.Set;
  * @author hockeyhurd
  * @version Jun 11, 2015
  */
-public abstract class AbstractItemToolPowered extends ItemTool implements IItemChargeable {
+public abstract class AbstractItemToolPowered extends ItemTool implements IItemChargeable, IHItem {
 
 	public final String name;
 	protected IToolSetRegistry reg;
@@ -40,6 +43,8 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 	// energies
 	protected int capacity;
 	protected int chargeRate;
+
+	protected final ResourceLocation resourceLocation;
 	
 	/**
 	 * @param mat tool material of tool.
@@ -64,6 +69,7 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 		this.capacity = capacity;
 		this.chargeRate = chargeRate;
 
+		this.resourceLocation = new ResourceLocation(ProjectZed.assetDir, name);
 		this.setUnlocalizedName(name);
 		this.setRegistryName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
@@ -72,6 +78,26 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 		this.setMaxDamage(capacity / 10);
 		
 		this.reg = reg;
+	}
+
+	@Override
+	public Item getItem() {
+		return this;
+	}
+
+	@Override
+	public int getSizeOfSubItems() {
+		return 0;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() {
+		return resourceLocation;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 	
 	@Override

@@ -115,7 +115,23 @@ public class EnergyNet {
 	public static void tryClearDirectionalTraffic(IEnergyContainer sourceCont, World world, int x, int y, int z, EnumFacing lastDir) {
 		// boolean shouldSend = false;
 
-		final BlockPos blockPos = new BlockPos(x + lastDir.getFrontOffsetX(), y + lastDir.getFrontOffsetY(), z + lastDir.getFrontOffsetZ());
+		int offsetX;
+		int offsetY;
+		int offsetZ;
+
+		if (lastDir == null) {
+			offsetX = 0;
+			offsetY = 0;
+			offsetZ = 0;
+		}
+
+		else {
+			offsetX = lastDir.getFrontOffsetX();
+			offsetY = lastDir.getFrontOffsetY();
+			offsetZ = lastDir.getFrontOffsetZ();
+		}
+
+		final BlockPos blockPos = new BlockPos(x + offsetX, y + offsetY, z + offsetZ);
 
 		TileEntity te = world.getTileEntity(blockPos);
 		IEnergyContainer cont = null;
@@ -125,8 +141,9 @@ public class EnergyNet {
 			// shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}
-		
-		else if (cont != null && lastDir == cont.getLastReceivedDirection().getOpposite() && sourceCont.getEnergyStored() >= cont.getEnergyStored()) {
+
+		else if (cont != null && cont.getLastReceivedDirection() != null && lastDir == cont.getLastReceivedDirection().getOpposite() &&
+				sourceCont.getEnergyStored() >= cont.getEnergyStored()) {
 			// shouldSend = true;
 			clearDirectionalTraffic(sourceCont);
 		}

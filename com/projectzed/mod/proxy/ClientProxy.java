@@ -80,12 +80,12 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	protected void registerItems() {
 		ItemRegistry.instance().init(ProjectZed.class);
-		for (Item i : ItemRegistry.instance().getItems()) {
-			if (i != null) {
-				GameRegistry.register(i);
+		for (Item item : ItemRegistry.instance().getItems()) {
+			if (item != null) {
+				GameRegistry.register(item);
 
-				if (i instanceof IHItem) ModelRegistry.registerItem((IHItem) i);
-				else ProjectZed.logHelper.warn("Item:", i.getUnlocalizedName(), "is not an IHItem!");
+				if (item instanceof IHItem) ModelRegistry.registerItem((IHItem) item);
+				else ProjectZed.logHelper.warn("Item:", item.getUnlocalizedName(), "is not an IHItem!");
 			}
 		}
 	}

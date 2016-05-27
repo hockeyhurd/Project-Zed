@@ -61,23 +61,22 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 
 				// empty item fluid into fluid tank
 
-					FluidStack containerFluid = getFluidForItem(player.getActiveItemStack());
-					if (containerFluid == null || containerFluid.getFluid() == null || containerFluid.getFluid() != FluidRegistry.WATER) {
-						return openGui(world, player, blockPos.getX(), blockPos.getY(), blockPos.getZ());
-					}
+				FluidStack containerFluid = getFluidForItem(stack);
+				if (containerFluid == null || containerFluid.getFluid() == null || containerFluid.getFluid() != FluidRegistry.WATER) {
+					return openGui(world, player, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+				}
 
-					if ((te).fill(null, containerFluid, true) > 0 && !player.capabilities.isCreativeMode) {
-						ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(player.getActiveItemStack());
+				if (te.fill(null, containerFluid, true) > 0 && !player.capabilities.isCreativeMode) {
+					ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(stack);
 
-						if (player.getActiveItemStack().stackSize-- <= 0)
-							player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					if (stack.stackSize-- <= 0) player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
 
-						if (player instanceof FakePlayer || !player.inventory.addItemStackToInventory(emptyContainer)) world
-								.spawnEntityInWorld(new EntityItem(world, player.posX + 0.5D, player.posY + 1.5D, player.posZ + 0.5D, emptyContainer));
-						else if (player instanceof EntityPlayerMP) ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
-					}
+					if (player instanceof FakePlayer || !player.inventory.addItemStackToInventory(emptyContainer))
+						world.spawnEntityInWorld(new EntityItem(world, player.posX + 0.5D, player.posY + 1.5D, player.posZ + 0.5D, emptyContainer));
+					else if (player instanceof EntityPlayerMP) ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+				}
 
-					// ProjectZed.logHelper.info("Stored: " + ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount());
+				// ProjectZed.logHelper.info("Stored: " + ((TileEntityIndustrialCentrifuge) te).getTank().getFluidAmount());
 
 			}
 		}

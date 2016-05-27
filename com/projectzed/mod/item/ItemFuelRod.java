@@ -8,7 +8,9 @@ package com.projectzed.mod.item;
 
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.projectzed.mod.ProjectZed;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,7 +27,6 @@ import java.util.List;
 public class ItemFuelRod extends AbstractHCoreItem {
 
 	private boolean isEmpty;
-	private String name, assetDir;
 
 	/**
 	 * @param name
@@ -33,11 +34,23 @@ public class ItemFuelRod extends AbstractHCoreItem {
 	 */
 	public ItemFuelRod(String name, String assetDir, boolean isEmpty) {
 		super(ProjectZed.modCreativeTab, assetDir, name);
-		this.name = name;
-		this.assetDir = assetDir;
 		this.isEmpty = isEmpty;
+		this.setHasSubtypes(!isEmpty);
 		this.setMaxDamage(10);
 		if (!isEmpty) this.maxStackSize = 1;
+	}
+
+	@Override
+	public int getSizeOfSubItems() {
+		return !isEmpty ? 10 : 0;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+		for (int i = 0; i < getSizeOfSubItems(); i++) {
+			subItems.add(new ItemStack(itemIn, 1, i));
+		}
 	}
 
 	@Override

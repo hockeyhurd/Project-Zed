@@ -87,10 +87,6 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered {
 		return used;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.item.Item#onUpdate(net.minecraft.item.ItemStack, net.minecraft.world.World, net.minecraft.entity.Entity, int, boolean)
-	 */
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity e, int i, boolean f) {
 		super.onUpdate(stack, world, e, i, f);
