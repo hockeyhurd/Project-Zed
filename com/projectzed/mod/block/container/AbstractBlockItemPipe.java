@@ -13,7 +13,6 @@ import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -52,15 +51,6 @@ public abstract class AbstractBlockItemPipe extends AbstractBlockPipe {
 		return !this.opaque ? ClientProxy.itemPipeGreen : ClientProxy.itemPipeGreenOpaque;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#createTileEntity(net.minecraft.world.World, int)
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
-		return getTileEntity();
-	}
-
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.block.AbstractBlockPipe#getTileEntity()
 	 */

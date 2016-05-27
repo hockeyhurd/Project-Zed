@@ -7,12 +7,15 @@
 package com.projectzed.api.block;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -41,6 +44,7 @@ import java.util.Random;
 public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	protected static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	protected boolean active;
 	protected static boolean keepInventory;
@@ -49,6 +53,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	public AbstractBlockMachine(String name) {
 		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
 	@Override
@@ -94,8 +99,9 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 		keepInventory = true;
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
-			
-			world.notifyBlockOfStateChange(pos, tileEntity.getBlockType());
+
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
+			// world.notifyBlockOfStateChange(pos, tileEntity.getBlockType());
 			/*this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
 
@@ -229,12 +235,25 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
-		TileEntity tileEntity = world.getTileEntity(blockPos);
+		AbstractTileEntityMachine tileEntity = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 
-		if (tileEntity instanceof IWrenchable && ((IWrenchable) tileEntity).canRotateTE())
-			return blockState.withProperty(FACING, ((IWrenchable) tileEntity).getCurrentFacing());
+		if (tileEntity != null && tileEntity.canRotateTE()) {
+			EnumFacing dir = tileEntity.getCurrentFacing();
+			if (dir == null) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, tileEntity.isBurning());
+		}
 
 		return blockState.withProperty(FACING, EnumFacing.NORTH);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return 0;
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
 }

@@ -112,11 +112,10 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 		return reg.setContainsBlock(block.getBlock()) && stack.getItemDamage() < stack.getMaxDamage() ? this.efficiencyOnProperMaterial : 1.0f;
 	}
 
-	// TODO: Does commenting this out break anything? If so find correct function to solve this?
-	/*@Override
-	public boolean func_150897_b(Block block) {
-		return reg.setContainsBlock(block);
-	}*/
+	@Override
+	public boolean canHarvestBlock(IBlockState block) {
+		return reg.setContainsBlock(block.getBlock());
+	}
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos blockPos, EntityPlayer player) {

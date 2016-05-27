@@ -45,35 +45,15 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		this.color = color;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
 		return ClientProxy.liquiductBlue;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.ITileEntityProvider#createNewTileEntity(net.minecraft.world.World, int)
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
-		return getTileEntity();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getTileEntity()
-	 */
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getSelectedBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
 		// Create tile entity object at world coordinate.
@@ -109,10 +89,6 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		return super.getBoundingBox(state, world, pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase e, ItemStack stack) {
 		TileEntity tileEntity = world.getTileEntity(pos);
@@ -129,10 +105,6 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	protected void doBreakBlock(World world, BlockPos pos) {
 		TileEntityLiquiductBase duct = (TileEntityLiquiductBase) world.getTileEntity(pos);

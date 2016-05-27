@@ -1,0 +1,8 @@
+{
+  "parent": "block/outer_stairs",
+  "textures": {
+    "bottom": "projectzed:blocks/stoneBricksGreen",
+    "top": "projectzed:blocks/stoneBricksGreen",
+    "side": "projectzed:blocks/stoneBricksGreen"
+  }
+}

@@ -80,7 +80,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.isEnergyCell = buf.readBoolean();
 
 		byte dir = buf.readByte();
-		this.lastReceivedDir = dir == EnumFacing.VALUES.length ? null : EnumFacing.VALUES[dir];
+		this.lastReceivedDir = dir == -1 || dir == EnumFacing.VALUES.length ? null : EnumFacing.VALUES[dir];
 
 		if (isEnergyCell) {
 			for (int i = 0; i < openSides.length; i++) {
@@ -99,7 +99,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		buf.writeInt(maxImportRate);
 		buf.writeInt(maxExportRate);
 		buf.writeBoolean(isEnergyCell);
-		buf.writeByte(lastReceivedDir.ordinal());
+		buf.writeByte(lastReceivedDir != null ? lastReceivedDir.ordinal() : -1);
 
 		if (isEnergyCell) {
 			for (byte b : openSides) {

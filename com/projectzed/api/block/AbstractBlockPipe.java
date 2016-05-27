@@ -6,15 +6,15 @@
 */
 package com.projectzed.api.block;
 
+import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.ProjectZed;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -28,24 +28,34 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author hockeyhurd
  * @version Oct 25, 2014
  */
-public abstract class AbstractBlockPipe extends BlockContainer {
+public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 
-	protected String customName;
 	protected static final float PIXEL = 1f / 16f;
 	protected static final float CALC = 11 * PIXEL / 2;
 	protected static final AxisAlignedBB DEFAULT_BOUNDING_BOX = new AxisAlignedBB(11 * PIXEL / 2, 11 * PIXEL / 2,
 			11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2, 1 - 11 * PIXEL / 2);
 
 	/**
-	 * @param material = material of pipe
-	 * @param name = name of block.
+	 * @param material material of pipe
+	 * @param name name of block.
 	 */
 	public AbstractBlockPipe(Material material, String name) {
-		super(material);
-		this.customName = name;
-		this.setRegistryName(name);
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1f);
+		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+	}
+
+	@Override
+	public AbstractBlockPipe getBlock() {
+		return this;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_STONE;
 	}
 
 	@Override
@@ -60,15 +70,6 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 	 * @return tileentity object associated with this pipe.
 	 */
 	public abstract AbstractTileEntityPipe getTileEntity();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#createTileEntity(net.minecraft.world.World, int)
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world, int id) {
-		return getTileEntity();
-	}
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
@@ -101,10 +102,6 @@ public abstract class AbstractBlockPipe extends BlockContainer {
 		return world.getBlockState(new BlockPos((int) x, (int) y, (int) z)).getBlock() == this;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.BlockContainer#breakBlock(net.minecraft.world.World, int, int, int, net.minecraft.block.Block, int)
-	 */
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
 		doBreakBlock(world, pos);

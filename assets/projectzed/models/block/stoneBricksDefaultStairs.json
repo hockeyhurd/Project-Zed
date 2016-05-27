@@ -1,0 +1,8 @@
+{
+  "parent": "block/stairs",
+  "textures": {
+    "bottom": "projectzed:blocks/stoneBricksDefault",
+    "top": "projectzed:blocks/stoneBricksDefault",
+    "side": "projectzed:blocks/stoneBricksDefault"
+  }
+}

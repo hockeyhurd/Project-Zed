@@ -14,6 +14,7 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -83,10 +84,23 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos pos) {
 		final TileEntity te = world.getTileEntity(pos);
 
-		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE())
-			return blockState.withProperty(FACING, ((IWrenchable) te).getCurrentFacing());
+		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE()) {
+			EnumFacing dir = ((IWrenchable) te).getCurrentFacing();
+			if (dir == null) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir);
+		}
 
 		return blockState.withProperty(FACING, EnumFacing.NORTH);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return 0;
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING);
 	}
 
 	/**

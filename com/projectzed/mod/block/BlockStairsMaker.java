@@ -9,9 +9,13 @@
 
 package com.projectzed.mod.block;
 
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Simple block class for creating stairs more easily.
@@ -19,27 +23,65 @@ import net.minecraft.block.BlockStairs;
  * @author hockeyhurd
  * @version 7/9/2015.
  */
-public class BlockStairsMaker extends BlockStairs {
+public class BlockStairsMaker extends BlockStairs implements IHBlock {
+
+	private String name;
+	private ResourceLocation resourceLocation;
+	private ItemBlock itemBlock;
 
 	public BlockStairsMaker(Block block) {
 		super(block.getDefaultState());
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setRegistryName(getName(block) + "Stairs");
+
+		this.name = getName(block) + "Stairs";
+
+		setCreativeTab(ProjectZed.modCreativeTab);
+		setUnlocalizedName(name);
+		setRegistryName(name);
+		setHardness(getBlockHardness());
+		setHarvestLevel(getHarvestLevel().getTypeName(), getHarvestLevel().getLevel());
+		setDefaultState(blockState.getBaseState());
+
+		resourceLocation = new ResourceLocation(ProjectZed.assetDir, name);
 	}
 
 	private String getName(Block block) {
-		String rawName = block.getUnlocalizedName().substring(0x4);
-		String newName = "";
-		boolean flag = false;
+		final String rawName = block.getUnlocalizedName().substring(5);
+		final StringBuilder newName = new StringBuilder(rawName.length());
+
 		for (char c : rawName.toCharArray()) {
-			if (c != ' ' && c != '.') {
-				newName += c;
-				flag = false;
-			}
-			else flag = true;
+			if (c != ' ' && c != '.') newName.append(c);
 		}
 
-		return newName;
+		return newName.toString();
 	}
 
+	@Override
+	public Block getBlock() {
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() {
+		return resourceLocation;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public ItemBlock getItemBlock() {
+		return itemBlock != null ? itemBlock : (itemBlock = new ItemBlock(this));
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_WOOD;
+	}
 }
