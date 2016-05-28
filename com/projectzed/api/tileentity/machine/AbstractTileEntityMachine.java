@@ -49,7 +49,7 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		IUpgradeComponent, IWrenchable {
 
 	protected int[] slotTop, slotBottom, slotInput, slotRight;
-	protected EnumFacing frontFacing;
+	protected EnumFacing frontFacing = EnumFacing.NORTH;
 
 	protected int maxStorage = 50000;
 	protected int stored;

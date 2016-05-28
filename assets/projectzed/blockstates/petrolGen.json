@@ -1,0 +1,55 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "projectzed:blocks/generic_base",
+      "down": "projectzed:blocks/generic_base",
+      "north": "projectzed:blocks/petrolGen_0",
+      "east": "projectzed:blocks/generic_side",
+      "west": "projectzed:blocks/generic_side",
+      "south": "projectzed:blocks/generic_side",
+      "particle": "projectzed:blocks/generic_side"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+
+    "normal":[{}],
+
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    },
+
+    "active": {
+      "true": {  },
+      "false": {  }
+    },
+
+    "level": {
+      "0": { "textures": { "north": "projectzed:blocks/petrolGen_0"} },
+      "1": { "textures": { "north": "projectzed:blocks/petrolGen_1"} },
+      "2": { "textures": { "north": "projectzed:blocks/petrolGen_2"} },
+      "3": { "textures": { "north": "projectzed:blocks/petrolGen_3"} },
+      "4": { "textures": { "north": "projectzed:blocks/petrolGen_4"} },
+      "5": { "textures": { "north": "projectzed:blocks/petrolGen_5"} },
+      "6": { "textures": { "north": "projectzed:blocks/petrolGen_6"} },
+      "7": { "textures": { "north": "projectzed:blocks/petrolGen_7"} },
+      "8": { "textures": { "north": "projectzed:blocks/petrolGen_8"} }
+    }
+
+  }
+}

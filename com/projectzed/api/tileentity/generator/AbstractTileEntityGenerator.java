@@ -12,13 +12,17 @@ import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
+import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 /**
  * Abstract class used for easyily adding a generic generator to mod.
@@ -27,12 +31,13 @@ import net.minecraft.util.EnumFacing;
  * @version Oct 21, 2014
  */
 // TODO: AbstractTileEntityGenerator should extend AbstractTileEntityContainer
-public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGeneric implements IEnergyGeneration {
+public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGeneric implements IEnergyGeneration, IWrenchable {
 
 	protected int maxStored = 100000;
 	protected int stored;
 	protected Source source;
 	protected boolean powerMode = false;
+	protected EnumFacing frontFacing = EnumFacing.NORTH;
 
 	/**
 	 * Default constructor.
@@ -174,7 +179,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 	@Override
 	public boolean canProducePower() {
-		return this.powerMode;
+		return powerMode && stored < maxStored;
 	}
 
 	@Override
@@ -196,6 +201,8 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public void readNBT(NBTTagCompound comp) {
 		super.readNBT(comp);
+		final int dir = comp.getInteger("ProjectZedFrontDir");
+		this.frontFacing = EnumFacing.getHorizontal(dir);
 		this.powerMode = comp.getBoolean("ProjectZedPowerMode");
 		int size = comp.getInteger("ProjectZedPowerStored");
 		this.stored = size >= 0 && size <= this.maxStored ? size : 0;
@@ -204,6 +211,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
+		comp.setInteger("ProjectZedFrontDir", this.frontFacing.getHorizontalIndex());
 		comp.setInteger("ProjectZedPowerStored", this.stored);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 	}
@@ -225,6 +233,39 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public int getFieldCount() {
 		return 0;
+	}
+
+	// IWrenchable stuffs:
+	@Override
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState blockState) {
+		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
+
+		// return (frontFacing = frontFacing.rotateY());
+		return (frontFacing = facingDir.getOpposite());
+	}
+
+	@Override
+	public EnumFacing getCurrentFacing() {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing facing) {
+		this.frontFacing = facing;
+	}
+
+	@Override
+	public boolean canRotateTE() {
+		return true;
+	}
+
+	@Override
+	public void onInteract(ItemStack stack, EntityPlayer player, World world, Vector3<Integer> vec) {
+	}
+
+	@Override
+	public boolean canSaveDataOnPickup() {
+		return true;
 	}
 
 }

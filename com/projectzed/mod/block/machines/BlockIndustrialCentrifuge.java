@@ -63,7 +63,7 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 
 				FluidStack containerFluid = getFluidForItem(stack);
 				if (containerFluid == null || containerFluid.getFluid() == null || containerFluid.getFluid() != FluidRegistry.WATER) {
-					return openGui(world, player, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+					return openGui(world, player, stack, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 				}
 
 				if (te.fill(null, containerFluid, true) > 0 && !player.capabilities.isCreativeMode) {
@@ -105,8 +105,8 @@ public class BlockIndustrialCentrifuge extends AbstractBlockMachine {
 		return false;
 	}
 
-	protected boolean openGui(World world, EntityPlayer player, int x, int y, int z) {
-		if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench)) {
+	protected boolean openGui(World world, EntityPlayer player, ItemStack stack, int x, int y, int z) {
+		if (stack == null || !(stack.getItem() instanceof ItemWrench)) {
 			FMLNetworkHandler
 					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialCentrifuge.class), world, x, y, z);
 

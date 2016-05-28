@@ -85,7 +85,7 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 
 			if (neg /*&& dif < 0*/) dif = -dif;
 
-			text1 = TextFormatting.GREEN + "Usage: " + TextFormatting.WHITE + format((Integer) dif) + " McU / t";
+			text1 = TextFormatting.GREEN + "Usage: " + TextFormatting.WHITE + format(dif) + " McU / t";
 		}
 
 		float percent = ((Number)(this.stored)).floatValue() / ((Number)(this.max)).floatValue() * 100.0f;
@@ -99,8 +99,16 @@ public class PowerLabel<N> implements IInfoLabel<N> {
 		
 		else {
 			list.set(0, text0);
-			if (hasUsage) list.set(1, text1);
-			list.set(hasUsage ? 2 : 1, text2);
+			// if (hasUsage) list.set(1, text1);
+			// list.set(hasUsage ? 2 : 1, text2);
+			if (hasUsage) {
+				list.set(1, text1);
+
+				if (list.size() > 2) list.set(2, text2);
+				else list.add(text2);
+			}
+
+			else list.set(1, text2);
 		}
 		return list;
 	}

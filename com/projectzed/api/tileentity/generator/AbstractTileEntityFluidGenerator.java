@@ -10,6 +10,7 @@
 
 package com.projectzed.api.tileentity.generator;
 
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.handler.PacketHandler;
@@ -17,6 +18,7 @@ import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -94,13 +96,25 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 		}
 	}
 
+	private int getRedstonePower() {
+		int max = 0;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			final BlockPos blockPos = VectorHelper.toBlockPos(pos.getX() + dir.getFrontOffsetX(), pos.getY() + dir.getFrontOffsetY(),
+					pos.getZ() + dir.getFrontOffsetZ());
+			final int power = worldObj.getRedstonePower(blockPos, dir);
+			if (max < power) max = power;
+		}
+
+		return max;
+	}
+
 	@Override
 	public void update() {
 		super.update();
 		boolean flag = this.stored > 0;
 		boolean flag1 = false;
 
-		if (this.worldObj != null && !this.worldObj.isRemote) {
+		if (this.worldObj != null && !this.worldObj.isRemote && getRedstonePower() < 8) {
 			// ProjectZed.logHelper.info("internalTank.getFluidAmount()", internalTank.getFluidAmount());
 
 			if (getEnergyStored() + source.getEffectiveSize() <= maxStored) {
@@ -225,7 +239,7 @@ public abstract class AbstractTileEntityFluidGenerator extends AbstractTileEntit
 
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-		if (!worldObj.isRemote) {
+		if (worldObj != null && !worldObj.isRemote) {
 
 			int fillAmount = internalTank.fill(resource, doFill);
 

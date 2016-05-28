@@ -185,7 +185,7 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 	 */
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-		if (!worldObj.isRemote) {
+		if (worldObj != null && !worldObj.isRemote) {
 
 			int fillAmount = internalTank.fill(resource, doFill);
 

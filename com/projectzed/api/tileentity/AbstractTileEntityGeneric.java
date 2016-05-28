@@ -8,9 +8,12 @@ package com.projectzed.api.tileentity;
 
 import com.hockeyhurd.hcorelib.api.tileentity.AbstractTileContainer;
 import com.hockeyhurd.hcorelib.api.util.StringUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 
 /**
  * Class used for easily creating a generic tile entity.
@@ -21,6 +24,11 @@ import net.minecraft.util.text.TextComponentTranslation;
 public abstract class AbstractTileEntityGeneric extends AbstractTileContainer implements ITickable {
 
 	public AbstractTileEntityGeneric() {
+	}
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos blockPos, IBlockState oldState, IBlockState newState) {
+		return oldState.getBlock() == newState.getBlock();
 	}
 
 	/**

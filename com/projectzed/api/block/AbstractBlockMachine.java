@@ -165,6 +165,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 			NBTTagCompound comp = stack.getTagCompound();
 
 			te.readNBT(comp);
+			te.markDirty();
 		}
 	}
 

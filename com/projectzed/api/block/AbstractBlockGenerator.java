@@ -9,17 +9,16 @@ package com.projectzed.api.block;
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
-import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -35,13 +34,27 @@ import net.minecraft.world.World;
 public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer {
 
 	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	protected static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	/**
 	 * @param material material of block
 	 * @param name String name.
 	 */
 	public AbstractBlockGenerator(Material material, String name) {
+		this(material, name, true);
+	}
+
+	/**
+	 * @param material material of block
+	 * @param name String name.
+	 * @param setDefaultState flag whether we can set the default state from this
+	 *                        parent class.
+	 */
+	public AbstractBlockGenerator(Material material, String name, boolean setDefaultState) {
 		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+
+		if (setDefaultState)
+			setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
 	@Override
@@ -73,8 +86,8 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos pos) {
-		final TileEntity te = world.getTileEntity(pos);
-		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE())
+		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
+		if (te != null && te.canRotateTE())
 			return EnumFacing.HORIZONTALS;
 
 		return super.getValidRotations(world, pos);
@@ -82,51 +95,53 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 
 	@Override
 	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos pos) {
-		final TileEntity te = world.getTileEntity(pos);
+		/*final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
 
-		if (te instanceof IWrenchable && ((IWrenchable) te).canRotateTE()) {
-			EnumFacing dir = ((IWrenchable) te).getCurrentFacing();
-			if (dir == null) dir = EnumFacing.NORTH;
-			return blockState.withProperty(FACING, dir);
-		}
+		if (te != null && te.canRotateTE()) {
+			EnumFacing dir = te.getCurrentFacing();
+			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.canProducePower());
+		}*/
 
-		return blockState.withProperty(FACING, EnumFacing.NORTH);
+		// return blockState.withProperty(FACING, EnumFacing.NORTH);
+		return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
-		return 0;
+		return blockState.getValue(FACING).getHorizontalIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING);
+		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
 	/**
 	 * Method used to update block's state
+	 *
 	 * @param active whether currently active or not.
 	 * @param world world object.
 	 * @param blockPos Block position.
 	 */
-	public static void updateBlockState(boolean active, World world, BlockPos blockPos) {
-		final TileEntity tileEntity = world.getTileEntity(blockPos);
+	public void updateBlockState(boolean active, World world, BlockPos blockPos) {
+		if (world.isRemote) return;
+
+		final AbstractTileEntityGenerator tileEntity = (AbstractTileEntityGenerator) world.getTileEntity(blockPos);
 		// keepInventory = true;
 
-		if (tileEntity != null && tileEntity instanceof AbstractTileEntityGenerator) {
+		if (tileEntity != null) {
 
 			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
-			world.notifyBlockOfStateChange(blockPos, blockState.getBlock());
-			/*this.active = active;
-			int metaData = world.getBlockMetadata(x, y, z);
+			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
+			BlockUtils.setBlock(world, blockPos, blockState);
 
-			world.setBlock(x, y, z, getBlockInstance());
-
-			keepInventory = false;
-			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
-
-			tileEntity.validate();
-			world.setTileEntity(x, y, z, tileEntity);*/
+			tileEntity.markDirty();
 		}
 	}
 
@@ -140,7 +155,14 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
 		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
-		// te.setFrontFacing
+		if (te != null) {
+			te.setFrontFacing(player.getHorizontalFacing().getOpposite());
+
+			if (stack.hasTagCompound()) {
+				te.readNBT(stack.getTagCompound());
+				te.markDirty();
+			}
+		}
 
 		if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 	}

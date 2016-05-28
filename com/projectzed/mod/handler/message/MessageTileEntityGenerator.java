@@ -8,6 +8,7 @@ package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.heat.HeatLogic;
 import com.projectzed.api.heat.IHeatable;
@@ -15,6 +16,7 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -32,6 +34,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	private AbstractTileEntityGenerator te;
 	private Vector3<Integer> vec;
+	private EnumFacing frontFacing;
 	private int stored;
 	private boolean powerMode;
 
@@ -55,6 +58,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	public MessageTileEntityGenerator(AbstractTileEntityGenerator te) {
 		this.te = te;
 		this.vec = te.worldVec();
+		this.frontFacing = te.getCurrentFacing();
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.canProducePower();
 		
@@ -64,7 +68,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (te instanceof IFluidContainer) {
 			hasFluidTank = true;
 			fluidName = ((IFluidContainer) te).getFluidID();
-			fluidNameLen = fluidName.length();
+			fluidNameLen = StringUtils.nullCheckString(fluidName) ? fluidName.length() : 0;
 			fluidAmount = ((IFluidContainer) te).getTank().getFluidAmount();
 		}
 
@@ -83,6 +87,8 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		vec.y = buf.readInt();
 		vec.z = buf.readInt();
 
+		final int dir = buf.readInt();
+		this.frontFacing = EnumFacing.getFront(dir);
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		
@@ -112,6 +118,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeInt(vec.x);
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);
+		buf.writeInt(frontFacing.ordinal());
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
 		
@@ -137,6 +144,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
 		if (te != null && te instanceof AbstractTileEntityGenerator) {
+			((AbstractTileEntityGenerator) te).setFrontFacing(message.frontFacing);
 			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
 			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);
 			
@@ -145,7 +153,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 			if (te instanceof IFluidContainer && message.hasFluidTank) {
 				FluidStack fluidStack = null;
 
-				if (message.fluidNameLen >= 0 && message.fluidAmount >= 0)
+				if (message.fluidNameLen > 0 && message.fluidAmount >= 0)
 					fluidStack = new FluidStack(FluidRegistry.getFluid(message.fluidName), message.fluidAmount);
 
 				((IFluidContainer) te).getTank().setFluid(fluidStack);

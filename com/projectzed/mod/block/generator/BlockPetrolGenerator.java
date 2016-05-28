@@ -10,14 +10,18 @@
 
 package com.projectzed.mod.block.generator;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.block.AbstractBlockGenerator;
-import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityPetrolGenerator;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -37,15 +41,62 @@ import java.util.Random;
  */
 public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
+	private static final PropertyInteger FLUID_LEVEL = PropertyInteger.create("level", 0, 8);
+
 	/**
 	 * @param material material of block
 	 */
 	public BlockPetrolGenerator(Material material) {
-		super(material, "petrolGen");
+		super(material, "petrolGen", false);
+
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false).withProperty(FLUID_LEVEL, 0));
+	}
+
+	/*@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+		IBlockState superState = super.getActualState(blockState, world, pos).withProperty(FLUID_LEVEL, 0);
+		TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(pos);
+		if (te != null)
+			return (superState.withProperty(FLUID_LEVEL, te.getAndCheckLevel()));
+
+		return superState;
+	}*/
+
+	@Override
+	public void updateBlockState(boolean active, World world, BlockPos blockPos) {
+		if (world.isRemote) return;
+
+		final TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(blockPos);
+		// keepInventory = true;
+
+		if (te != null) {
+
+			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
+
+			int level = te.getLevel();
+			if (level < 0) level = 0;
+			else if (level > 8) level = 8;
+
+			blockState = blockState.withProperty(FACING, te.getCurrentFacing()).withProperty(ACTIVE, active).withProperty(FLUID_LEVEL, level);
+			BlockUtils.setBlock(world, blockPos, blockState);
+
+			te.markDirty();
+		}
 	}
 
 	@Override
-	public AbstractTileEntityGenerator getTileEntity() {
+	protected BlockStateContainer createBlockState() {
+		// TODO: Try another work around similar to the immediate code below?
+
+		/*BlockStateContainer blockStateContainer  = super.createBlockState();
+		blockStateContainer.getProperties().add(FLUID_LEVEL);
+		return blockStateContainer;*/
+
+		return new BlockStateContainer(this, FACING, ACTIVE, FLUID_LEVEL);
+	}
+
+	@Override
+	public TileEntityPetrolGenerator getTileEntity() {
 		return new TileEntityPetrolGenerator();
 	}
 
@@ -56,39 +107,59 @@ public class BlockPetrolGenerator extends AbstractBlockGenerator {
 
 		else {
 			TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(blockPos);
-			if (te != null) FMLNetworkHandler
-					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityPetrolGenerator.class),
-							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			if (te != null)
+				if (stack == null || !(stack.getItem() instanceof ItemWrench))
+					FMLNetworkHandler.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityPetrolGenerator.class),
+								world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+				else return false;
 			return true;
 		}
 	}
 
 	@Override
-	public void randomTick(World world, BlockPos blockPos, IBlockState blockState, Random random) {
-		if (((TileEntityPetrolGenerator) world.getTileEntity(blockPos)).isPowered()) {
-			// int metaData = world.getBlockMetadata(x, y, z);
-			int metaData = blockState.getBlock().getMetaFromState(blockState);
-			float f = (float) blockPos.getX() + 0.5F;
-			float f1 = (float) blockPos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float f2 = (float) blockPos.getZ() + 0.5F;
-			float f3 = 0.52F;
-			float f4 = random.nextFloat() * 0.6F - 0.3F;
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, block, player, stack);
+		if (world.isRemote) return;
 
-			if (metaData == 4) {
-				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-			}
-			else if (metaData == 5) {
-				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
-			}
-			else if (metaData == 2) {
-				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
-			}
-			else if (metaData == 3) {
-				world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+		final TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(pos);
+		if (te != null) {
+			final int level = stack.hasTagCompound() ? stack.getTagCompound().getInteger("fluidLevel") : 0;
+			te.setLevel(level);
+		}
+	}
+
+	@Override
+	public void randomTick(World world, BlockPos blockPos, IBlockState blockState, Random random) {
+		final TileEntityPetrolGenerator te = (TileEntityPetrolGenerator) world.getTileEntity(blockPos);
+
+		if (te != null) {
+			// if (!world.isRemote) te.getAndCheckLevel();
+
+			if (te.isPowered()) {
+				// int metaData = world.getBlockMetadata(x, y, z);
+				int metaData = blockState.getBlock().getMetaFromState(blockState);
+				float f = (float) blockPos.getX() + 0.5F;
+				float f1 = (float) blockPos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+				float f2 = (float) blockPos.getZ() + 0.5F;
+				float f3 = 0.52F;
+				float f4 = random.nextFloat() * 0.6F - 0.3F;
+
+				if (metaData == 4) {
+					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+					world.spawnParticle(EnumParticleTypes.FLAME, (double) (f - f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				}
+				else if (metaData == 5) {
+					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+					world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f3), (double) f1, (double) (f2 + f4), 0.0D, 0.0D, 0.0D);
+				}
+				else if (metaData == 2) {
+					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+					world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 - f3), 0.0D, 0.0D, 0.0D);
+				}
+				else if (metaData == 3) {
+					world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+					world.spawnParticle(EnumParticleTypes.FLAME, (double) (f + f4), (double) f1, (double) (f2 + f3), 0.0D, 0.0D, 0.0D);
+				}
 			}
 		}
 	}

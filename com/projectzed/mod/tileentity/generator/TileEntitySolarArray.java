@@ -12,6 +12,7 @@ import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.block.generator.BlockSolarArray;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -124,6 +125,20 @@ public class TileEntitySolarArray extends AbstractTileEntityGenerator {
 	public void saveNBT(NBTTagCompound comp) {
 		super.saveNBT(comp);
 		comp.setByte("ProjectZedSolarArrayTier", this.tier);
+	}
+
+	@Override
+	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState blockState) {
+		return frontFacing;
+	}
+
+	@Override
+	public void setFrontFacing(EnumFacing facing) {
+	}
+
+	@Override
+	public boolean canRotateTE() {
+		return false;
 	}
 
 }

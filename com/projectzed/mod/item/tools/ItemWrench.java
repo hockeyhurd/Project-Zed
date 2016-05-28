@@ -10,7 +10,6 @@ import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
-import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.util.WorldUtils;
@@ -50,23 +49,28 @@ public class ItemWrench extends AbstractHCoreItem {
 		if (!world.isRemote) {
 
 			final Vector3<Integer> vecClick = VectorHelper.toVector3i(pos);
-			final IBlockState blockState = BlockUtils.getBlock(world, vecClick.x, vecClick.y, vecClick.z);
-			final Block b = blockState.getBlock();
+			IBlockState blockState = BlockUtils.getBlock(world, vecClick.x, vecClick.y, vecClick.z);
+			Block b = blockState.getBlock();
 			final TileEntity te = world.getTileEntity(pos);
 
 			if (b != null && b != Blocks.air && te != null && te instanceof IWrenchable) {
 				IWrenchable wrenchableTE = (IWrenchable) te;
 
-				Waila waila = new Waila(stack, world, player, null, 0);
-				waila.finder(false);
+				// Waila waila = new Waila(stack, world, player, null, 0);
+				// waila.finder(false);
 
-				EnumFacing facingDir = waila.getSideHit();
+				// EnumFacing facingDir = waila.getSideHit();
+				EnumFacing facingDir = player.getHorizontalFacing();
 
 				if (wrenchableTE.canRotateTE() && !player.isSneaking()) {
 					used = EnumActionResult.PASS;
-					// int meta = world.getBlockMetadata(vecClick.x, vecClick.y, vecClick.z);
-					// world.setBlockMetadataWithNotify(vecClick.x, vecClick.y, vecClick.z, wrenchableTE.getRotatedState(facingDir, (byte) meta), 2);
-					wrenchableTE.getRotatedState(facingDir, blockState);
+					final int meta = wrenchableTE.getRotatedState(facingDir, blockState).getHorizontalIndex();
+					// IBlockState newState = blockState.getBlock().getStateFromMeta(meta);
+					blockState = blockState.getBlock().getStateFromMeta(meta);
+
+					BlockUtils.setBlock(world, pos, blockState, 2);
+					BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
+					te.markDirty();
 				}
 
 				else if (player.isSneaking() && wrenchableTE.canSaveDataOnPickup()) {
