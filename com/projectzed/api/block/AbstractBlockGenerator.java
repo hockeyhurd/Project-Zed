@@ -21,6 +21,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -103,24 +105,46 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.canProducePower());
 		}
 
-		return blockState.withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false);
-		// return blockState;
+		// return blockState.withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false);
+		return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
-		return blockState.getValue(FACING).getHorizontalIndex();
 		// return 0;
+		// return blockState.getValue(FACING).getHorizontalIndex();
+		return blockState.getValue(FACING).getIndex();
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 		// return super.getStateFromMeta(meta);
+		// return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		EnumFacing facing = EnumFacing.getFront(meta);
+		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	/**
+	 * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
+	 * blockstate.
+	 */
+	public IBlockState withRotation(IBlockState state, Rotation rot) {
+		return state.withProperty(FACING, rot.rotate(state.getValue(FACING))).withProperty(ACTIVE, state.getValue(ACTIVE));
+	}
+
+	/**
+	 * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
+	 * blockstate.
+	 */
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
+		return state.withProperty(ACTIVE, state.getValue(ACTIVE)).withRotation(mirrorIn.toRotation(state.getValue(FACING)));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
+		// return new BlockStateContainer(this, FACING, ACTIVE);
 		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
@@ -145,6 +169,13 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 
 			tileEntity.markDirty();
 		}
+	}
+
+	@Override
+	public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase e) {
+
+		return getDefaultState().withProperty(FACING, e.getHorizontalFacing().getOpposite());
 	}
 
 	@Override

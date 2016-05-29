@@ -7,19 +7,13 @@
 package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
-import com.hockeyhurd.hcorelib.api.math.Vector3;
-import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.util.WorldUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -42,7 +36,7 @@ public class ItemWrench extends AbstractHCoreItem {
 		this.setMaxStackSize(1);
 	}
 
-	@Override
+	/*@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float clickX, float clickY, float clickZ) {
 		EnumActionResult used = EnumActionResult.FAIL;
 		
@@ -65,14 +59,15 @@ public class ItemWrench extends AbstractHCoreItem {
 				if (wrenchableTE.canRotateTE() && !player.isSneaking()) {
 					used = EnumActionResult.PASS;
 					final int meta = wrenchableTE.getRotatedState(facingDir, blockState).getHorizontalIndex();
-					// IBlockState newState = blockState.getBlock().getStateFromMeta(meta);
+					IBlockState newState = blockState.getBlock().getStateFromMeta(meta);
 					// blockState = blockState.getBlock().getStateFromMeta(meta);
-					IBlockState newState = blockState.getActualState(world, pos);
-					ProjectZed.logHelper.info("Here!");
+					// IBlockState newState = blockState.getActualState(world, pos);
 
 					// BlockUtils.setBlock(world, pos, blockState);
 					BlockUtils.setBlock(world, pos, newState);
 					BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
+					world.setTileEntity(pos, te);
+					ProjectZed.logHelper.info(wrenchableTE.getCurrentFacing());
 					te.markDirty();
 				}
 
@@ -102,6 +97,31 @@ public class ItemWrench extends AbstractHCoreItem {
 		// player.swingItem();
 		player.swingArm(hand);
 		return used;
+	}*/
+
+	@Override
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumFacing side,
+			float hitX, float hitY, float hitZ, EnumHand hand) {
+
+		IBlockState blockState = BlockUtils.getBlock(world, blockPos);
+		if (blockState.getBlock() != Blocks.air && !player.isSneaking()) {
+			if (world.isRemote) return EnumActionResult.PASS;
+
+			if (blockState.getBlock().rotateBlock(world, blockPos, player.getHorizontalFacing())) {
+				BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);}
+
+			IWrenchable wrenchable = (IWrenchable) world.getTileEntity(blockPos);
+			wrenchable.setFrontFacing(player.getHorizontalFacing().getOpposite());
+			// IBlockState newState = blockState.getActualState(world, blockPos);
+			// BlockUtils.setBlock(world, blockPos, newState, 3);
+			// BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+
+			player.swingArm(hand);
+
+			return EnumActionResult.PASS;
+		}
+
+		return EnumActionResult.FAIL;
 	}
 
 }

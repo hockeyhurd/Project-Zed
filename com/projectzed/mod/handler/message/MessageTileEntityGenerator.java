@@ -8,6 +8,7 @@ package com.projectzed.mod.handler.message;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.StringUtils;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.heat.HeatLogic;
@@ -15,6 +16,7 @@ import com.projectzed.api.heat.IHeatable;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -141,13 +143,14 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	@Override
 	public IMessage onMessage(MessageTileEntityGenerator message, MessageContext ctx) {
-		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
+		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
-		if (te != null && te instanceof AbstractTileEntityGenerator) {
+		if (tileEntity != null && tileEntity instanceof AbstractTileEntityGenerator) {
+			AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) tileEntity;
 			// ProjectZed.logHelper.info("sent:", message.frontFacing);
-			((AbstractTileEntityGenerator) te).setFrontFacing(message.frontFacing);
-			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
-			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);
+			te.setFrontFacing(message.frontFacing);
+			te.setEnergyStored(message.stored);
+			te.setPowerMode(message.powerMode);
 			
 			if (te instanceof TileEntitySolarArray && message.tierable) ((TileEntitySolarArray) te).setTier(message.tier);
 
@@ -167,6 +170,9 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 				heatLogic.setMaxHeat(message.maxHeatAmount);
 				heatLogic.setResistance(message.heatResistance);
 			}
+
+			IBlockState blockState = BlockUtils.getBlock(te.getWorld(), te.getPos());
+			BlockUtils.setBlock(te.getWorld(), te.getPos(), blockState, 2);
 		}
 		
 		return null;

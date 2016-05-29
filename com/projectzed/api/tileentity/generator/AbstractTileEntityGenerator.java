@@ -8,6 +8,7 @@ package com.projectzed.api.tileentity.generator;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.generation.IEnergyGeneration;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.energy.storage.IEnergyContainer;
@@ -16,6 +17,7 @@ import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import com.projectzed.mod.util.Reference;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -246,6 +248,14 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 
 	@Override
 	public EnumFacing getCurrentFacing() {
+		// return frontFacing;
+		IBlockState blockState = BlockUtils.getBlock(worldObj, pos);
+		for (IProperty<?> prop : blockState.getProperties().keySet()) {
+			if (prop.getName().equals("facing") || prop.getName().equals("rotation")) {
+				return (EnumFacing) blockState.getValue(prop);
+			}
+		}
+
 		return frontFacing;
 	}
 
