@@ -88,7 +88,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		vec.z = buf.readInt();
 
 		final int dir = buf.readInt();
-		this.frontFacing = EnumFacing.getFront(dir);
+		this.frontFacing = EnumFacing.getHorizontal(dir);
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		
@@ -118,7 +118,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeInt(vec.x);
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);
-		buf.writeInt(frontFacing.ordinal());
+		buf.writeInt(frontFacing.getHorizontalIndex());
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
 		
@@ -144,6 +144,7 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 		
 		if (te != null && te instanceof AbstractTileEntityGenerator) {
+			// ProjectZed.logHelper.info("sent:", message.frontFacing);
 			((AbstractTileEntityGenerator) te).setFrontFacing(message.frontFacing);
 			((AbstractTileEntityGenerator) te).setEnergyStored(message.stored);
 			((AbstractTileEntityGenerator) te).setPowerMode(message.powerMode);

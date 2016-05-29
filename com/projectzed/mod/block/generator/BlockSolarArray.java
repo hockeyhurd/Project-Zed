@@ -51,7 +51,8 @@ public class BlockSolarArray extends AbstractBlockGenerator {
 		return te;
 	}
 
-	public static void updateBlockState(boolean active, World world, BlockPos blockPos) {
+	@Override
+	public void updateBlockState(boolean active, World world, BlockPos blockPos) {
 		final TileEntity tileentity = world.getTileEntity(blockPos);
 		final IBlockState metaState = tileentity.getBlockType().getStateFromMeta(tileentity.getBlockMetadata());
 

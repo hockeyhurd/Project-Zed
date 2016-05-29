@@ -193,7 +193,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 		transferPower();
 		
 		// If server side and every '1' second, send packet message to all clients.
-		// if (!this.getWorldObj().isRemote && this.getWorldObj().getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
+		// if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0) PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		this.markDirty();
 		super.update();
 	}
@@ -252,6 +252,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public void setFrontFacing(EnumFacing facing) {
 		this.frontFacing = facing;
+		// ProjectZed.logHelper.info("new face:", frontFacing);
 	}
 
 	@Override

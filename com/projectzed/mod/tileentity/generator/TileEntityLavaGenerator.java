@@ -12,7 +12,6 @@ package com.projectzed.mod.tileentity.generator;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityFluidGenerator;
-import com.projectzed.mod.block.generator.BlockLavaGenerator;
 
 /**
  * TileEntity class for lavaGen.
@@ -35,8 +34,9 @@ public class TileEntityLavaGenerator extends AbstractTileEntityFluidGenerator {
 	public void update() {
 		super.update();
 
-		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 && blockType != null && blockType instanceof BlockLavaGenerator) {
-			((BlockLavaGenerator) blockType).updateBlockState(canProducePower(), worldObj, pos);
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 /*&& blockType != null && blockType instanceof BlockLavaGenerator*/) {
+			// ((BlockLavaGenerator) blockType).updateBlockState(canProducePower(), worldObj, pos);
+			// ((BlockLavaGenerator) BlockUtils.getBlock(worldObj, pos).getBlock()).updateBlockState(canProducePower(), worldObj, pos);
 		}
 	}
 

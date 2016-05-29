@@ -95,26 +95,28 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 
 	@Override
 	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos pos) {
-		/*final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
+		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
 
 		if (te != null && te.canRotateTE()) {
 			EnumFacing dir = te.getCurrentFacing();
 			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
 			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.canProducePower());
-		}*/
+		}
 
-		// return blockState.withProperty(FACING, EnumFacing.NORTH);
-		return blockState;
+		return blockState.withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false);
+		// return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
 		return blockState.getValue(FACING).getHorizontalIndex();
+		// return 0;
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		// return super.getStateFromMeta(meta);
 	}
 
 	@Override
@@ -125,7 +127,7 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 	/**
 	 * Method used to update block's state
 	 *
-	 * @param active whether currently active or not.
+	 * @param active boolean flag.
 	 * @param world world object.
 	 * @param blockPos Block position.
 	 */
@@ -133,12 +135,12 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		if (world.isRemote) return;
 
 		final AbstractTileEntityGenerator tileEntity = (AbstractTileEntityGenerator) world.getTileEntity(blockPos);
-		// keepInventory = true;
 
 		if (tileEntity != null) {
 
 			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
 			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
+			// IBlockState blockState = BlockUtils.getBlock(world, blockPos).getActualState(world, blockPos);
 			BlockUtils.setBlock(world, blockPos, blockState);
 
 			tileEntity.markDirty();
@@ -155,16 +157,18 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
 		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
+		final boolean isServerSide = !world.isRemote;
 		if (te != null) {
+			// ProjectZed.logHelper.info(player.getHorizontalFacing().getOpposite());
 			te.setFrontFacing(player.getHorizontalFacing().getOpposite());
 
-			if (stack.hasTagCompound()) {
+			if (isServerSide && stack.hasTagCompound()) {
 				te.readNBT(stack.getTagCompound());
 				te.markDirty();
 			}
 		}
 
-		if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
+		if (isServerSide && stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 	}
 
 	@Override

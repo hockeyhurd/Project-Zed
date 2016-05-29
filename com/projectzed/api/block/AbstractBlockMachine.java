@@ -7,7 +7,6 @@
 package com.projectzed.api.block;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
-import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
@@ -100,7 +99,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
 
-			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
+			// BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
 			// world.notifyBlockOfStateChange(pos, tileEntity.getBlockType());
 			/*this.active = active;
 			int metaData = world.getBlockMetadata(x, y, z);
@@ -240,16 +239,22 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 		if (tileEntity != null && tileEntity.canRotateTE()) {
 			EnumFacing dir = tileEntity.getCurrentFacing();
-			if (dir == null) dir = EnumFacing.NORTH;
+			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
 			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, tileEntity.isBurning());
 		}
 
-		return blockState.withProperty(FACING, EnumFacing.NORTH);
+		// return blockState.withProperty(FACING, EnumFacing.NORTH);
+		return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
-		return 0;
+		return blockState.getValue(FACING).getHorizontalIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 	}
 
 	@Override

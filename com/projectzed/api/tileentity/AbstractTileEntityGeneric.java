@@ -28,7 +28,10 @@ public abstract class AbstractTileEntityGeneric extends AbstractTileContainer im
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos blockPos, IBlockState oldState, IBlockState newState) {
-		return oldState.getBlock() == newState.getBlock();
+		// TODO: Figure this out!
+		// return oldState.getBlock() == newState.getBlock();
+		// return true;
+		return super.shouldRefresh(world, blockPos, oldState, newState);
 	}
 
 	/**

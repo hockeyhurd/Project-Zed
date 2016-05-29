@@ -1,0 +1,19 @@
+{
+  "parent": "block/cube",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ 0, 135, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    }
+  },
+  "textures": {
+    "up": "projectzed:blocks/generic_base",
+    "down": "projectzed:blocks/generic_base",
+    "north": "projectzed:blocks/industrialCrusher_front",
+    "east": "projectzed:blocks/generic_side",
+    "west": "projectzed:blocks/generic_side",
+    "south": "projectzed:blocks/generic_side",
+    "particle": "projectzed:blocks/generic_side"
+  }
+}

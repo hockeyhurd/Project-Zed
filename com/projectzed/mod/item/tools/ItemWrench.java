@@ -66,9 +66,12 @@ public class ItemWrench extends AbstractHCoreItem {
 					used = EnumActionResult.PASS;
 					final int meta = wrenchableTE.getRotatedState(facingDir, blockState).getHorizontalIndex();
 					// IBlockState newState = blockState.getBlock().getStateFromMeta(meta);
-					blockState = blockState.getBlock().getStateFromMeta(meta);
+					// blockState = blockState.getBlock().getStateFromMeta(meta);
+					IBlockState newState = blockState.getActualState(world, pos);
+					ProjectZed.logHelper.info("Here!");
 
-					BlockUtils.setBlock(world, pos, blockState, 2);
+					// BlockUtils.setBlock(world, pos, blockState);
+					BlockUtils.setBlock(world, pos, newState);
 					BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
 					te.markDirty();
 				}

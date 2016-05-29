@@ -523,7 +523,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
 		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		return (frontFacing = frontFacing.rotateY());
+		// return (frontFacing = frontFacing.rotateY());
+		return (frontFacing = facingDir.getOpposite());
 	}
 
 	@Override
