@@ -165,7 +165,8 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
 			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
 			// IBlockState blockState = BlockUtils.getBlock(world, blockPos).getActualState(world, blockPos);
-			BlockUtils.setBlock(world, blockPos, blockState);
+			BlockUtils.setBlock(world, blockPos, blockState, 2);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 
 			tileEntity.markDirty();
 		}

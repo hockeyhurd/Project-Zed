@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -107,10 +108,16 @@ public class ItemWrench extends AbstractHCoreItem {
 		if (blockState.getBlock() != Blocks.air && !player.isSneaking()) {
 			if (world.isRemote) return EnumActionResult.PASS;
 
-			if (blockState.getBlock().rotateBlock(world, blockPos, player.getHorizontalFacing())) {
-				BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);}
-
 			IWrenchable wrenchable = (IWrenchable) world.getTileEntity(blockPos);
+
+			// if (blockState.getBlock().rotateBlock(world, blockPos, player.getHorizontalFacing())) {
+			// if ((blockState = blockState.getBlock().withRotation(blockState, Rotation.CLOCKWISE_90)) != null) {
+			if ((blockState = blockState.getBlock().withRotation(blockState, getRotation(player.getAdjustedHorizontalFacing(),
+					wrenchable.getCurrentFacing()))) != null) {
+				BlockUtils.setBlock(world, blockPos, blockState, 2);
+				BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+			}
+
 			wrenchable.setFrontFacing(player.getHorizontalFacing().getOpposite());
 			// IBlockState newState = blockState.getActualState(world, blockPos);
 			// BlockUtils.setBlock(world, blockPos, newState, 3);
@@ -122,6 +129,26 @@ public class ItemWrench extends AbstractHCoreItem {
 		}
 
 		return EnumActionResult.FAIL;
+	}
+
+	private static Rotation getRotation(EnumFacing ref, EnumFacing currentFacing) {
+		if (ref == currentFacing) return Rotation.CLOCKWISE_180;
+
+		final int refIndex = ref.getHorizontalIndex();
+		final int currentFacingIndex = currentFacing.getHorizontalIndex();
+		final int netDif = Math.abs(refIndex - currentFacingIndex);
+
+		if (refIndex > currentFacingIndex) {
+			if (netDif == 1) return Rotation.COUNTERCLOCKWISE_90;
+			else if (netDif == 2) return Rotation.CLOCKWISE_180;
+			return Rotation.CLOCKWISE_90;
+		}
+
+		else {
+			if (netDif == 1) return Rotation.CLOCKWISE_90;
+			else if (netDif == 2) return Rotation.CLOCKWISE_180;
+			return Rotation.COUNTERCLOCKWISE_90;
+		}
 	}
 
 }

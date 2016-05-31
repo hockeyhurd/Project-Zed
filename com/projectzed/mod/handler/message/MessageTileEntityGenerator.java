@@ -18,7 +18,6 @@ import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -36,7 +35,6 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 	private AbstractTileEntityGenerator te;
 	private Vector3<Integer> vec;
-	private EnumFacing frontFacing;
 	private int stored;
 	private boolean powerMode;
 
@@ -60,7 +58,6 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 	public MessageTileEntityGenerator(AbstractTileEntityGenerator te) {
 		this.te = te;
 		this.vec = te.worldVec();
-		this.frontFacing = te.getCurrentFacing();
 		this.stored = te.getEnergyStored();
 		this.powerMode = te.canProducePower();
 		
@@ -89,8 +86,6 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		vec.y = buf.readInt();
 		vec.z = buf.readInt();
 
-		final int dir = buf.readInt();
-		this.frontFacing = EnumFacing.getHorizontal(dir);
 		this.stored = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		
@@ -120,7 +115,6 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		buf.writeInt(vec.x);
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);
-		buf.writeInt(frontFacing.getHorizontalIndex());
 		buf.writeInt(stored);
 		buf.writeBoolean(powerMode);
 		
@@ -148,7 +142,6 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (tileEntity != null && tileEntity instanceof AbstractTileEntityGenerator) {
 			AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) tileEntity;
 			// ProjectZed.logHelper.info("sent:", message.frontFacing);
-			te.setFrontFacing(message.frontFacing);
 			te.setEnergyStored(message.stored);
 			te.setPowerMode(message.powerMode);
 			
