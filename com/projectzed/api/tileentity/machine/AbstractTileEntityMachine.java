@@ -302,9 +302,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
 
-		if (worldObj.getTotalWorldTime() % 20L == 0 && this.blockType != null && this.blockType instanceof AbstractBlockMachine) {
-			((AbstractBlockMachine) this.blockType).updateBlockState(this.isPoweredOn(), this.worldObj, pos.getX(), pos.getY(), pos.getZ());
-			// ProjectZed.logHelper.info(this.powerMode);
+		if (worldObj.getTotalWorldTime() % 20L == 0 && blockType != null && blockType instanceof AbstractBlockMachine) {
+			((AbstractBlockMachine) blockType).updateBlockState(isPoweredOn(), worldObj, pos);
 		}
 		
 		if (flag1) this.markDirty();
@@ -529,7 +528,8 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 
 	@Override
 	public EnumFacing getCurrentFacing() {
-		return frontFacing;
+		// return frontFacing;
+		return EnumFacing.getFront(getBlockMetadata()); // TODO: temp fix until sync issues are resolved.
 	}
 
 	@Override

@@ -105,21 +105,16 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.canProducePower());
 		}
 
-		// return blockState.withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false);
 		return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
-		// return 0;
-		// return blockState.getValue(FACING).getHorizontalIndex();
 		return blockState.getValue(FACING).getIndex();
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		// return super.getStateFromMeta(meta);
-		// return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 		EnumFacing facing = EnumFacing.getFront(meta);
 		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
 
@@ -130,6 +125,7 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 	 * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
 	 * blockstate.
 	 */
+	@Override
 	public IBlockState withRotation(IBlockState state, Rotation rot) {
 		return state.withProperty(FACING, rot.rotate(state.getValue(FACING))).withProperty(ACTIVE, state.getValue(ACTIVE));
 	}
@@ -138,13 +134,13 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 	 * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
 	 * blockstate.
 	 */
+	@Override
 	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
 		return state.withProperty(ACTIVE, state.getValue(ACTIVE)).withRotation(mirrorIn.toRotation(state.getValue(FACING)));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		// return new BlockStateContainer(this, FACING, ACTIVE);
 		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
@@ -161,10 +157,8 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 		final AbstractTileEntityGenerator tileEntity = (AbstractTileEntityGenerator) world.getTileEntity(blockPos);
 
 		if (tileEntity != null) {
-
 			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
 			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
-			// IBlockState blockState = BlockUtils.getBlock(world, blockPos).getActualState(world, blockPos);
 			BlockUtils.setBlock(world, blockPos, blockState, 2);
 			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 
@@ -181,26 +175,20 @@ public abstract class AbstractBlockGenerator extends AbstractHCoreBlockContainer
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
-		// int dir = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-
-		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-
 		final AbstractTileEntityGenerator te = (AbstractTileEntityGenerator) world.getTileEntity(pos);
 		final boolean isServerSide = !world.isRemote;
 		if (te != null) {
-			// ProjectZed.logHelper.info(player.getHorizontalFacing().getOpposite());
 			te.setFrontFacing(player.getHorizontalFacing().getOpposite());
 
-			if (isServerSide && stack.hasTagCompound()) {
-				te.readNBT(stack.getTagCompound());
-				te.markDirty();
+			if (isServerSide) {
+				if (stack.hasTagCompound()) {
+					te.readNBT(stack.getTagCompound());
+					te.markDirty();
+				}
+
+				if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 			}
 		}
-
-		if (isServerSide && stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 	}
 
 	@Override

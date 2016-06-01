@@ -37,7 +37,6 @@ public class TileEntityLavaGenerator extends AbstractTileEntityFluidGenerator {
 
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 /*&& blockType != null && blockType instanceof BlockLavaGenerator*/) {
 			((BlockLavaGenerator) blockType).updateBlockState(canProducePower(), worldObj, pos);
-			// ((BlockLavaGenerator) BlockUtils.getBlock(worldObj, pos).getBlock()).updateBlockState(canProducePower(), worldObj, pos);
 		}
 	}
 

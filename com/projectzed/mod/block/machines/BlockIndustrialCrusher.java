@@ -12,7 +12,6 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityIndustrialCrusher;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,31 +32,12 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 	public BlockIndustrialCrusher() {
 		super("industrialCrusher");
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getTileEntity()
-	 */
+
+	@Override
 	public AbstractTileEntityMachine getTileEntity() {
 		return new TileEntityIndustrialCrusher();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockMachine#getBlockInstance()
-	 */
-	protected Block getBlockInstance() {
-		return this;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockMachine#onBlockActivated(net.minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing side, float hitX, float hitY, float hitZ) {

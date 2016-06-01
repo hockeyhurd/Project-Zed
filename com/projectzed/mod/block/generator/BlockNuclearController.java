@@ -14,6 +14,7 @@ import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.tileentity.IMultiBlockableController;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
@@ -63,8 +64,6 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	 */
 	public BlockNuclearController(Material material, boolean fusion) {
 		super(material, "nuclearController" + (fusion ? "Fusion" : "Fission"));
-		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(1.0f);
 		this.FUSION_MODE = fusion;
 	}
 
@@ -91,9 +90,14 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 
 		else {
 			TileEntityNuclearController te = (TileEntityNuclearController) world.getTileEntity(blockPos);
-			if (te != null) FMLNetworkHandler
-					.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class), world,
-							blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			if (te != null) {
+				if (stack == null || !(stack.getItem() instanceof ItemWrench))
+					FMLNetworkHandler
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityNuclearController.class),
+									world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+
+				else return false;
+			}
 
 			return true;
 		}

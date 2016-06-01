@@ -224,7 +224,8 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 
 	@Override
 	public EnumFacing getCurrentFacing() {
-		return frontFacing;
+		// return frontFacing;
+		return EnumFacing.getFront(getBlockMetadata()); // TODO: temp fix until sync issues are resolved.
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import com.projectzed.mod.tileentity.machine.TileEntityIndustrialLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -55,13 +56,28 @@ public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 	}
 
 	@Override
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase placer, ItemStack stack) {
+		final TileEntityIndustrialLoader te = (TileEntityIndustrialLoader) world.getTileEntity(blockPos);
+		final boolean isServerSide = !world.isRemote;
+
+		if (isServerSide && te != null) {
+			if (stack.hasTagCompound()) {
+				te.readNBT(stack.getTagCompound());
+				te.markDirty();
+			}
+
+			if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
+		}
+	}
+
+	@Override
 	public Block getBlock() {
 		return this;
 	}
 
 	@Override
 	public float getBlockHardness() {
-		return 1.0f;
+		return 2.0f;
 	}
 
 	@Override

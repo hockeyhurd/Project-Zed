@@ -244,16 +244,7 @@ public abstract class AbstractTileEntityGenerator extends AbstractTileEntityGene
 	@Override
 	public EnumFacing getCurrentFacing() {
 		// return frontFacing;
-		/*IBlockState blockState = BlockUtils.getBlock(worldObj, pos);
-		for (IProperty<?> prop : blockState.getProperties().keySet()) {
-			if (prop.getName().equals("facing") || prop.getName().equals("rotation")) {
-				return (EnumFacing) blockState.getValue(prop);
-			}
-		}*/
-
 		return EnumFacing.getFront(getBlockMetadata()); // TODO: temp fix until sync issues are resolved.
-
-		// return frontFacing;
 	}
 
 	@Override

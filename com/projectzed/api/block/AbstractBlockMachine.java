@@ -7,8 +7,8 @@
 package com.projectzed.api.block;
 
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlockContainer;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
-import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
@@ -23,9 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -51,8 +49,14 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 	protected static final Random random = new Random();
 
 	public AbstractBlockMachine(String name) {
+		this(name, true);
+	}
+
+	public AbstractBlockMachine(String name, boolean setDefaultState) {
 		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
-		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+
+		if (setDefaultState)
+			setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public float getBlockHardness() {
-		return 1.0f;
+		return 2.0f;
 	}
 
 	@Override
@@ -88,29 +92,21 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 	 * 
 	 * @param active = state of activity.
 	 * @param world = world object.
-	 * @param x = x-pos.
-	 * @param y = y-pos.
-	 * @param z = z-pos.
+	 * @param blockPos Block position.
 	 */
-	public void updateBlockState(boolean active, World world, int x, int y, int z) {
-		BlockPos pos = new BlockPos(x, y, z);
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public void updateBlockState(boolean active, World world, BlockPos blockPos) {
+		if (world.isRemote) return;
+
+		final AbstractTileEntityMachine tileEntity = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 		keepInventory = true;
 
-		if (tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
+		if (tileEntity != null) {
+			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
+			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
+			BlockUtils.setBlock(world, blockPos, blockState, 2);
+			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 
-			// BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, pos);
-			// world.notifyBlockOfStateChange(pos, tileEntity.getBlockType());
-			/*this.active = active;
-			int metaData = world.getBlockMetadata(x, y, z);
-
-			world.setBlock(x, y, z, getBlockInstance());
-
-			keepInventory = false;
-			world.setBlockMetadataWithNotify(x, y, z, metaData, 2);
-
-			tileEntity.validate();
-			world.setTileEntity(x, y, z, tileEntity);*/
+			tileEntity.markDirty();
 		}
 	}
 
@@ -150,21 +146,29 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 	}
 
 	@Override
+	public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase e) {
+
+		return getDefaultState().withProperty(FACING, e.getHorizontalFacing().getOpposite());
+	}
+
+	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase player, ItemStack stack) {
 		final TileEntity tileEntity = world.getTileEntity(pos);
 		if (!(tileEntity instanceof AbstractTileEntityMachine)) return;
 
 		final AbstractTileEntityMachine te = (AbstractTileEntityMachine) tileEntity;
+		final boolean isServerSide = !world.isRemote;
 
 		te.setFrontFacing(player.getHorizontalFacing().getOpposite());
 
-		if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
+		if (isServerSide) {
+			if (stack.hasTagCompound()) {
+				te.readNBT(stack.getTagCompound());
+				te.markDirty();
+			}
 
-		if (stack.hasTagCompound() && stack.getTagCompound() != null) {
-			NBTTagCompound comp = stack.getTagCompound();
-
-			te.readNBT(comp);
-			te.markDirty();
+			if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
 		}
 	}
 
@@ -225,9 +229,9 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
-		TileEntity tileEntity = world.getTileEntity(blockPos);
+		final AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 
-		if (tileEntity instanceof IWrenchable && ((IWrenchable) tileEntity).canRotateTE())
+		if (te != null && te.canRotateTE())
 			return EnumFacing.HORIZONTALS;
 
 		return super.getValidRotations(world, blockPos);
@@ -235,26 +239,38 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
-		AbstractTileEntityMachine tileEntity = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
+		final AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 
-		if (tileEntity != null && tileEntity.canRotateTE()) {
-			EnumFacing dir = tileEntity.getCurrentFacing();
+		if (te != null && te.canRotateTE()) {
+			EnumFacing dir = te.getCurrentFacing();
 			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
-			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, tileEntity.isBurning());
+			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.isBurning());
 		}
 
-		// return blockState.withProperty(FACING, EnumFacing.NORTH);
 		return blockState;
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState blockState) {
-		return blockState.getValue(FACING).getHorizontalIndex();
+		return blockState.getValue(FACING).getIndex();
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		EnumFacing facing = EnumFacing.getFront(meta);
+		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	@Override
+	public IBlockState withRotation(IBlockState state, Rotation rot) {
+		return state.withProperty(FACING, rot.rotate(state.getValue(FACING))).withProperty(ACTIVE, state.getValue(ACTIVE));
+	}
+
+	@Override
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
+		return state.withProperty(ACTIVE, state.getValue(ACTIVE)).withRotation(mirrorIn.toRotation(state.getValue(FACING)));
 	}
 
 	@Override

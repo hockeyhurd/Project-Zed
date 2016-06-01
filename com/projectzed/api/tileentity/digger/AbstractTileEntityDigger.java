@@ -213,8 +213,11 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 
 	@Override
 	public boolean isActiveFromRedstoneSignal() {
-		return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
-				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;
+		/*return redstoneType == EnumRedstoneType.DISABLED ? true : redstoneType == EnumRedstoneType.LOW ? getRedstoneSignal() == 0
+				: redstoneType == EnumRedstoneType.HIGH ? getRedstoneSignal() > 0 : false;*/
+
+		return redstoneType == EnumRedstoneType.DISABLED || (redstoneType == EnumRedstoneType.LOW && getRedstoneSignal() == 0)
+				|| (redstoneType == EnumRedstoneType.HIGH && getRedstoneSignal() > 0);
 	}
 
 	@Override

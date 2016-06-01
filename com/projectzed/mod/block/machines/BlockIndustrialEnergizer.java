@@ -46,13 +46,14 @@ public class BlockIndustrialEnergizer extends AbstractBlockMachine {
 		else {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
 			if (te != null) {
-				if (player.getActiveItemStack() == null || !(player.getActiveItemStack().getItem() instanceof ItemWrench))
+				if (stack == null || !(stack.getItem() instanceof ItemWrench))
 					FMLNetworkHandler
-							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialEnergizer.class), world,
-									blockPos.getX(), blockPos.getY(), blockPos.getZ());
+							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityIndustrialEnergizer.class),
+									world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 
 				else return false;
 			}
+
 			return true;
 		}
 	}
