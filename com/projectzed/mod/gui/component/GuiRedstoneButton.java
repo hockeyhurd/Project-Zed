@@ -7,7 +7,6 @@
 package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
-import com.hockeyhurd.hcorelib.api.math.Color4f;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.util.EnumRedstoneType;
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 	protected Vector2<Integer> max = Vector2.zero.getVector2i();
 	
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
-	protected static final float SIZE = 16f;
+	protected static final int SIZE = 16;
 	
 	/**
 	 * @param id
@@ -99,7 +98,12 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 			
 			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);*/
 
-			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, max.x, max.y);
+			min.x = (SIZE * (this.type.ordinal() + 0));
+			min.y = (SIZE * ((active ? 0 : 1) + 2));
+			max.x = (SIZE * (this.type.ordinal() + 1));
+			max.y = (SIZE * ((active ? 0 : 1) + 3));
+
+			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, max.x, max.y);
 			mouseDragged(minecraft, x, y);
 
 			int j = 0xe0e0e0;

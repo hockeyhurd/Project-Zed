@@ -7,7 +7,6 @@
 package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
-import com.hockeyhurd.hcorelib.api.math.Color4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -83,7 +82,8 @@ public class GuiSortButton extends GuiButton {
 
 			this.TESS.draw();*/
 
-			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
+			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, width, height);
+
 			mouseDragged(minecraft, x, y);
 
 			int j = 0xe0e0e0;

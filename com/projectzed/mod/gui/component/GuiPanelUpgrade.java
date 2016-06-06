@@ -9,10 +9,9 @@
 
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,6 +28,7 @@ public class GuiPanelUpgrade {
 	private final ResourceLocation texture;
 	private int numSlots;
 	public Vector2<Integer> location, thisSize;
+	private final float calcX, calcY;
 
 	public GuiPanelUpgrade(Vector2<Integer> location) {
 		this(location, new Vector2<Integer>(32, 86), 4);
@@ -38,6 +38,10 @@ public class GuiPanelUpgrade {
 		this.location = location;
 		this.thisSize = thisSize;
 		this.numSlots = numSlots;
+		// this.calcX = (1.0f / 96.0f * thisSize.x);
+		// this.calcY = (1.0f / 96.0f * thisSize.y);
+		this.calcX = thisSize.x;
+		this.calcY = thisSize.y;
 
 		this.texture = new ResourceLocation("projectzed", "textures/gui/GuiDefaultUpgradeSlots.png");
 	}
@@ -51,7 +55,7 @@ public class GuiPanelUpgrade {
 	}
 
 	public void renderContainer(Gui gui, float f, int x, int y) {
-		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		/*GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 
 		GlStateManager.enableBlend();
@@ -59,7 +63,10 @@ public class GuiPanelUpgrade {
 				GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-		gui.drawTexturedModalRect(location.x, location.y, 0, 0, thisSize.x, thisSize.y);
+		gui.drawTexturedModalRect(location.x, location.y, 0, 0, thisSize.x, thisSize.y);*/
+
+		// GuiHelper.simpleRenderGui(texture, GuiHelper.DEFAULT_COL, location.x, location.y, 0, 0, thisSize.x, thisSize.y, calcX, calcY);
+		GuiHelper.simpleRenderGui(texture, GuiHelper.DEFAULT_COL, location.x, location.y, 0, 0, thisSize.x * 2.75f, thisSize.y);
 
 		// ProjectZed.logHelper.info(thisSize.toString());
 		// gui.drawTexturedModalRect(location.x, location.y, 0, 0, thisSize.x, thisSize.y);

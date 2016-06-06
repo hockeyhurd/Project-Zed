@@ -41,7 +41,7 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 		this.te = te;
 		this.xSize = 237;
 		this.ySize = 256;
-		int slots = this.te.getSizeInventory();
+		// int slots = this.te.getSizeInventory();
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiFabricationTable.png");
 	}
@@ -63,15 +63,15 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 
 	@Override
 	public void actionPerformed(GuiButton button) {
-			if (button.id == 0) {
-				((ContainerFabricationTable)this.inventorySlots).clearCraftingGrid();
-				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 1));
-			}
-				
-			else if (button.id > 0 && button.id <= 4) {
-				((ContainerFabricationTable)this.inventorySlots).sortInventory(button.id);
-				PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 2));
-			}
+		if (button.id == 0) {
+			((ContainerFabricationTable) this.inventorySlots).clearCraftingGrid();
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 1));
+		}
+
+		else if (button.id > 0 && button.id <= 4) {
+			((ContainerFabricationTable) this.inventorySlots).sortInventory(button.id);
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 2));
+		}
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
 	/*@Override

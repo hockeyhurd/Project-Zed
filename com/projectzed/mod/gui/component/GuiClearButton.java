@@ -6,10 +6,10 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -58,16 +58,9 @@ public class GuiClearButton extends GuiButton {
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 			if (this.visible) {
-				Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
 				FontRenderer fontRenderer = minecraft.fontRendererObj;
-				GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-						GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-				drawTexturedModalRect(xPosition, yPosition, 0, 0, width, height);
+				GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, width, height);
 
 				/*	this.TESS.addVertexWithUV(xPosition, yPosition, 0, 0, 0);// bottom left texture
 					this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, 0, calc);// top left

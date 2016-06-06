@@ -62,7 +62,7 @@ public class GuiEncodeButton extends GuiButton implements IGuiButton {
 			tessHelp.draw();*/
 
 			FontRenderer fontRenderer = minecraft.fontRendererObj;
-			GuiHelper.simpleRenderGui(parentGui, TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
+			GuiHelper.simpleRenderGui(TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
 			mouseDragged(minecraft, x, y);
 
 			int j = 0xe0e0e0;
