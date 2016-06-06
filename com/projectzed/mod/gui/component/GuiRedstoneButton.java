@@ -79,31 +79,13 @@ public class GuiRedstoneButton extends GuiButton implements IGuiButton {
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
 			FontRenderer fontRenderer = minecraft.fontRendererObj;
-			/*GL11.glColor4f(1f, 1f, 1f, 1f);
-			Minecraft.getMinecraft().getTextureManager().bindTexture(this.TEXTURE);
-			
-			min.x = (SIZE * (this.type.ordinal() + 0)) * this.PIXEL;
-			min.y = (SIZE * ((active ? 0 : 1) + 2)) * this.PIXEL;
-			max.x = (SIZE * (this.type.ordinal() + 1)) * this.PIXEL;
-			max.y = (SIZE * ((active ? 0 : 1) + 3)) * this.PIXEL;
-			
-			this.TESS.startDrawingQuads();
-			
-			this.TESS.addVertexWithUV(xPosition, yPosition, 0, min.x, min.y);
-			this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, min.x, max.y);
-			this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, max.x, max.y);
-			this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, max.x, min.y);
-			
-			this.TESS.draw();
-			
-			this.drawCenteredString(fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, 0xffffffff);*/
 
 			min.x = (SIZE * (this.type.ordinal() + 0));
 			min.y = (SIZE * ((active ? 0 : 1) + 2));
 			max.x = (SIZE * (this.type.ordinal() + 1));
 			max.y = (SIZE * ((active ? 0 : 1) + 3));
 
-			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, max.x, max.y);
+			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, min.x, min.y, 16, 16, 64.0f, 64.0f);
 			mouseDragged(minecraft, x, y);
 
 			int j = 0xe0e0e0;

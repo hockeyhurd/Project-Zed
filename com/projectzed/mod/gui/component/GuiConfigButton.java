@@ -6,13 +6,13 @@
 */
 package com.projectzed.mod.gui.component;
 
+import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +30,7 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	protected static final ResourceLocation DEFFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFFAULT_TEXTURE;
 	protected final float PIXEL;
-	protected byte stateID;
+	protected int stateID;
 	
 	protected int x = 16, y = 16;
 	protected static final int rateOfMovement = 8;
@@ -73,7 +73,7 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiConfigButton(int id, int x, int y, int width, int height, String text, byte stateID, Rect<Integer> rect, EnumConfigType type) {
+	public GuiConfigButton(int id, int x, int y, int width, int height, String text, int stateID, Rect<Integer> rect, EnumConfigType type) {
 		super(id, x, y, 16, 16, text);
 		this.width = 16;
 		this.height = 16;
@@ -97,45 +97,13 @@ public class GuiConfigButton extends GuiButton implements IGuiButton {
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
 			FontRenderer fontRenderer = minecraft.fontRendererObj;
-			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-			minecraft.getTextureManager().bindTexture(this.TEXTURE);
-			
-			// calc = (SIZE * this.stateID) * this.PIXEL;
-			// dif = 3f * SIZE * this.PIXEL;
-			// calc2 = (SIZE * (this.stateID + 1)) * this.PIXEL;
-			//ProjectZed.logHelper.info("calc2:", calc2 / this.PIXEL, dif);
-			// need to offset height by '2 * 16'
-			
-			/*this.TESS.startDrawingQuads();
-
-			if (this.stateID == 0) {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, calc2);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, dif - calc2);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, dif - calc2);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, calc2);// bottom right
-			}
-			
-			else {
-				this.TESS.addVertexWithUV(xPosition, yPosition, 0, calc, dif - calc2);// bottom left texture
-				this.TESS.addVertexWithUV(xPosition, yPosition + height, 0, calc, calc2);// top left
-				this.TESS.addVertexWithUV(xPosition + width, yPosition + height, 0, calc2, calc2);// top right
-				this.TESS.addVertexWithUV(xPosition + width, yPosition, 0, calc2, dif - calc2);// bottom right
-			}
-			
-			this.TESS.draw();*/
-
-			GlStateManager.enableBlend();
-			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-					GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
 			calc = SIZE * stateID;
 			dif = 3 * SIZE;
 			calc2 = SIZE * (stateID + 1);
 
-			// drawTexturedModalRect();
-			if (stateID == 0) drawTexturedModalRect(xPosition, yPosition, 0, 0, calc2, calc2);
-			else drawTexturedModalRect(xPosition, yPosition, 0, 0, dif - calc2, dif - calc2);
+			if (stateID == 0) GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, calc, calc2, 16, 16, 64.0f, 64.0f);
+			else GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, calc, dif - calc2, 16, 16, 64.0f, 64.0f);
 
 			mouseDragged(minecraft, x, y);
 			int j = 0xe0e0e0;

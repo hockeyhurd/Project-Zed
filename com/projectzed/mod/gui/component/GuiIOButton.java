@@ -29,11 +29,12 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 
 	protected static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("projectzed", "textures/gui/buttons.png");
 	protected ResourceLocation TEXTURE = DEFAULT_TEXTURE;
-	protected byte stateID;
+	protected int stateID;
 
 	protected boolean active;
 	protected Vector2<Integer> pos = Vector2.zero.getVector2i();
 	protected final Gui parentGui;
+	protected float calc;
 
 	/**
 	 * @param id
@@ -41,7 +42,7 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 	 * @param y
 	 * @param text
 	 */
-	public GuiIOButton(Gui parentGui, int id, int x, int y, String text, byte state) {
+	public GuiIOButton(Gui parentGui, int id, int x, int y, String text, int state) {
 		super(id, x, y, text);
 
 		this.parentGui = parentGui;
@@ -61,8 +62,8 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 	 * @param height
 	 * @param text
 	 */
-	public GuiIOButton(Gui parentGui, int id, int x, int y, int width, int height, String text, byte state) {
-		super(id, x, y, 16, 16, text);
+	public GuiIOButton(Gui parentGui, int id, int x, int y, int width, int height, String text, int state) {
+		super(id, x, y, width, height, text);
 
 		this.parentGui = parentGui;
 		this.width = 16;
@@ -78,7 +79,12 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 		if (this.visible) {
 			FontRenderer fontrenderer = minecraft.fontRendererObj;
 
-			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, width, height);
+			calc = width * (stateID + 1);
+
+			if (this.stateID == -1)
+				GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, width, height, 64.0f, 64.0f);
+			else
+				GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, calc, 0, width, height, 64.0f, 64.0f);
 
 			mouseDragged(minecraft, x, y);
 			int j = 0xe0e0e0;
@@ -117,7 +123,7 @@ public class GuiIOButton extends GuiButton implements IGuiButton {
 	 * 
 	 * @return state id.
 	 */
-	public byte getStateID() {
+	public int getStateID() {
 		return this.stateID;
 	}
 	
