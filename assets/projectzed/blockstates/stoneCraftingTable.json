@@ -1,0 +1,38 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "projectzed:blocks/stoneCraftingTable_top",
+      "down": "blocks/stone",
+      "north": "projectzed:blocks/stoneCraftingTable_front",
+      "east": "projectzed:blocks/stoneCraftingTable_side",
+      "west": "projectzed:blocks/stoneCraftingTable_side",
+      "south": "projectzed:blocks/stoneCraftingTable_front",
+      "particle": "projectzed:blocks/stoneCraftingTable_side"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+
+    "normal":[{}],
+
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    }
+
+  }
+}

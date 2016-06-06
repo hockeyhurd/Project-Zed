@@ -91,7 +91,7 @@ public abstract class AbstractItemToolPowered extends ItemTool implements IItemC
 	}
 
 	@Override
-	public ResourceLocation getResourceLocation() {
+	public ResourceLocation getResourceLocation(int meta) {
 		return resourceLocation;
 	}
 

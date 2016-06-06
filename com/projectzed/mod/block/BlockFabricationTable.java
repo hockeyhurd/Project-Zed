@@ -16,6 +16,7 @@ import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +36,6 @@ import java.util.Random;
  */
 public class BlockFabricationTable extends AbstractHCoreBlockContainer {
 
-	private String name;
 	private static Random random = new Random();
 
 	public BlockFabricationTable(Material material) {
@@ -49,7 +49,7 @@ public class BlockFabricationTable extends AbstractHCoreBlockContainer {
 
 	@Override
 	public float getBlockHardness() {
-		return 1.0f;
+		return 2.0f;
 	}
 
 	@Override
@@ -75,6 +75,10 @@ public class BlockFabricationTable extends AbstractHCoreBlockContainer {
 							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase placer, ItemStack stack) {
 	}
 
 	@Override

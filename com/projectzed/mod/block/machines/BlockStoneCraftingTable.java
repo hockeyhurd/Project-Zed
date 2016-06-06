@@ -13,13 +13,18 @@ import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
@@ -29,29 +34,37 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
  * @author hockeyhurd
  * @version Mar 31, 2015
  */
-public class BlockStoneCraftingTable extends AbstractHCoreBlockContainer {
+public final class BlockStoneCraftingTable extends AbstractHCoreBlockContainer {
+
+	private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
 	/**
 	 * @param material
 	 */
 	public BlockStoneCraftingTable(Material material) {
 		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, "stoneCraftingTable");
+
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	}
+
+	@Override
+	public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase e) {
+
+		return getDefaultState().withProperty(FACING, e.getHorizontalFacing().getOpposite());
 	}
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase player, ItemStack stack) {
-		/*int l = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-
-		if (l == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (l == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (l == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (l == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);*/
-
 		final EnumFacing dir = player.getHorizontalFacing();
 		final TileEntityStoneCraftingTable tileEntity = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
+		final boolean isServerSide = !world.isRemote;
+
 		tileEntity.setFrontFacing(dir);
 
-		if (stack.hasDisplayName()) tileEntity.setCustomName(stack.getDisplayName());
+		if (isServerSide) {
+			if (stack.hasDisplayName()) tileEntity.setCustomName(stack.getDisplayName());
+		}
 	}
 
 	@Override
@@ -66,6 +79,57 @@ public class BlockStoneCraftingTable extends AbstractHCoreBlockContainer {
 							world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return true;
 		}
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
+		final TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE())
+			return EnumFacing.HORIZONTALS;
+
+		return super.getValidRotations(world, blockPos);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
+		final TileEntityStoneCraftingTable te = (TileEntityStoneCraftingTable) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE()) {
+			EnumFacing dir = te.getCurrentFacing();
+			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir);
+		}
+
+		return blockState;
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return blockState.getValue(FACING).getIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		EnumFacing facing = EnumFacing.getFront(meta);
+		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	@Override
+	public IBlockState withRotation(IBlockState state, Rotation rot) {
+		return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
+		return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING);
 	}
 
 	@Override

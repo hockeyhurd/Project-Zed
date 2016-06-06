@@ -100,7 +100,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		if (slot != 0 || stack == null) return false;
-		return stack.getItem() == ProjectZed.fullFuelRod || stack.getItemDamage() < stack.getMaxDamage();
+		return stack.getItem() == ProjectZed.fuelRod || stack.getItemDamage() < stack.getMaxDamage();
 	}
 	
 	@Override
@@ -124,7 +124,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 		else {
 			Item item = stack.getItem();
 
-			if (item == ProjectZed.fullFuelRod && stack.getItemDamage() < stack.getMaxDamage()) return MAX_BURN_TIME;
+			if (item == ProjectZed.fuelRod && stack.getItemDamage() < stack.getMaxDamage()) return MAX_BURN_TIME;
 			
 			return 0;
 		}
@@ -157,8 +157,10 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 				else {
 					this.slots[0] = null;
 
-					if (ouputPort == null) this.slots[1] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
-					else ouputPort.setInventorySlotContents(1, new ItemStack(ProjectZed.emptyFuelRod, 1, 0));
+					// if (ouputPort == null) this.slots[1] = new ItemStack(ProjectZed.emptyFuelRod, 1, 0);
+					// else ouputPort.setInventorySlotContents(1, new ItemStack(ProjectZed.emptyFuelRod, 1, 0));
+					if (ouputPort == null) this.slots[1] = new ItemStack(ProjectZed.fuelRod, 1, 0);
+					else ouputPort.setInventorySlotContents(1, new ItemStack(ProjectZed.fuelRod, 1, 0));
 				}
 			}
 		}

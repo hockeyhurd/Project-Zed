@@ -6,10 +6,14 @@
 */
 package com.projectzed.mod.block;
 
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
 
@@ -19,13 +23,19 @@ import java.util.Random;
  * @author hockeyhurd
  * @version Nov 20, 2014
  */
-public class BlockThickenedGlass extends BlockGlass {
+public class BlockThickenedGlass extends BlockGlass implements IHBlock {
+
+	private static final String name = "thickenedGlass";
+	private static final ResourceLocation resourceLocation = new ResourceLocation(ProjectZed.assetDir, name);
+	private ItemBlock itemBlock;
 
 	public BlockThickenedGlass() {
 		super(Material.glass, false);
-		this.setRegistryName("thickenedGlass");
+
+		this.setRegistryName(name);
+		this.setUnlocalizedName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
-		this.setHardness(0.75f);
+		this.setHardness(getBlockHardness());
 		this.setResistance(2000.0f);
 		this.setStepSound(SoundType.GLASS);
 		this.setLightOpacity(0);
@@ -41,4 +51,33 @@ public class BlockThickenedGlass extends BlockGlass {
 		return 1;
 	}
 
+	@Override
+	public BlockThickenedGlass getBlock() {
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() {
+		return resourceLocation;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public ItemBlock getItemBlock() {
+		return itemBlock != null ? itemBlock : (itemBlock = new ItemBlock(this));
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 0.75f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_WOOD;
+	}
 }

@@ -6,18 +6,22 @@
 */
 package com.projectzed.mod.block;
 
+import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,13 +35,16 @@ import java.util.Random;
  * @author hockeyhurd
  * @version Jun 21, 2015
  */
-public class BlockQuarryMarker extends BlockTorch {
+public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 
 	private static final String name = "quarryMarker";
+	protected static final ResourceLocation resourceLocation = new ResourceLocation(ProjectZed.assetDir, name);
+	protected ItemBlock itemBlock;
 	
 	public BlockQuarryMarker() {
 		this.setTickRandomly(false);
 		this.setRegistryName(name);
+		this.setUnlocalizedName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 	}
 
@@ -239,4 +246,33 @@ public class BlockQuarryMarker extends BlockTorch {
 	public void randomDisplayTick(IBlockState worldIn, World world, BlockPos pos, Random random) {
 	}
 
+	@Override
+	public BlockQuarryMarker getBlock() {
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() {
+		return resourceLocation;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public ItemBlock getItemBlock() {
+		return itemBlock != null ? itemBlock : (itemBlock = new ItemBlock(this));
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 1.0f;
+	}
+
+	@Override
+	public EnumHarvestLevel getHarvestLevel() {
+		return EnumHarvestLevel.PICKAXE_WOOD;
+	}
 }

@@ -155,8 +155,9 @@ tile.blockAluminium.name=Block of Aluminium
 tile.blockUranium.name=Block of Uranium
 
 // Fuels:
-item.emptyFuelRod.name=Empty Fuel Rod
+item.fuelRod_Empty.name=Empty Fuel Rod
 item.fuelRod.name=Uranium Fuel Rod
+item.fuelRod_Full.name=Full Uranium Fuel Rod
 
 // Fluids:
 tile.blockFluidOil.still.name=Crude Oil

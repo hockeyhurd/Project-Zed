@@ -6,11 +6,10 @@
 */
 package com.projectzed.mod.block.container;
 
-import net.minecraft.block.material.Material;
-
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeGreenOpaque;
+import net.minecraft.block.material.Material;
 
 /**
  * Block class for itemPipeGreenOpaque.

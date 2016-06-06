@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,23 +31,42 @@ import java.util.List;
  */
 public class ItemFuelRod extends AbstractHCoreItem {
 
-	private boolean isEmpty;
+	private ResourceLocation[] resourceLocations;
 
 	/**
 	 * @param name
 	 * @param assetDir
 	 */
-	public ItemFuelRod(String name, String assetDir, boolean isEmpty) {
+	public ItemFuelRod(String name, String assetDir) {
 		super(ProjectZed.modCreativeTab, assetDir, name);
-		this.isEmpty = isEmpty;
-		this.setHasSubtypes(!isEmpty);
-		this.setMaxDamage(10);
-		if (!isEmpty) this.maxStackSize = 1;
+		this.setHasSubtypes(true);
+		// this.setMaxDamage(10);
+		this.maxStackSize = 1;
+		resourceLocations = new ResourceLocation[11];
+
+		for (int i = 0; i < resourceLocations.length; i++)
+			resourceLocations[i] = new ResourceLocation(assetDir, name + '_' + i);
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		String name = super.getUnlocalizedName();
+		final int meta = stack.getMetadata();
+
+		if (meta == 0) name += "_Empty";
+		else if (meta == resourceLocations.length - 1) name += "_Full";
+
+		return name;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation(int meta) {
+		return resourceLocations[meta];
 	}
 
 	@Override
 	public int getSizeOfSubItems() {
-		return !isEmpty ? 10 : 0;
+		return resourceLocations.length;
 	}
 
 	@Override
@@ -60,10 +80,12 @@ public class ItemFuelRod extends AbstractHCoreItem {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean flag) {
-		
-		if (!isEmpty && stack.getItemDamage() < stack.getMaxDamage()) {
-			int left = 10 - stack.getItemDamage();
-			list.add(TextFormatting.GREEN + "Uses left: " + TextFormatting.WHITE + left);
+		final int damage = stack.getItemDamage();
+
+		if (/*damage > 0 && */damage < resourceLocations.length) {
+			// int left = 10 - stack.getItemDamage();
+
+			list.add(TextFormatting.GREEN + "Uses left: " + TextFormatting.WHITE + damage);
 		}
 	}
 
@@ -73,7 +95,7 @@ public class ItemFuelRod extends AbstractHCoreItem {
 			ProjectZed.logHelper.info("name:", itemStackIn.getUnlocalizedName(), "meta:", itemStackIn.getMetadata());
 		}
 
-		return new ActionResult(EnumActionResult.PASS, itemStackIn);
+		return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
 	}
 	
 }

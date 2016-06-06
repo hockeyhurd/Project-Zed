@@ -1,0 +1,19 @@
+{
+  "parent": "block/cube",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ 0, 135, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    }
+  },
+  "textures": {
+    "up": "projectzed:blocks/atomicBomb",
+    "down": "projectzed:blocks/atomicBomb",
+    "north": "projectzed:blocks/atomicBomb",
+    "east": "projectzed:blocks/atomicBomb",
+    "west": "projectzed:blocks/atomicBomb",
+    "south": "projectzed:blocks/atomicBomb",
+    "particle": "projectzed:blocks/atomicBomb"
+  }
+}

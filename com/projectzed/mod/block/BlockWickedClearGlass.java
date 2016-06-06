@@ -14,6 +14,14 @@ import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -50,6 +58,16 @@ public class BlockWickedClearGlass extends AbstractHCoreBlockContainer {
 	@Override
 	public AbstractTile getTileEntity() {
 		return new TileEntityWickedClearGlass();
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase placer, ItemStack stack) {
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+		return false;
 	}
 
 	@Override

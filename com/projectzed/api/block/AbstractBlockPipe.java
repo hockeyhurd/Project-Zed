@@ -13,8 +13,11 @@ import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -115,5 +118,11 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 	 * @param pos BlockPos.
 	 */
 	protected abstract void doBreakBlock(World world, BlockPos pos);
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
+			EnumFacing sideHit, float hitX, float hitY, float hitZ) {
+		return false;
+	}
 
 }

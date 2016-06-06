@@ -1,0 +1,19 @@
+{
+  "parent": "block/cube",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ 0, 135, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    }
+  },
+  "textures": {
+    "up": "projectzed:blocks/stoneCraftingTable_top",
+    "down": "blocks/stone",
+    "north": "projectzed:blocks/stoneCraftingTable_front",
+    "east": "projectzed:blocks/stoneCraftingTable_side",
+    "west": "projectzed:blocks/stoneCraftingTable_side",
+    "south": "projectzed:blocks/stoneCraftingTable_front",
+    "particle": "projectzed:blocks/stoneCraftingTable_side"
+  }
+}

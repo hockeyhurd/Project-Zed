@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "facing=up": { "model": "projectzed:quarryMarker" },
+    "facing=east": { "model": "projectzed:quarryMarker_wall" },
+    "facing=south": { "model": "projectzed:quarryMarker_wall", "y": 90 },
+    "facing=west": { "model": "projectzed:quarryMarker_wall", "y": 180 },
+    "facing=north": { "model": "projectzed:quarryMarker_wall", "y": 270 }
+  }
+}

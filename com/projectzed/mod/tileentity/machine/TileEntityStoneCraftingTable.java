@@ -117,12 +117,14 @@ public class TileEntityStoneCraftingTable extends AbstractTileEntityGeneric impl
 	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {
 		if (facingDir == EnumFacing.DOWN || facingDir == EnumFacing.UP) return frontFacing;
 
-		return (frontFacing = frontFacing.rotateY());
+		// return (frontFacing = frontFacing.rotateY());
+		return (frontFacing = facingDir.getOpposite());
 	}
 
 	@Override
 	public EnumFacing getCurrentFacing() {
-		return frontFacing;
+		// return frontFacing;
+		return EnumFacing.getFront(getBlockMetadata()); // TODO: temp fix until sync issues are resolved.
 	}
 
 	@Override

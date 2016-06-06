@@ -39,16 +39,17 @@ public class CentrifugeRecipeRegistry {
 		mapVanilla = new HashMap<StackMapper<ItemStack>, ItemStack>();
 		mapModdedTry = new HashMap<StackMapper<String>, String>();
 		
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.emptyFuelRod, 1)), new ItemStack(ProjectZed.fullFuelRod, 1, 9));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 9)), new ItemStack(ProjectZed.fullFuelRod, 1, 8));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 8)), new ItemStack(ProjectZed.fullFuelRod, 1, 7));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 7)), new ItemStack(ProjectZed.fullFuelRod, 1, 6));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 6)), new ItemStack(ProjectZed.fullFuelRod, 1, 5));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 5)), new ItemStack(ProjectZed.fullFuelRod, 1, 4));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 4)), new ItemStack(ProjectZed.fullFuelRod, 1, 3));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 3)), new ItemStack(ProjectZed.fullFuelRod, 1, 2));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 2)), new ItemStack(ProjectZed.fullFuelRod, 1, 1));
-		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fullFuelRod, 1, 1)), new ItemStack(ProjectZed.fullFuelRod, 1, 0));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1)), new ItemStack(ProjectZed.fuelRod, 1, 10));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 10)), new ItemStack(ProjectZed.fuelRod, 1, 9));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 9)), new ItemStack(ProjectZed.fuelRod, 1, 8));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 8)), new ItemStack(ProjectZed.fuelRod, 1, 7));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 7)), new ItemStack(ProjectZed.fuelRod, 1, 6));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 6)), new ItemStack(ProjectZed.fuelRod, 1, 5));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 5)), new ItemStack(ProjectZed.fuelRod, 1, 4));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 4)), new ItemStack(ProjectZed.fuelRod, 1, 3));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 3)), new ItemStack(ProjectZed.fuelRod, 1, 2));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 2)), new ItemStack(ProjectZed.fuelRod, 1, 1));
+		mapVanilla.put(createStack(new ItemStack(ProjectZed.dustUranium, 1), new ItemStack(ProjectZed.fuelRod, 1, 1)), new ItemStack(ProjectZed.fuelRod, 1, 0));
 		
 		initEntries();
 	}

@@ -53,7 +53,7 @@ public class BlockNuclearControlPort extends AbstractBlockNuclearComponent imple
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityNuclearControlPort();
 	}
-	
+
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos blockPos, IBlockState state, Block neighborBlock) {
 		if (!world.isRemote) {

@@ -110,7 +110,8 @@ public final class CraftingRegistry {
 				'd', gearIron));
 		reg.shapedList.add(createShapedRecipe(photoviolicCell, 3, "gdg", "nrn", 'g', "blockGlass", 'd', "gemDiamond", 'r', Items.redstone, 'n',
 				"nuggetIron"));
-		reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
+		// reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(fuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(dustMixedAlloy, 2, "xxx", "yyy", "zzz", 'x', "dustIron", 'y', "dustCopper", 'z', "dustTitanium"));
 		reg.shapedList.add(createShapedRecipe(silkTouchUpgrade, 1, "sds", "rar", 'a', "plateAluminium", 'd', Items.diamond_pickaxe, 'r', Items.redstone, 's', Items.string));
@@ -204,7 +205,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', emptyFuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', fuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearCopper, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialLoader, 1, "xyx", "yzy", "xyx", 'x', Blocks.obsidian, 'y', "plateReinforced", 'z', machineContainer));
 		reg.shapedList.add(createShapedRecipe(industrialQuarry, 1, "eae", "sbs", "dcd", 'a', titaniumDrill, 'b', machineContainer, 'c', conductiveCoil, 'd', gearDiamond, 'e', energyPipeClear, 's', screw));

@@ -10,6 +10,7 @@ import com.hockeyhurd.hcorelib.api.creativetab.AbstractCreativeTab;
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
 import com.hockeyhurd.hcorelib.api.util.FluidFactory;
 import com.hockeyhurd.hcorelib.api.util.LogHelper;
+import com.hockeyhurd.hcorelib.api.util.SidedHelper;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumArmorType;
 import com.hockeyhurd.hcorelib.api.util.interfaces.IForgeMod;
 import com.hockeyhurd.hcorelib.api.worldgen.HCWorldGenFluid;
@@ -203,8 +204,8 @@ public final class ProjectZed implements IForgeMod {
 	// Material:
 	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
 	public static final Material MATERIAL_PETROL = new MaterialLiquid(MapColor.airColor);
-	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", "ZPlated", 100, new int[] { 3, 8, 6, 3 }, 25,
-			SoundEvents.item_armor_equip_iron);
+	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", assetDir + ":ZPlated", 100,
+			new int[] { 3, 8, 6, 3 }, 25, SoundEvents.item_armor_equip_iron);
 
 	// Armor:
 	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
@@ -250,8 +251,8 @@ public final class ProjectZed implements IForgeMod {
 	public static Block blockUranium;
 	
 	// Fuels
-	public static Item emptyFuelRod;
-	public static Item fullFuelRod;
+	// public static Item emptyFuelRod;
+	public static Item fuelRod;
 	
 	// Worldgen stuff:
 	public static OreWorldgen worldgenTitanium;
@@ -296,8 +297,14 @@ public final class ProjectZed implements IForgeMod {
 		
 		ModsLoadedHelper.instance().init();
 		ModsLoadedHelper.instance().logFindings(logHelper);
+
+		logHelper.info("Generating blocks, items, various objects and tinkering tools...");
+		loadObj();
+
+		logHelper.info("Initializing up proxy on side:", SidedHelper.getSide().name());
+		proxy.init();
 		
-		logHelper.info("Pre-init finished succesfully after", tl.getEffectiveTimeSince(), "ms!");
+		logHelper.info("Pre-init finished successfully after", tl.getEffectiveTimeSince(), "ms!");
 	}
 
 	@Override
@@ -306,12 +313,15 @@ public final class ProjectZed implements IForgeMod {
 		tl.resetStartTime();
 		logHelper.info("Init started");
 
-		logHelper.info("Generating blocks, items, various objects and tinkering tools...");
+		/*logHelper.info("Generating blocks, items, various objects and tinkering tools...");
 		loadObj();
 
 		logHelper.info("Setting up proxy on side: " + FMLCommonHandler.instance().getEffectiveSide().name());
 
-		proxy.init();
+		proxy.init();*/
+
+		logHelper.info("Setting up additional proxy stuffs on side:", SidedHelper.getSide().name());
+
 		proxy.registerRenderInformation();
 		proxy.registerInputHandlers();
 		
@@ -496,10 +506,10 @@ public final class ProjectZed implements IForgeMod {
 		craftingPattern = new ItemCraftingPattern("craftingPattern", true);
 
 		// Armor:
-		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.HELMET).setUnlocalizedName("zPlatedHelmet");
-		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.CHEST).setUnlocalizedName("zPlatedChestplate");
-		zPlatedLeg = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.LEGGINGS).setUnlocalizedName("zPlatedLeggings");
-		zPlatedBoot = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.BOOTS).setUnlocalizedName("zPlatedBoots");
+		zPlatedHelm = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.HELMET);
+		zPlatedChest = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.CHEST);
+		zPlatedLeg = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.LEGGINGS);
+		zPlatedBoot = new ArmorSetZPlated(zPlatedMat, 0, EnumArmorType.BOOTS);
 		
 		// Tools:
 		wrench = new ItemWrench("wrench");
@@ -540,8 +550,8 @@ public final class ProjectZed implements IForgeMod {
 		blockUranium = new BlockUranium(Material.iron, "blockUranium");
 
 		// Fuels:
-		emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);
-		fullFuelRod = new ItemFuelRod("fuelRod", assetDir, false);
+		// emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);
+		fuelRod = new ItemFuelRod("fuelRod", assetDir);
 		
 		// Worldgen:
 		if (configHandler.genOreTitanium()) worldgenTitanium = new OreWorldgen(oreTitanium, 7, 4, 8, 8, 24);
