@@ -41,7 +41,11 @@
         }
       },
 
-      "false": {  }
+      "false": { 
+		"textures": {
+		  "north": "projectzed:blocks/industrialLumberMill_front"
+		}
+	  }
     }
 
   }

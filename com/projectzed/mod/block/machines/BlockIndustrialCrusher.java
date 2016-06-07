@@ -34,7 +34,7 @@ public class BlockIndustrialCrusher extends AbstractBlockMachine {
 	}
 
 	@Override
-	public AbstractTileEntityMachine getTileEntity() {
+	public TileEntityIndustrialCrusher getTileEntity() {
 		return new TileEntityIndustrialCrusher();
 	}
 

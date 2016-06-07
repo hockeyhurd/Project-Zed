@@ -10,7 +10,6 @@ import com.projectzed.api.block.AbstractBlockContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import net.minecraft.block.material.Material;
@@ -46,55 +45,12 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		this.TIER = Byte.parseByte("" + name.charAt(name.length() - 1));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#renderAsNormalBlock()
-	 */
+	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean renderAsNormalBlock() {
+	public boolean isOpaqueCube(IBlockState blockState) {
 		return false;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#isOpaqueCube()
-	 */
-	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube() {
-		return false;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#canRenderInPass(int)
-	 */
-	@SideOnly(Side.CLIENT)
-	public boolean canRenderInPass(int pass) {
-		ClientProxy.renderPass = pass;
-		return true;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getRenderBlockPass()
-	 */
-	@SideOnly(Side.CLIENT)
-	public int getRenderBlockPass() {
-		return 1;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#getRenderType()
-	 */
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.energyCell;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
-	 */
 	@Override
 	public AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityEnergyBankBase te = new TileEntityEnergyBankBase();
@@ -123,10 +79,6 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.block.Block#onBlockPlacedBy(net.minecraft.world.World, int, int, int, net.minecraft.entity.EntityLivingBase, net.minecraft.item.ItemStack)
-	 */
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState block, EntityLivingBase e, ItemStack stack) {
 		super.onBlockPlacedBy(world, pos, block, e, stack);

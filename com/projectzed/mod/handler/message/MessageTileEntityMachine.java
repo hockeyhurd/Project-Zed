@@ -33,6 +33,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	private AbstractTileEntityMachine te;
 	private Vector3<Integer> vec;
 	private int stored, energyBurnRate;
+	private int cookTime;
 	private int scaledCookTime;
 	private boolean powerMode;
 	
@@ -50,6 +51,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		this.vec = te.worldVec();
 		this.stored = te.getEnergyStored();
 		this.energyBurnRate = te.getEnergyBurnRate();
+		this.cookTime = te.getCookTime();
 		this.scaledCookTime = te.scaledTime;
 		this.powerMode = te.isPoweredOn();
 		this.containsFluid = te instanceof TileEntityIndustrialCentrifuge;
@@ -71,6 +73,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 
 		this.stored = buf.readInt();
 		this.energyBurnRate = buf.readInt();
+		this.cookTime = buf.readInt();
 		this.scaledCookTime = buf.readInt();
 		this.powerMode = buf.readBoolean();
 		this.containsFluid = buf.readBoolean();
@@ -90,6 +93,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 		buf.writeInt(vec.z);
 		buf.writeInt(stored);
 		buf.writeInt(energyBurnRate);
+		buf.writeInt(cookTime);
 		buf.writeInt(scaledCookTime);
 		buf.writeBoolean(powerMode);
 		buf.writeBoolean(containsFluid);
@@ -105,39 +109,42 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 	@Override
 	public IMessage onMessage(MessageTileEntityMachine message, MessageContext ctx) {
 		if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
+			final TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
-			if (te instanceof AbstractTileEntityMachine) {
-				((AbstractTileEntityMachine) te).setEnergyStored(message.stored);
-				((AbstractTileEntityMachine) te).setEnergyBurnRate(message.energyBurnRate);
-				((AbstractTileEntityMachine) te).setPowerMode(message.powerMode);
-				((AbstractTileEntityMachine) te).scaledTime = message.scaledCookTime;
-				((AbstractTileEntityMachine) te).setRedstoneType(message.redstoneType);
+			if (tileEntity instanceof AbstractTileEntityMachine) {
+				final AbstractTileEntityMachine te = (AbstractTileEntityMachine) tileEntity;
+				
+				te.setEnergyStored(message.stored);
+				te.setEnergyBurnRate(message.energyBurnRate);
+				te.setPowerMode(message.powerMode);
+				te.setCookTime(message.cookTime);
+				te.scaledTime = message.scaledCookTime;
+				te.setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {
-					((AbstractTileEntityMachine) te).setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
+					te.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 
 				if (message.containsFluid && message.fluidStored > 0)
-					((TileEntityIndustrialCentrifuge) te).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored));
+					((TileEntityIndustrialCentrifuge) tileEntity).getTank().setFluid(new FluidStack(FluidRegistry.WATER, message.fluidStored));
 			}
 		}
 		
 		else if (ctx.side == Side.SERVER) {
-			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity te = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
+			final World world = ctx.getServerHandler().playerEntity.worldObj;
+			final TileEntity tileEntity = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 			
-			if (world != null && te != null && te instanceof AbstractTileEntityMachine) {
-				AbstractTileEntityMachine te2 = (AbstractTileEntityMachine) te;
+			if (world != null && tileEntity != null && tileEntity instanceof AbstractTileEntityMachine) {
+				final AbstractTileEntityMachine te = (AbstractTileEntityMachine) tileEntity;
 
-				te2.setEnergyStored(message.stored);
-				te2.setEnergyBurnRate(message.energyBurnRate);
-				te2.setPowerMode(message.powerMode);
-				te2.scaledTime = message.energyBurnRate;
-				te2.setRedstoneType(message.redstoneType);
+				te.setEnergyStored(message.stored);
+				te.setEnergyBurnRate(message.energyBurnRate);
+				te.setPowerMode(message.powerMode);
+				te.scaledTime = message.energyBurnRate;
+				te.setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {
-					te2.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
+					te.setSideValve(EnumFacing.VALUES[i], message.openSides[i]);
 				}
 			}
 		}

@@ -44,7 +44,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 	protected static final PropertyBool ACTIVE = PropertyBool.create("active");
 
 	protected boolean active;
-	protected static boolean keepInventory;
+	protected static boolean keepInventory = true;
 
 	protected static final Random random = new Random();
 
@@ -98,13 +98,12 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 		if (world.isRemote) return;
 
 		final AbstractTileEntityMachine tileEntity = (AbstractTileEntityMachine) world.getTileEntity(blockPos);
-		keepInventory = true;
 
 		if (tileEntity != null) {
 			IBlockState blockState = BlockUtils.getBlock(world, blockPos);
 			blockState = blockState.withProperty(FACING, tileEntity.getCurrentFacing()).withProperty(ACTIVE, active);
 			BlockUtils.setBlock(world, blockPos, blockState, 2);
-			BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+			// BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
 
 			tileEntity.markDirty();
 		}
@@ -178,7 +177,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
-		if (!keepInventory) {
+		if (keepInventory) {
 			AbstractTileEntityMachine te = (AbstractTileEntityMachine) world.getTileEntity(pos);
 
 			if (te != null) {
@@ -186,12 +185,12 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 					ItemStack stack = te.getStackInSlot(j1);
 
 					if (stack != null) {
-						float f = this.random.nextFloat() * 0.8F + 0.1F;
-						float f1 = this.random.nextFloat() * 0.8F + 0.1F;
-						float f2 = this.random.nextFloat() * 0.8F + 0.1F;
+						float f = random.nextFloat() * 0.8F + 0.1F;
+						float f1 = random.nextFloat() * 0.8F + 0.1F;
+						float f2 = random.nextFloat() * 0.8F + 0.1F;
 
 						while (stack.stackSize > 0) {
-							int k1 = this.random.nextInt(21) + 10;
+							int k1 = random.nextInt(21) + 10;
 
 							if (k1 > stack.stackSize) {
 								k1 = stack.stackSize;
@@ -206,9 +205,9 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 							}
 
 							float f3 = 0.05F;
-							entityitem.motionX = (double) ((float) this.random.nextGaussian() * f3);
-							entityitem.motionY = (double) ((float) this.random.nextGaussian() * f3 + 0.2F);
-							entityitem.motionZ = (double) ((float) this.random.nextGaussian() * f3);
+							entityitem.motionX = (double) ((float) random.nextGaussian() * f3);
+							entityitem.motionY = (double) ((float) random.nextGaussian() * f3 + 0.2F);
+							entityitem.motionZ = (double) ((float) random.nextGaussian() * f3);
 							world.spawnEntityInWorld(entityitem);
 						}
 					}
@@ -244,7 +243,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 		if (te != null && te.canRotateTE()) {
 			EnumFacing dir = te.getCurrentFacing();
 			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
-			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.isBurning());
+			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.getCookTime() > 0);
 		}
 
 		return blockState;

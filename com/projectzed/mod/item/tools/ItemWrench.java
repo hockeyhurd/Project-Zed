@@ -7,13 +7,16 @@
 package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.IWrenchable;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -104,26 +107,44 @@ public class ItemWrench extends AbstractHCoreItem {
 	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumFacing side,
 			float hitX, float hitY, float hitZ, EnumHand hand) {
 
+		player.swingArm(hand);
 		IBlockState blockState = BlockUtils.getBlock(world, blockPos);
-		if (blockState.getBlock() != Blocks.air && !player.isSneaking()) {
+		if (blockState.getBlock() != Blocks.air) {
 			if (world.isRemote) return EnumActionResult.PASS;
 
-			IWrenchable wrenchable = (IWrenchable) world.getTileEntity(blockPos);
+			final IWrenchable wrenchable = (IWrenchable) world.getTileEntity(blockPos);
+			if (wrenchable == null) return EnumActionResult.FAIL;
 
-			// if (blockState.getBlock().rotateBlock(world, blockPos, player.getHorizontalFacing())) {
-			// if ((blockState = blockState.getBlock().withRotation(blockState, Rotation.CLOCKWISE_90)) != null) {
-			if ((blockState = blockState.getBlock().withRotation(blockState, getRotation(player.getAdjustedHorizontalFacing(),
-					wrenchable.getCurrentFacing()))) != null) {
-				BlockUtils.setBlock(world, blockPos, blockState, 2);
-				BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+			if (!player.isSneaking()) {
+				if ((blockState = blockState.getBlock().withRotation(blockState, getRotation(side.getOpposite(),
+						wrenchable.getCurrentFacing()))) != null) {
+					BlockUtils.setBlock(world, blockPos, blockState, 2);
+					BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+				}
+
+				wrenchable.setFrontFacing(side.getOpposite());
 			}
 
-			wrenchable.setFrontFacing(player.getHorizontalFacing().getOpposite());
-			// IBlockState newState = blockState.getActualState(world, blockPos);
-			// BlockUtils.setBlock(world, blockPos, newState, 3);
-			// BlockUtils.updateAndNotifyNeighborsOfBlockUpdate(world, blockPos);
+			else if (player.isSneaking() && wrenchable.canSaveDataOnPickup()) {
 
-			player.swingArm(hand);
+				ItemStack itemToDrop = new ItemStack(blockState.getBlock(), 1);
+
+				NBTTagCompound comp;
+				if (itemToDrop.hasTagCompound()) comp = itemToDrop.getTagCompound();
+				else {
+					comp = new NBTTagCompound();
+					itemToDrop.setTagCompound(comp);
+				}
+
+				wrenchable.saveNBT(comp);
+
+				BlockUtils.setBlockToAir(world, blockPos);
+				WorldUtils.addItemDrop(itemToDrop, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			}
+
+			wrenchable.onInteract(stack, player, world, VectorHelper.toVector3i(blockPos));
+
+			// player.swingArm(hand);
 
 			return EnumActionResult.PASS;
 		}

@@ -229,6 +229,25 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		return cookTime > 0 && scaledTime > 0 ? cookTime * i / scaledTime : cookTime == 0 ? 0 : cookTime > 0 ? 1 : 0;
 	}
 
+	/**
+	 * Gets the cook time.
+	 *
+	 * @return int.
+	 */
+	public int getCookTime() {
+		return cookTime;
+	}
+
+	/**
+	 * Sets the cooktime.
+	 *
+	 * @param cookTime int cook time.
+	 */
+	@SideOnly(Side.CLIENT)
+	public void setCookTime(int cookTime) {
+		this.cookTime = cookTime;
+	}
+
 	public boolean isBurning() {
 		return this.stored > 0;
 	}
@@ -274,7 +293,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.stored > 0) burnEnergy();
 
 		if (!this.worldObj.isRemote) {
-			if (this.worldObj.getTotalWorldTime() % 20L == 0) handleSidedIO();
+			if (this.worldObj.getTotalWorldTime() % 20L == 0) {
+				handleSidedIO();
+				if (blockType != null) ((AbstractBlockMachine) blockType).updateBlockState(cookTime > 0 && isPoweredOn(), worldObj, pos);
+			}
 			
 			// if (!isActiveFromRedstoneSignal()) return;
 			
@@ -302,9 +324,10 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityMachine(this));
 		}
 
-		if (worldObj.getTotalWorldTime() % 20L == 0 && blockType != null && blockType instanceof AbstractBlockMachine) {
-			((AbstractBlockMachine) blockType).updateBlockState(isPoweredOn(), worldObj, pos);
-		}
+		/*if (worldObj.getTotalWorldTime() % 20L == 0 && blockType != null && blockType instanceof AbstractBlockMachine) {
+			((AbstractBlockMachine) blockType).updateBlockState(cookTime > 0, worldObj, pos);
+			// ProjectZed.logHelper.info("cooktime:", cookTime > 0);
+		}*/
 		
 		if (flag1) this.markDirty();
 	}
