@@ -57,6 +57,11 @@ public class BlockThickenedGlass extends BlockGlass implements IHBlock {
 	}
 
 	@Override
+	public boolean hasSpecialRenderer() {
+		return false;
+	}
+
+	@Override
 	public ResourceLocation getResourceLocation() {
 		return resourceLocation;
 	}

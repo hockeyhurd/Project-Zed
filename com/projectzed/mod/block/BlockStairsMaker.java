@@ -61,6 +61,11 @@ public class BlockStairsMaker extends BlockStairs implements IHBlock {
 	}
 
 	@Override
+	public boolean hasSpecialRenderer() {
+		return false;
+	}
+
+	@Override
 	public ResourceLocation getResourceLocation() {
 		return resourceLocation;
 	}

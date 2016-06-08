@@ -252,6 +252,11 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 	}
 
 	@Override
+	public boolean hasSpecialRenderer() {
+		return false;
+	}
+
+	@Override
 	public ResourceLocation getResourceLocation() {
 		return resourceLocation;
 	}

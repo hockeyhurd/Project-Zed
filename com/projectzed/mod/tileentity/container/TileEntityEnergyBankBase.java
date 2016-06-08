@@ -29,7 +29,7 @@ import net.minecraft.util.EnumFacing;
  */
 public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer implements IModularFrame {
 
-	protected byte tier; 
+	protected int tier;
 	protected int[] tiers = new int[] {
 		(int) 1e6, (int) 1e7, (int) 1e8, (int) 1e9, 	
 	};
@@ -46,17 +46,17 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	
 	/**
 	 * Allows setting tier of energy bank.
-	 * @param b = tier number (should be 0, 1, 2, 3).
+	 * @param tier tier number (should be 0, 1, 2, 3).
 	 */
-	public void setTier(byte b) {
-		this.tier = b >= 0 && b <= tiers.length ? b : 0;
-		this.maxPowerStorage = tiers[b];
+	public void setTier(int tier) {
+		this.tier = tier >= 0 && tier <= tiers.length ? tier : 0;
+		this.maxPowerStorage = tiers[tier];
 	}
 	
 	/**
 	 * @return tier of energy cell.
 	 */
-	public byte getTier() {
+	public int getTier() {
 		return this.tier;
 	}
 
@@ -224,7 +224,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	public void readNBT(NBTTagCompound comp) {
 		
 		// Make sure the tier from nbt is acceptable.
-		byte tier = comp.getByte("ProjectZedEnergyBankTier");
+		int tier = comp.getInteger("ProjectZedEnergyBankTier");
 		this.tier = tier >= 0 && tier < this.tiers.length ? tier : 0;
 		if (this.maxPowerStorage != this.tiers[this.tier]) this.maxPowerStorage = this.tiers[this.tier];
 
@@ -239,7 +239,7 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	
 	@Override
 	public void saveNBT(NBTTagCompound comp) {
-		comp.setByte("ProjectZedEnergyBankTier", this.tier);
+		comp.setInteger("ProjectZedEnergyBankTier", this.tier);
 
 		if (this.openSides == null) this.openSides = new byte[EnumFacing.VALUES.length];
 		

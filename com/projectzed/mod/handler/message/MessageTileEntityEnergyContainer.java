@@ -54,7 +54,7 @@ public class MessageTileEntityEnergyContainer implements IMessage, IMessageHandl
 		this.maxImportRate = cont.getMaxImportRate();
 		this.maxExportRate = cont.getMaxExportRate();
 
-		this.lastReceivedDir = cont instanceof TileEntityEnergyPipeBase ? ((TileEntityEnergyPipeBase) te).getLastReceivedDirection() : null;
+		this.lastReceivedDir = cont instanceof TileEntityEnergyPipeBase ? te.getLastReceivedDirection() : null;
 
 		if (cont instanceof TileEntityEnergyBankBase) {
 			isEnergyCell = true;

@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockEnergyCell extends AbstractBlockContainer {
 
-	private final byte TIER;
+	private final int TIER;
 	
 	/**
 	 * @param material
@@ -42,15 +43,32 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	 */
 	public BlockEnergyCell(Material material, String name) {
 		super(material, ProjectZed.assetDir, name);
-		this.TIER = Byte.parseByte("" + name.charAt(name.length() - 1));
+		this.TIER = Integer.parseInt("" + name.charAt(name.length() - 1));
+	}
+
+	@Override
+	// @SideOnly(Side.CLIENT)
+	public boolean isOpaqueCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public boolean hasSpecialRenderer() {
+		return true;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube(IBlockState blockState) {
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState state)
+	{
 		return false;
 	}
-	
+
 	@Override
 	public AbstractTileEntityEnergyContainer getTileEntity() {
 		TileEntityEnergyBankBase te = new TileEntityEnergyBankBase();
@@ -67,7 +85,7 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 		else {
 			TileEntityEnergyBankBase te = (TileEntityEnergyBankBase) world.getTileEntity(pos);
 			if (te != null) {
-				if (stack.getItem() == null || !(stack.getItem() instanceof ItemWrench))
+				if (stack == null || !(stack.getItem() instanceof ItemWrench))
 					FMLNetworkHandler
 							.openGui(player, ProjectZed.instance, TileEntityRegistry.instance().getID(TileEntityEnergyBankBase.class),
 									world, pos.getX(), pos.getY(), pos.getZ());

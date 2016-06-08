@@ -16,9 +16,12 @@ import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
+import com.projectzed.mod.renderer.EnergyBankRenderer;
+import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -158,6 +161,8 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ProjectZed.wickedClearGlass), new WickedClearGlassItemRenderer(ProjectZed.wickedClearGlass.getBlockTextureFromSide(0)));
 		
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());*/
+
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyBankBase.class, new EnergyBankRenderer());
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());
