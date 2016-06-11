@@ -57,7 +57,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		this.te = te;
 		this.xSize = 176;
 		this.ySize = 192;
-		int slots = this.te.getSizeInventory();
+		// int slots = this.te.getSizeInventory();
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiEnergyCell.png");
 		
@@ -87,7 +87,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		float progress = (float) ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
+		float progress = ((float) this.te.getEnergyStored() / (float) this.te.getMaxStorage()) * 160f;
 		this.drawTexturedModalRect(guiLeft + 7, guiTop + 61 + 32, 0, 202, (int) progress, 17);
 	}
 
@@ -101,9 +101,12 @@ public class GuiEnergyContainer extends GuiContainer {
 		if (isEnergyCell) {
 			
 			waila.finder(false);
-			
-			this.buttons = getLayoutFromFacingDirection(waila.getSideHit(), posX, posY);
-	
+
+			ProjectZed.logHelper.info("Side hit:", waila.getSideHit());
+			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
+			// this.buttons = getLayoutFromFacingDirection(waila.getSideHit(), posX, posY);
+			this.buttons = getLayoutFromFacingDirection(player.getHorizontalFacing(), posX, posY);
+
 			if (this.buttons != null) {
 				for (GuiButton b : buttons) {
 					// b.visible = false;

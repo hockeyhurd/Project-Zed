@@ -18,14 +18,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for energy bank cell.
@@ -47,25 +45,17 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 	}
 
 	@Override
-	// @SideOnly(Side.CLIENT)
-	public boolean isOpaqueCube(IBlockState blockState) {
-		return false;
-	}
-
-	@Override
 	public boolean hasSpecialRenderer() {
 		return true;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.CUTOUT;
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state)
-	{
+	public boolean isOpaqueCube(IBlockState blockState) {
 		return false;
 	}
 

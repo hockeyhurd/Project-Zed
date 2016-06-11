@@ -33,11 +33,12 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer<TileEntityEner
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 0xf0 % 0x10000, 0xf0 / 0x10000);
 		bindTexture(TEXTURE);
 
+		// drawCuboid(te, 0f, 1f);
+
+		// drawCuboid(te, 0f, 1f, 1);
 		drawCuboid(te, 0f, 1f, 0);
-		drawCuboid(te, 0f, 1f, 1);
-		drawCuboid(te, 0f, 1f, 2);
-		// drawCuboid(te, 1f / 48f, 1f - 1f / 48f, 1);
-		// drawCuboid(te, 2f / 48f, 1f - 2f / 48f, 2);
+		drawCuboid(te, 1f / 48f, 1f - 1f / 48f, 1);
+		drawCuboid(te, 2f / 48f, 1f - 2f / 48f, 2);
 
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_LIGHTING);
@@ -47,7 +48,14 @@ public class EnergyBankRenderer extends TileEntitySpecialRenderer<TileEntityEner
 
 	private void drawCuboid(TileEntityEnergyBankBase te, float min, float max, int layer) {
 		// ProjectZed.logHelper.info("Called!");
-		drawCuboid(te, new Vector3<Float>(min, min, min), new Vector3<Float>(max, max, max), layer);
+
+		final Vector3<Float> minVec = new Vector3<Float>(min, min, min);
+		final Vector3<Float> maxVec = new Vector3<Float>(max, max, max);
+
+		// for (int i = 0; i < 3; i++)
+			// drawCuboid(te, minVec, maxVec, i);
+
+		drawCuboid(te, minVec, maxVec, layer);
 
 		// vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 	}
