@@ -21,9 +21,9 @@ import net.minecraft.block.material.Material;
 public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 
 	public BlockNuclearReactorGlass() {
-		super(Material.glass, "nuclearReactorGlass");
+		super(Material.GLASS, "nuclearReactorGlass");
 		this.setResistance(2000.0f);
-		this.setStepSound(SoundType.GLASS);
+		this.setSoundType(SoundType.GLASS);
 		this.setLightOpacity(0);
 	}
 

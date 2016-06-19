@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 public class BlockIndustrialLoader extends AbstractHCoreBlockContainer {
 
 	public BlockIndustrialLoader() {
-		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, "industrialLoader");
+		super(Material.ROCK, ProjectZed.modCreativeTab, ProjectZed.assetDir, "industrialLoader");
 	}
 
 	@Override

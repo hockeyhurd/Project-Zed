@@ -140,8 +140,8 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 	}
 
 	private boolean canPlaceSapling(IBlockState currentBlock, IBlockState blockBelow, Block sapling) {
-		return currentBlock == Blocks.air && sapling != Blocks.air &&
-				(blockBelow.getMaterial() == Material.grass || blockBelow.getMaterial() == Material.ground);
+		return currentBlock == Blocks.AIR && sapling != Blocks.AIR &&
+				(blockBelow.getMaterial() == Material.GRASS || blockBelow.getMaterial() == Material.GROUND);
 	}
 
 	@Override

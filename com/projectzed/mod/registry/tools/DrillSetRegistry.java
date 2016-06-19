@@ -27,14 +27,14 @@ public class DrillSetRegistry implements IToolSetRegistry {
 	
 	private static Set set;
 	public static final Material[] mats = new Material[] {
-		Material.rock,	
-		Material.iron,	
-		Material.grass,
-		Material.ground,
-		Material.sand,
-		Material.piston,
-		Material.snow,
-		Material.circuits,
+		Material.ROCK,
+		Material.IRON,
+		Material.GRASS,
+		Material.GROUND,
+		Material.SAND,
+		Material.PISTON,
+		Material.SNOW,
+		Material.CIRCUITS,
 	};
 	
 	private DrillSetRegistry() {
@@ -49,7 +49,7 @@ public class DrillSetRegistry implements IToolSetRegistry {
 
 	@Override
 	public void init() {
-		Iterator iter = Block.blockRegistry.iterator();
+		Iterator iter = Block.REGISTRY.iterator();
 		Set<Block> temp = new HashSet<Block>();
 		
 		while (iter.hasNext()) {

@@ -16,7 +16,6 @@ import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -209,11 +208,21 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 	}
 	
 	// NOTE: server -> client
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+
+		return comp;
 	}
-	
+
 	// NOTE: client -> server
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {

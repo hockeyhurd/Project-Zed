@@ -51,7 +51,7 @@ public class MultiblockHelper {
 	 * @return true if valid, else returns false.
 	 */
 	private boolean isBlockValid(Block b) {
-		if (blocks == null || blocks.length == 0 || b == null || b == Blocks.air) return false;
+		if (blocks == null || blocks.length == 0 || b == null || b == Blocks.AIR) return false;
 		
 		boolean flag = false;
 		for (int i = 0; i < blocks.length; i++) {

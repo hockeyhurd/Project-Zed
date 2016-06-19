@@ -20,7 +20,7 @@ import net.minecraft.block.material.Material;
 public class BlockMachineContainer extends AbstractHCoreBlock {
 
 	public BlockMachineContainer() {
-		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, "machineContainer");
+		super(Material.ROCK, ProjectZed.modCreativeTab, ProjectZed.assetDir, "machineContainer");
 	}
 
 	@Override

@@ -153,7 +153,7 @@ public class WorldUtils {
 	public static IMultiBlockable<?> createFakeTE(Block block) {
 		IMultiBlockable<?> mb = null;
 		
-		if (block != null && block != Blocks.air) {
+		if (block != null && block != Blocks.AIR) {
 			if (block instanceof AbstractBlockNuclearComponent &&
 					((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
 				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();

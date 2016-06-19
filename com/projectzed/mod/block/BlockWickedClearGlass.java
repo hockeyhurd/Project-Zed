@@ -34,9 +34,9 @@ import java.util.Random;
 public class BlockWickedClearGlass extends AbstractHCoreBlockContainer {
 
 	public BlockWickedClearGlass() {
-		super(Material.glass, ProjectZed.modCreativeTab, ProjectZed.assetDir, "wickedClearGlass");
+		super(Material.GLASS, ProjectZed.modCreativeTab, ProjectZed.assetDir, "wickedClearGlass");
 		this.setResistance(2000.0f);
-		this.setStepSound(SoundType.GLASS);
+		this.setSoundType(SoundType.GLASS);
 		this.setLightOpacity(0);
 	}
 

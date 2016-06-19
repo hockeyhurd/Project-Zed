@@ -45,18 +45,18 @@ public class LumberMillRecipesRegistry implements IRegistrable {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping.
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 0), new ItemStack(Blocks.planks, 8, 0));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 1), new ItemStack(Blocks.planks, 8, 1));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 2), new ItemStack(Blocks.planks, 8, 2));
-		mapVanilla.put(new ItemStack(Blocks.log, 1, 3), new ItemStack(Blocks.planks, 8, 3));
-		mapVanilla.put(new ItemStack(Blocks.log2, 1, 0), new ItemStack(Blocks.planks, 8, 4));
-		mapVanilla.put(new ItemStack(Blocks.log2, 1, 1), new ItemStack(Blocks.planks, 8, 5));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 0), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 1), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 2), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 3), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 4), new ItemStack(Items.stick, 8));
-		mapVanilla.put(new ItemStack(Blocks.planks, 1, 5), new ItemStack(Items.stick, 8));
+		mapVanilla.put(new ItemStack(Blocks.LOG, 1, 0), new ItemStack(Blocks.PLANKS, 8, 0));
+		mapVanilla.put(new ItemStack(Blocks.LOG, 1, 1), new ItemStack(Blocks.PLANKS, 8, 1));
+		mapVanilla.put(new ItemStack(Blocks.LOG, 1, 2), new ItemStack(Blocks.PLANKS, 8, 2));
+		mapVanilla.put(new ItemStack(Blocks.LOG, 1, 3), new ItemStack(Blocks.PLANKS, 8, 3));
+		mapVanilla.put(new ItemStack(Blocks.LOG2, 1, 0), new ItemStack(Blocks.PLANKS, 8, 4));
+		mapVanilla.put(new ItemStack(Blocks.LOG2, 1, 1), new ItemStack(Blocks.PLANKS, 8, 5));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 0), new ItemStack(Items.STICK, 8));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 1), new ItemStack(Items.STICK, 8));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 2), new ItemStack(Items.STICK, 8));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 3), new ItemStack(Items.STICK, 8));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 4), new ItemStack(Items.STICK, 8));
+		mapVanilla.put(new ItemStack(Blocks.PLANKS, 1, 5), new ItemStack(Items.STICK, 8));
 
 		// Fall back/modded mapping.
 

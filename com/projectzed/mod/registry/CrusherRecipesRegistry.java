@@ -46,22 +46,22 @@ public class CrusherRecipesRegistry implements IRegistrable {
 		mapModded = new HashMap<String, String>();
 
 		// Normal mapping
-		mapVanilla.put(new ItemStack(Blocks.iron_ore, 1), new ItemStack(ProjectZed.dustIron, 2));
-		mapVanilla.put(new ItemStack(Blocks.gold_ore, 1), new ItemStack(ProjectZed.dustGold, 2));
-		mapVanilla.put(new ItemStack(Blocks.diamond_ore, 1),  new ItemStack(Items.diamond, 2));
-		mapVanilla.put(new ItemStack(Blocks.emerald_ore, 1),  new ItemStack(Items.emerald, 2));
-		mapVanilla.put(new ItemStack(Blocks.redstone_ore, 1), new ItemStack(Items.redstone, 6));
-		mapVanilla.put(new ItemStack(Blocks.lapis_ore, 1), new ItemStack(Items.dye, 9, 4));
-		mapVanilla.put(new ItemStack(Items.coal, 1), new ItemStack(ProjectZed.dustCoal, 1));
-		mapVanilla.put(new ItemStack(Items.iron_ingot, 1), new ItemStack(ProjectZed.dustIron, 1));
-		mapVanilla.put(new ItemStack(Items.gold_ingot, 1), new ItemStack(ProjectZed.dustGold, 1));
-		mapVanilla.put(new ItemStack(Blocks.coal_block, 1),  new ItemStack(Items.coal, 2));
-		mapVanilla.put(new ItemStack(Blocks.quartz_ore, 1),  new ItemStack(Items.quartz, 2));
-		mapVanilla.put(new ItemStack(Items.bone, 1), new ItemStack(Items.dye, 6, 15));
-		mapVanilla.put(new ItemStack(Items.blaze_rod, 1), new ItemStack(Items.blaze_powder, 6));
-		mapVanilla.put(new ItemStack(Blocks.cobblestone, 1), new ItemStack(Blocks.gravel, 1));
-		mapVanilla.put(new ItemStack(Blocks.gravel, 1), new ItemStack(Blocks.sand, 1));
-		mapVanilla.put(new ItemStack(Blocks.glowstone, 1), new ItemStack(Items.glowstone_dust, 4));
+		mapVanilla.put(new ItemStack(Blocks.IRON_ORE, 1), new ItemStack(ProjectZed.dustIron, 2));
+		mapVanilla.put(new ItemStack(Blocks.GOLD_ORE, 1), new ItemStack(ProjectZed.dustGold, 2));
+		mapVanilla.put(new ItemStack(Blocks.DIAMOND_ORE, 1),  new ItemStack(Items.DIAMOND, 2));
+		mapVanilla.put(new ItemStack(Blocks.EMERALD_ORE, 1),  new ItemStack(Items.EMERALD, 2));
+		mapVanilla.put(new ItemStack(Blocks.REDSTONE_ORE, 1), new ItemStack(Items.REDSTONE, 6));
+		mapVanilla.put(new ItemStack(Blocks.LAPIS_ORE, 1), new ItemStack(Items.DYE, 9, 4));
+		mapVanilla.put(new ItemStack(Items.COAL, 1), new ItemStack(ProjectZed.dustCoal, 1));
+		mapVanilla.put(new ItemStack(Items.IRON_INGOT, 1), new ItemStack(ProjectZed.dustIron, 1));
+		mapVanilla.put(new ItemStack(Items.GOLD_INGOT, 1), new ItemStack(ProjectZed.dustGold, 1));
+		mapVanilla.put(new ItemStack(Blocks.COAL_BLOCK, 1),  new ItemStack(Items.COAL, 2));
+		mapVanilla.put(new ItemStack(Blocks.QUARTZ_ORE, 1),  new ItemStack(Items.QUARTZ, 2));
+		mapVanilla.put(new ItemStack(Items.BONE, 1), new ItemStack(Items.DYE, 6, 15));
+		mapVanilla.put(new ItemStack(Items.BLAZE_ROD, 1), new ItemStack(Items.BLAZE_POWDER, 6));
+		mapVanilla.put(new ItemStack(Blocks.COBBLESTONE, 1), new ItemStack(Blocks.GRAVEL, 1));
+		mapVanilla.put(new ItemStack(Blocks.GRAVEL, 1), new ItemStack(Blocks.SAND, 1));
+		mapVanilla.put(new ItemStack(Blocks.GLOWSTONE, 1), new ItemStack(Items.GLOWSTONE_DUST, 4));
 
 		// Fall back mapping
 		mapModded.put("oreGlow", "dustGlow");

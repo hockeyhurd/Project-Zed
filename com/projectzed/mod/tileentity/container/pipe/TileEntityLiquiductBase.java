@@ -23,7 +23,6 @@ import com.projectzed.mod.handler.message.MessageTileEntityLiquiduct;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -185,9 +184,19 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	/* (non-Javadoc)
 	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer#getDescriptionPacket()
 	 */
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLiquiduct(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLiquiduct(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+
+		return comp;
 	}
 
 	/*
@@ -281,7 +290,7 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 	 * @see com.projectzed.api.tileentity.AbstractTileEntityGeneric#writeToNBT(net.minecraft.nbt.NBTTagCompound)
 	 */
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public NBTTagCompound writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		this.internalTank.writeToNBT(comp);
 		
@@ -298,6 +307,8 @@ public class TileEntityLiquiductBase extends AbstractTileEntityPipe implements I
 			comp.setInteger("FluidNetworkMasterVector3Y", this.masterVec.y);
 			comp.setInteger("FluidNetworkMasterVector3Z", this.masterVec.z);
 		}
+
+		return comp;
 	}
 
 	/*

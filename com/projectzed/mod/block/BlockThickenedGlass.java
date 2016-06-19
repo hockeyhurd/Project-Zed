@@ -30,14 +30,14 @@ public class BlockThickenedGlass extends BlockGlass implements IHBlock {
 	private ItemBlock itemBlock;
 
 	public BlockThickenedGlass() {
-		super(Material.glass, false);
+		super(Material.GRASS, false);
 
 		this.setRegistryName(name);
 		this.setUnlocalizedName(name);
 		this.setCreativeTab(ProjectZed.modCreativeTab);
 		this.setHardness(getBlockHardness());
 		this.setResistance(2000.0f);
-		this.setStepSound(SoundType.GLASS);
+		this.setSoundType(SoundType.GLASS);
 		this.setLightOpacity(0);
 	}
 	

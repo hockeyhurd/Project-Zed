@@ -91,8 +91,8 @@ public final class CraftingRegistry {
 		reg.shapelessList.add(createShapelessRecipe(mixedAlloy, 2, "ingotIron", "ingotCopper", "ingotTitanium", new ItemStack(forgingHammer, 1, OreDictionary.WILDCARD_VALUE)));
 
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksWide, 2, "stoneBricks", "stoneBricks"));
-		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefault, 1, "stoneBricks", Items.water_bucket));
-		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefaultStairs, 1, "stoneBricksStairs", Items.water_bucket));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefault, 1, "stoneBricks", Items.WATER_BUCKET));
+		reg.shapelessList.add(createShapelessRecipe(stoneBricksDefaultStairs, 1, "stoneBricksStairs", Items.WATER_BUCKET));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksRedStairs, 1, "stoneBricksStairs", "dyeRed"));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksBlueStairs, 1, "stoneBricksStairs", "dyeBlue"));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksGreenStairs, 1, "stoneBricksStairs", "dyeGreen"));
@@ -105,25 +105,27 @@ public final class CraftingRegistry {
 	private void initShaped() {
 		// Items:
 		reg.shapedList.add(createShapedRecipe(forgingHammer, 1, "xxx", "xyx", " y ", 'x', "ingotTitanium", 'y', "stickWood"));
-		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, " yx", "yxy", "xy ", 'x', "ingotCopper", 'y', Items.redstone));
-		reg.shapedList.add(createShapedRecipe(electricMotor, 1, "bab", "cac", "dad", 'a', conductiveCoil, 'b', Items.redstone, 'c', "plateAluminium",
+		reg.shapedList.add(createShapedRecipe(conductiveCoil, 1, " yx", "yxy", "xy ", 'x', "ingotCopper", 'y', Items.REDSTONE));
+		reg.shapedList.add(createShapedRecipe(electricMotor, 1, "bab", "cac", "dad", 'a', conductiveCoil, 'b', Items.REDSTONE, 'c', "plateAluminium",
 				'd', gearIron));
-		reg.shapedList.add(createShapedRecipe(photoviolicCell, 3, "gdg", "nrn", 'g', "blockGlass", 'd', "gemDiamond", 'r', Items.redstone, 'n',
+		reg.shapedList.add(createShapedRecipe(photoviolicCell, 3, "gdg", "nrn", 'g', "blockGlass", 'd', "gemDiamond", 'r', Items.REDSTONE, 'n',
 				"nuggetIron"));
 		// reg.shapedList.add(createShapedRecipe(emptyFuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(fuelRod, 1, "xyx", "y y", "xyx", 'x', "ingotIron", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(mcuReader, 1, " a ", "bcb", "   ", 'a', "blockGlass", 'b', "dustRedstone", 'c', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(dustMixedAlloy, 2, "xxx", "yyy", "zzz", 'x', "dustIron", 'y', "dustCopper", 'z', "dustTitanium"));
-		reg.shapedList.add(createShapedRecipe(silkTouchUpgrade, 1, "sds", "rar", 'a', "plateAluminium", 'd', Items.diamond_pickaxe, 'r', Items.redstone, 's', Items.string));
-		reg.shapedList.add(createShapedRecipe(overclockerUpgrade, 2, "mrm", "rar", "mcm", 'a', "plateAluminium", 'c', conductiveCoil, 'm', "mixedAlloy", 'r', Items.redstone));
+		reg.shapedList.add(createShapedRecipe(silkTouchUpgrade, 1, "sds", "rar", 'a', "plateAluminium", 'd', Items.DIAMOND_PICKAXE, 'r', Items.REDSTONE, 's',
+				Items.STRING));
+		reg.shapedList.add(createShapedRecipe(overclockerUpgrade, 2, "mrm", "rar", "mcm", 'a', "plateAluminium", 'c', conductiveCoil, 'm', "mixedAlloy", 'r',
+				Items.REDSTONE));
 		
 		// tools:
 		reg.shapedList.add(createShapedRecipe(wrench, 1, "x x", "xxx", " x ", 'x', "ingotIron"));
 		// reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', Blocks.piston, 'b', conductiveCoil, 'c', Items.redstone, 'd', plateReinforced, 'e', gearTitanium));
-		reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', electricMotor, 'b', conductiveCoil, 'c', Items.redstone, 'd',
+		reg.shapedList.add(createShapedRecipeWithMeta(titaniumDrill, 1, titaniumDrill.getMaxDamage(), "cdc", "dad", "ebe", 'a', electricMotor, 'b', conductiveCoil, 'c', Items.REDSTONE, 'd',
 				plateReinforced, 'e', gearTitanium));
 		reg.shapedList.add(createShapedRecipeWithMeta(titaniumChainsaw, 1, titaniumChainsaw.getMaxDamage(), "dcd", "dad", "ebe", 'a', electricMotor,
-				'b', conductiveCoil, 'c', Items.redstone, 'd', plateReinforced, 'e', gearTitanium));
+				'b', conductiveCoil, 'c', Items.REDSTONE, 'd', plateReinforced, 'e', gearTitanium));
 		
 		// Blocks:
 		reg.shapedList.add(createShapedRecipe(blockTitanium, 1, "xxx", "xxx", "xxx", 'x', "ingotTitanium"));
@@ -132,7 +134,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(blockAluminium, 1, "xxx", "xxx", "xxx", 'x', "ingotAluminium"));
 		reg.shapedList.add(createShapedRecipe(blockUranium, 1, "xxx", "xxx", "xxx", 'x', "ingotUranium"));
 
-		reg.shapedList.add(createShapedRecipe(Items.iron_ingot, 1, "xxx", "xxx", "xxx", 'x', "nuggetIron"));
+		reg.shapedList.add(createShapedRecipe(Items.IRON_INGOT, 1, "xxx", "xxx", "xxx", 'x', "nuggetIron"));
 		reg.shapedList.add(createShapedRecipe(ingotAluminium, 1, "xxx", "xxx", "xxx", 'x', "nuggetAluminium"));
 		reg.shapedList.add(createShapedRecipe(ingotCopper, 1, "xxx", "xxx", "xxx", 'x', "nuggetCopper"));
 		reg.shapedList.add(createShapedRecipe(ingotNickel, 1, "xxx", "xxx", "xxx", 'x', "nuggetNickel"));
@@ -140,13 +142,13 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(ingotUranium, 1, "xxx", "xxx", "xxx", 'x', "nuggetUranium"));
 
 		reg.shapedList.add(createShapedRecipe(stoneCraftingTable, 1, "xx", "xx", 'x', "stoneBricks"));
-		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "tst", "xyx", "tst", 'x', Blocks.chest, 'y', stoneCraftingTable, 's', screw, 't', "stone"));
+		reg.shapedList.add(createShapedRecipe(fabricationTable, 1, "tst", "xyx", "tst", 'x', Blocks.CHEST, 'y', stoneCraftingTable, 's', screw, 't', "stone"));
 		reg.shapedList.add(createShapedRecipe(thickenedGlass, 4, "xyx", 'x', "ingotTitanium", 'y', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(wickedClearGlass, 8, "xxx", "x x", "xxx", 'x', thickenedGlass));
-		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminium", 'x', Blocks.redstone_torch));
-		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminum", 'x', Blocks.redstone_torch));
+		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminium", 'x', Blocks.REDSTONE_TORCH));
+		reg.shapedList.add(createShapedRecipe(quarryMarker, 1, "a", "x", 'a', "ingotAluminum", 'x', Blocks.REDSTONE_TORCH));
 
-		reg.shapedList.add(createShapedRecipe(stoneBricksDefault, 8, "xxx", "x x", "xxx", 'x', Blocks.stonebrick));
+		reg.shapedList.add(createShapedRecipe(stoneBricksDefault, 8, "xxx", "x x", "xxx", 'x', Blocks.STONEBRICK));
 		// reg.shapedList.add(createShapedRecipe(stoneBricksWide, 8, "xx", 'x', stoneBricksDefault));
 		reg.shapedList.add(createShapedRecipe(stoneBricksRed, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeRed"));
 		reg.shapedList.add(createShapedRecipe(stoneBricksBlue, 8, "xxx", "xyx", "xxx", 'x', "stoneBricks", 'y', "dyeBlue"));
@@ -161,7 +163,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(stoneBricksPurpleStairs, 4, "x  ", "xx ", "xxx", 'x', stoneBricksPurple));
 
 		// non-machine tileentities:
-		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "blockGlass"));
+		reg.shapedList.add(createShapedRecipe(energyPipeRed, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.REDSTONE, 'z', "blockGlass"));
 		reg.shapedList.add(createShapedRecipe(energyPipeOrange, 3, "xyx", "zzz", "xyx", 'x', "ingotIron", 'y', "dustCopper", 'z', energyPipeRed));
 		reg.shapedList.add(createShapedRecipe(energyPipeClear, 3, "xyx", "zzz", "xyx", 'x', "ingotTitanium", 'y', thickenedGlass, 'z', energyPipeOrange));
 		reg.shapedList.add(createShapedRecipe(energyCellTier0, 1, "xyx", "yzy", "xyx", 'x', "ingotNickel", 'y', "blockRedstone", 'z', machineContainer));
@@ -172,7 +174,7 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(fluidTankTier1, 1, "xxx", "xyx", "xxx", 'x', "ingotIron", 'y', fluidTankTier0));
 		reg.shapedList.add(createShapedRecipe(fluidTankTier2, 1, "xxx", "xyx", "xxx", 'x', "ingotGold", 'y', fluidTankTier1));
 		reg.shapedList.add(createShapedRecipe(fluidTankTier3, 1, "xxx", "xyx", "xxx", 'x', "ingotTitanium", 'y', fluidTankTier2));
-		reg.shapedList.add(createShapedRecipe(liquiductBlue, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.redstone, 'z', "gemLapis"));
+		reg.shapedList.add(createShapedRecipe(liquiductBlue, 4, " z ", "xyx", " z ", 'x', "ingotNickel", 'y', Items.REDSTONE, 'z', "gemLapis"));
 		
 		// nuclear stuffs:
 		reg.shapedList.add(createShapedRecipe(nuclearReactorGlass, 1, "xyx", 'x', thickenedGlass, 'y', nuclearChamberWall));
@@ -180,17 +182,17 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(nuclearChamberLock, 1, "x x", " y ", "x x", 'x', screw, 'y', nuclearChamberWall));
 		reg.shapedList.add(createShapedRecipe(nuclearReactantCore, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateReinforced", 'z', "blockDiamond"));
 		reg.shapedList.add(createShapedRecipe(nuclearPowerPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', energyCellTier0, 'a', machineContainer));
-		reg.shapedList.add(createShapedRecipe(nuclearControlPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer));
-		reg.shapedList.add(createShapedRecipe(nuclearIOPort, 1, "xzx", "yay", "xbx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.lever, 'a', machineContainer, 'b', Blocks.piston));
+		reg.shapedList.add(createShapedRecipe(nuclearControlPort, 1, "xzx", "yay", "xyx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.LEVER, 'a', machineContainer));
+		reg.shapedList.add(createShapedRecipe(nuclearIOPort, 1, "xzx", "yay", "xbx", 'x', nuclearChamberWall, 'y', "dustRedstone", 'z', Blocks.LEVER, 'a', machineContainer, 'b', Blocks.PISTON));
 		
 		// Machine stuff:
-		reg.shapedList.add(createShapedRecipe(furnaceGen, 1, "aba", "aca", "ada", 'a', "cobblestone", 'b', Blocks.furnace, 'c', machineContainer, 'd', screw));
+		reg.shapedList.add(createShapedRecipe(furnaceGen, 1, "aba", "aca", "ada", 'a', "cobblestone", 'b', Blocks.FURNACE, 'c', machineContainer, 'd', screw));
 		reg.shapedList.add(createShapedRecipe(solarArray, 1, "bbb", "cdc", "aea", 'a', "ingotTitanium", 'b', photoviolicCell, 'c', screw, 'd', furnaceGen, 'e', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(solarArrayLV, 1, "xxx", "x x", "xxx", 'x', solarArray));
 		reg.shapedList.add(createShapedRecipe(solarArrayMV, 1, "xxx", "x x", "xxx", 'x', solarArrayLV));
 		reg.shapedList.add(createShapedRecipe(solarArrayHV, 1, "xxx", "x x", "xxx", 'x', solarArrayMV));
-		reg.shapedList.add(createShapedRecipe(lavaGen, 1, "xbx", "sgs", "tct", 'b', Items.lava_bucket, 'x', Blocks.brick_block, 'g', furnaceGen, 's', screw, 't', "ingotTitanium", 'c', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(petrolGen, 1, "rbr", "sgs", "xcx", 'b', bucketPetrol, 'c', conductiveCoil, 'g', furnaceGen, 'r', Items.redstone, 's', screw, 'x', gearIron));
+		reg.shapedList.add(createShapedRecipe(lavaGen, 1, "xbx", "sgs", "tct", 'b', Items.LAVA_BUCKET, 'x', Blocks.BRICK_BLOCK, 'g', furnaceGen, 's', screw, 't', "ingotTitanium", 'c', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(petrolGen, 1, "rbr", "sgs", "xcx", 'b', bucketPetrol, 'c', conductiveCoil, 'g', furnaceGen, 'r', Items.REDSTONE, 's', screw, 'x', gearIron));
 		reg.shapedList.add(createShapedRecipe(fissionController, 1, "xyx", "yzy", "xyx", 'x', "gemDiamond", 'y', "plateAluminium", 'z', furnaceGen));
 		reg.shapedList.add(createShapedRecipe(machineContainer, 1, "xyx", "yzy", "xyx", 'x', screw, 'y', "plateAluminium", 'z', "ingotNickel"));
 		reg.shapedList.add(createShapedRecipe(gearWooden, 1, "xyx", "y y", "xyx", 'x', "stickWood", 'y', "plankWood"));
@@ -201,15 +203,15 @@ public final class CraftingRegistry {
 		reg.shapedList.add(createShapedRecipe(gearTitanium, 1, " x ", "xyx", " x ", 'x', "ingotTitanium", 'y', gearIron));
 		reg.shapedList.add(createShapedRecipe(gearGold, 1, " x ", "xyx", " x ", 'x', "ingotGold", 'y', gearIron));
 		reg.shapedList.add(createShapedRecipe(gearDiamond, 1, " x ", "xyx", " x ", 'x', "gemDiamond", 'y', gearGold));
-		reg.shapedList.add(createShapedRecipe(industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.furnace, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.iron_pickaxe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.iron_axe, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialFurnace, 1, "bab", "cdc", "efe", 'a', Blocks.FURNACE, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialCrusher, 1, "bab", "cdc", "efe", 'a', Items.IRON_PICKAXE, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
+		reg.shapedList.add(createShapedRecipe(industrialLumberMill, 1, "bab", "cdc", "efe", 'a', Items.IRON_AXE, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialMetalPress, 1, "bab", "cdc", "efe", 'a', forgingHammer, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialCentrifuge, 1, "bab", "cdc", "efe", 'a', fuelRod, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearIron, 'f', conductiveCoil));
 		reg.shapedList.add(createShapedRecipe(industrialEnergizer, 1, "bab", "cdc", "efe", 'a', energyCellTier0, 'b', "ingotTitanium", 'c', screw, 'd', machineContainer, 'e', gearCopper, 'f', conductiveCoil));
-		reg.shapedList.add(createShapedRecipe(industrialLoader, 1, "xyx", "yzy", "xyx", 'x', Blocks.obsidian, 'y', "plateReinforced", 'z', machineContainer));
+		reg.shapedList.add(createShapedRecipe(industrialLoader, 1, "xyx", "yzy", "xyx", 'x', Blocks.OBSIDIAN, 'y', "plateReinforced", 'z', machineContainer));
 		reg.shapedList.add(createShapedRecipe(industrialQuarry, 1, "eae", "sbs", "dcd", 'a', titaniumDrill, 'b', machineContainer, 'c', conductiveCoil, 'd', gearDiamond, 'e', energyPipeClear, 's', screw));
-		reg.shapedList.add(createShapedRecipe(liquidNode, 1, "wyw", "xzx", "vuv", 'u', conductiveCoil, 'v', "dustRedstone", 'w', "gemLapis", 'x', liquiductBlue, 'y', Items.bucket, 'z', machineContainer));
+		reg.shapedList.add(createShapedRecipe(liquidNode, 1, "wyw", "xzx", "vuv", 'u', conductiveCoil, 'v', "dustRedstone", 'w', "gemLapis", 'x', liquiductBlue, 'y', Items.BUCKET, 'z', machineContainer));
 		reg.shapedList.add(createShapedRecipe(refinery, 1, "gtg", "sfs", "gcg", 'c', conductiveCoil, 'f', industrialFurnace, 'g', thickenedGlass, 's', screw, 't', fluidTankTier3));
 	}
 	

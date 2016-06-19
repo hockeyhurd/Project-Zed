@@ -55,8 +55,8 @@ public class FurnaceRecipeRegistry {
 		if (map == null || map.size() == 0) {
 			map = new HashMap<Object, OutputUtil>();
 			
-			reg.add(ProjectZed.dustIron, createOutput(new ItemStack(Items.iron_ingot), 25f));
-			reg.add(ProjectZed.dustGold, createOutput(new ItemStack(Items.gold_ingot), 25f));
+			reg.add(ProjectZed.dustIron, createOutput(new ItemStack(Items.IRON_INGOT), 25f));
+			reg.add(ProjectZed.dustGold, createOutput(new ItemStack(Items.GOLD_INGOT), 25f));
 			
 			reg.add(ProjectZed.oreTitanium, createOutput(new ItemStack(ProjectZed.ingotTitanium), 50f));
 			reg.add(ProjectZed.dustTitanium, createOutput(new ItemStack(ProjectZed.ingotTitanium), 50f));

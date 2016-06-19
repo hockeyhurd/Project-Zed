@@ -11,8 +11,8 @@ import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -93,9 +93,19 @@ public class TileEntityFabricationTable extends AbstractTileEntityGeneric {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityFabricationTable(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+
+		return comp;
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import com.projectzed.mod.registry.TileEntityRegistry;
 import com.projectzed.mod.tileentity.generator.TileEntityNuclearController;
 import com.projectzed.mod.tileentity.generator.TileEntitySolarArray;
 import com.projectzed.mod.util.WorldUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,6 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
@@ -182,8 +182,8 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 	}
 	
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState block, Block neighborBlock) {
-		TileEntity te = world.getTileEntity(pos);
+	public void onNeighborChange(IBlockAccess world, BlockPos blockPos, BlockPos neighbor) {
+		TileEntity te = world.getTileEntity(blockPos);
 		if (te != null && te instanceof IMultiBlockableController<?>) {
 			IMultiBlockableController<AbstractTileEntityGenerator> mb = (IMultiBlockableController<AbstractTileEntityGenerator>) te;
 			if (mb.hasMaster()) {
@@ -194,12 +194,12 @@ public class BlockNuclearController extends AbstractBlockGenerator {
 				else if (!mb.checkForMaster()) {
 					mb.reset();
 					// world.markBlockForUpdate(x, y, z);
-					world.notifyBlockOfStateChange(pos, block.getBlock());
+					((World) world).notifyBlockOfStateChange(blockPos, BlockUtils.getBlock((World) world, neighbor).getBlock());
 				}
 			}
 		}
 		
-		super.onNeighborBlockChange(world, pos, block, neighborBlock);
+		super.onNeighborChange(world, blockPos, neighbor);
 	}
 
 	@Override

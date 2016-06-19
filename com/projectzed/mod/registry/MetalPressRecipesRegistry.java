@@ -44,9 +44,9 @@ public class MetalPressRecipesRegistry {
 		// Normal mapping.
 		// mapVanilla.put(new ItemStack(ProjectZed.ingotAluminium, 1), new ItemStack(ProjectZed.plateAluminium, 1));
 		// mapVanilla.put(new ItemStack(ProjectZed.mixedAlloy, 1), new ItemStack(ProjectZed.plateReinforced, 1));
-		mapVanilla.put(new ItemStack(Items.iron_ingot), new ItemStack(ProjectZed.plateIron));
-		mapVanilla.put(new ItemStack(Items.gold_ingot), new ItemStack(ProjectZed.plateGold));
-		mapVanilla.put(new ItemStack(Items.dye, 1, 0x4), new ItemStack(ProjectZed.plateLapis));
+		mapVanilla.put(new ItemStack(Items.IRON_INGOT), new ItemStack(ProjectZed.plateIron));
+		mapVanilla.put(new ItemStack(Items.GOLD_INGOT), new ItemStack(ProjectZed.plateGold));
+		mapVanilla.put(new ItemStack(Items.DYE, 1, 0x4), new ItemStack(ProjectZed.plateLapis));
 
 		// Fall back/modded mapping.
 		mapModded.put("ingotAluminium", "plateAluminium");

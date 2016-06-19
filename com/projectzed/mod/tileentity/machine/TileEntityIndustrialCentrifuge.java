@@ -221,10 +221,12 @@ public class TileEntityIndustrialCentrifuge extends AbstractTileEntityMachine im
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public NBTTagCompound writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		this.internalTank.writeToNBT(comp);
 		comp.setByte("ProjectZedCentrifugeCraftingAmount", this.craftingAmount);
+
+		return comp;
 	}
 
 	@Override

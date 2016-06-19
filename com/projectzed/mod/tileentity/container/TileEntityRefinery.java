@@ -19,7 +19,6 @@ import com.projectzed.mod.handler.message.MessageTileEntityRefinery;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
@@ -161,9 +160,19 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 		}
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+
+		return comp;
 	}
 
 	@Override

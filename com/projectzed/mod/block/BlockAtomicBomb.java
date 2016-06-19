@@ -62,7 +62,7 @@ public class BlockAtomicBomb extends BlockTNT implements IHBlock {
 						(double) ((float) blockPos.getZ() + 0.5f), entity);
 				world.spawnEntityInWorld(bomb);
 				// world.playSoundAtEntity(bomb, "game.tnt.primed", 1.0f, 1.0f);
-				world.playSound(null, bomb.posX, bomb.posY, bomb.posZ, SoundEvents.entity_tnt_primed, SoundCategory.BLOCKS, 1.0f, 1.0f);
+				world.playSound(null, bomb.posX, bomb.posY, bomb.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			}
 		}
 	}

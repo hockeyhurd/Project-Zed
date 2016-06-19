@@ -21,7 +21,10 @@ public class Reference extends AbstractReference {
 	
 	/** Current version with included build number. */
 	public static final String VERSION = "v1.1." + BUILD;
-	
+
+	/** Current Minecraft version. */
+	public static final String MINECRAFT_VERSION = "[1.9.4]";
+
 	/** Current mod name. */
 	public static final String MOD_NAME = "ProjectZed";
 	

@@ -58,17 +58,17 @@ public class SortingConfigHandler extends AbstractConfigHandler {
 	}
 	
 	private void initSortArray() {
-		int length = Block.blockRegistry.getKeys().size() + Item.itemRegistry.getKeys().size();
+		int length = Block.REGISTRY.getKeys().size() + Item.REGISTRY.getKeys().size();
 		List<Item> itemList = new ArrayList<Item>();
 		List<String> itemNameList = new ArrayList<String>();
 		
-		Block blockCurrent = null;
-		Item itemCurrent = null;
+		Block blockCurrent;
+		Item itemCurrent;
 		
 		for (int id = 0; id < length; id++) {
 			blockCurrent = Block.getBlockById(id);
 			
-			if (blockCurrent != null && blockCurrent != Blocks.air) {
+			if (blockCurrent != null && blockCurrent != Blocks.AIR) {
 				itemList.add(Item.getItemFromBlock(blockCurrent));
 				itemNameList.add(blockCurrent.getUnlocalizedName().substring(5));
 			}

@@ -11,7 +11,7 @@ import com.projectzed.mod.container.slots.SlotUpgrade;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
@@ -119,11 +119,11 @@ public class ContainerMachine extends Container {
 		}
 	}
 
-	@Override
+	/*@Override
 	public void onCraftGuiOpened(ICrafting craft) {
 		super.onCraftGuiOpened(craft);
 		if (this.NUM_SLOTS > 1) craft.sendProgressBarUpdate(this, 0, this.te.cookTime);
-	}
+	}*/
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
@@ -136,8 +136,8 @@ public class ContainerMachine extends Container {
 		this.stored = this.te.getEnergyStored();
 
 		if (this.NUM_SLOTS > 1) {
-			for (int i = 0; i < this.crafters.size(); i++) {
-				ICrafting icrafting = (ICrafting) this.crafters.get(i);
+			for (int i = 0; i < this.listeners.size(); i++) {
+				IContainerListener icrafting = this.listeners.get(i);
 	
 				if (this.lastCookTime != this.te.cookTime) icrafting.sendProgressBarUpdate(this, 0, this.te.cookTime);
 			}

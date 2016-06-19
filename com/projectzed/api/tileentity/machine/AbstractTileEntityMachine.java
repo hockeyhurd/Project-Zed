@@ -26,7 +26,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -517,11 +516,20 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 		if (this.hasCustomInventoryName()) comp.setString("CustomName", this.customName);
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+		return comp;
 	}
-	
+
 	@Override
 	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityMachine(this));

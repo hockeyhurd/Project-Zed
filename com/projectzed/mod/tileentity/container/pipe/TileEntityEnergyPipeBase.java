@@ -18,7 +18,6 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -156,9 +155,19 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	protected void exportContents() {
 	}
 	
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+
+		return comp;
 	}
 
 	@Override
@@ -205,10 +214,12 @@ public class TileEntityEnergyPipeBase extends AbstractTileEntityPipe implements 
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound comp) {
+	public NBTTagCompound writeToNBT(NBTTagCompound comp) {
 		super.writeToNBT(comp);
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 		comp.setInteger("ProjectZedPowerStored", this.storedPower);
+
+		return comp;
 	}
 
 }

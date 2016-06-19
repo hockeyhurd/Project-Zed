@@ -12,7 +12,7 @@ import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
@@ -177,11 +177,16 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		}
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return null;
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return getTileData();
 	}
-	
+
 	@Override
 	public boolean canBeSourceNode() {
 		return true;

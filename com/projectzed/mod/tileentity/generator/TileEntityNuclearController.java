@@ -34,7 +34,6 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -483,10 +482,18 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 		heatLogic.saveNBT(comp);
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		super.getDescriptionPacket();
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityNuclearController(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		final NBTTagCompound comp = super.getUpdateTag();
+		saveNBT(comp);
+
+		return comp;
 	}
 
 	/**
@@ -526,7 +533,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	private IMultiBlockable<?> createFakeTE(Block block) {
 		IMultiBlockable<?> mb = null;
 		
-		if (block != null && block != Blocks.air && block instanceof AbstractBlockNuclearComponent) {
+		if (block != null && block != Blocks.AIR && block instanceof AbstractBlockNuclearComponent) {
 			if (((AbstractBlockNuclearComponent) block).getTileEntity() instanceof IMultiBlockable<?>) {
 				mb = (IMultiBlockable<?>) ((AbstractBlockNuclearComponent) block).getTileEntity();
 			}
@@ -726,7 +733,8 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						
 						if ( (y > 0 && y < size - 1) && (x > 0 && x < size - 1) && (z > 0 && z < size - 1) ) {
 							if ( !((y == (size - 1) / 2) && (x == (size - 1) / 2) && (z == (size - 1) / 2)) ) {
-								if (!(currentBlock instanceof BlockFluidBase) && !(currentBlock instanceof BlockLiquid) && currentBlock != Blocks.air) return false;
+								if (!(currentBlock instanceof BlockFluidBase) && !(currentBlock instanceof BlockLiquid) && currentBlock != Blocks.AIR)
+									return false;
 								
 								// fluid = FluidRegistry.lookupFluidForBlock(currentBlock);
 								// if (fluid != null && !coolantList.containsKey(fluid)) coolantList.put(fluid, false);
@@ -755,7 +763,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 								else if (currentBlock instanceof BlockLiquid) {
 
 									// If block is water, set fluid to water, else treat it like lava and watch it burn!!!
-									fluid = currentBlock == Blocks.water ? FluidRegistry.WATER : FluidRegistry.LAVA;
+									fluid = currentBlock == Blocks.WATER ? FluidRegistry.WATER : FluidRegistry.LAVA;
 
 									if (CoolantRegistry.instance().isFluidInRegistry(fluid)) {
 										Coolant coolant = CoolantRegistry.instance().getCoolantByFluid(fluid);
@@ -774,7 +782,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 								}
 
 								// If block is air, deal with it!
-								else if (currentBlock == Blocks.air) {
+								else if (currentBlock == Blocks.AIR) {
 									Coolant airCoolant = Coolant.AIR;
 									airCoolant.setAmount(Reference.Constants.MILLI_BUCKETS_PER_BLOCK_SPACE);
 
@@ -792,7 +800,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 						}
 
 						te = worldObj.getTileEntity(currentBlockPos);
-						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.air) {
+						if (te != null && te instanceof IMultiBlockable && te.getBlockType() != null && te.getBlockType() != Blocks.AIR) {
 							counter++;
 							b = te.getBlockType();
 							if (!mbMap.containsKey(b)) mbMap.put(b, 1);

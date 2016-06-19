@@ -86,7 +86,7 @@ public class DrawBlockSelectionHandler {
 						blockPos = BlockUtils.createBlockPos(rayTrace.getBlockPos().getX() + i,
 								rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
 						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
-						if (currentBlock.getBlock().getMaterial(currentBlock) == Material.air) continue;
+						if (currentBlock.getBlock().getMaterial(currentBlock) == Material.AIR) continue;
 
 						// currentBlock.getBlock().setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY, rayTrace.blockZ + j);
 						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);
@@ -104,7 +104,7 @@ public class DrawBlockSelectionHandler {
 						blockPos = BlockUtils
 								.createBlockPos(rayTrace.getBlockPos().getX() + i, rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
 						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
-						if (currentBlock.getMaterial() == Material.air) continue;
+						if (currentBlock.getMaterial() == Material.AIR) continue;
 
 						// currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX + i, rayTrace.blockY + j, rayTrace.blockZ);
 						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);
@@ -124,7 +124,7 @@ public class DrawBlockSelectionHandler {
 						blockPos = BlockUtils
 								.createBlockPos(rayTrace.getBlockPos().getX(), rayTrace.getBlockPos().getY() + j, rayTrace.getBlockPos().getZ() + i);
 						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
-						if (currentBlock.getMaterial() == Material.air) continue;
+						if (currentBlock.getMaterial() == Material.AIR) continue;
 
 						// currentBlock.setBlockBoundsBasedOnState(player.worldObj, rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i);
 						AxisAlignedBB boundingBox = new AxisAlignedBB(blockPos);

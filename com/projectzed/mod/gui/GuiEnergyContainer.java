@@ -47,6 +47,7 @@ public class GuiEnergyContainer extends GuiContainer {
 	private GuiButton[] buttons;
 	private boolean isEnergyCell;
 	private Waila waila;
+	private final EntityPlayer player;
 	
 	/**
 	 * @param inv
@@ -61,7 +62,7 @@ public class GuiEnergyContainer extends GuiContainer {
 		
 		texture = new ResourceLocation("projectzed", "textures/gui/GuiEnergyCell.png");
 		
-		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
+		player = FMLClientHandler.instance().getClient().thePlayer;
 		
 		waila = new Waila(null, player.worldObj, player, null, 0);
 		
@@ -103,7 +104,6 @@ public class GuiEnergyContainer extends GuiContainer {
 			waila.finder(false);
 
 			ProjectZed.logHelper.info("Side hit:", waila.getSideHit());
-			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 			// this.buttons = getLayoutFromFacingDirection(waila.getSideHit(), posX, posY);
 			this.buttons = getLayoutFromFacingDirection(player.getHorizontalFacing(), posX, posY);
 

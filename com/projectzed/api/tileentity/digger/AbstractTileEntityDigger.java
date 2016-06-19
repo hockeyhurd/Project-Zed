@@ -26,7 +26,6 @@ import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -550,9 +549,18 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+		return comp;
 	}
 
 	@Override

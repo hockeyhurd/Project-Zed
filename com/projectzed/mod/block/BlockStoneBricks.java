@@ -23,7 +23,7 @@ import net.minecraft.block.material.Material;
 public class BlockStoneBricks extends AbstractHCoreBlock {
 
 	public BlockStoneBricks(String name) {
-		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+		super(Material.ROCK, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 	}
 
 	@Override

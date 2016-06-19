@@ -63,7 +63,7 @@ public abstract class AbstractBlockNuclearComponent extends AbstractHCoreBlockCo
 	 * @param name
 	 */
 	public AbstractBlockNuclearComponent(String name) {
-		this(Material.iron, name);
+		this(Material.IRON, name);
 	}
 
 	@Override

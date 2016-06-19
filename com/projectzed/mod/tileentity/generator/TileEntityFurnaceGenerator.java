@@ -89,24 +89,24 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		else {
 			Item item = stack.getItem();
 
-			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.air) {
+			if (item instanceof ItemBlock && Block.getBlockFromItem(item) != Blocks.AIR) {
 				Block block = Block.getBlockFromItem(item);
 
-				if (block == Blocks.wooden_slab) return 150 / 4;
+				if (block == Blocks.WOODEN_SLAB) return 150 / 4;
 
-				if (BlockUtils.getBlockMaterial(world, blockPos) == Material.wood) return 300 / 4;
+				if (BlockUtils.getBlockMaterial(world, blockPos) == Material.WOOD) return 300 / 4;
 
-				if (block == Blocks.coal_block) return 16000 / 4;
+				if (block == Blocks.COAL_BLOCK) return 16000 / 4;
 			}
 
 			if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
 			if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200 / 4;
 			if (item instanceof ItemHoe && ((ItemHoe) item).getMaterialName().equals("WOOD")) return 200 / 4;
-			if (item == Items.stick) return 100 / 4;
-			if (item == Items.coal) return 1600 / 4;
-			if (item == Items.lava_bucket) return 20000 / 4;
-			if (item == Item.getItemFromBlock(Blocks.sapling)) return 100 / 4;
-			if (item == Items.blaze_rod) return 2400 / 4;
+			if (item == Items.STICK) return 100 / 4;
+			if (item == Items.COAL) return 1600 / 4;
+			if (item == Items.LAVA_BUCKET) return 20000 / 4;
+			if (item == Item.getItemFromBlock(Blocks.SAPLING)) return 100 / 4;
+			if (item == Items.BLAZE_ROD) return 2400 / 4;
 			return GameRegistry.getFuelValue(stack) / 4;
 		}
 	}
@@ -119,10 +119,11 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 		if (this.isFuel()) {
 			if (this.slots[0] == null) return;
 			else {
-				if (this.slots[0].getItem() instanceof ItemBucket) this.slots[0] = new ItemStack(Items.bucket, 1);
+				if (this.slots[0].getItem() instanceof ItemBucket) this.slots[0] = new ItemStack(Items.BUCKET, 1);
 				else this.slots[0].stackSize--;
 			}
-			if (this.slots[0].stackSize <= 0) this.slots[0] = (ItemStack) null;
+
+			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
 		}
 	}
 

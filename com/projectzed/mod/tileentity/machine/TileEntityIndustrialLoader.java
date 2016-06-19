@@ -19,10 +19,9 @@ import com.projectzed.mod.handler.message.MessageTileEntityLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -126,9 +125,18 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 		// unloadChunk();
 	}
 	
-	@Override
+	/*@Override
 	public Packet getDescriptionPacket() {
 		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
+	}*/
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityLoader(this));
+
+		final NBTTagCompound comp = getTileData();
+		saveNBT(comp);
+		return comp;
 	}
 	
 	@Override
@@ -210,7 +218,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 					current.x = vec.x + x;
 					current.y = vec.y + y;
 
-					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(vec.x + x, vec.y + y));
+					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkPos(vec.x + x, vec.y + y));
 				}
 			}
 			
@@ -240,7 +248,7 @@ public class TileEntityIndustrialLoader extends AbstractTileEntityGeneric implem
 					current.x = vec.x + x;
 					current.y = vec.y + y;
 
-					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkCoordIntPair(current.x, current.y));
+					ForgeChunkManager.forceChunk(this.heldChunk, new ChunkPos(current.x, current.y));
 				}
 			}
 			

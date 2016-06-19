@@ -27,12 +27,12 @@ public class ChainsawSetRegistry implements IToolSetRegistry {
 	
 	private static Set set;
 	public static final Material[] mats = new Material[] {
-		Material.wood,
-		Material.cloth,
-		Material.plants,
-		Material.leaves,
-		Material.vine,
-		Material.web,
+		Material.WOOD,
+		Material.CLOTH,
+		Material.PLANTS,
+		Material.LEAVES,
+		Material.VINE,
+		Material.WEB,
 	};
 	
 	private ChainsawSetRegistry() {
@@ -47,7 +47,7 @@ public class ChainsawSetRegistry implements IToolSetRegistry {
 	
 	@Override
 	public void init() {
-		Iterator iter = Block.blockRegistry.iterator();
+		Iterator iter = Block.REGISTRY.iterator();
 		Set<Block> temp = new HashSet<Block>();
 		
 		while (iter.hasNext()) {

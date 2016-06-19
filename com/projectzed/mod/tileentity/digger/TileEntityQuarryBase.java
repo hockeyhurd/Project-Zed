@@ -60,7 +60,7 @@ public class TileEntityQuarryBase extends AbstractTileEntityDigger implements II
 	@Override
 	protected void initBlackList() {
 		this.blackList = new Material[] {
-			Material.air, Material.lava, Material.water, Material.plants, Material.vine, Material.web
+			Material.AIR, Material.LAVA, Material.WATER, Material.PLANTS, Material.VINE, Material.WEB
 		};
 	}
 

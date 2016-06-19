@@ -109,13 +109,14 @@ public class ItemWrench extends AbstractHCoreItem {
 
 		player.swingArm(hand);
 		IBlockState blockState = BlockUtils.getBlock(world, blockPos);
-		if (blockState.getBlock() != Blocks.air) {
+		if (blockState.getBlock() != Blocks.AIR) {
 			if (world.isRemote) return EnumActionResult.PASS;
 
 			final IWrenchable wrenchable = (IWrenchable) world.getTileEntity(blockPos);
 			if (wrenchable == null) return EnumActionResult.FAIL;
 
 			if (!player.isSneaking()) {
+				// TODO: Update rotation code, again...
 				if ((blockState = blockState.getBlock().withRotation(blockState, getRotation(side.getOpposite(),
 						wrenchable.getCurrentFacing()))) != null) {
 					BlockUtils.setBlock(world, blockPos, blockState, 2);

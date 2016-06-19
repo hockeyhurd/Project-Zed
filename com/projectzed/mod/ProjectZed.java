@@ -71,7 +71,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = "[1.9]", name = Reference.MOD_NAME,
+@Mod(modid = Reference.MOD_NAME, acceptedMinecraftVersions = Reference.MINECRAFT_VERSION, name = Reference.MOD_NAME,
 		version = Reference.VERSION, dependencies = "required-after:HCoreLib", guiFactory = "com.projectzed.mod.gui.config.PZGuiFactory")
 public final class ProjectZed implements IForgeMod {
 
@@ -202,10 +202,10 @@ public final class ProjectZed implements IForgeMod {
 	public static Item craftingPattern;
 
 	// Material:
-	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.blackColor);
-	public static final Material MATERIAL_PETROL = new MaterialLiquid(MapColor.airColor);
+	public static final Material MATERIAL_OIL = new MaterialLiquid(MapColor.BLACK);
+	public static final Material MATERIAL_PETROL = new MaterialLiquid(MapColor.AIR);
 	public static final ArmorMaterial zPlatedMat = EnumHelper.addArmorMaterial("ZPLATEDARMOR", assetDir + ":ZPlated", 100,
-			new int[] { 3, 8, 6, 3 }, 25, SoundEvents.item_armor_equip_iron);
+			new int[] { 3, 8, 6, 3 }, 25, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 25.0f);
 
 	// Armor:
 	public static Item zPlatedHelm, zPlatedChest, zPlatedLeg, zPlatedBoot;
@@ -409,25 +409,25 @@ public final class ProjectZed implements IForgeMod {
 		bucketPetrol = new ItemBucketPetrol("bucketPetrol", blockFluidPetrol);
 
 		// TODO: MOVE REGISTERING OF FLUID Bucket SOMEWHERE OUT OF THIS MAIN CLASS!!!
-		FluidContainerRegistry.registerFluidContainer(fluidOil, new ItemStack(bucketOil), new ItemStack(Items.bucket));
-		FluidContainerRegistry.registerFluidContainer(fluidPetrol, new ItemStack(bucketPetrol), new ItemStack(Items.bucket));
+		FluidContainerRegistry.registerFluidContainer(fluidOil, new ItemStack(bucketOil), new ItemStack(Items.BUCKET));
+		FluidContainerRegistry.registerFluidContainer(fluidPetrol, new ItemStack(bucketPetrol), new ItemStack(Items.BUCKET));
 
 		// Generators:
-		solarArray = new BlockSolarArray(Material.rock, (byte) 0);
-		solarArrayLV = new BlockSolarArray(Material.rock, (byte) 1);
-		solarArrayMV = new BlockSolarArray(Material.rock, (byte) 2);
-		solarArrayHV = new BlockSolarArray(Material.rock, (byte) 3);
-		furnaceGen = new BlockFurnaceGenerator(Material.rock);
-		lavaGen = new BlockLavaGenerator(Material.rock);
-		petrolGen = new BlockPetrolGenerator(Material.rock);
-		handGen = new BlockHandGenerator(Material.rock);
-		fusionController = new BlockNuclearController(Material.iron, true);
-		fissionController = new BlockNuclearController(Material.iron, false);
+		solarArray = new BlockSolarArray(Material.ROCK, (byte) 0);
+		solarArrayLV = new BlockSolarArray(Material.ROCK, (byte) 1);
+		solarArrayMV = new BlockSolarArray(Material.ROCK, (byte) 2);
+		solarArrayHV = new BlockSolarArray(Material.ROCK, (byte) 3);
+		furnaceGen = new BlockFurnaceGenerator(Material.ROCK);
+		lavaGen = new BlockLavaGenerator(Material.ROCK);
+		petrolGen = new BlockPetrolGenerator(Material.ROCK);
+		handGen = new BlockHandGenerator(Material.ROCK);
+		fusionController = new BlockNuclearController(Material.IRON, true);
+		fissionController = new BlockNuclearController(Material.IRON, false);
 		
 		// Machines:
-		fabricationTable = new BlockFabricationTable(Material.rock);
-		stoneCraftingTable = new BlockStoneCraftingTable(Material.rock);
-		refinery = new BlockRefinery(Material.rock);
+		fabricationTable = new BlockFabricationTable(Material.ROCK);
+		stoneCraftingTable = new BlockStoneCraftingTable(Material.ROCK);
+		refinery = new BlockRefinery(Material.ROCK);
 		patternEncoder = new BlockPatternEncoder("patternEncoder");
 		industrialFurnace = new BlockIndustrialFurnace();
 		industrialCrusher = new BlockIndustrialCrusher();
@@ -440,38 +440,38 @@ public final class ProjectZed implements IForgeMod {
 		industrialHarvester = new BlockIndustrialHarvester();
 
 		// Containers:
-		energyPipeRed = new BlockEnergyPipeRed(Material.rock, "energyPipeRed", EnumColor.RED);
-		energyPipeOrange = new BlockEnergyPipeOrange(Material.rock, "energyPipeOrange", EnumColor.ORANGE);
-		energyPipeClear = new BlockEnergyPipeClear(Material.rock, "energyPipeClear", EnumColor.CLEAR);
-		energyCellTier0 = new BlockEnergyCell(Material.rock, "energyCellTier0");
-		energyCellTier1 = new BlockEnergyCell(Material.rock, "energyCellTier1");
-		energyCellTier2 = new BlockEnergyCell(Material.rock, "energyCellTier2");
-		energyCellTier3 = new BlockEnergyCell(Material.rock, "energyCellTier3");
-		liquidNode = new BlockLiquidNode(Material.rock);
-		liquiductBlue = new BlockLiquiductBlue(Material.rock);
-		liquiductClear = new BlockLiquiductClear(Material.rock);
-		fluidTankTier0 = new BlockTankTier0(Material.rock);
-		fluidTankTier1 = new BlockTankTier1(Material.rock);
-		fluidTankTier2 = new BlockTankTier2(Material.rock);
-		fluidTankTier3 = new BlockTankTier3(Material.rock);
-		itemPipeGreen = new BlockItemPipeGreen(Material.rock);
-		itemPipeGreenOpaque = new BlockItemPipeGreenOpaque(Material.rock);
+		energyPipeRed = new BlockEnergyPipeRed(Material.ROCK, "energyPipeRed", EnumColor.RED);
+		energyPipeOrange = new BlockEnergyPipeOrange(Material.ROCK, "energyPipeOrange", EnumColor.ORANGE);
+		energyPipeClear = new BlockEnergyPipeClear(Material.ROCK, "energyPipeClear", EnumColor.CLEAR);
+		energyCellTier0 = new BlockEnergyCell(Material.ROCK, "energyCellTier0");
+		energyCellTier1 = new BlockEnergyCell(Material.ROCK, "energyCellTier1");
+		energyCellTier2 = new BlockEnergyCell(Material.ROCK, "energyCellTier2");
+		energyCellTier3 = new BlockEnergyCell(Material.ROCK, "energyCellTier3");
+		liquidNode = new BlockLiquidNode(Material.ROCK);
+		liquiductBlue = new BlockLiquiductBlue(Material.ROCK);
+		liquiductClear = new BlockLiquiductClear(Material.ROCK);
+		fluidTankTier0 = new BlockTankTier0(Material.ROCK);
+		fluidTankTier1 = new BlockTankTier1(Material.ROCK);
+		fluidTankTier2 = new BlockTankTier2(Material.ROCK);
+		fluidTankTier3 = new BlockTankTier3(Material.ROCK);
+		itemPipeGreen = new BlockItemPipeGreen(Material.ROCK);
+		itemPipeGreenOpaque = new BlockItemPipeGreenOpaque(Material.ROCK);
 		
 		// Diggers:
-		industrialQuarry = new BlockIndustrialQuarry(Material.rock);
+		industrialQuarry = new BlockIndustrialQuarry(Material.ROCK);
 		
 		// RF STUFF:
 		if (ModsLoadedHelper.instance().cofhCore) { 
-			bridgeMcUToRF = new BlockRFBridge(Material.rock, false);
-			bridgeRFToMcU = new BlockRFBridge(Material.rock, true);
+			bridgeMcUToRF = new BlockRFBridge(Material.ROCK, false);
+			bridgeRFToMcU = new BlockRFBridge(Material.ROCK, true);
 		}
 		
 		// Ores:
-		oreTitanium = new BlockTitaniumOre(Material.rock, assetDir, "oreTitanium");
-		oreCopper = new BlockCopperOre(Material.rock, assetDir, "oreCopper");
-		oreNickel = new BlockNickelOre(Material.rock, assetDir, "oreNickel"); 
-		oreAluminium = new BlockAluminiumOre(Material.rock, assetDir, "oreAluminium");
-		oreUranium = new BlockUraniumOre(Material.rock, assetDir, "oreUranium");
+		oreTitanium = new BlockTitaniumOre(Material.ROCK, assetDir, "oreTitanium");
+		oreCopper = new BlockCopperOre(Material.ROCK, assetDir, "oreCopper");
+		oreNickel = new BlockNickelOre(Material.ROCK, assetDir, "oreNickel"); 
+		oreAluminium = new BlockAluminiumOre(Material.ROCK, assetDir, "oreAluminium");
+		oreUranium = new BlockUraniumOre(Material.ROCK, assetDir, "oreUranium");
 		
 		// Items:
 		itemDongle = new ItemDongle();
@@ -543,11 +543,11 @@ public final class ProjectZed implements IForgeMod {
 		ingotUranium = new ItemIngotUranium("ingotUranium", assetDir);
 		mixedAlloy = new ItemMixedAlloy("mixedAlloy", assetDir);
 
-		blockTitanium = new BlockTitanium(Material.iron, "blockTitanium");
-		blockCopper = new BlockCopper(Material.iron, "blockCopper");
-		blockNickel = new BlockNickel(Material.iron, "blockNickel");
-		blockAluminium = new BlockAluminium(Material.iron, "blockAluminium");
-		blockUranium = new BlockUranium(Material.iron, "blockUranium");
+		blockTitanium = new BlockTitanium(Material.IRON, "blockTitanium");
+		blockCopper = new BlockCopper(Material.IRON, "blockCopper");
+		blockNickel = new BlockNickel(Material.IRON, "blockNickel");
+		blockAluminium = new BlockAluminium(Material.IRON, "blockAluminium");
+		blockUranium = new BlockUranium(Material.IRON, "blockUranium");
 
 		// Fuels:
 		// emptyFuelRod = new ItemFuelRod("emptyFuelRod", assetDir, true);

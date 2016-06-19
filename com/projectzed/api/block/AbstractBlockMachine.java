@@ -53,7 +53,7 @@ public abstract class AbstractBlockMachine extends AbstractHCoreBlockContainer {
 	}
 
 	public AbstractBlockMachine(String name, boolean setDefaultState) {
-		super(Material.rock, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+		super(Material.ROCK, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
 
 		if (setDefaultState)
 			setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));

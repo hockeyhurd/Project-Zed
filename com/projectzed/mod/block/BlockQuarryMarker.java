@@ -66,7 +66,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 			for (int xx = 1; xx < len; xx++) {
 				currentBlock = BlockUtils.getBlock(world, pos).getBlock();
 
-				if (currentBlock != null && currentBlock != Blocks.air) {
+				if (currentBlock != null && currentBlock != Blocks.AIR) {
 					if (currentBlock == ProjectZed.quarryMarker) {
 						directions[0] = 1;
 						minX = Math.min(localVec.x + xx, localVec.x);
@@ -82,7 +82,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 			for (int xx = 1; xx < len; xx++) {
 				currentBlock = BlockUtils.getBlock(world, localVec.x - xx, localVec.y, localVec.z).getBlock();
 
-				if (currentBlock != null && currentBlock != Blocks.air) {
+				if (currentBlock != null && currentBlock != Blocks.AIR) {
 					if (currentBlock == ProjectZed.quarryMarker) {
 						directions[1] = 1;
 						minX = Math.min(localVec.x - xx, localVec.x);
@@ -98,7 +98,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 			for (int zz = 1; zz < len; zz++) {
 				currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z + zz).getBlock();
 
-				if (currentBlock != null && currentBlock != Blocks.air) {
+				if (currentBlock != null && currentBlock != Blocks.AIR) {
 					if (currentBlock == ProjectZed.quarryMarker) {
 						directions[2] = 1;
 						
@@ -115,7 +115,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 			for (int zz = 1; zz < len; zz++) {
 				currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z - zz).getBlock();
 
-				if (currentBlock != null && currentBlock != Blocks.air) {
+				if (currentBlock != null && currentBlock != Blocks.AIR) {
 					if (currentBlock == ProjectZed.quarryMarker) {
 						directions[3] = 1;
 						
@@ -164,7 +164,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 		for (int xx = 1; xx < len; xx++) {
 			currentBlock = BlockUtils.getBlock(world, localVec.x + xx, localVec.y, localVec.z).getBlock();
 
-			if (currentBlock != null && currentBlock != Blocks.air) {
+			if (currentBlock != null && currentBlock != Blocks.AIR) {
 				if (currentBlock == ProjectZed.quarryMarker) {
 					directions[0] = 1;
 					minX = Math.min(localVec.x + xx, localVec.x);
@@ -180,7 +180,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 		for (int xx = 1; xx < len; xx++) {
 			currentBlock = BlockUtils.getBlock(world, localVec.x - xx, localVec.y, localVec.z).getBlock();
 
-			if (currentBlock != null && currentBlock != Blocks.air) {
+			if (currentBlock != null && currentBlock != Blocks.AIR) {
 				if (currentBlock == ProjectZed.quarryMarker) {
 					directions[1] = 1;
 					minX = Math.min(localVec.x - xx, localVec.x);
@@ -196,7 +196,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 		for (int zz = 1; zz < len; zz++) {
 			currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z + zz).getBlock();
 
-			if (currentBlock != null && currentBlock != Blocks.air) {
+			if (currentBlock != null && currentBlock != Blocks.AIR) {
 				if (currentBlock == ProjectZed.quarryMarker) {
 					directions[2] = 1;
 					
@@ -213,7 +213,7 @@ public class BlockQuarryMarker extends BlockTorch implements IHBlock {
 		for (int zz = 1; zz < len; zz++) {
 			currentBlock = BlockUtils.getBlock(world, localVec.x, localVec.y, localVec.z - zz).getBlock();
 
-			if (currentBlock != null && currentBlock != Blocks.air) {
+			if (currentBlock != null && currentBlock != Blocks.AIR) {
 				if (currentBlock == ProjectZed.quarryMarker) {
 					directions[3] = 1;
 					

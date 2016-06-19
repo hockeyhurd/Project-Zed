@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class BlockNuclearPowerPort extends AbstractBlockContainer implements IMetaUpdate {
 
 	public BlockNuclearPowerPort() {
-		super(Material.rock, ProjectZed.assetDir, "nuclearPowerPort");
+		super(Material.ROCK, ProjectZed.assetDir, "nuclearPowerPort");
 	}
 	
 

@@ -9,6 +9,7 @@ package com.projectzed.mod.block;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
+import com.hockeyhurd.hcorelib.api.util.SidedHelper;
 import com.hockeyhurd.hcorelib.api.util.enums.EnumHarvestLevel;
 import com.projectzed.api.block.AbstractBlockNuclearComponent;
 import com.projectzed.api.block.IMetaUpdate;
@@ -17,7 +18,9 @@ import com.projectzed.mod.tileentity.TileEntityNuclearControlPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -28,10 +31,10 @@ import net.minecraft.world.World;
  */
 public class BlockNuclearControlPort extends AbstractBlockNuclearComponent implements IMetaUpdate {
 
-	private boolean active;
+	// private boolean active;
 
 	public BlockNuclearControlPort() {
-		super(Material.rock, "nuclearControlPort");
+		super(Material.ROCK, "nuclearControlPort");
 	}
 
 	@Override
@@ -55,14 +58,23 @@ public class BlockNuclearControlPort extends AbstractBlockNuclearComponent imple
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos blockPos, IBlockState state, Block neighborBlock) {
-		if (!world.isRemote) {
+	public void onNeighborChange(IBlockAccess world, BlockPos blockPos, BlockPos neighbor) {
+		if (SidedHelper.isServer()) {
 			TileEntityNuclearControlPort te = (TileEntityNuclearControlPort) world.getTileEntity(blockPos);
 			
 			if (te != null) {
-				boolean active = world.isBlockIndirectlyGettingPowered(blockPos) > 0;
+				// final boolean active = world.isBlockIndirectlyGettingPowered(blockPos) > 0;
+
+				boolean active = false;
+				for (EnumFacing dir : EnumFacing.VALUES) {
+					if (world.getStrongPower(blockPos, dir) > 0) {
+						active = true;
+						break;
+					}
+				}
+
 				te.setRedstoneSignal(active);
-				updateMeta(active ? 1 : 0, world, te.worldVec());
+				updateMeta(active ? 1 : 0, (World) world, te.worldVec());
 				if (active) this.setLightLevel(0.75f);
 				else this.setLightLevel(0.0f);
 			}

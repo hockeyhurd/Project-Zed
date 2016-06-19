@@ -17,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
@@ -367,12 +366,11 @@ public abstract class AbstractTileEntityFluidContainer extends AbstractTileEntit
 		this.internalTank.writeToNBT(comp);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.minecraft.tileentity.TileEntity#getDescriptionPacket()
-	 */
+	/*@Override
+	public abstract Packet getDescriptionPacket();*/
+
 	@Override
-	public abstract Packet getDescriptionPacket();
+	public abstract NBTTagCompound getUpdateTag();
 
 	@Override
 	public int getField(int id) {

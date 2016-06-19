@@ -14,7 +14,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -212,8 +211,11 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
 	
+	/*@Override
+	public abstract Packet getDescriptionPacket();*/
+
 	@Override
-	public abstract Packet getDescriptionPacket();
+	public abstract NBTTagCompound getUpdateTag();
 
 	@Override
 	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {

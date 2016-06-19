@@ -173,7 +173,7 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 
 					currentBlock = BlockUtils.getBlock(worldObj, bufferVec).getBlock();
 
-					if (currentBlock == Blocks.air) continue;
+					if (currentBlock == Blocks.AIR) continue;
 					if (currentBlock instanceof BlockLog || currentBlock instanceof BlockLeaves || currentBlock instanceof BlockCrops) {
 						currentList.add(bufferVec.copy());
 					}
