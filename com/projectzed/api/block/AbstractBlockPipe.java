@@ -22,8 +22,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing necessary abstractions for a generic pipe.
@@ -65,9 +63,6 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 	public boolean isFullyOpaque(IBlockState state) {
 		return false;
 	}
-
-	@SideOnly(Side.CLIENT)
-	public abstract int getRenderType();
 
 	/**
 	 * @return tileentity object associated with this pipe.

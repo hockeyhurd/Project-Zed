@@ -9,16 +9,14 @@ package com.projectzed.mod.block.container;
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for energy pipes.
@@ -39,20 +37,21 @@ public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 		this.color = color;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
-	 */
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.energyPipeRed;
+	public boolean hasSpecialRenderer() {
+		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getSelectedBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
-	 */
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState blockState) {
+		return false;
+	}
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
 		// Create tile entity object at world coordinate.
@@ -89,17 +88,9 @@ public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 		return super.getBoundingBox(state, world, pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getTileEntity()
-	 */
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#doBreakBlock(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	protected void doBreakBlock(World world, BlockPos pos) {
 	}

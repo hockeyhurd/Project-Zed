@@ -14,8 +14,8 @@ package com.projectzed.mod.util;
  */
 public class Connection {
 
-	private boolean connect;
-	private int type;
+	private final boolean connect;
+	private final int type;
 	
 	/**
 	 * @param connect is connected.

@@ -10,7 +10,6 @@ package com.projectzed.mod.block.container;
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -23,8 +22,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Abstract block class for liquiducts.
@@ -45,12 +42,6 @@ public abstract class AbstractBlockLiquiduct extends AbstractBlockPipe {
 		this.color = color;
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return ClientProxy.liquiductBlue;
-	}
-	
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
 

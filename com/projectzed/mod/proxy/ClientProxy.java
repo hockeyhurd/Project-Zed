@@ -11,13 +11,18 @@ import com.hockeyhurd.hcorelib.api.client.util.ModelRegistry;
 import com.hockeyhurd.hcorelib.api.handler.config.ConfigChangedEventHandler;
 import com.hockeyhurd.hcorelib.api.handler.input.KeyBindingHandler;
 import com.hockeyhurd.hcorelib.api.item.IHItem;
+import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.renderer.EnergyBankRenderer;
+import com.projectzed.mod.renderer.EnergyPipeRenderer;
 import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,19 +41,6 @@ import org.lwjgl.input.Keyboard;
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-
-	/** Stating variable for tracking the current render pass in special renderers. */
-	public static int renderPass;
-	public static int energyPipeRed, energyPipeOrange, energyPipeClear;
-	public static int energyCell;
-	public static int refinery;
-	public static int fluidTankTier0, fluidTankTier1, fluidTankTier2, fluidTankTier3;
-	public static int liquiductBlue;
-	public static int liquiductClear;
-	public static int itemPipeGreen, itemPipeGreenOpaque;
-	public static int thickenedGlass;
-	public static int wickedClearGlass;
-	public static int reactorGlass;
 
 	// private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
 	// private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
@@ -163,6 +155,9 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerBlockHandler(new ThickenedGlassRenderer());*/
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyBankBase.class, new EnergyBankRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());

@@ -9,7 +9,6 @@ package com.projectzed.mod.block.container;
 import com.projectzed.api.block.AbstractBlockPipe;
 import com.projectzed.api.energy.source.EnumColor;
 import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
-import com.projectzed.mod.proxy.ClientProxy;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityItemPipeBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -18,8 +17,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Class containing block code for item pipes.
@@ -42,24 +39,9 @@ public abstract class AbstractBlockItemPipe extends AbstractBlockPipe {
 		this.opaque = color == EnumColor.GREEN_OPAQUE;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getRenderType()
-	 */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType() {
-		return !this.opaque ? ClientProxy.itemPipeGreen : ClientProxy.itemPipeGreenOpaque;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getTileEntity()
-	 */
 	@Override
 	public abstract AbstractTileEntityPipe getTileEntity();
 
-	/* (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockPipe#getSelectedBoundingBoxFromPool(net.minecraft.world.World, int, int, int)
-	 */
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
 		// Create tile entity object at world coordinate.
