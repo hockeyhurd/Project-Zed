@@ -64,6 +64,11 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 		return false;
 	}
 
+	@Override
+	public boolean isFullCube(IBlockState blockState) {
+		return false;
+	}
+
 	/**
 	 * @return tileentity object associated with this pipe.
 	 */

@@ -134,10 +134,34 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 
 	private static void drawConnector() {
 		// -z
-		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, oneMinusCalc2, connectionMinU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
-		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, oneMinusCalc2, connectionMaxU * TEXTURE_PIXEL, connectionMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, oneMinusCalc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
 		RenderHelper.addVertUV(calc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 		RenderHelper.addVertUV(calc2, oneMinusCalc2, oneMinusCalc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		
+		// +z
+		RenderHelper.addVertUV(calc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, 1.0f, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+
+		// -x
+		RenderHelper.addVertUV(calc2, oneMinusCalc2, oneMinusCalc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, 1.0f, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+
+		// +x
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, oneMinusCalc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+
+		// -y
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, oneMinusCalc2, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(calc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
+		RenderHelper.addVertUV(oneMinusCalc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
 	}
 
 	private static void drawConnection(EnumFacing dir, int type, boolean renderInside) {
