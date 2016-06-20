@@ -4,11 +4,9 @@ import com.hockeyhurd.hcorelib.api.client.util.RenderHelper;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.api.energy.source.EnumColor;
-import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
-import com.projectzed.api.util.EnumFrameType;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
+import com.projectzed.mod.tileentity.container.pipe.TileEntityLiquiductBase;
 import com.projectzed.mod.util.Connection;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -16,16 +14,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
  * @author hockeyhurd
- * @version 6/19/2016.
+ * @version 6/20/2016.
  */
 @SideOnly(Side.CLIENT)
-public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEnergyPipeBase> {
+public class FluidPipeRenderer extends TileEntitySpecialRenderer<TileEntityLiquiductBase> {
 
 	private final ResourceLocation texture;
 	private final EnumColor color;
@@ -51,15 +50,15 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 	private static int drawMinV = 0;
 	private static int drawMaxV = 7;
 
-	public EnergyPipeRenderer(EnumColor color) {
+	public FluidPipeRenderer(EnumColor color) {
 		this.color = color;
 
 		renderInside = color == EnumColor.CLEAR;
-		texture = new ResourceLocation(ProjectZed.assetDir, "textures/blocks/pipe_energy_" + color.getColorAsString() + ".png");
+		texture = new ResourceLocation(ProjectZed.assetDir, "textures/blocks/pipe_fluid_" + color.getColorAsString() + ".png");
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityEnergyPipeBase te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void renderTileEntityAt(TileEntityLiquiductBase te, double x, double y, double z, float partialTicks, int destroyStage) {
 		final Vector3<Double> renderVec = new Vector3<Double>(x, y, z);
 		final Vector3<Integer> atVec = VectorHelper.toVector3i(te.getPos());
 
@@ -90,11 +89,11 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 	/**
 	 * Determines whether the given pipe can connect to neighboring te.
 	 *
-	 * @param world = world object as reference.
-	 * @param te = te object as reference.
-	 * @param x = position x.
-	 * @param y = position y.
-	 * @param z = position z.
+	 * @param world world object as reference.
+	 * @param te te object as reference.
+	 * @param x position x.
+	 * @param y position y.
+	 * @param z position z.
 	 * @return true if can connect, else returns false.
 	 */
 	private Connection canConnect(World world, TileEntity te, int index, int x, int y, int z) {
@@ -103,14 +102,11 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 
 		final BlockPos blockPos = VectorHelper.toBlockPos(x, y, z);
 		final TileEntity tileAt = world.getTileEntity(blockPos);
-		if (tileAt instanceof IEnergyContainer) {
-			IEnergyContainer cont = (IEnergyContainer) tileAt;
+		if (tileAt instanceof IFluidHandler) {
+			IFluidHandler cont = (IFluidHandler) tileAt;
 
 			if (cont instanceof IModularFrame) {
-				if (cont != null) {
-					if (((IModularFrame) cont).getType() == EnumFrameType.POWER
-							&& ((IModularFrame) cont).getSideValve(EnumFacing.getFront(index).getOpposite()) == 0)
-						return new Connection(flag, type);
+				if (((IModularFrame) cont).getSideValve(EnumFacing.getFront(index).getOpposite()) != 0) {
 					flag = true;
 					type = 2;
 				}
@@ -118,9 +114,9 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 				return new Connection(flag, type);
 			}
 
-			else if (cont instanceof TileEntityEnergyPipeBase) {
-				TileEntityEnergyPipeBase _te = (TileEntityEnergyPipeBase) cont;
-				if (_te != null && this.color == _te.getColor()) {
+			else if (cont instanceof TileEntityLiquiductBase) {
+
+				if (((TileEntityLiquiductBase) cont).getColor() == this.color) {
 					flag = true;
 					type = 1;
 				}
@@ -141,7 +137,7 @@ public class EnergyPipeRenderer extends TileEntitySpecialRenderer<TileEntityEner
 		RenderHelper.addVertUV(oneMinusCalc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
 		RenderHelper.addVertUV(calc2, 1.0f, oneMinusCalc2, connectorMaxU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
 		RenderHelper.addVertUV(calc2, oneMinusCalc2, oneMinusCalc2, connectorMinU * TEXTURE_PIXEL, connectorMinV * TEXTURE_PIXEL);
-		
+
 		// +z
 		RenderHelper.addVertUV(calc2, oneMinusCalc2, calc2, connectorMinU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);
 		RenderHelper.addVertUV(calc2, 1.0f, calc2, connectorMaxU * TEXTURE_PIXEL, connectorMaxV * TEXTURE_PIXEL);

@@ -17,6 +17,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -51,6 +52,26 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 	}
 
 	@Override
+	public float getBlockHardness() {
+		return 3.0f;
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
 	public boolean isFullyOpaque(IBlockState state) {
 		return false;
 	}
@@ -70,20 +91,9 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 		return getBoundingBox(state, world, pos);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.projectzed.api.block.AbstractBlockContainer#getTileEntity()
-	 */
 	@Override
 	public abstract AbstractTileEntityFluidContainer getTileEntity();
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.projectzed.api.block.AbstractBlockContainer#onBlockActivated(net.
-	 * minecraft.world.World, int, int, int,
-	 * net.minecraft.entity.player.EntityPlayer, int, float, float, float)
-	 */
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState block, EntityPlayer player, EnumHand hand,
 			ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -104,28 +114,28 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 							|| isEmptyComplexContainer(stack)
 							|| (stack.getItem() instanceof IFluidContainerItem && player.isSneaking())) {
 
-						if (((TileEntityFluidTankBase) te).getTank().getFluid() == null) return true;
+						if (te.getTank().getFluid() == null) return true;
 
 						if (stack.getItem() instanceof IFluidContainerItem) {
 							// handle IFluidContainerItem items
 
 							IFluidContainerItem containerItem = (IFluidContainerItem) stack.getItem();
-							int fillFluidAmount = containerItem.fill(stack, ((TileEntityFluidTankBase) te).getTank()
+							int fillFluidAmount = containerItem.fill(stack, te.getTank()
 									.getFluid(), true);
-							((TileEntityFluidTankBase) te).drain(null, fillFluidAmount, true);
+							te.drain(null, fillFluidAmount, true);
 						}
 						else {
 							// handle drain/fill by exchange items
 
 							ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(
-									((TileEntityFluidTankBase) te).getTank().getFluid(), stack);
+									te.getTank().getFluid(), stack);
 
 							if (filledContainer != null) {
-								int containerCapacity = FluidContainerRegistry.getContainerCapacity(((TileEntityFluidTankBase) te).getTank()
+								int containerCapacity = FluidContainerRegistry.getContainerCapacity(te.getTank()
 										.getFluid(), stack);
 
 								if (containerCapacity > 0) {
-									FluidStack drainedFluid = ((TileEntityFluidTankBase) te).drain(null, containerCapacity, true);
+									FluidStack drainedFluid = te.drain(null, containerCapacity, true);
 									if (drainedFluid != null && drainedFluid.amount == containerCapacity) {
 										if (stack.stackSize-- <= 0) {
 											player.inventory.setInventorySlotContents(player.inventory.currentItem, null);

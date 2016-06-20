@@ -1,0 +1,6 @@
+{
+  "parent": "projectzed:block/pipeBase",
+  "textures": {
+    "tex": "projectzed:blocks/pipe_fluid_item_blue"
+  }
+}

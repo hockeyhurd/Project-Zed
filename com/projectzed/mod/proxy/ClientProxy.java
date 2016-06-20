@@ -19,10 +19,10 @@ import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import com.projectzed.mod.renderer.EnergyBankRenderer;
 import com.projectzed.mod.renderer.EnergyPipeRenderer;
-import com.projectzed.mod.tileentity.container.TileEntityEnergyBankBase;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeClear;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeOrange;
-import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeRed;
+import com.projectzed.mod.renderer.FluidPipeRenderer;
+import com.projectzed.mod.renderer.FluidTankRenderer;
+import com.projectzed.mod.tileentity.container.*;
+import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,6 +60,7 @@ public class ClientProxy extends CommonProxy {
 	/*public static KeyBindingHandler getKeyBindingHandler() {
 		return keyBindingHandler;
 	}*/
+
 	@Override
 	protected void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
@@ -158,6 +159,12 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeRed.class, new EnergyPipeRenderer(EnumColor.RED));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeOrange.class, new EnergyPipeRenderer(EnumColor.ORANGE));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyPipeClear.class, new EnergyPipeRenderer(EnumColor.CLEAR));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLiquiductBlue.class, new FluidPipeRenderer(EnumColor.BLUE));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLiquiductClear.class, new FluidPipeRenderer(EnumColor.CLEAR));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier0.class, new FluidTankRenderer(0));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier1.class, new FluidTankRenderer(1));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier2.class, new FluidTankRenderer(2));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer(3));
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());

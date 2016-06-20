@@ -53,10 +53,6 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		this.wasTransferred = te.wasTransferredLastTick();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cpw.mods.fml.common.network.simpleimpl.IMessage#fromBytes(io.netty.buffer.ByteBuf)
-	 */
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		if (vec == null) vec = new Vector3<Integer>();
@@ -67,17 +63,15 @@ public class MessageTileEntityLiquiduct implements IMessage, IMessageHandler<Mes
 		this.fluidAmount = buf.readInt();
 		this.fluidIDLen = buf.readInt();
 
-		char[] arr = new char[fluidIDLen];
-		for (int i = 0; i < fluidIDLen; i++)
-			arr[i] = buf.readChar();
+		if (fluidIDLen > 0) {
+			char[] arr = new char[fluidIDLen];
+			for (int i = 0; i < fluidIDLen; i++)
+				arr[i] = buf.readChar();
+		}
 
 		this.wasTransferred = buf.readBoolean();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see cpw.mods.fml.common.network.simpleimpl.IMessage#toBytes(io.netty.buffer.ByteBuf)
-	 */
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(vec.x);

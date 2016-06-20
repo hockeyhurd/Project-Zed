@@ -16,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -57,7 +58,7 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 
 	@Override
 	public float getBlockHardness() {
-		return 1.0f;
+		return 2.0f;
 	}
 
 	@Override
@@ -66,13 +67,18 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 	}
 
 	@Override
-	public boolean isFullyOpaque(IBlockState state) {
+	public boolean isOpaqueCube(IBlockState blockState) {
 		return false;
 	}
 
 	@Override
 	public boolean isFullCube(IBlockState blockState) {
 		return false;
+	}
+
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	/**

@@ -12,7 +12,6 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityPipe;
 import com.projectzed.mod.tileentity.container.pipe.TileEntityEnergyPipeBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -35,16 +34,6 @@ public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 	public AbstractBlockEnergyPipe(Material material, String name, EnumColor color) {
 		super(material, name);
 		this.color = color;
-	}
-
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState blockState) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@Override
-	public boolean isOpaqueCube(IBlockState blockState) {
-		return false;
 	}
 
 	@Override
