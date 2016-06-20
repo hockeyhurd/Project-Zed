@@ -1,13 +1,15 @@
 {
+  "parent": "block/block",
   "textures": {
-    "tex": "projectzed:blocks/pipe_energy_item_red"
+    "tex": "projectzed:blocks/pipe_energy_item_red",
+    "particle": "#tex"
   },
   "elements": [
     {
       "name": "Cube",
       "from": [ 6.0, 3.0, 6.0 ],
       "to": [ 10.0, 12.0, 10.0 ],
-      "rotation": { "origin": [ 8.0, 8.0, 8.0 ], "axis": "y", "angle": -45.0 },
+      "rotation": { "origin": [ 8.0, 8.0, 8.0 ], "axis": "y", "angle": 0.0 },
       "faces": {
         "north": { "texture": "#tex", "uv": [ 0.0, 0.0, 7.0, 16.0 ] },
         "east": { "texture": "#tex", "uv": [ 0.0, 0.0, 7.0, 16.0 ] },
@@ -17,5 +19,38 @@
         "down": { "texture": "#tex", "uv": [ 7.0, 0.0, 12.0, 5.0 ] }
       }
     }
-  ]
+  ],
+
+  "display": {
+    "gui": {
+      "rotation": [ 30, 225, 75 ],
+      "translation": [ 0, 0, 0],
+      "scale":[ 1.0, 1.0, 1.0 ]
+    },
+    "ground": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 3, 0],
+      "scale":[ 1.0, 1.0, 1.0 ]
+    },
+    "fixed": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0],
+      "scale":[ 1.0, 1.0, 1.0 ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [ 75, 45, 0 ],
+      "translation": [ 0, 2.5, 0],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 90, 67.5, -45 ],
+      "translation": [ 2.0, 0, 0 ],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, 225, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    }
+  }
 }

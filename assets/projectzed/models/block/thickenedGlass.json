@@ -1,6 +1,56 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/block",
   "textures": {
-    "all": "projectzed:blocks/thickenedGlass"
+    "tex": "projectzed:blocks/thickenedGlass",
+    "particle": "projectzed:blocks/thickenedGlass"
+  },
+  "elements": [
+    {
+      "name": "Cube",
+      "from": [ 0.0, 0.0, 0.0 ],
+      "to": [ 16.0, 16.0, 16.0 ],
+      "faces": {
+        "north": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "east": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "south": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "west": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "up": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "down": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] }
+      }
+    },
+
+    {
+      "name": "CubeFlip",
+      "from": [ 16.0, 16.0, 16.0 ],
+      "to": [ 0.0, 0.0, 0.0 ],
+      "faces": {
+        "north": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "east": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "south": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "west": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "up": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
+        "down": { "texture": "#tex", "uv": [ 0.0, 0.0, 16.0, 16.0 ] }
+      }
+    }
+  ],
+
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        205,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    }
   }
 }
