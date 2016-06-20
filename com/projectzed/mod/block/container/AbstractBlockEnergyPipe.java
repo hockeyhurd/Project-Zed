@@ -38,11 +38,6 @@ public abstract class AbstractBlockEnergyPipe extends AbstractBlockPipe {
 	}
 
 	@Override
-	public boolean hasSpecialRenderer() {
-		return true;
-	}
-
-	@Override
 	public EnumBlockRenderType getRenderType(IBlockState blockState) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}

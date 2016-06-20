@@ -45,6 +45,12 @@ public abstract class AbstractBlockPipe extends AbstractHCoreBlockContainer {
 	}
 
 	@Override
+	public boolean hasSpecialRenderer() {
+		// return true;
+		return false;
+	}
+
+	@Override
 	public AbstractBlockPipe getBlock() {
 		return this;
 	}

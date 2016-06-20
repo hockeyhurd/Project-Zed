@@ -1,5 +1,5 @@
 {
-  "parent": "projectzed:block/energyCellGeneric",
+  "parent": "projectzed:block/energyCellTier1",
   "display": {
     "thirdperson": {
       "rotation": [

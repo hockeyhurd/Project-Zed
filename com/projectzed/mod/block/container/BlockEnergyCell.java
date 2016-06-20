@@ -46,7 +46,8 @@ public class BlockEnergyCell extends AbstractBlockContainer {
 
 	@Override
 	public boolean hasSpecialRenderer() {
-		return true;
+		// return true;
+		return false;
 	}
 
 	@Override
