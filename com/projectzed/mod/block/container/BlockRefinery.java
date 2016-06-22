@@ -20,9 +20,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 /**
@@ -38,8 +40,24 @@ public class BlockRefinery extends AbstractBlockContainer {
 	}
 
 	@Override
-	public boolean isVisuallyOpaque() {
+	public boolean hasSpecialRenderer() {
+		// return true;
 		return false;
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
@@ -57,14 +75,15 @@ public class BlockRefinery extends AbstractBlockContainer {
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
 		super.onBlockPlacedBy(world, pos, state, e, stack);
 
-		// int dir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		final int mathDir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
 		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		// if (dir == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
 		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
-		final EnumFacing dir = e.getHorizontalFacing();
+		// final EnumFacing dir = e.getHorizontalFacing();
+		final EnumFacing dir = EnumFacing.getFront(mathDir);
 		final TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof AbstractTileEntityEnergyContainer) {

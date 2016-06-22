@@ -16,6 +16,7 @@ import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -41,6 +42,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 	private int numTanks;
 	private int storedPower;
 	private boolean powerMode;
+	private EnumFacing facing;
 
 	@Deprecated
 	public MessageTileEntityRefinery() {
@@ -53,6 +55,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		numTanks = te.getNumTanks();
 		powerMode = te.isPowered();
 		storedPower = te.getEnergyStored();
+		facing = te.getCurrentFacing();
 
 		tanks = new ArrayList<TankData>(numTanks);
 
@@ -72,6 +75,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		this.numTanks = buf.readInt();
 		this.storedPower = buf.readInt();
 		this.powerMode = buf.readBoolean();
+		this.facing = EnumFacing.getFront(buf.readInt());
 
 		if (this.numTanks == 0) return; // no need to continue if we have no tanks!
 		if (tanks == null) tanks = new ArrayList<TankData>(this.numTanks);
@@ -89,6 +93,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		buf.writeInt(numTanks);
 		buf.writeInt(storedPower);
 		buf.writeBoolean(powerMode);
+		buf.writeInt(facing.ordinal());
 
 		if (tanks != null && !tanks.isEmpty()) {
 			for (TankData data : tanks) {
@@ -107,6 +112,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 
 			te.setEnergyStored(message.storedPower);
 			te.setPowered(message.powerMode);
+			te.setFrontFacing(message.facing);
 
 			if (message.tanks != null && !message.tanks.isEmpty()) {
 
@@ -140,7 +146,7 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 		TankData(int tankID, String fluidID, int fluidAmount) {
 			this.tankID = tankID;
 			this.fluidID = fluidID;
-			this.fluidIDLen = fluidID.length();
+			this.fluidIDLen = fluidID != null && !fluidID.isEmpty() ? fluidID.length() : -1;
 			this.fluidAmount = fluidAmount;
 		}
 
@@ -177,12 +183,17 @@ public class MessageTileEntityRefinery implements IMessage, IMessageHandler<Mess
 
 			int tankID = buf.readInt();
 			int fluidIDLen = buf.readInt();
+			String fluidID;
 
-			char[] arr = new char[fluidIDLen];
-			for (int i = 0; i < fluidIDLen; i++)
-				arr[i] = buf.readChar();
+			if (fluidIDLen > 0) {
+				char[] arr = new char[fluidIDLen];
+				for (int i = 0; i < fluidIDLen; i++)
+					arr[i] = buf.readChar();
 
-			String fluidID = new String(arr);
+				fluidID = new String(arr);
+			}
+
+			else fluidID = "<empty>";
 
 			int fluidAmount = buf.readInt();
 

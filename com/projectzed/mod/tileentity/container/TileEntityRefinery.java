@@ -128,7 +128,7 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 	 * @return output fluid if valid input, else returns NULL.
 	 */
 	public static Fluid getOutputFromInput(FluidStack fluidStack) {
-		return fluidStack.getFluid() == ProjectZed.fluidOil ? ProjectZed.fluidPetrol : null;
+		return fluidStack != null && fluidStack.getFluid() == ProjectZed.fluidOil ? ProjectZed.fluidPetrol : null;
 	}
 
 	@Override
