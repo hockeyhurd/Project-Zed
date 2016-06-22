@@ -11,6 +11,8 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponen
 import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumBlockRenderType;
 
 /**
  * Class containing block code for nuclearReactorGlass.
@@ -28,15 +30,31 @@ public class BlockNuclearReactorGlass extends AbstractBlockNuclearComponent {
 	}
 
 	@Override
-	public float getBlockHardness() {
-		return 0.75f;
+	public boolean hasSpecialRenderer() {
+		// return true;
+		return false;
 	}
 
 	@Override
-	public boolean isVisuallyOpaque() {
+	public boolean isOpaqueCube(IBlockState blockState) {
 		return false;
 	}
-	
+
+	@Override
+	public boolean isFullCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public float getBlockHardness() {
+		return 2.0f;
+	}
+
 	@Override
 	public AbstractTileEntityNuclearComponent getTileEntity() {
 		return new TileEntityReactorGlass();

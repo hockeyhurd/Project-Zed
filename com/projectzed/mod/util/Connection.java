@@ -14,8 +14,8 @@ package com.projectzed.mod.util;
  */
 public class Connection {
 
-	private final boolean connect;
-	private final int type;
+	private boolean connect;
+	private int type;
 	
 	/**
 	 * @param connect is connected.
@@ -32,6 +32,16 @@ public class Connection {
 	public boolean isConnected() {
 		return connect;
 	}
+
+	/**
+	 * Sets connection status.
+	 *
+	 * @param connect boolean.
+	 */
+	public Connection setConnect(boolean connect) {
+		this.connect = connect;
+		return this;
+	}
 	
 	/**
 	 * Other common conventions: (-1: input, 0: neutral, 1: output).
@@ -40,6 +50,16 @@ public class Connection {
 	 */
 	public int getType() {
 		return type;
+	}
+
+	/**
+	 * Sets connection type.
+	 *
+	 * @param type int.
+	 */
+	public Connection setType(int type) {
+		this.type = type;
+		return this;
 	}
 
 }

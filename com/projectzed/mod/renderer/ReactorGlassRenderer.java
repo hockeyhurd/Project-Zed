@@ -4,7 +4,7 @@ import com.hockeyhurd.hcorelib.api.client.util.RenderHelper;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
+import com.projectzed.mod.tileentity.container.TileEntityReactorGlass;
 import com.projectzed.mod.util.Connection;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
@@ -13,22 +13,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * TESR class for rendering of TileEntityWickedClearGlass.
- *
  * @author hockeyhurd
  * @version 6/22/2016.
  */
 @SideOnly(Side.CLIENT)
-public class WickedClearGlassRenderer extends TileEntitySpecialRenderer<TileEntityWickedClearGlass> {
+public class ReactorGlassRenderer extends TileEntitySpecialRenderer<TileEntityReactorGlass> {
 
-	private static final ResourceLocation texture = new ResourceLocation(ProjectZed.assetDir, "textures/blocks/wickedClearGlass.png");
+	private static final ResourceLocation texture = new ResourceLocation(ProjectZed.assetDir, "textures/blocks/nuclearReactorGlass.png");
 	private static final float PIXEL = 1.0f / 96.0f;
 	private static final float min = 0.0f, max = 16.0f * PIXEL;
 	private Vector3<Float> minVec, maxVec;
 	private Connection[] connections = new Connection[EnumFacing.VALUES.length];
 
 	@SuppressWarnings("unchecked")
-	public WickedClearGlassRenderer() {
+	public ReactorGlassRenderer() {
 		minVec = Vector3.zero.getVector3f();
 		maxVec = new Vector3<Float>(1.0f, 1.0f, 1.0f);
 
@@ -37,7 +35,7 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer<TileEnti
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityWickedClearGlass te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void renderTileEntityAt(TileEntityReactorGlass te, double x, double y, double z, float partialTicks, int destroyStage) {
 
 		for (EnumFacing dir : EnumFacing.VALUES) {
 			getConnection(te, connections[dir.ordinal()], te.getPos().getX() + dir.getFrontOffsetX(),
@@ -54,10 +52,10 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer<TileEnti
 		RenderHelper.finishPostRender(renderVec);
 	}
 
-	private static Connection getConnection(TileEntityWickedClearGlass te, Connection connection, int x, int y, int z) {
+	private static Connection getConnection(TileEntityReactorGlass te, Connection connection, int x, int y, int z) {
 
 		if (te != null && te.getWorld() != null) {
-			if (te.getWorld().getTileEntity(VectorHelper.toBlockPos(x, y, z)) instanceof TileEntityWickedClearGlass)
+			if (te.getWorld().getTileEntity(VectorHelper.toBlockPos(x, y, z)) instanceof TileEntityReactorGlass)
 				connection.setConnect(true).setType(1);
 			else connection.setConnect(false).setType(0);
 		}
@@ -68,9 +66,9 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer<TileEnti
 	/**
 	 * Method handles delegating and drawing of glass and its sides.
 	 *
-	 * @param te TileEntityWickedClearGlass to render.
+	 * @param te TileEntityReactorGlass to render.
 	 */
-	private void renderCube(TileEntityWickedClearGlass te) {
+	private void renderCube(TileEntityReactorGlass te) {
 		RenderHelper.startDrawingQuads();
 
 		drawXNeg();
@@ -644,5 +642,4 @@ public class WickedClearGlassRenderer extends TileEntitySpecialRenderer<TileEnti
 
 		RenderHelper.drawXPos(minVec, maxVec, minU * PIXEL, minV * PIXEL, (minU + 16.0f) * PIXEL, (minV + 16.0f) * PIXEL);
 	}
-	
 }
