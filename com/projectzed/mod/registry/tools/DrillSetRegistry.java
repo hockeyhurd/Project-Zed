@@ -32,6 +32,7 @@ public class DrillSetRegistry implements IToolSetRegistry {
 		Material.GRASS,
 		Material.GROUND,
 		Material.SAND,
+		Material.GLASS,
 		Material.PISTON,
 		Material.SNOW,
 		Material.CIRCUITS,

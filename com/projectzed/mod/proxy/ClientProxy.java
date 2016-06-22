@@ -17,10 +17,8 @@ import com.projectzed.mod.handler.DrawBlockSelectionHandler;
 import com.projectzed.mod.handler.input.ItemAdjusterHandler;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
-import com.projectzed.mod.renderer.EnergyBankRenderer;
-import com.projectzed.mod.renderer.EnergyPipeRenderer;
-import com.projectzed.mod.renderer.FluidPipeRenderer;
-import com.projectzed.mod.renderer.FluidTankRenderer;
+import com.projectzed.mod.renderer.*;
+import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.util.Reference;
@@ -165,6 +163,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier1.class, new FluidTankRenderer(1));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier2.class, new FluidTankRenderer(2));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTankTier3.class, new FluidTankRenderer(3));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWickedClearGlass.class, new WickedClearGlassRenderer());
 
 		// MinecraftForge.EVENT_BUS.register(renderWorldHandler);
 		MinecraftForge.EVENT_BUS.register(new DrawBlockSelectionHandler());

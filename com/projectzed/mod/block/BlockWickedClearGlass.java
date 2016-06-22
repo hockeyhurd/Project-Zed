@@ -18,6 +18,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +39,27 @@ public class BlockWickedClearGlass extends AbstractHCoreBlockContainer {
 		this.setResistance(2000.0f);
 		this.setSoundType(SoundType.GLASS);
 		this.setLightOpacity(0);
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState blockState) {
+		return false;
+	}
+
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState blockState) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public boolean hasSpecialRenderer() {
+		// return true;
+		return false;
 	}
 
 	@Override
@@ -67,11 +89,6 @@ public class BlockWickedClearGlass extends AbstractHCoreBlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer player, EnumHand hand, ItemStack stack,
 			EnumFacing sideHit, float hitX, float hitY, float hitZ) {
-		return false;
-	}
-
-	@Override
-	public boolean isVisuallyOpaque() {
 		return false;
 	}
 
