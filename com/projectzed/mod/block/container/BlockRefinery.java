@@ -15,16 +15,17 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -35,8 +36,13 @@ import net.minecraft.world.World;
  */
 public class BlockRefinery extends AbstractBlockContainer {
 
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	protected static final PropertyBool ACTIVE = PropertyBool.create("active");
+
 	public BlockRefinery(Material material) {
 		super(material, ProjectZed.assetDir, "refinery");
+
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
 	@Override
@@ -72,10 +78,17 @@ public class BlockRefinery extends AbstractBlockContainer {
 	}
 
 	@Override
+	public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase e) {
+
+		return getDefaultState().withProperty(FACING, e.getHorizontalFacing().getOpposite());
+	}
+
+	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase e, ItemStack stack) {
 		super.onBlockPlacedBy(world, pos, state, e, stack);
 
-		final int mathDir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		// final int mathDir = MathHelper.floor_double((double) (e.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
 		// if (dir == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		// if (dir == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
@@ -83,7 +96,7 @@ public class BlockRefinery extends AbstractBlockContainer {
 		// if (dir == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);
 
 		// final EnumFacing dir = e.getHorizontalFacing();
-		final EnumFacing dir = EnumFacing.getFront(mathDir);
+		final EnumFacing dir = e.getHorizontalFacing().getOpposite();
 		final TileEntity tileEntity = world.getTileEntity(pos);
 
 		if (tileEntity instanceof AbstractTileEntityEnergyContainer) {
@@ -98,6 +111,57 @@ public class BlockRefinery extends AbstractBlockContainer {
 		ProjectZed.logHelper.info("Stored McU:", te.getEnergyStored());
 		ProjectZed.logHelper.info("Stored Oil (mb):", te.getTank(TileEntityRefinery.TankID.INPUT).getFluidAmount());
 		ProjectZed.logHelper.info("Stored Petrol (mb):", te.getTank(TileEntityRefinery.TankID.OUTPUT).getFluidAmount());
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
+		final TileEntityRefinery te = (TileEntityRefinery) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE())
+			return EnumFacing.HORIZONTALS;
+
+		return super.getValidRotations(world, blockPos);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
+		final TileEntityRefinery te = (TileEntityRefinery) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE()) {
+			EnumFacing dir = te.getCurrentFacing();
+			if (dir == null || dir == EnumFacing.DOWN || dir == EnumFacing.UP) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir).withProperty(ACTIVE, te.isPowered());
+		}
+
+		return blockState;
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return blockState.getValue(FACING).getIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		EnumFacing facing = EnumFacing.getFront(meta);
+		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	@Override
+	public IBlockState withRotation(IBlockState state, Rotation rot) {
+		return state.withProperty(FACING, rot.rotate(state.getValue(FACING))).withProperty(ACTIVE, state.getValue(ACTIVE));
+	}
+
+	@Override
+	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
+		return state.withProperty(ACTIVE, state.getValue(ACTIVE)).withRotation(mirrorIn.toRotation(state.getValue(FACING)));
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
 }

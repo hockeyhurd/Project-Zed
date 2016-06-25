@@ -2,8 +2,6 @@ package com.projectzed.mod.renderer;
 
 import com.hockeyhurd.hcorelib.api.client.util.RenderHelper;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
-import com.hockeyhurd.hcorelib.api.math.VectorHelper;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityRefinery;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,10 +50,9 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer<TileEntity
 	@Override
 	public void renderTileEntityAt(TileEntityRefinery te, double x, double y, double z, float partialTicks, int destroyStage) {
 		final Vector3<Double> renderVec = new Vector3<Double>(x, y, z);
-		final Vector3<Integer> atVec = VectorHelper.toVector3i(te.getPos());
-		// final int metadata = te.getBlockMetadata();
+		// final Vector3<Integer> atVec = VectorHelper.toVector3i(te.getPos());
 		final int metadata = te.getCurrentFacing().ordinal();
-		ProjectZed.logHelper.info("metadata:", metadata);
+		// ProjectZed.logHelper.info("metadata:", metadata);
 		final float angle = metadata == 3 ? 90.0f : metadata == 5 ? 180.0f : metadata == 2 ? -90.0f : 0.0f;
 		final float translation = 0.5f;
 
