@@ -23,7 +23,7 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer<TileEntity
 	private static final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
 	private static final ResourceLocation texture = new ResourceLocation("projectzed", "textures/blocks/refinery.png");
 	public static final float PIXEL = 1f / 64f;
-	public static final float TEX_SPACING = 0.001f;
+	public static final float TEX_SPACING = RenderHelper.DRAW_OFFSET;
 
 	// vectors and calculations:
 	public static final Vector3<Float> minP = new Vector3<Float>(0f, 0f, 0f);
@@ -32,8 +32,8 @@ public final class RefineryRenderer extends TileEntitySpecialRenderer<TileEntity
 	public static final Vector3<Float> minT = new Vector3<Float>(6f / 16f, 1f / 16f + TEX_SPACING, 0f);
 	public static final Vector3<Float> maxT = new Vector3<Float>(1f - 6f / 16f, 1f - (5f / 16f + TEX_SPACING), 1f - 12f / 16f);
 
-	public static final Vector3<Float> minT2 = new Vector3<Float>(maxT.x, minT.y.floatValue(), 1f);
-	public static final Vector3<Float> maxT2 = new Vector3<Float>(minT.x, maxT.y.floatValue(), 1f - 4f / 16f);
+	public static final Vector3<Float> minT2 = new Vector3<Float>(maxT.x, minT.y, 1f);
+	public static final Vector3<Float> maxT2 = new Vector3<Float>(minT.x, maxT.y, 1f - 4f / 16f);
 
 	public static final Vector3<Float> minF = new Vector3<Float>(4f / 16f - TEX_SPACING * 2f, 1f / 16f + TEX_SPACING, 4f / 16f + TEX_SPACING * 2f);
 	public static final Vector3<Float> maxF = new Vector3<Float>(1f - 4f / 16f - TEX_SPACING * 2f, 1f - (5f / 16f + TEX_SPACING), 1f - 4f / 16f - TEX_SPACING * 2f);

@@ -33,7 +33,7 @@ group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conv
 archivesBaseName = "ProjectZed"
 
 minecraft {
-    version = "1.9.4-12.17.0.1965"
+    version = "1.9.4-12.17.0.1976"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
