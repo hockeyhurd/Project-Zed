@@ -1,0 +1,52 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "projectzed:blocks/generic_base",
+      "down": "projectzed:blocks/generic_base",
+      "north": "projectzed:blocks/patternEncoder_front",
+      "east": "projectzed:blocks/generic_side",
+      "west": "projectzed:blocks/generic_side",
+      "south": "projectzed:blocks/generic_side",
+      "particle": "projectzed:blocks/generic_side"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+
+    "normal":[{}],
+
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    },
+
+    "active": {
+      "true": {
+        "textures": {
+          "north": "projectzed:blocks/patternEncoder_front_on"
+        }
+      },
+
+      "false": {
+        "textures": {
+          "north": "projectzed:blocks/patternEncoder_front"
+        }
+      }
+    }
+
+  }
+}

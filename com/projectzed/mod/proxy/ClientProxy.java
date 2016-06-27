@@ -64,9 +64,29 @@ public class ClientProxy extends CommonProxy {
 		BlockRegistry.instance().init(ProjectZed.class);
 		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) {
-				GameRegistry.register(b.getBlock());
-				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
-				ModelRegistry.registerBlock(b);
+
+				/*if (b instanceof AbstractBlockFluid) {
+					GameRegistry.register(b.getBlock());
+					GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
+
+					// final ModelResourceLocation model = new ModelResourceLocation(new ResourceLocation(ProjectZed.assetDir, b.getName()), "fluid");
+					final ModelResourceLocation model = new ModelResourceLocation(b.getResourceLocation(), "fluid");
+
+					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b.getBlock()), 0, model);
+
+					ModelLoader.setCustomStateMapper(b.getBlock(), new StateMapperBase() {
+						@Override
+						protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+							return model;
+						}
+					});
+				}*/
+
+				// else {
+					GameRegistry.register(b.getBlock());
+					GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
+					ModelRegistry.registerBlock(b);
+				// }
 			}
 		}
 	}

@@ -11,7 +11,6 @@
 package com.projectzed.mod.gui.component;
 
 import com.hockeyhurd.hcorelib.api.client.gui.GuiHelper;
-import com.hockeyhurd.hcorelib.api.math.Color4f;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -51,18 +50,9 @@ public class GuiEncodeButton extends GuiButton implements IGuiButton {
 	@Override
 	public void drawButton(Minecraft minecraft, int x, int y) {
 		if (this.visible) {
-			/*GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			minecraft.getTextureManager().bindTexture(TEXTURE);
+			final FontRenderer fontRenderer = minecraft.fontRendererObj;
+			GuiHelper.simpleRenderGui(TEXTURE, GuiHelper.DEFAULT_COL, xPosition, yPosition, 0, 0, width, height, 32.0f, 32.0f);
 
-			tessHelp.startDrawingQuads();
-			tessHelp.addVertUV(xPosition, yPosition, 0, 0.0f, height * PIXEL);
-			tessHelp.addVertUV(xPosition, yPosition + height, 0, 0.0f, 0.0f);
-			tessHelp.addVertUV(xPosition + width, yPosition + height, 0, width * PIXEL, 0.0f);
-			tessHelp.addVertUV(xPosition + width, yPosition, 0, width * PIXEL, height * PIXEL);
-			tessHelp.draw();*/
-
-			FontRenderer fontRenderer = minecraft.fontRendererObj;
-			GuiHelper.simpleRenderGui(TEXTURE, new Color4f(1.0f, 1.0f, 1.0f, 1.0f), xPosition, yPosition, 0, 0, width, height);
 			mouseDragged(minecraft, x, y);
 
 			int j = 0xe0e0e0;

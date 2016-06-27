@@ -160,8 +160,8 @@ item.fuelRod.name=Uranium Fuel Rod
 item.fuelRod_Full.name=Full Uranium Fuel Rod
 
 // Fluids:
-tile.blockFluidOil.still.name=Crude Oil
-tile.blockFluidPetrol.still.name=Petrol
+tile.blockFluidOil_still.name=Crude Oil
+tile.blockFluidPetrol_still.name=Petrol
 item.bucketOil.name=Crude Oil Bucket
 item.bucketPetrol.name=Petrol Bucket
 

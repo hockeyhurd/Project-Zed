@@ -11,7 +11,6 @@
 package com.projectzed.mod.block.machines;
 
 import com.projectzed.api.block.AbstractBlockMachine;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.tools.ItemWrench;
 import com.projectzed.mod.registry.TileEntityRegistry;
@@ -38,7 +37,7 @@ public class BlockPatternEncoder extends AbstractBlockMachine {
 	}
 
 	@Override
-	public AbstractTileEntityMachine getTileEntity() {
+	public TileEntityPatternEncoder getTileEntity() {
 		return new TileEntityPatternEncoder();
 	}
 
