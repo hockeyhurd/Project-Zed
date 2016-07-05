@@ -229,12 +229,13 @@ public class CommonProxy {
 	}
 	
 	public void registerUpdateHandler() {
-		updateHandler = new UpdateHandler(Reference.class);
+		updateHandler = new UpdateHandler(Reference.BUILD, Reference.MOD_NAME, Reference.VERSION, Reference.MOD_URL, Reference.CHANGELOG_URL);
 		updateHandler.check();
 		this.map = updateHandler.getMap();
 		this.updateFlag = updateHandler.getUpToDate();
 		
-		MinecraftForge.EVENT_BUS.register(new NotifyPlayerOnJoinHandler(updateHandler, this.map, Reference.class, this.updateFlag, true, ProjectZed.configHandler.allowUpdating()));
+		MinecraftForge.EVENT_BUS.register(new NotifyPlayerOnJoinHandler(updateHandler, map, Reference.MOD_NAME, updateFlag, true,
+				ProjectZed.configHandler.allowUpdating()));
 	}
 
 }

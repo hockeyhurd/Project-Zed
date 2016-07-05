@@ -7,7 +7,6 @@
 package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.handler.config.AbstractConfigHandler;
-import com.hockeyhurd.hcorelib.api.util.AbstractReference;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -29,19 +28,19 @@ public class SortingConfigHandler extends AbstractConfigHandler {
 	
 	/**
 	 * @param event
-	 * @param classRef
+	 * @param modID
 	 */
-	public SortingConfigHandler(FMLPreInitializationEvent event, Class<? extends AbstractReference> classRef) {
-		super(event, classRef);
+	public SortingConfigHandler(FMLPreInitializationEvent event, String modID) {
+		super(event, modID);
 	}
 
 	/**
 	 * @param event
-	 * @param classRef
+	 * @param modID
 	 * @param name
 	 */
-	public SortingConfigHandler(FMLPreInitializationEvent event, Class<? extends AbstractReference> classRef, String name) {
-		super(event, classRef, name);
+	public SortingConfigHandler(FMLPreInitializationEvent event, String modID, String name) {
+		super(event, modID, name);
 	}
 
 	/* (non-Javadoc)

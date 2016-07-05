@@ -17,7 +17,7 @@ import com.hockeyhurd.hcorelib.api.util.AbstractReference;
 public class Reference extends AbstractReference {
 
 	/** Current build number. */
-	public static final short BUILD = 23;
+	public static final int BUILD = 23;
 	
 	/** Current version with included build number. */
 	public static final String VERSION = "v1.1." + BUILD;

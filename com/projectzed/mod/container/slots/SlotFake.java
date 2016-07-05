@@ -44,11 +44,9 @@ public class SlotFake extends Slot {
 
 	@Override
 	public void putStack(ItemStack stack) {
-		if (stack != null) {
-			stack = stack.copy();
+		if (stack != null) stack = stack.copy();
 
-			super.putStack(stack);
-		}
+		super.putStack(stack);
 	}
 
 	@Override

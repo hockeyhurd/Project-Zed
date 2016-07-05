@@ -21,6 +21,8 @@ import com.projectzed.mod.util.Reference;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Gui clas for pattern encoder.
@@ -28,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
  * @author hockeyhurd
  * @version 4/30/2016.
  */
+@SideOnly(Side.CLIENT)
 public class GuiPatternEncoder extends GuiMachine {
 
 	private final IEncodable encodable;

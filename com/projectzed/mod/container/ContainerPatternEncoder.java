@@ -99,6 +99,14 @@ public class ContainerPatternEncoder extends ContainerMachine {
 		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
+	@Override
+	public void putStackInSlot(int slotID, ItemStack stack) {
+		super.putStackInSlot(slotID, stack);
+		// stack.stackSize++;
+
+		getSlot(slotID).putStack(stack.copy());
+	}
+
 	/**
 	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
 	 */

@@ -108,10 +108,9 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 	public IMessage onMessage(MessageTileEntityPatternEncoder message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
 			World world = ctx.getServerHandler().playerEntity.worldObj;
-			TileEntity tileEntity = world.getTileEntity(VectorHelper.toBlockPos(message.vec));
+			TileEntityPatternEncoder te = (TileEntityPatternEncoder) world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 
-			if (tileEntity != null && te instanceof TileEntityPatternEncoder) {
-				TileEntityPatternEncoder te = (TileEntityPatternEncoder) tileEntity;
+			if (te != null) {
 
 				if (message.slots != null && message.slots.length > 0) {
 					EntityPlayer player = ctx.getServerHandler().playerEntity;

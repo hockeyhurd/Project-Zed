@@ -272,7 +272,7 @@ public final class ProjectZed implements IForgeMod {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		tl = new TimeLapse();
-		logHelper = new LogHelper(Reference.class);
+		logHelper = new LogHelper(modID);
 
 		final Side side = FMLCommonHandler.instance().getEffectiveSide();
 
@@ -286,12 +286,12 @@ public final class ProjectZed implements IForgeMod {
 		}
 
 		logHelper.info("Pre-init started, looking for config info!");
-		configHandler = new ConfigHandler(event, Reference.class);
+		configHandler = new ConfigHandler(event, modID);
 		configHandler.handleConfiguration();
 		logHelper.info("Config loaded successfully! Patching mod now!"); 
 		
 		logHelper.info("Pre-init started, looking for sorting config info!");
-		sortingConfigHandler = new SortingConfigHandler(event, Reference.class, "sorting.cfg");
+		sortingConfigHandler = new SortingConfigHandler(event, modID, "sorting.cfg");
 		sortingConfigHandler.handleConfiguration();
 		logHelper.info("Sorting config loaded successfully! Patching mod now!");
 		

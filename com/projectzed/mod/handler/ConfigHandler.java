@@ -7,7 +7,6 @@
 package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.handler.config.AbstractConfigHandler;
-import com.hockeyhurd.hcorelib.api.util.AbstractReference;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -41,16 +40,14 @@ public class ConfigHandler extends AbstractConfigHandler {
 	private float effRateModifier;
 	
 	/**
-	 * @param event = event.
-	 * @param classRef = class reference.
+	 * @param event event.
+	 * @param modID String modID.
 	 */
-	public ConfigHandler(FMLPreInitializationEvent event, Class<? extends AbstractReference> classRef) {
-		super(event, classRef);
+	public ConfigHandler(FMLPreInitializationEvent event, String modID) {
+		super(event, modID);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hockeyhurd.api.handler.AbstractConfigHandler#handleConfiguration()
-	 */
+	@Override
 	public void handleConfiguration() {
 		this.loadConfig();
 		
