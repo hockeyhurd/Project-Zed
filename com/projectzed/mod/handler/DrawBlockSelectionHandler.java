@@ -96,8 +96,10 @@ public class DrawBlockSelectionHandler {
 						zp = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 
 						// RenderGlobal.drawOutlinedBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
-						RenderGlobal.drawSelectionBoundingBox(
-								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+						RenderGlobal.func_189696_b(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
+								0.0f, 0.0f, 0.0f, 0.0f);
+						// RenderGlobal.drawSelectionBoundingBox(
+						//		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
 
 					else if (rayTrace.sideHit == EnumFacing.NORTH || rayTrace.sideHit == EnumFacing.SOUTH) {
@@ -116,8 +118,11 @@ public class DrawBlockSelectionHandler {
 						/*RenderGlobal.drawOutlinedBoundingBox(
 								currentBlock.getSelectedBoundingBoxFromPool(player.worldObj, rayTrace.blockX + i, rayTrace.blockY + j, rayTrace.blockZ)
 										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
-						RenderGlobal.drawSelectionBoundingBox(
-								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+
+						RenderGlobal.func_189696_b(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
+								0.0f, 0.0f, 0.0f, 0.0f);
+						// RenderGlobal.drawSelectionBoundingBox(
+						// 		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
 
 					else {
@@ -137,8 +142,11 @@ public class DrawBlockSelectionHandler {
 								currentBlock.getSelectedBoundingBoxFromPool(player.worldObj, rayTrace.blockX, rayTrace.blockY + j, rayTrace.blockZ + i)
 										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
 
-						RenderGlobal.drawSelectionBoundingBox(
-								boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
+						RenderGlobal.func_189696_b(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
+								0.0f, 0.0f, 0.0f, 0.0f);
+
+						// RenderGlobal.drawSelectionBoundingBox(
+						//		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
 				}
 			}

@@ -31,9 +31,8 @@ sourceSets {
 version = "1.2.1"
 group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectZed"
-
 minecraft {
-    version = "1.9.4-12.17.0.1976"
+    version = "1.10.2-12.18.0.2007-1.10.0"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
