@@ -192,46 +192,40 @@ public class CrusherRecipesRegistry implements IRegistrable {
 	 * @return output as itemstack.
 	 */
 	public static ItemStack crusherList(ItemStack stack) {
-		boolean flag = false;
-		ItemStack temp = null;
-		
+
 		/*
 		 * First attempt to see we have data handling for the given stack in the vanilla mapping, if not continue and use the fallback mapping
 		 * (modded).
 		 */
 		if (mapVanilla.size() > 0 && !mapVanilla.isEmpty()) {
-			flag = true;
-			
 			for (ItemStack itemStack : mapVanilla.keySet()) {
-				if (itemStack.isItemEqual(stack)) {
-					temp = mapVanilla.get(itemStack);
-					break;
-				}
+				if (itemStack.isItemEqual(stack)) return mapVanilla.get(itemStack);
 			}
 		}
 
-		// If found data in vanilla mapping, return now, no need to continue.
-		if (flag && temp != null) return temp;
+		ItemStack tempItemStack = null;
 
 		// Else not found, prepare data for collection from the Ore Dictionary.
-		if (mapModded.size() > 0) {
+		if (!mapModded.isEmpty()) {
 
-			int currentID = OreDictionary.getOreIDs(stack)[0];
-			if (currentID == -1) return (ItemStack) null;
+			int[] oreIDs = OreDictionary.getOreIDs(stack);
+			if (oreIDs == null || oreIDs.length == 0) return null;
+
+			int currentID = oreIDs[0];
+			if (currentID == -1) return null;
 			
 			String inputName = OreDictionary.getOreName(currentID);
-			if (!mapModded.containsKey(inputName)) return (ItemStack) null;
+			if (!mapModded.containsKey(inputName)) return null;
 			
 			String outputName = mapModded.get(inputName);
-			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).size() == 0) return (ItemStack) null;
-			temp = OreDictionary.getOres(outputName).get(0);
+			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).isEmpty()) return null;
+			tempItemStack = OreDictionary.getOres(outputName).get(0);
 			
-			if (temp == null) return (ItemStack) null;
+			if (tempItemStack == null) return null;
 			
-			flag = true;
 			Block block = null;
 			Item item = null;
-			boolean isDense = false;;
+			boolean isDense = false;
 					
 			/*
 			* Checks if the stack is instance of Block or instance of Item. In theory, only one of the two objects should be null at a given
@@ -241,19 +235,20 @@ public class CrusherRecipesRegistry implements IRegistrable {
 				block = Block.getBlockById(OreDictionary.getOreID(inputName));
 				if (inputName.contains("dense")) isDense = true;
 			}
+
 			else if (inputName.contains("ingot")) item = Item.getItemById(OreDictionary.getOreID(inputName));
 
 			// Somewhat overly complicated but makes more sense writing like this imo.
-			temp.stackSize = block != null && item == null ? (!isDense ? 2 : 4) : (block == null && item != null ? 1 : 1);
+			tempItemStack.stackSize = block != null && item == null ? (!isDense ? 2 : 4) : (block == null && item != null ? 1 : 1);
 		}
 
 		// If found and stored in variable temp while != null, return data.
-		if (flag && temp != null) {
-			mapVanilla.put(stack, temp);
-			return temp;
+		if (tempItemStack != null) {
+			mapVanilla.put(stack, tempItemStack);
+			return tempItemStack;
 		}
 
-		else return (ItemStack) null;
+		return null;
 	}
 
 }

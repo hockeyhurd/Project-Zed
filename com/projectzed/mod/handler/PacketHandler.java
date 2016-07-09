@@ -7,6 +7,7 @@
 package com.projectzed.mod.handler;
 
 import com.projectzed.mod.handler.message.*;
+import com.projectzed.mod.util.ModsLoadedHelper;
 import com.projectzed.mod.util.Reference;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -38,7 +39,6 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityStoneCraftingTable.class, MessageTileEntityStoneCraftingTable.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityLoader.class, MessageTileEntityLoader.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityLoader.class, MessageTileEntityLoader.class, getNextID(), Side.CLIENT);
-		INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageTileEntityEnergyContainer.class, MessageTileEntityEnergyContainer.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityRefinery.class, MessageTileEntityRefinery.class, getNextID(), Side.CLIENT);
@@ -49,6 +49,9 @@ public class PacketHandler {
 		INSTANCE.registerMessage(MessageTileEntityDigger.class, MessageTileEntityDigger.class, getNextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageTileEntityNuclearIOPort.class, MessageTileEntityNuclearIOPort.class, getNextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageItemAdjustable.class, MessageItemAdjustable.class, getNextID(), Side.SERVER);
+
+		if (ModsLoadedHelper.instance().cofhCore)
+			INSTANCE.registerMessage(MessageTileEntityRFBridge.class, MessageTileEntityRFBridge.class, getNextID(), Side.CLIENT);
 	}
 	
 	public static int getNextID() {

@@ -349,7 +349,7 @@ public final class ProjectZed implements IForgeMod {
 	/**
 	 * Method used to instantiate objects: blocks, items, etc.
 	 */
-	private void loadObj() {
+	private static void loadObj() {
 		// Blocks:
 		machineContainer = new BlockMachineContainer();
 		thickenedGlass = new BlockThickenedGlass();
