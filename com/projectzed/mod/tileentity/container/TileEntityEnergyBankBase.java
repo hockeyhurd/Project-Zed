@@ -6,6 +6,7 @@
 */
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.IModularFrame;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -18,6 +19,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nullable;
 
 /**
  * Class containing code for energy bank. <br>
@@ -206,27 +209,20 @@ public class TileEntityEnergyBankBase extends AbstractTileEntityEnergyContainer 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityEnergyContainer(this));
 		}
 	}
-	
-	// NOTE: server -> client
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
-	}*/
 
+	@Nullable
 	@Override
-	public NBTTagCompound getUpdateTag() {
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
-
-		final NBTTagCompound comp = getTileData();
+		final NBTTagCompound comp = getUpdateTag();
 		saveNBT(comp);
-
-		return comp;
+		return new SPacketUpdateTileEntity(pos, 1, comp);
 	}
 
-	// NOTE: client -> server
 	@Override
-	public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+	public void onDataPacket(NetworkManager manger, SPacketUpdateTileEntity packet) {
+		readNBT(packet.getNbtCompound());
+		BlockUtils.markBlockForUpdate(worldObj, pos);
 	}
 	
 	@Override

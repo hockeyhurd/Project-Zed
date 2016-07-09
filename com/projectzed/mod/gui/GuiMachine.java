@@ -8,7 +8,6 @@ package com.projectzed.mod.gui;
 
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
-import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.EnumRedstoneType;
 import com.projectzed.mod.container.ContainerMachine;
@@ -44,6 +43,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 
 	public ResourceLocation texture;
 	protected AbstractTileEntityMachine te;
+	protected final EntityPlayer player;
 	protected String stringToDraw;
 
 	protected Vector2<Integer> mouseVec, pos, minMax;
@@ -53,7 +53,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 	protected LinkedList<IGuiButton> buttons;
 	protected EnumRedstoneType redstoneType;
 
-	protected Waila waila;
+	// protected Waila waila;
 	protected GuiPanelUpgrade upgradePanel;
 	protected int upgradeXOffset;
 
@@ -80,9 +80,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.labelList = new ArrayList<IInfoLabel>();
 		this.redstoneType = te.getRedstoneType();
 		
-		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
-		
-		waila = new Waila(null, player.worldObj, player, null, 0);
+		player = FMLClientHandler.instance().getClient().thePlayer;
 	}
 
 	/**
@@ -109,9 +107,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 		this.labelList = new ArrayList<IInfoLabel>();
 		this.redstoneType = te.getRedstoneType();
 
-		EntityPlayer player = (EntityPlayer) FMLClientHandler.instance().getClient().thePlayer;
-
-		waila = new Waila(null, player.worldObj, player, null, 0);
+		player = FMLClientHandler.instance().getClient().thePlayer;
 	}
 
 	@Override
@@ -202,9 +198,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			buttons.addLast(redstoneButtons[i]);
 		}
 		
-		waila.finder(false);
-		
-		getLayoutFromFacingDirection(waila.getSideHit(), counter, guiLeft - 72, guiTop + 38);
+		getLayoutFromFacingDirection(player.getHorizontalFacing(), counter, guiLeft - 72, guiTop + 38);
 		
 		IGuiButton current;
 		
@@ -294,7 +288,7 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 				}
 
 				else if (isShiftKeyDown()) {
-					int index = 0;
+					// int index = 0;
 
 					for (int i = 0; i < this.buttonList.size(); i++) {
 						if (this.buttonList.get(i) instanceof GuiIOButton) {
@@ -440,16 +434,6 @@ public class GuiMachine extends GuiContainer implements IInfoContainer {
 			buttons.addLast(new GuiIOButton(this, index++, posX, posY, 16, 16, "W", getSideValueFromTE(EnumFacing.WEST)));
 		}
 		
-	}
-	
-	/**
-	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
-	 * 
-	 * @param side = side to get.
-	 * @return opposite direction of side 'side'.
-	 */
-	private EnumFacing getFacingDirection(int side) {
-		return side >= 0 && side < EnumFacing.VALUES.length ? EnumFacing.VALUES[side].getOpposite() : null;
 	}
 	
 	/**

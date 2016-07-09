@@ -9,6 +9,7 @@
 
 package com.projectzed.mod.tileentity.container;
 
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.fluid.FluidNetwork;
 import com.projectzed.api.fluid.container.IFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -19,8 +20,12 @@ import com.projectzed.mod.handler.message.MessageTileEntityRefinery;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
+
+import javax.annotation.Nullable;
 
 /**
  * TE class for refinery.
@@ -160,19 +165,19 @@ public class TileEntityRefinery extends AbstractTileEntityEnergyContainer implem
 		}
 	}
 
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
-	}*/
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
+		final NBTTagCompound comp = getUpdateTag();
+		saveNBT(comp);
+		return new SPacketUpdateTileEntity(pos, 1, comp);
+	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRefinery(this));
-
-		final NBTTagCompound comp = getTileData();
-		saveNBT(comp);
-
-		return comp;
+	public void onDataPacket(NetworkManager manger, SPacketUpdateTileEntity packet) {
+		readNBT(packet.getNbtCompound());
+		BlockUtils.markBlockForUpdate(worldObj, pos);
 	}
 
 	@Override

@@ -105,7 +105,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	protected void registerEventHandlers() {
+	public void registerEventHandlers() {
 		super.registerEventHandlers();
 
 		FMLCommonHandler.instance().bus().register(new ConfigChangedEventHandler(ProjectZed.modID, ProjectZed.configHandler));
@@ -203,6 +203,11 @@ public class ClientProxy extends CommonProxy {
 		keyBindingHandler = new KeyBindingHandler(new ItemAdjusterHandler.ItemAdjusterIncrementorHandler("radii increase", Keyboard.KEY_ADD, Reference.MOD_NAME),
 				new ItemAdjusterHandler.ItemAdjusterDecrementorHandler("radii decrease", Keyboard.KEY_SUBTRACT, Reference.MOD_NAME));
 		FMLCommonHandler.instance().bus().register(keyBindingHandler);
+	}
+
+	@Override
+	public boolean isClient() {
+		return true;
 	}
 
 }

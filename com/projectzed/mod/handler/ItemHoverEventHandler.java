@@ -31,10 +31,14 @@ import static com.hockeyhurd.hcorelib.api.util.NumberFormatter.format;
 
 /**
  * Class containing code for all tooltip info related to blocks.
- * 
+ *
+ * @deprecated Use HCoreLib ItemTooltipEventHandler.
+ * @see com.hockeyhurd.hcorelib.api.handler.ItemTooltipEventHandler
+ *
  * @author hockeyhurd
  * @version Jan 12, 2015
  */
+@Deprecated
 public class ItemHoverEventHandler {
 
 	/** Only static instance of this class. */

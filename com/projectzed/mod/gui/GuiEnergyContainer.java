@@ -64,8 +64,6 @@ public class GuiEnergyContainer extends GuiContainer {
 		
 		player = FMLClientHandler.instance().getClient().thePlayer;
 		
-		waila = new Waila(null, player.worldObj, player, null, 0);
-		
 		isEnergyCell = te instanceof TileEntityEnergyBankBase;
 	}
 
@@ -201,16 +199,6 @@ public class GuiEnergyContainer extends GuiContainer {
 		}
 		
 		return buttons;
-	}
-
-	/**
-	 * NOTE: This function should only be used if this te is instance of TileEntityEnergyBankBase.
-	 *
-	 * @param side = side to get.
-	 * @return opposite direction of side 'side'.
-	 */
-	private EnumFacing getFacingDirection(int side) {
-		return side >= 0 && side < EnumFacing.VALUES.length ? EnumFacing.VALUES[side].getOpposite() : null;
 	}
 
 	/**

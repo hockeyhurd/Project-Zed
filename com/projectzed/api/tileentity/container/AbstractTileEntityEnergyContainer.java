@@ -14,8 +14,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 /**
  * Class containing generic abstractions for all containers.
@@ -210,12 +214,13 @@ public abstract class AbstractTileEntityEnergyContainer extends AbstractTileEnti
 		comp.setBoolean("ProjectZedPowerMode", this.powerMode);
 		comp.setInteger("ProjectZedPowerStored", this.storedPower);
 	}
-	
-	/*@Override
-	public abstract Packet getDescriptionPacket();*/
+
+	@Nullable
+	@Override
+	public abstract SPacketUpdateTileEntity getUpdatePacket();
 
 	@Override
-	public abstract NBTTagCompound getUpdateTag();
+	public abstract void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet);
 
 	@Override
 	public EnumFacing getRotatedState(EnumFacing facingDir, IBlockState currentState) {

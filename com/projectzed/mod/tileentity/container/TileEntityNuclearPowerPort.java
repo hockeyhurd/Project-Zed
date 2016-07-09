@@ -9,6 +9,7 @@ package com.projectzed.mod.tileentity.container;
 import com.hockeyhurd.hcorelib.api.block.AbstractHCoreBlock;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.AbstractTileEntityGeneric;
 import com.projectzed.api.tileentity.IMultiBlockable;
@@ -20,8 +21,11 @@ import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityEnergyContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -128,19 +132,19 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	protected void exportContents() {
 	}
 
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
-	}*/
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
+		final NBTTagCompound comp = getUpdateTag();
+		saveNBT(comp);
+		return new SPacketUpdateTileEntity(pos, 1, comp);
+	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityEnergyContainer(this));
-
-		final NBTTagCompound comp = getTileData();
-		saveNBT(comp);
-
-		return comp;
+	public void onDataPacket(NetworkManager manger, SPacketUpdateTileEntity packet) {
+		readNBT(packet.getNbtCompound());
+		BlockUtils.markBlockForUpdate(worldObj, pos);
 	}
 
 	@Override

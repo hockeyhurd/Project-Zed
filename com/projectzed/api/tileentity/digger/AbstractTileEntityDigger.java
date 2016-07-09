@@ -9,6 +9,7 @@ package com.projectzed.api.tileentity.digger;
 import com.hockeyhurd.hcorelib.api.math.Rect;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.machine.IEnergyMachine;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.item.IItemUpgradeComponent;
@@ -26,10 +27,13 @@ import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -549,18 +553,19 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 		return false;
 	}
 
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
-	}*/
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
+		final NBTTagCompound comp = getUpdateTag();
+		saveNBT(comp);
+		return new SPacketUpdateTileEntity(pos, 1, comp);
+	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityDigger(this));
-
-		final NBTTagCompound comp = getTileData();
-		saveNBT(comp);
-		return comp;
+	public void onDataPacket(NetworkManager manger, SPacketUpdateTileEntity packet) {
+		readNBT(packet.getNbtCompound());
+		BlockUtils.markBlockForUpdate(worldObj, pos);
 	}
 
 	@Override

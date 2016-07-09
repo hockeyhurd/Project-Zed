@@ -9,6 +9,7 @@ package com.projectzed.mod.proxy;
 import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
+import com.hockeyhurd.hcorelib.api.util.interfaces.IProxy;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.*;
@@ -40,7 +41,7 @@ import java.util.Map.Entry;
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-public class CommonProxy {
+public class CommonProxy implements IProxy {
 
 	protected UpdateHandler updateHandler;
 	protected HashMap<String, String> map;
@@ -218,24 +219,30 @@ public class CommonProxy {
 		DrillSetRegistry.instance().init();
 		ChainsawSetRegistry.instance().init();
 	}
-	
-	protected void registerEventHandlers() {
+
+	@Override
+	public void registerEventHandlers() {
 		PacketHandler.init();
 		// FMLCommonHandler.instance().bus().register(CraftingEventHandler.instance());
 		MinecraftForge.EVENT_BUS.register(PlayerEventHandler.instance());
-		MinecraftForge.EVENT_BUS.register(ItemHoverEventHandler.instance());
-		
+
 		WorldChunkHandler.instance().registerMod(ProjectZed.instance);
 	}
-	
+
+	@Override
 	public void registerUpdateHandler() {
-		updateHandler = new UpdateHandler(Reference.BUILD, Reference.MOD_NAME, Reference.VERSION, Reference.MOD_URL, Reference.CHANGELOG_URL);
+		updateHandler = new UpdateHandler(Reference.MOD_NAME, Reference.VERSION, Reference.MOD_URL, Reference.CHANGELOG_URL);
 		updateHandler.check();
 		this.map = updateHandler.getMap();
 		this.updateFlag = updateHandler.getUpToDate();
 		
 		MinecraftForge.EVENT_BUS.register(new NotifyPlayerOnJoinHandler(updateHandler, map, Reference.MOD_NAME, updateFlag, true,
 				ProjectZed.configHandler.allowUpdating()));
+	}
+
+	@Override
+	public boolean isClient() {
+		return false;
 	}
 
 }

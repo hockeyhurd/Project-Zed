@@ -9,6 +9,7 @@ package com.projectzed.mod.tileentity.container;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyStorage;
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
+import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.EnergyNet;
 import com.projectzed.api.energy.storage.IEnergyContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
@@ -17,9 +18,13 @@ import com.projectzed.mod.handler.message.MessageTileEntityRFBridge;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+
+import javax.annotation.Nullable;
 
 /**
  * Class containing te code for RF Bridge.
@@ -315,19 +320,19 @@ public class  TileEntityRFBridge extends AbstractTileEntityEnergyContainer imple
 		comp.setInteger("ProjectZedRF", this.storedRF);
 	}
 
-	/*@Override
-	public Packet getDescriptionPacket() {
-		return PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
-	}*/
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
+		final NBTTagCompound comp = getUpdateTag();
+		saveNBT(comp);
+		return new SPacketUpdateTileEntity(pos, 1, comp);
+	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		PacketHandler.INSTANCE.getPacketFrom(new MessageTileEntityRFBridge(this));
-
-		final NBTTagCompound comp = getTileData();
-		saveNBT(comp);
-
-		return comp;
+	public void onDataPacket(NetworkManager manger, SPacketUpdateTileEntity packet) {
+		readNBT(packet.getNbtCompound());
+		BlockUtils.markBlockForUpdate(worldObj, pos);
 	}
 
 }
