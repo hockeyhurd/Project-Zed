@@ -87,7 +87,7 @@ public abstract class AbstractTileEntityNuclearComponent extends AbstractTileEnt
 	public abstract boolean isUnique();
 
 	@Override
-	public abstract boolean isSubstituable();
+	public abstract boolean isSubstitutable();
 
 	@Override
 	public abstract List<IMultiBlockable> getSubList();

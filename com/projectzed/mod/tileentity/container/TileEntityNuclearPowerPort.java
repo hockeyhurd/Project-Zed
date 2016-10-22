@@ -163,7 +163,7 @@ public class TileEntityNuclearPowerPort extends AbstractTileEntityEnergyContaine
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 

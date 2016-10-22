@@ -48,10 +48,10 @@ public class TileEntityReactorGlass extends AbstractTileEntityNuclearComponent {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstituable()
+	 * @see com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponent#isSubstitutable()
 	 */
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return true;
 	}
 

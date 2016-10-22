@@ -25,7 +25,9 @@ import net.minecraft.world.World;
  * @version Dec 14, 2014
  */
 public class BlockNuclearChamberLock extends AbstractBlockNuclearComponent implements IMetaUpdate {
-	
+
+
+
 	public BlockNuclearChamberLock() {
 		super("nuclearChamberLock");
 	}

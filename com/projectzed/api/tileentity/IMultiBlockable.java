@@ -32,7 +32,7 @@ public interface IMultiBlockable<T extends AbstractTileEntityGeneric> {
 	boolean isUnique();
 	
 	/** Whether this block can sub-able. */
-	boolean isSubstituable();
+	boolean isSubstitutable();
 	
 	/** If has a substitutable block, put in this list, else leave null. */
 	List<IMultiBlockable> getSubList();

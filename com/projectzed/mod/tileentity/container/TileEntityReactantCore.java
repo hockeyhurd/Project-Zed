@@ -38,7 +38,7 @@ public class TileEntityReactantCore extends AbstractTileEntityNuclearComponent {
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 

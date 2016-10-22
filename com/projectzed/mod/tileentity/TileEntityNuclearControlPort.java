@@ -64,7 +64,7 @@ public class TileEntityNuclearControlPort extends AbstractTileEntityNuclearCompo
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 

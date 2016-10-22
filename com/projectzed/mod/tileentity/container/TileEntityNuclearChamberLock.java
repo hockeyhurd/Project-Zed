@@ -39,7 +39,7 @@ public class TileEntityNuclearChamberLock extends AbstractTileEntityNuclearCompo
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 

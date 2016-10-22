@@ -25,7 +25,6 @@ import com.projectzed.mod.block.machines.*;
 import com.projectzed.mod.block.ore.*;
 import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
-import com.projectzed.mod.handler.SortingConfigHandler;
 import com.projectzed.mod.item.*;
 import com.projectzed.mod.item.armor.ArmorSetZPlated;
 import com.projectzed.mod.item.metals.*;
@@ -83,7 +82,7 @@ public final class ProjectZed implements IForgeMod {
 	
 	public static LogHelper logHelper;
 	public static ConfigHandler configHandler;
-	public static SortingConfigHandler sortingConfigHandler;
+	// public static SortingConfigHandler sortingConfigHandler;
 	public static final String assetDir = Reference.MOD_NAME.toLowerCase(); // + ":";
 	public static final String modID = Reference.MOD_NAME;
 	private TimeLapse tl;
@@ -290,10 +289,10 @@ public final class ProjectZed implements IForgeMod {
 		configHandler.handleConfiguration();
 		logHelper.info("Config loaded successfully! Patching mod now!"); 
 		
-		logHelper.info("Pre-init started, looking for sorting config info!");
-		sortingConfigHandler = new SortingConfigHandler(event, modID, "sorting.cfg");
-		sortingConfigHandler.handleConfiguration();
-		logHelper.info("Sorting config loaded successfully! Patching mod now!");
+		// logHelper.info("Pre-init started, looking for sorting config info!");
+		// sortingConfigHandler = new SortingConfigHandler(event, modID, "sorting.cfg");
+		// sortingConfigHandler.handleConfiguration();
+		// logHelper.info("Sorting config loaded successfully! Patching mod now!");
 		
 		ModsLoadedHelper.instance().init();
 		ModsLoadedHelper.instance().logFindings(logHelper);

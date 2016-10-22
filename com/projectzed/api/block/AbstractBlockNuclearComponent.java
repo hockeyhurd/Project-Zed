@@ -12,7 +12,8 @@ import com.projectzed.api.tileentity.container.AbstractTileEntityNuclearComponen
 import com.projectzed.mod.ProjectZed;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -32,7 +34,8 @@ import java.util.Random;
  */
 public abstract class AbstractBlockNuclearComponent extends AbstractHCoreBlockContainer {
 
-	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	// protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	protected static final PropertyBool IS_MULTIBLOCK = PropertyBool.create("multiblock");
 
 	protected static final Random random = new Random();
 	
@@ -42,6 +45,9 @@ public abstract class AbstractBlockNuclearComponent extends AbstractHCoreBlockCo
 	 */
 	public AbstractBlockNuclearComponent(Material material, String name) {
 		super(material, ProjectZed.modCreativeTab, ProjectZed.assetDir, name);
+
+		// setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(IS_MULTIBLOCK, false));
+		setDefaultState(blockState.getBaseState().withProperty(IS_MULTIBLOCK, false));
 	}
 
 	@Override
@@ -89,4 +95,26 @@ public abstract class AbstractBlockNuclearComponent extends AbstractHCoreBlockCo
 		return false;
 	}
 
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
+		final AbstractTileEntityNuclearComponent te = (AbstractTileEntityNuclearComponent) world.getTileEntity(blockPos);
+
+		// if (te != null) return blockState.withProperty(IS_MULTIBLOCK, te.is)
+		return blockState;
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return blockState.getValue(IS_MULTIBLOCK).booleanValue() ? 1 : 0;
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(IS_MULTIBLOCK, meta > 0);
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, IS_MULTIBLOCK);
+	}
 }

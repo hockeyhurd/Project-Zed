@@ -273,7 +273,7 @@ public class TileEntityNuclearIOPort extends AbstractTileEntityNuclearComponent 
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 

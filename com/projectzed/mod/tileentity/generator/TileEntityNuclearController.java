@@ -565,7 +565,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 							break;
 						}
 						
-						if (tile.isSubstituable()) {
+						if (tile.isSubstitutable()) {
 							boolean subListContained = false;
 							int amount = 0;
 							int maxTarget = Integer.MIN_VALUE;
@@ -627,7 +627,7 @@ public class TileEntityNuclearController extends AbstractTileEntityGenerator imp
 	}
 
 	@Override
-	public boolean isSubstituable() {
+	public boolean isSubstitutable() {
 		return false;
 	}
 
