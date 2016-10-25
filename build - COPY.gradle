@@ -15,6 +15,22 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 /*
+repositories {
+    maven {
+        // location of the maven that hosts JEI files
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+}
+
+dependencies {
+    // compile against the JEI API
+    deobfCompile "mezz.jei:jei_1.10.2:3.13.0.329:sources"
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_1.10.2:3.13.0.329"
+}
+*/
+
+/*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
 plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
@@ -32,7 +48,7 @@ version = "1.2.1"
 group= "com.projectzed" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ProjectZed"
 minecraft {
-    version = "1.10.2-12.18.0.2007-1.10.0"
+    version = "1.10.2-12.18.2.2099"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.

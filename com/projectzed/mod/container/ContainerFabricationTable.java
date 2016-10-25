@@ -7,6 +7,7 @@
 package com.projectzed.mod.container;
 
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
+import com.hockeyhurd.hcorelib.api.util.InventoryUtils;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.util.WorldUtils;
@@ -191,6 +192,34 @@ public class ContainerFabricationTable extends Container {
 			}
 		}
 		
+		this.onCraftMatrixChanged(craftMatrix);
+	}
+
+	public void fillCraftingGrid(ItemStack[][] stacks, int limitAmount) {
+		/*for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 3; x++) {
+				final ItemStack stack = stacks[y][x];
+				final int fillAmount = Math.min(stack.stackSize, limitAmount);
+
+				craftMatrix.setInventorySlotContents(x + y * 3, stack);
+			}
+		}*/
+
+		int craftingSlot = 0;
+		for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
+			// for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
+				// ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
+			if (stacks[stackIndex][0] == null) continue;
+			ItemStack stack = stacks[stackIndex][0].copy();
+
+			final int fillAmount = Math.min(limitAmount, stack.stackSize);
+			stack.stackSize = fillAmount;
+
+			InventoryUtils.removeByStack(this, stack);
+			craftMatrix.setInventorySlotContents(craftingSlot++, stack);
+			// }
+		}
+
 		this.onCraftMatrixChanged(craftMatrix);
 	}
 
