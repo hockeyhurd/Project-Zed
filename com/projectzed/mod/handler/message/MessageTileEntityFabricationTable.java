@@ -144,6 +144,24 @@ public class MessageTileEntityFabricationTable implements IMessage, IMessageHand
 							cont.clearCraftingGrid();
 						}
 					}
+
+					else if (message.buttonHit == 2) {
+						EntityPlayer player = (EntityPlayer) ctx.getServerHandler().playerEntity;
+						if (player != null && player.openContainer != null && player.openContainer instanceof ContainerFabricationTable) {
+							ContainerFabricationTable cont = (ContainerFabricationTable) player.openContainer;
+
+							int max = Integer.MIN_VALUE;
+							ItemStack[][] stacks = new ItemStack[9][];
+							for (int i = 0; i < stacks.length; i++) {
+								stacks[i] = new ItemStack[1];
+								stacks[i][0] = message.slots[i];
+
+								if (message.slots[i] != null) max = Math.max(max, message.slots[i].stackSize);
+							}
+
+							cont.fillCraftingGrid(stacks, max);
+						}
+					}
 					
 					for (int i = 0; i < message.slots.length; i++) {
 						te2.setInventorySlotContents(i, message.slots[i]);

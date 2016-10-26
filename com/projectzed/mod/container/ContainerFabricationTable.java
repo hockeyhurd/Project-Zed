@@ -7,8 +7,9 @@
 package com.projectzed.mod.container;
 
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
-import com.hockeyhurd.hcorelib.api.util.InventoryUtils;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
 import com.projectzed.mod.tileentity.TileEntityFabricationTable;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,10 +59,6 @@ public class ContainerFabricationTable extends Container {
 	 * @param te = tile entity object.
 	 */
 	private void addSlots(InventoryPlayer inv, TileEntityFabricationTable te) {
-
-		// Add crafting result.
-		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 0, 161, 24));
-
 		// Add crafting matrix
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
@@ -71,6 +68,9 @@ public class ContainerFabricationTable extends Container {
 				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
 		}
+
+		// Add crafting result.
+		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 9, 161, 24));
 
 		// Add 'chest' slots
 		for (int y = 0; y < 6; y++) {
@@ -97,8 +97,9 @@ public class ContainerFabricationTable extends Container {
 	 */
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (craftMatrix != null)
-			craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
+		if (craftMatrix != null) {
+			craftResult.setInventorySlotContents(craftMatrix.getSizeInventory(), CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
+		}
 		super.onCraftMatrixChanged(inv);
 	}
 	
@@ -196,37 +197,73 @@ public class ContainerFabricationTable extends Container {
 	}
 
 	public void fillCraftingGrid(ItemStack[][] stacks, int limitAmount) {
-		/*for (int y = 0; y < 3; y++) {
-			for (int x = 0; x < 3; x++) {
-				final ItemStack stack = stacks[y][x];
-				final int fillAmount = Math.min(stack.stackSize, limitAmount);
 
-				craftMatrix.setInventorySlotContents(x + y * 3, stack);
-			}
-		}*/
+		if (te.getWorld().isRemote) {
 
-		int craftingSlot = 0;
-		for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
-			// for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
+			for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
+				// for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
 				// ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
-			if (stacks[stackIndex][0] == null) continue;
-			ItemStack stack = stacks[stackIndex][0].copy();
+				if (stacks[stackIndex] == null || stacks[stackIndex][0] == null) continue;
+				ItemStack stack = stacks[stackIndex][0].copy();
 
-			final int fillAmount = Math.min(limitAmount, stack.stackSize);
-			stack.stackSize = fillAmount;
+				// ProjectZed.logHelper.info("FillAmount:", fillAmount);
+				stack.stackSize = Math.min(limitAmount, stack.stackSize);
 
-			InventoryUtils.removeByStack(this, stack);
-			craftMatrix.setInventorySlotContents(craftingSlot++, stack);
-			// }
+				// InventoryUtils.removeByStack(this, stack);
+
+				for (int i = 10; i < te.getSizeInventory(); i++) {
+					if (te.getStackInSlot(i).isItemEqual(stack)) {
+						te.decrStackSize(i, stack.stackSize);
+						break;
+					}
+				}
+
+				craftMatrix.setInventorySlotContents(stackIndex, stack);
+				te.setInventorySlotContents(stackIndex, stack);
+				putStackInSlot(stackIndex, stack);
+				// }
+			}
+
+			this.onCraftMatrixChanged(craftMatrix);
+			detectAndSendChanges();
+
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(te, 2));
 		}
 
-		this.onCraftMatrixChanged(craftMatrix);
+		else {
+			for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
+				final ItemStack stack = stacks[i][0];
+				// final ItemStack stack = te.getStackInSlot(i);
+				// craftMatrix.setInventorySlotContents(i, stack);
+				te.setInventorySlotContents(i, stack);
+				putStackInSlot(i, stack);
+			}
+
+			onCraftMatrixChanged(craftMatrix);
+			detectAndSendChanges();
+
+			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(te));
+		}
 	}
 
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
-		for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
-			this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
+		final boolean isClient = player.getEntityWorld().isRemote;
+		/*for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+			if (isClient) this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
+			else craftMatrix.setInventorySlotContents(i, te.getStackInSlot(i));
+		}*/
+
+		if (isClient) {
+			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+				this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
+			}
+		}
+
+		else {
+			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+				craftMatrix.setInventorySlotContents(i, te.getStackInSlot(i));
+			}
 		}
 		
 		this.onCraftMatrixChanged(this.craftMatrix);

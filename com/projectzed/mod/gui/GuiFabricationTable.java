@@ -70,7 +70,7 @@ public class GuiFabricationTable extends GuiContainer /*implements INEIGuiHandle
 
 		else if (button.id > 0 && button.id <= 4) {
 			((ContainerFabricationTable) this.inventorySlots).sortInventory(button.id);
-			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 2));
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(this.te, 3));
 		}
 	}
 
