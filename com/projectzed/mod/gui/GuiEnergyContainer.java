@@ -6,7 +6,6 @@
 */
 package com.projectzed.mod.gui;
 
-import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.tileentity.container.AbstractTileEntityEnergyContainer;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.container.ContainerEnergyContainer;
@@ -46,7 +45,6 @@ public class GuiEnergyContainer extends GuiContainer {
 	// This should only be for Energy cells.
 	private GuiButton[] buttons;
 	private boolean isEnergyCell;
-	private Waila waila;
 	private final EntityPlayer player;
 	
 	/**
@@ -99,9 +97,6 @@ public class GuiEnergyContainer extends GuiContainer {
 
 		if (isEnergyCell) {
 			
-			waila.finder(false);
-
-			ProjectZed.logHelper.info("Side hit:", waila.getSideHit());
 			// this.buttons = getLayoutFromFacingDirection(waila.getSideHit(), posX, posY);
 			this.buttons = getLayoutFromFacingDirection(player.getHorizontalFacing(), posX, posY);
 

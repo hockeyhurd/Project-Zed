@@ -1,7 +1,7 @@
 package com.projectzed.mod.integration.jei;
 
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.container.ContainerFabricationTable;
+import com.projectzed.mod.container.ContainerStoneCraftingTable;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -24,30 +24,29 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Fabrication table JEI handler.
- *
  * @author hockeyhurd
- * @version 10/25/2016.
+ * @version 10/26/2016.
  */
-public class FabricationTableRecipeTransferHandler implements IRecipeTransferHandler {
+public final class StoneCraftingTableRecipeTransferHandler implements IRecipeTransferHandler {
 
 	private final IModRegistry registry;
-	private final @Nonnull BasicRecipeTransferInfo transferInfo;
+	private final @Nonnull
+	BasicRecipeTransferInfo transferInfo;
 
-	private FabricationTableRecipeTransferHandler(IModRegistry registry) {
+	private StoneCraftingTableRecipeTransferHandler(IModRegistry registry) {
 		this.registry = registry;
-		transferInfo = new BasicRecipeTransferInfo(ContainerFabricationTable.class, VanillaRecipeCategoryUid.CRAFTING, 0, 9, 10, 6 * 12);
+		transferInfo = new BasicRecipeTransferInfo(ContainerStoneCraftingTable.class, VanillaRecipeCategoryUid.CRAFTING, 0, 9, 10, 36);
 	}
 
 	public static void register(IModRegistry registry) {
 		final IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
-		recipeTransferRegistry.addRecipeTransferHandler(new FabricationTableRecipeTransferHandler(registry));
-		registry.addRecipeCategoryCraftingItem(new ItemStack(ProjectZed.fabricationTable), VanillaRecipeCategoryUid.CRAFTING);
+		recipeTransferRegistry.addRecipeTransferHandler(new StoneCraftingTableRecipeTransferHandler(registry));
+		registry.addRecipeCategoryCraftingItem(new ItemStack(ProjectZed.stoneCraftingTable), VanillaRecipeCategoryUid.CRAFTING);
 	}
 
 	@Override
 	public Class getContainerClass() {
-		return ContainerFabricationTable.class;
+		return ContainerStoneCraftingTable.class;
 	}
 
 	@Override
@@ -60,11 +59,11 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 	public IRecipeTransferError transferRecipe(Container container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer,
 			boolean doTransfer) {
 
-		if (!(container instanceof ContainerFabricationTable))
+		if (!(container instanceof ContainerStoneCraftingTable))
 			return registry.getJeiHelpers().recipeTransferHandlerHelper().createInternalError();
 
-		final ContainerFabricationTable containerFabTable = (ContainerFabricationTable) container;
-		if (doTransfer) containerFabTable.clearCraftingGrid();
+		final ContainerStoneCraftingTable containerStoneCraftingTable = (ContainerStoneCraftingTable) container;
+		if (doTransfer) containerStoneCraftingTable.clearCraftingGrid();
 
 		List<Integer> missingItemSlots = new ArrayList<Integer>();
 		ItemStack[][] ingredients = new ItemStack[9][];
@@ -77,7 +76,7 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 			if (guiIngredients.containsKey(slotOffset)) {
 				final List<ItemStack> allIngredients = guiIngredients.get(slotOffset).getAllIngredients();
 				if (!allIngredients.isEmpty()) {
-					if (containerContainsIngredient(containerFabTable, allIngredients))
+					if (containerContainsIngredient(containerStoneCraftingTable, allIngredients))
 						ingredients[i] = allIngredients.toArray(new ItemStack[allIngredients.size()]);
 					else missingItemSlots.add(slotOffset);
 				}
@@ -85,14 +84,14 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 		}
 
 		if (missingItemSlots.isEmpty()) {
-			if (doTransfer) containerFabTable.fillCraftingGrid(ingredients, maxTransfer ? 0x40 : 1);
+			if (doTransfer) containerStoneCraftingTable.fillCraftingGrid(ingredients, maxTransfer ? 0x40 : 1);
 			return null;
 		}
 
 		return registry.getJeiHelpers().recipeTransferHandlerHelper().createUserErrorForSlots("Recipe transfer error!", missingItemSlots);
 	}
 
-	private boolean containerContainsIngredient(ContainerFabricationTable container, List<ItemStack> ingredientList) {
+	private boolean containerContainsIngredient(ContainerStoneCraftingTable container, List<ItemStack> ingredientList) {
 		List<Slot> slots = transferInfo.getInventorySlots(container);
 		List<ItemStack> availableItems = new ArrayList<ItemStack>(slots.size() << 1);
 
@@ -103,5 +102,5 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 		final StackHelper stackHelper = (StackHelper) registry.getJeiHelpers().getStackHelper();
 		return stackHelper.containsAnyStack(availableItems, ingredientList) != null;
 	}
-
+	
 }

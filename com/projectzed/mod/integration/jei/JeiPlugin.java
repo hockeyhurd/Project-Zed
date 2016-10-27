@@ -19,6 +19,7 @@ public class JeiPlugin extends BlankModPlugin {
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 
 		FabricationTableRecipeTransferHandler.register(registry);
+		StoneCraftingTableRecipeTransferHandler.register(registry);
 	}
 
 	@Override

@@ -6,6 +6,9 @@
 */
 package com.projectzed.mod.container;
 
+import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageTileEntityStoneCraftingTable;
 import com.projectzed.mod.tileentity.machine.TileEntityStoneCraftingTable;
 import com.projectzed.mod.util.WorldUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +16,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+
+import java.util.List;
 
 /**
  * Container class for craftingStoneTable.
@@ -54,9 +61,6 @@ public class ContainerStoneCraftingTable extends Container {
 	 * @param te tile entity object.
 	 */
 	private void addSlots(InventoryPlayer inv, TileEntityStoneCraftingTable te) {
-		// Add crafting result.
-		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 0, 124, 35));
-
 		// Add crafting matrix
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
@@ -67,6 +71,9 @@ public class ContainerStoneCraftingTable extends Container {
 				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
 		}
+
+		// Add crafting result.
+		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, craftMatrix.getSizeInventory(), 124, 35));
 		
 		// Adds the player inventory to table's gui.
 		for (int y = 0; y < 3; y++) {
@@ -109,7 +116,7 @@ public class ContainerStoneCraftingTable extends Container {
 			if (this.craftMatrix.getStackInSlot(i) != null) {
 				ItemStack stack = this.craftMatrix.getStackInSlot(i);
 
-				if (this.mergeItemStack(this.craftMatrix.getStackInSlot(i), 3 * 3 + 1, 36, false)) {
+				if (this.mergeItemStack(stack, 3 * 3 + 1, 36, false)) {
 					this.craftMatrix.setInventorySlotContents(i, null);
 					this.te.setInventorySlotContents(i, null);
 				}
@@ -122,6 +129,72 @@ public class ContainerStoneCraftingTable extends Container {
 		}
 		
 		this.onCraftMatrixChanged(craftMatrix);
+		detectAndSendChanges();
+	}
+
+	public void fillCraftingGrid(ItemStack[][] stacks, int limitAmount) {
+
+		if (te.getWorld().isRemote) {
+
+			final EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
+			for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
+				// for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
+				// ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
+				if (stacks[stackIndex] == null || stacks[stackIndex][0] == null) continue;
+				ItemStack stack = stacks[stackIndex][0].copy();
+
+				// ProjectZed.logHelper.info("FillAmount:", fillAmount);
+				stack.stackSize = Math.min(limitAmount, stack.stackSize);
+
+				// InventoryUtils.removeByStack(this, stack);
+				removeItemStack(stack.copy(), player);
+				craftMatrix.setInventorySlotContents(stackIndex, stack);
+				te.setInventorySlotContents(stackIndex, stack);
+				putStackInSlot(stackIndex, stack);
+				// }
+			}
+
+			this.onCraftMatrixChanged(craftMatrix);
+			detectAndSendChanges();
+
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityStoneCraftingTable(te, (byte) 2));
+		}
+
+		else {
+			for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
+				final ItemStack stack = stacks[i][0];
+				// final ItemStack stack = te.getStackInSlot(i);
+				// craftMatrix.setInventorySlotContents(i, stack);
+				te.setInventorySlotContents(i, stack);
+				putStackInSlot(i, stack);
+			}
+
+			onCraftMatrixChanged(craftMatrix);
+			detectAndSendChanges();
+
+			final Vector3<Double> vec = te.worldVec().getVector3d();
+			PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityStoneCraftingTable(te),
+					new NetworkRegistry.TargetPoint(te.getWorld().provider.getDimension(), vec.x, vec.y, vec.z, 16.0f));
+		}
+	}
+
+	private void removeItemStack(ItemStack stackToRemove, EntityPlayer player) {
+		if (stackToRemove == null || stackToRemove.stackSize == 0) return;
+
+		List<ItemStack> list = player.inventoryContainer.getInventory();
+		for (int i = 10; i < list.size() && stackToRemove.stackSize > 0; i++) {
+			final ItemStack stack = list.get(i);
+			if (stackToRemove.isItemEqual(stack)) {
+				int grabAmount = Math.min(stack.stackSize, stackToRemove.stackSize);
+				stack.stackSize -= grabAmount;
+				stackToRemove.stackSize -= grabAmount;
+
+				if (stack.stackSize == 0) player.inventoryContainer.putStackInSlot(i, null);
+			}
+		}
+
+		player.inventoryContainer.detectAndSendChanges();
+		onCraftMatrixChanged(craftMatrix);
 		detectAndSendChanges();
 	}
 

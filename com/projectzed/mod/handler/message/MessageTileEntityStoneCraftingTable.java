@@ -112,8 +112,23 @@ public class MessageTileEntityStoneCraftingTable implements IMessage, IMessageHa
 					ContainerStoneCraftingTable cont = null;
 					
 					if (player != null && player.openContainer != null && player.openContainer instanceof ContainerStoneCraftingTable) {
+
 						cont = (ContainerStoneCraftingTable) player.openContainer;
-						cont.clearCraftingGrid();
+
+						if (message.buttonHit == 1) cont.clearCraftingGrid();
+
+						else if (message.buttonHit == 2) {
+							int max = Integer.MAX_VALUE;
+							ItemStack[][] stacks = new ItemStack[9][];
+							for (int i = 0; i < stacks.length; i++) {
+								stacks[i] = new ItemStack[1];
+								stacks[i][0] = message.slots[i];
+
+								if (message.slots[i] != null) max = Math.max(max, message.slots[i].stackSize);
+							}
+
+							cont.fillCraftingGrid(stacks, max);
+						}
 					}
 					
 					for (int i = 0; i < message.slots.length; i++) {

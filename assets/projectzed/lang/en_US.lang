@@ -176,6 +176,7 @@ container.industrialHarvester=Industrial Harvester
 container.industrialPlanter=Industrial Planter
 container.industrialQuarry=Industrial Quarry
 
+container.energyBank=Energy Bank
 container.solarArray=Solar Array
 container.solarArray1=Solar Array - LV
 container.solarArray2=Solar Array - MV

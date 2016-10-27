@@ -7,6 +7,7 @@
 package com.projectzed.mod.container;
 
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
+import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
@@ -18,6 +19,7 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +72,7 @@ public class ContainerFabricationTable extends Container {
 		}
 
 		// Add crafting result.
-		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, 9, 161, 24));
+		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, craftMatrix.getSizeInventory(), 161, 24));
 
 		// Add 'chest' slots
 		for (int y = 0; y < 6; y++) {
@@ -210,14 +212,7 @@ public class ContainerFabricationTable extends Container {
 				stack.stackSize = Math.min(limitAmount, stack.stackSize);
 
 				// InventoryUtils.removeByStack(this, stack);
-
-				for (int i = 10; i < te.getSizeInventory(); i++) {
-					if (te.getStackInSlot(i).isItemEqual(stack)) {
-						te.decrStackSize(i, stack.stackSize);
-						break;
-					}
-				}
-
+				removeItemStack(stack.copy());
 				craftMatrix.setInventorySlotContents(stackIndex, stack);
 				te.setInventorySlotContents(stackIndex, stack);
 				putStackInSlot(stackIndex, stack);
@@ -242,7 +237,24 @@ public class ContainerFabricationTable extends Container {
 			onCraftMatrixChanged(craftMatrix);
 			detectAndSendChanges();
 
-			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityFabricationTable(te));
+			final Vector3<Double> vec = te.worldVec().getVector3d();
+			PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityFabricationTable(te),
+					new NetworkRegistry.TargetPoint(te.getWorld().provider.getDimension(), vec.x, vec.y, vec.z, 16.0f));
+		}
+	}
+
+	private void removeItemStack(ItemStack stackToRemove) {
+		if (stackToRemove == null || stackToRemove.stackSize == 0) return;
+
+		for (int i = 10; i < te.getSizeInventory() && stackToRemove.stackSize > 0; i++) {
+			final ItemStack stack = te.getStackInSlot(i);
+			if (stackToRemove.isItemEqual(stack)) {
+				int grabAmount = Math.min(stack.stackSize, stackToRemove.stackSize);
+				stack.stackSize -= grabAmount;
+				stackToRemove.stackSize -= grabAmount;
+
+				if (stack.stackSize == 0) te.setInventorySlotContents(i, null);
+			}
 		}
 	}
 
