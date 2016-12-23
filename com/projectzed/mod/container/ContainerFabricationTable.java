@@ -28,13 +28,15 @@ import java.util.List;
 
 /**
  * Class containing container code for FabricationTable.
- * 
+ *
  * @author hockeyhurd
  * @version Nov 22, 2014
  */
 public class ContainerFabricationTable extends Container {
 
-	/** The crafting matrix inventory (3x3). */
+	/**
+	 * The crafting matrix inventory (3x3).
+	 */
 	public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
 	public IInventory craftResult = new InventoryCraftResult();
 
@@ -51,14 +53,15 @@ public class ContainerFabricationTable extends Container {
 		this.inv = inv;
 		this.NUM_SLOTS = te.getSizeInventory();
 		addSlots(inv, te);
-		
+
 		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
 	/**
 	 * Adds all slots, player and container.
+	 *
 	 * @param inv = inventory.
-	 * @param te = tile entity object.
+	 * @param te  = tile entity object.
 	 */
 	private void addSlots(InventoryPlayer inv, TileEntityFabricationTable te) {
 		// Add crafting matrix
@@ -100,20 +103,22 @@ public class ContainerFabricationTable extends Container {
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
 		if (craftMatrix != null) {
-			craftResult.setInventorySlotContents(craftMatrix.getSizeInventory(), CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
+			craftResult.setInventorySlotContents(craftMatrix.getSizeInventory(),
+					CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
 		}
 		super.onCraftMatrixChanged(inv);
 	}
-	
+
 	/**
 	 * Method to sort inventory.
+	 *
 	 * @param sortType = sort method (1 for lowest item id to highest, 2 for reverse previous, 3 for a-z by stack name, 4 z-a by stack name).
 	 */
 	public void sortInventory(int sortType) {
 		TimeLapse timeLapse = new TimeLapse();
 		HashMap<Integer, List<ItemStack>> map = new HashMap<Integer, List<ItemStack>>();
 		HashMap<String, List<ItemStack>> map2 = new HashMap<String, List<ItemStack>>();
-		
+
 		int id = 0;
 		String name = "";
 		for (int i = 10; i < te.getSizeInventory(); i++) {
@@ -121,42 +126,42 @@ public class ContainerFabricationTable extends Container {
 				id = Item.getIdFromItem(te.getStackInSlot(i).getItem());
 				name = te.getStackInSlot(i).getDisplayName();
 				List<ItemStack> tempList = new ArrayList<ItemStack>(te.getSizeInventory() - 10);
-				
+
 				if (sortType <= 2 && map.containsKey(id)) tempList = map.get(id);
 				else if (sortType > 2 && map2.containsKey(name)) tempList = map2.get(name);
-				
+
 				tempList.add(te.getStackInSlot(i));
 				if (sortType <= 2) map.put(id, tempList);
 				else if (sortType > 2) map2.put(name, tempList);
-				
-				te.setInventorySlotContents(i,(ItemStack) null);
+
+				te.setInventorySlotContents(i, (ItemStack) null);
 			}
 		}
-		
+
 		List<ItemStack> outputList = new ArrayList<ItemStack>(map.keySet().size());
-		
+
 		if (sortType <= 2) {
 			List<Integer> keys = new ArrayList<Integer>(map.keySet());
 			Collections.sort(keys);
 			if (sortType == 2) Collections.reverse(keys);
-			
+
 			for (int i : keys) {
-				
+
 				if (map.containsKey(i) && map.get(i) != null && map.get(i).size() > 0) {
 					for (ItemStack stack : map.get(i)) {
 						outputList.add(stack);
 						map.remove(i);
 					}
 				}
-				
+
 			}
 		}
-		
+
 		else if (sortType > 2) {
 			List<String> keys = new ArrayList<String>(map2.keySet());
 			Collections.sort(keys);
 			if (sortType == 4) Collections.reverse(keys);
-			
+
 			for (String s : keys) {
 				if (map2.containsKey(s) && map2.get(s) != null && map2.get(s).size() > 0) {
 					for (ItemStack stack : map2.get(s)) {
@@ -166,14 +171,15 @@ public class ContainerFabricationTable extends Container {
 				}
 			}
 		}
-		
+
 		for (int i = 0; i < outputList.size(); i++) {
-			if (i + 10 <= this.te.getSizeInventory()) this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
+			if (i + 10 <= this.te.getSizeInventory())
+				this.mergeItemStack(outputList.get(i), this.craftMatrix.getSizeInventory() + 1, this.NUM_SLOTS, false);
 		}
-		
+
 		ProjectZed.logHelper.info("Completed sorting in " + timeLapse.getEffectiveTimeSince() + " ms!");
 	}
-	
+
 	/**
 	 * Clears crafting grid matrix.
 	 */
@@ -194,7 +200,7 @@ public class ContainerFabricationTable extends Container {
 				}
 			}
 		}
-		
+
 		this.onCraftMatrixChanged(craftMatrix);
 	}
 
@@ -203,20 +209,23 @@ public class ContainerFabricationTable extends Container {
 		if (te.getWorld().isRemote) {
 
 			for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
-				// for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
-				// ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
-				if (stacks[stackIndex] == null || stacks[stackIndex][0] == null) continue;
-				ItemStack stack = stacks[stackIndex][0].copy();
+				if (stacks[stackIndex] == null || stacks[stackIndex].length == 0) continue;
+				for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
+					if (stacks[stackIndex][itemOptionIndex] == null) continue;
 
-				// ProjectZed.logHelper.info("FillAmount:", fillAmount);
-				stack.stackSize = Math.min(limitAmount, stack.stackSize);
+					ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
+					// ItemStack stack = stacks[stackIndex][0].copy();
+					// ProjectZed.logHelper.info(stack.getDisplayName());
 
-				// InventoryUtils.removeByStack(this, stack);
-				removeItemStack(stack.copy());
-				craftMatrix.setInventorySlotContents(stackIndex, stack);
-				te.setInventorySlotContents(stackIndex, stack);
-				putStackInSlot(stackIndex, stack);
-				// }
+					stack.stackSize = Math.min(limitAmount, stack.stackSize);
+
+					if (removeItemStack(stack.copy())) {
+						craftMatrix.setInventorySlotContents(stackIndex, stack);
+						te.setInventorySlotContents(stackIndex, stack);
+						putStackInSlot(stackIndex, stack);
+						break;
+					}
+				}
 			}
 
 			this.onCraftMatrixChanged(craftMatrix);
@@ -243,12 +252,18 @@ public class ContainerFabricationTable extends Container {
 		}
 	}
 
-	private void removeItemStack(ItemStack stackToRemove) {
-		if (stackToRemove == null || stackToRemove.stackSize == 0) return;
+	private boolean removeItemStack(ItemStack stackToRemove) {
+		if (stackToRemove == null || stackToRemove.stackSize == 0) return false;
 
 		for (int i = 10; i < te.getSizeInventory() && stackToRemove.stackSize > 0; i++) {
 			final ItemStack stack = te.getStackInSlot(i);
-			if (stackToRemove.isItemEqual(stack)) {
+			if (stack == null) continue;
+
+			final ItemStack copyComp = stack.copy();
+			copyComp.stackSize = stackToRemove.stackSize;
+
+			// if (stackToRemove.isItemEqual(stack)) {
+			if (ItemStack.areItemStacksEqual(stackToRemove, copyComp)) {
 				int grabAmount = Math.min(stack.stackSize, stackToRemove.stackSize);
 				stack.stackSize -= grabAmount;
 				stackToRemove.stackSize -= grabAmount;
@@ -256,6 +271,8 @@ public class ContainerFabricationTable extends Container {
 				if (stack.stackSize == 0) te.setInventorySlotContents(i, null);
 			}
 		}
+
+		return stackToRemove.stackSize == 0;
 	}
 
 	@Override
@@ -277,7 +294,7 @@ public class ContainerFabricationTable extends Container {
 				craftMatrix.setInventorySlotContents(i, te.getStackInSlot(i));
 			}
 		}
-		
+
 		this.onCraftMatrixChanged(this.craftMatrix);
 	}
 
@@ -298,6 +315,7 @@ public class ContainerFabricationTable extends Container {
 
 	/**
 	 * Player shift-clicking a slot.
+	 *
 	 * @see net.minecraft.inventory.Container#transferStackInSlot(net.minecraft.entity.player.EntityPlayer, int)
 	 */
 	@Override
@@ -307,7 +325,7 @@ public class ContainerFabricationTable extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			
+
 			if (index < 10) {
 				if (!this.mergeItemStack(itemstack1, 10, te.getSizeInventory(), false)) return null;
 
