@@ -7,7 +7,6 @@
 package com.projectzed.mod.tileentity.container;
 
 import com.hockeyhurd.hcorelib.api.math.Vector3;
-import com.hockeyhurd.hcorelib.api.math.VectorHelper;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
 import net.minecraft.block.state.IBlockState;
@@ -111,8 +110,9 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 			final Vector3<Integer> vec = worldVec(); // Float?
 			final Vector3<Integer> addVec = new Vector3<Integer>(exportSide.getFrontOffsetX(), exportSide.getFrontOffsetY(), exportSide.getFrontOffsetZ());
 			vec.add(addVec);
-			TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
-			
+			// TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
+			TileEntity te = worldObj.getTileEntity(getPos());
+
 			if (te != null && te instanceof IFluidHandler) {
 				IFluidHandler tank = (IFluidHandler) te;
 				

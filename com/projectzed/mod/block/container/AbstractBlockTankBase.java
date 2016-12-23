@@ -17,17 +17,22 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+
+import java.util.List;
 
 /**
  * Class containing code for generic tank container.
@@ -224,4 +229,22 @@ public abstract class AbstractBlockTankBase extends AbstractBlockFluidContainer 
 		}
 	}
 
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+		super.addInformation(stack, player, tooltip, advanced);
+
+		if (stack.hasTagCompound()) {
+			NBTTagCompound comp = stack.getTagCompound();
+
+			String fluidName = comp.getString("FluidName");
+			if (fluidName == null || FluidRegistry.getFluid(fluidName) == null) return;
+
+			FluidStack fluidStack = new FluidStack(FluidRegistry.getFluid(fluidName), comp.getInteger("Amount"));
+
+			if (fluidStack != null && fluidStack.amount > 0) {
+				tooltip.add(TextFormatting.GREEN + "Fluid: " + TextFormatting.WHITE + fluidName);
+				tooltip.add(TextFormatting.GREEN + "Amount: " + TextFormatting.WHITE + fluidStack.amount);
+			}
+		}
+	}
 }

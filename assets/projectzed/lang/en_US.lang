@@ -51,6 +51,7 @@ tile.industrialLoader.name=Industrial Chunk Loader
 tile.industrialQuarry.name=Industrial Quarry
 tile.industrialHarvester.name=Industrial Harvester
 tile.industrialPlanter.name=Industrial Planter
+tile.patternEncoder.name=Pattern Encoder
 tile.energyPipeRed.name=Energy Pipe - Red
 tile.energyPipeOrange.name=Energy Pipe - Orange
 tile.energyPipeClear.name=Energy Pipe - Clear
