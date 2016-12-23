@@ -1,0 +1,19 @@
+{
+  "parent": "block/cube",
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [ 0, 135, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    }
+  },
+  "textures": {
+    "up": "projectzed:blocks/liquidNode_side_input",
+    "down": "projectzed:blocks/liquidNode_side_input",
+    "north": "projectzed:blocks/liquidNode_side_output",
+    "east": "projectzed:blocks/liquidNode_side_input",
+    "west": "projectzed:blocks/liquidNode_side_input",
+    "south": "projectzed:blocks/liquidNode_side_input",
+    "particle": "projectzed:blocks/liquidNode_side_input"
+  }
+}

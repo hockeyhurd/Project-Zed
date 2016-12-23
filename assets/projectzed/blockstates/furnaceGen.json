@@ -32,6 +32,16 @@
       "south": {
         "y": 180
       }
+    },
+
+    "active": {
+      "true": {
+        "textures": {
+          "north": "projectzed:blocks/furnaceGen_front_on"
+        }
+      },
+
+      "false": {  }
     }
 
   }

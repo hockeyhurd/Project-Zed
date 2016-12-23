@@ -93,10 +93,10 @@ public class GuiGenerator extends GuiContainer implements IInfoContainer {
 	public void drawGuiContainerForegroundLayer(int x, int y) {
 		String name = !this.te.hasCustomInventoryName() ? this.te.getInventoryName() : I18n.format(this.te.getInventoryName(), new Object[0]);
 
-		this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
+		this.fontRendererObj.drawString(name, (this.xSize >> 1) - (this.fontRendererObj.getStringWidth(name) >> 1), 6, 4210752);
 
 		String genSize = "Generation rate: " + format(genRate) + " McU/t";
-		this.fontRendererObj.drawString(I18n.format(genSize, new Object[0]), this.xSize / 2 - this.fontRendererObj.getStringWidth(genSize) / 2,
+		this.fontRendererObj.drawString(I18n.format(genSize, new Object[0]), (this.xSize >> 1) - (this.fontRendererObj.getStringWidth(genSize) >> 1),
 				this.ySize - 116, 4210752);
 	}
 

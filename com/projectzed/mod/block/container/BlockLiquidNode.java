@@ -6,14 +6,13 @@
 */
 package com.projectzed.mod.block.container;
 
-import com.hockeyhurd.hcorelib.api.util.BlockUtils;
-import com.hockeyhurd.hcorelib.api.util.Waila;
 import com.projectzed.api.block.AbstractBlockFluidContainer;
 import com.projectzed.api.tileentity.container.AbstractTileEntityFluidContainer;
-import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.tileentity.container.TileEntityLiquidNode;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +20,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -32,13 +34,15 @@ import net.minecraft.world.World;
  */
 public class BlockLiquidNode extends AbstractBlockFluidContainer {
 	
-	// private IIcon input, output, neutral;
+	protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	
 	/**
 	 * @param material
 	 */
 	public BlockLiquidNode(Material material) {
 		super(material, ProjectZed.assetDir, "liquidNode");
+
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 
 	@Override
@@ -54,38 +58,76 @@ public class BlockLiquidNode extends AbstractBlockFluidContainer {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase player, ItemStack stack) {
-		/*int side = MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		final TileEntityLiquidNode te = (TileEntityLiquidNode) world.getTileEntity(blockPos);
+		final boolean isServerSide = !world.isRemote;
+		if (te != null) {
+			te.setFrontFacing(player.getHorizontalFacing());
 
-		if (side == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-		if (side == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-		if (side == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-		if (side == 3) world.setBlockMetadataWithNotify(x, y, z, 4, 2);*/
-		
-		if (!(player instanceof EntityPlayer)) return;
-		
-		Waila waila = new Waila(stack, world, (EntityPlayer) player, null, 0);
-		waila.finder(false);
-		
-		EnumFacing w = waila.getSideHit();
-		
-		// if (w == 4) w--;
+			if (isServerSide) {
+				if (stack.hasDisplayName()) te.setCustomName(stack.getDisplayName());
+				if (stack.hasTagCompound() && stack.hasTagCompound()) {
+					NBTTagCompound comp = stack.getTagCompound();
 
-		// world.setBlockMetadataWithNotify(x, y, z, w, 2);
-		// world.setBlockMetadataWithNotify(x, y, z, dir.ordinal() + 1, 2);
-		BlockUtils.setBlock(world, blockPos, blockState.getBlock().getStateFromMeta(w.ordinal()));
-
-		if (stack.hasDisplayName()) ((AbstractTileEntityMachine) world.getTileEntity(blockPos)).setCustomName(stack.getDisplayName());
-		
-		if (stack.hasTagCompound() && stack.hasTagCompound()) {
-			NBTTagCompound comp = stack.getTagCompound();
-
-			AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(blockPos);
-			te.readNBT(comp);
+					// AbstractTileEntityFluidContainer te = (AbstractTileEntityFluidContainer) world.getTileEntity(blockPos);
+					te.readNBT(comp);
+				}
+			}
 		}
 	}
 	
 	@Override
 	protected void doBreakBlock(World world, BlockPos blockPos) {
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
+		final TileEntityLiquidNode te = (TileEntityLiquidNode) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE())
+			return EnumFacing.VALUES;
+
+		return super.getValidRotations(world, blockPos);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
+		final TileEntityLiquidNode te = (TileEntityLiquidNode) world.getTileEntity(blockPos);
+
+		if (te != null && te.canRotateTE()) {
+			EnumFacing dir = te.getCurrentFacing();
+			if (dir == null) dir = EnumFacing.NORTH;
+			return blockState.withProperty(FACING, dir);
+		}
+
+		return blockState;
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState blockState) {
+		return blockState.getValue(FACING).getIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		EnumFacing facing = EnumFacing.getFront(meta);
+		if (facing.getAxis() == EnumFacing.Axis.Y) facing = EnumFacing.NORTH;
+
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	@Override
+	public IBlockState withRotation(IBlockState blockState, Rotation rot) {
+		return blockState.withProperty(FACING, rot.rotate(blockState.getValue(FACING)));
+	}
+
+	@Override
+	public IBlockState withMirror(IBlockState blockState, Mirror mirrorIn) {
+		return blockState.withRotation(mirrorIn.toRotation(blockState.getValue(FACING)));
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING);
 	}
 
 }

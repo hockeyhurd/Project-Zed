@@ -181,6 +181,7 @@ container.solarArray=Solar Array
 container.solarArray1=Solar Array - LV
 container.solarArray2=Solar Array - MV
 container.solarArray3=Solar Array - HV
+container.furnaceGen=Furnace Generator
 container.lavaGen=Lava Generator
 container.petrolGen=Petrol Generator
 container.nuclearController=Fission Controller

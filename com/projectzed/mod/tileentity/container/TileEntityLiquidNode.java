@@ -108,7 +108,7 @@ public class TileEntityLiquidNode extends AbstractTileEntityFluidContainer {
 		}
 		
 		if (exportSide != null) {
-			final Vector3<Integer> vec = worldVec();
+			final Vector3<Integer> vec = worldVec(); // Float?
 			final Vector3<Integer> addVec = new Vector3<Integer>(exportSide.getFrontOffsetX(), exportSide.getFrontOffsetY(), exportSide.getFrontOffsetZ());
 			vec.add(addVec);
 			TileEntity te = worldObj.getTileEntity(VectorHelper.toBlockPos(vec));
