@@ -16,6 +16,7 @@ import com.projectzed.api.util.SidedInfo;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.SoundHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityPatternEncoder;
 import com.projectzed.mod.tileentity.interfaces.IEncodable;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,6 +25,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * TileEntity class for pattern encoder.
@@ -34,9 +37,9 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityPatternEncoder extends AbstractTileEntityMachine implements IEncodable {
 
 	public static final int CRAFTING_MATRIX_SIZE = 3;
-	private static final int RESULT_STACK_INDEX = 9;
-	private static final int PATTERN_IN_INDEX = 10;
-	private static final int PATTERN_OUT_INDEX = 11;
+	public static final int RESULT_STACK_INDEX = 9;
+	public static final int PATTERN_IN_INDEX = 10;
+	public static final int PATTERN_OUT_INDEX = 11;
 
 	private boolean encode;
 
@@ -144,11 +147,37 @@ public class TileEntityPatternEncoder extends AbstractTileEntityMachine implemen
 				}
 			}
 
-			patternItem.setPattern(fromStack, patternArr, getStackInSlot(RESULT_STACK_INDEX));
+			final ItemStack fromStackPull = new ItemStack(ProjectZed.craftingPattern);
+
+			patternItem.setPattern(fromStackPull, patternArr, getStackInSlot(RESULT_STACK_INDEX));
 			fromStack.stackSize--;
 
 			if (fromStack.stackSize <= 0) fromStack = null;
 			setInventorySlotContents(fromStackIndex, fromStack);
+			setInventorySlotContents(PATTERN_OUT_INDEX, fromStackPull);
+		}
+	}
+
+	@Override
+	public void update() {
+		super.update();
+
+		if (!worldObj.isRemote) {
+			if (isActiveFromRedstoneSignal() && isBurning() && canSmelt()) {
+				powerMode = true;
+
+				if (isEncoding()) {
+					smeltItem();
+					encode = false;
+				}
+
+				if (getSound() != null && worldObj.getTotalWorldTime() % (20L * getSound().LENGTH) == 0)
+					SoundHandler.playEffect(getSound(), worldObj, worldVec());
+
+				// PacketHandler.INSTANCE.sendToAll(new MessageTileEntityPatternEncoder(this));
+				sendMessage(new SidedInfo(Side.CLIENT, SidedInfo.EnumClientPacket.ALL_AROUND,
+						new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 32.0f), null));
+			}
 		}
 	}
 

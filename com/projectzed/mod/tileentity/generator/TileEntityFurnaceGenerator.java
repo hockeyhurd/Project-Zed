@@ -10,6 +10,7 @@ import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.energy.source.EnumType;
 import com.projectzed.api.energy.source.Source;
 import com.projectzed.api.tileentity.generator.AbstractTileEntityGenerator;
+import com.projectzed.mod.block.generator.BlockFurnaceGenerator;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityGenerator;
 import net.minecraft.block.Block;
@@ -151,6 +152,10 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 			}
 
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
+
+			if (worldObj.getTotalWorldTime() % 20L == 0) {
+				((BlockFurnaceGenerator) blockType).updateBlockState(canProducePower(), worldObj, pos);
+			}
 
 			PacketHandler.INSTANCE.sendToAll(new MessageTileEntityGenerator(this));
 		}

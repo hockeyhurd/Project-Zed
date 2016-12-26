@@ -11,7 +11,6 @@
 package com.projectzed.mod.container;
 
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
-import com.projectzed.mod.container.slots.SlotFake;
 import com.projectzed.mod.container.slots.SlotPattern;
 import com.projectzed.mod.tileentity.machine.TileEntityPatternEncoder;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,7 +52,8 @@ public class ContainerPatternEncoder extends ContainerMachine {
 				// this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3,
 				// 67 + y * 18, 6 + x * 18));
 				// this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 20 + x * 18, 6 + y * 18));
-				this.addSlotToContainer(new SlotFake(this.craftMatrix, x + y * 3, 20 + x * 18, 6 + y * 18));
+				// this.addSlotToContainer(new SlotFake(this.craftMatrix, x + y * 3, 20 + x * 18, 6 + y * 18));
+				this.addSlotToContainer(new Slot(this.craftMatrix, x + y * 3, 20 + x * 18, 6 + y * 18));
 				ItemStack stack = te.getStackInSlot((x + y * 3));
 				if (stack != null && stack.stackSize > 0) this.craftMatrix.setInventorySlotContents(x + y * 3, stack);
 			}
@@ -86,8 +86,10 @@ public class ContainerPatternEncoder extends ContainerMachine {
 
 	@Override
 	public void onCraftMatrixChanged(IInventory inv) {
-		if (craftMatrix != null) craftResult.setInventorySlotContents(0,
-				CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
+		if (craftMatrix != null) {
+			craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
+			te.setInventorySlotContents(TileEntityPatternEncoder.RESULT_STACK_INDEX, craftResult.getStackInSlot(0));
+		}
 	}
 
 	@Override
@@ -97,6 +99,7 @@ public class ContainerPatternEncoder extends ContainerMachine {
 		}
 
 		this.onCraftMatrixChanged(this.craftMatrix);
+		te.setInventorySlotContents(TileEntityPatternEncoder.RESULT_STACK_INDEX, craftResult.getStackInSlot(0));
 	}
 
 	@Override
@@ -104,7 +107,7 @@ public class ContainerPatternEncoder extends ContainerMachine {
 		super.putStackInSlot(slotID, stack);
 		// stack.stackSize++;
 
-		getSlot(slotID).putStack(stack.copy());
+		if (stack != null) getSlot(slotID).putStack(stack.copy());
 	}
 
 	/**

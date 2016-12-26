@@ -39,6 +39,7 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 	private TileEntityPatternEncoder te;
 	private Vector3<Integer> vec;
 	private int numSlots;
+	private int cookTime;
 	private ItemStack[] slots;
 	private byte buttonHit;
 
@@ -54,6 +55,7 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 		this.te = te;
 		this.vec = te.worldVec();
 		this.buttonHit = buttonHit;
+		this.cookTime = te.getCookTime();
 		this.numSlots = te.getSizeInventory();
 		this.slots = new ItemStack[numSlots];
 
@@ -81,6 +83,7 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 		vec.x = buf.readInt();
 		vec.y = buf.readInt();
 		vec.z = buf.readInt();
+		cookTime = buf.readInt();
 		buttonHit = buf.readByte();
 		numSlots = buf.readInt();
 		slots = new ItemStack[numSlots];
@@ -95,6 +98,7 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 		buf.writeInt(vec.x);
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);
+		buf.writeInt(cookTime);
 		buf.writeByte(buttonHit);
 		buf.writeInt(numSlots);
 
@@ -111,6 +115,8 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 			TileEntityPatternEncoder te = (TileEntityPatternEncoder) world.getTileEntity(VectorHelper.toBlockPos(message.vec));
 
 			if (te != null) {
+
+				te.setEncode((message.buttonHit & ENCODE) != 0);
 
 				if (message.slots != null && message.slots.length > 0) {
 					EntityPlayer player = ctx.getServerHandler().playerEntity;

@@ -112,8 +112,12 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 				NBTTagCompound temp = tagList.getCompoundTagAt(i);
 				byte b0 = temp.getByte("Slot");
 
-				if (b0 >= 0 && b0 < size)
+				/*if (b0 >= 0 && b0 < size)
 					pattern[i / vec.y][i % vec.x] = ItemStack.loadItemStackFromNBT(temp);
+				else pattern[i / vec.y][i % vec.x] = null;*/
+
+				if (b0 >= 0 && b0 < size)
+					pattern[b0 / vec.y][b0 % vec.x] = ItemStack.loadItemStackFromNBT(temp);
 			}
 
 			return pattern;
@@ -167,6 +171,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 		final NBTTagCompound comp = getOrInitNBT(stack);
 
 		comp.setBoolean(COMP_HAS_PATTERN, true);
+		resultStack.writeToNBT(comp);
 		comp.setInteger(COMP_SIZE_X, pattern[0].length);
 		comp.setInteger(COMP_SIZE_Y, pattern.length);
 
@@ -182,6 +187,11 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 				}
 			}
 		}
+
+		NBTTagCompound resultComp = new NBTTagCompound();
+		resultComp.setByte("Slot", (byte) 9);
+		resultStack.writeToNBT(resultComp);
+		tagList.appendTag(resultComp);
 
 		comp.setTag(COMP_ITEMS, tagList);
 	}
@@ -201,14 +211,21 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
-		if (!encoded || result == null) return;
+		if (!encoded) return;
+
+		final ItemStack result = getCraftingResult(stack);
+		if (result == null || result.stackSize == 0) return;
+
+		final ItemStack[][] pattern = getPattern(stack);
+		if (pattern == null || pattern.length == 0) return;
 
 		list.add(TextFormatting.GREEN + "Result: " + result.getDisplayName());
 
 		for (int y = 0; y < size.y; y++) {
 			String[] strings = new String[size.y];
 			for (int x = 0; x < size.x; x++) {
-				strings[x] = result.getDisplayName();
+				// strings[x] = result.getDisplayName();
+				strings[x] = pattern[y] != null && pattern[y][x] != null ? pattern[y][x].getDisplayName() : "empty";
 			}
 
 			list.add(getConcatString("[ ", " ]", strings));

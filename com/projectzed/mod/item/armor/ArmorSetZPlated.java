@@ -141,8 +141,10 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 		if (armorInventory[3] != null && armorInventory[3].getItem() == ProjectZed.zPlatedHelm) {
 			if (player.isInWater()) {
 				player.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 5, 0)); // Water breathing.
-				player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 5, 0)); // Night vision.
+				// player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 5, 0)); // Night vision.
 			}
+
+			player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 5, 0)); // Night vision.
 		}
 	}
 
