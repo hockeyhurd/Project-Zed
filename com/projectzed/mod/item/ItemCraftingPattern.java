@@ -10,11 +10,12 @@
 
 package com.projectzed.mod.item;
 
+import com.hockeyhurd.hcorelib.api.handler.tooltip.IItemTooltip;
 import com.hockeyhurd.hcorelib.api.item.AbstractHCoreItem;
+import com.hockeyhurd.hcorelib.api.item.IHItem;
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
 import com.projectzed.mod.ProjectZed;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -30,7 +31,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version 4/30/2016.
  */
-public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
+public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern, IItemTooltip {
 
 	private static final String COMP_HAS_PATTERN = "ItemCraftingPattern:hasPattern";
 	private static final String COMP_RESULT = "ItemCraftingPattern:Result";
@@ -204,8 +205,9 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 		comp.setInteger(COMP_SIZE_Y, 0);
 	}
 
-	@Override
+	/*@Override
 	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
 		if (!encoded) return;
 
@@ -226,7 +228,7 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 
 			list.add(getConcatString("[ ", " ]", strings));
 		}
-	}
+	}*/
 
 	@SideOnly(Side.CLIENT)
 	private String getConcatString(String prefix, String suffix, String[] strings) {
@@ -243,4 +245,60 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 		return builder.toString();
 	}
 
+	@Override
+	public IHItem getType() {
+		return this;
+	}
+
+	@Override
+	public boolean isBlock() {
+		return false;
+	}
+
+	@Override
+	public boolean isItem() {
+		return true;
+	}
+
+	@Override
+	public boolean hasShiftInformation() {
+		return encoded;
+	}
+
+	@Override
+	public boolean hasControlInformation() {
+		return false;
+	}
+
+	@Override
+	public void addInformation(List<String> list, ItemStack itemStack) {
+		if (encoded) list.add(TextFormatting.GRAY + "Place in crafting grid to clear recipe!");
+	}
+
+	@Override
+	public void addShiftInformation(List<String> list, ItemStack itemStack) {
+		if (!encoded) return;
+
+		final ItemStack result = getCraftingResult(itemStack);
+		if (result == null || result.stackSize == 0) return;
+
+		final ItemStack[][] pattern = getPattern(itemStack);
+		if (pattern == null || pattern.length == 0) return;
+
+		list.add(TextFormatting.GREEN + "Result: " + result.getDisplayName());
+
+		for (int y = 0; y < size.y; y++) {
+			String[] strings = new String[size.y];
+			for (int x = 0; x < size.x; x++) {
+				// strings[x] = result.getDisplayName();
+				strings[x] = pattern[y] != null && pattern[y][x] != null ? pattern[y][x].getDisplayName() : "empty";
+			}
+
+			list.add(getConcatString("[ ", " ]", strings));
+		}
+	}
+
+	@Override
+	public void addControlInformation(List<String> list, ItemStack itemStack) {
+	}
 }
