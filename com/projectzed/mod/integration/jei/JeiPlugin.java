@@ -20,6 +20,7 @@ public class JeiPlugin extends BlankModPlugin {
 
 		FabricationTableRecipeTransferHandler.register(registry);
 		StoneCraftingTableRecipeTransferHandler.register(registry);
+		PatternEncoderRecipeTransferHandler.register(registry);
 	}
 
 	@Override

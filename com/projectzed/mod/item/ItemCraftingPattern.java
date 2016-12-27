@@ -112,10 +112,6 @@ public class ItemCraftingPattern extends AbstractHCoreItem implements IPattern {
 				NBTTagCompound temp = tagList.getCompoundTagAt(i);
 				byte b0 = temp.getByte("Slot");
 
-				/*if (b0 >= 0 && b0 < size)
-					pattern[i / vec.y][i % vec.x] = ItemStack.loadItemStackFromNBT(temp);
-				else pattern[i / vec.y][i % vec.x] = null;*/
-
 				if (b0 >= 0 && b0 < size)
 					pattern[b0 / vec.y][b0 % vec.x] = ItemStack.loadItemStackFromNBT(temp);
 			}

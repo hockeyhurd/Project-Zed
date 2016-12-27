@@ -97,6 +97,8 @@ public final class CraftingRegistry {
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksBlueStairs, 1, "stoneBricksStairs", "dyeBlue"));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksGreenStairs, 1, "stoneBricksStairs", "dyeGreen"));
 		reg.shapelessList.add(createShapelessRecipe(stoneBricksPurpleStairs, 1, "stoneBricksStairs", "dyePurple"));
+
+		reg.shapelessList.add(createShapelessRecipe(blankCraftingPattern, 1, craftingPattern));
 	}
 	
 	/**

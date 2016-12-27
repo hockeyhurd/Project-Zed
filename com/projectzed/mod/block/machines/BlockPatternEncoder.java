@@ -60,4 +60,9 @@ public class BlockPatternEncoder extends AbstractBlockMachine {
 			return true;
 		}
 	}
+
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState oldBlock) {
+		world.notifyNeighborsOfStateChange(pos, oldBlock.getBlock());
+	}
 }

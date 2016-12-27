@@ -12,6 +12,7 @@ package com.projectzed.mod.container.slots;
 
 import com.hockeyhurd.hcorelib.api.math.Vector2;
 import com.projectzed.api.item.IPattern;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -27,13 +28,16 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotPattern extends Slot {
 
-	private final boolean blankOnly;
+	private final Container parentContainer;
 	private final InventoryCrafting craftMatrix;
 	private final IInventory craftResult;
+	private final boolean blankOnly;
 
-	public SlotPattern(IInventory inv, InventoryCrafting craftMatrix, IInventory craftResult, int slotNumber, int xPos, int yPos, boolean blankOnly) {
+	public SlotPattern(Container parentContainer, IInventory inv, InventoryCrafting craftMatrix, IInventory craftResult,
+			int slotNumber, int xPos, int yPos, boolean blankOnly) {
 		super(inv, slotNumber, xPos, yPos);
 
+		this.parentContainer = parentContainer;
 		this.blankOnly = blankOnly;
 		this.craftMatrix = craftMatrix;
 		this.craftResult = craftResult;
@@ -69,7 +73,10 @@ public class SlotPattern extends Slot {
 			}
 		}
 
+		craftMatrix.markDirty();
 		inventory.markDirty();
+		parentContainer.onCraftMatrixChanged(craftMatrix);
+		parentContainer.detectAndSendChanges();
 	}
 
 	@Override

@@ -75,5 +75,4 @@ public class GuiPatternEncoder extends GuiMachine {
 
 		else super.actionPerformed(button);
 	}
-
 }

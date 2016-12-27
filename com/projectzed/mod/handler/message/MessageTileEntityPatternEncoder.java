@@ -35,6 +35,7 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 	public static final byte NOTHING = 0x0;
 	public static final byte CLEAR = 0x2;
 	public static final byte ENCODE = 0x4;
+	public static final byte FILL = 0x8;
 
 	private TileEntityPatternEncoder te;
 	private Vector3<Integer> vec;
@@ -131,6 +132,16 @@ public class MessageTileEntityPatternEncoder implements IMessage, IMessageHandle
 						}
 
 						else if (message.buttonHit == ENCODE) te.setEncode(true);
+						else if (message.buttonHit == FILL) {
+							ItemStack[][] stacks = new ItemStack[9][];
+
+							for (int i = 0; i < stacks.length; i++) {
+								stacks[i] = new ItemStack[1];
+								stacks[i][0] = message.slots[i];
+							}
+
+							cont.fillCraftingGrid(stacks);
+						}
 					}
 
 					for (int i = 0; i < message.slots.length; i++) {

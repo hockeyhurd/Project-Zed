@@ -36,7 +36,7 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 
 	private FabricationTableRecipeTransferHandler(IModRegistry registry) {
 		this.registry = registry;
-		transferInfo = new BasicRecipeTransferInfo(ContainerFabricationTable.class, VanillaRecipeCategoryUid.CRAFTING, 0, 9, 10, 6 * 12);
+		transferInfo = new BasicRecipeTransferInfo<ContainerFabricationTable>(ContainerFabricationTable.class, VanillaRecipeCategoryUid.CRAFTING, 0, 9, 10, 6 * 12);
 	}
 
 	public static void register(IModRegistry registry) {
