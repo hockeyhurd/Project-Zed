@@ -7,6 +7,9 @@
 package com.projectzed.mod.util;
 
 import com.hockeyhurd.hcorelib.api.util.AbstractReference;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Reference class containing version numbers, modid, and update url. 
@@ -104,6 +107,15 @@ public class Reference extends AbstractReference {
 		
 		/** Base unit for transfer rate of all things fluid. */
 		public static final int BASE_FLUID_TRANSFER_RATE = 100;
+
+		@SideOnly(Side.CLIENT)
+		public static final String RADII_MSG_TYPE = TextFormatting.GREEN + "[" + Reference.MOD_NAME + "]";
+
+		@SideOnly(Side.CLIENT)
+		public static final String RADII_MSG_BLOCK_SET = RADII_MSG_TYPE + " Block set to: ";
+
+		@SideOnly(Side.CLIENT)
+		public static final String RADII_MSG_RADII_SET = RADII_MSG_TYPE + " Tool radii set to: ";
 
 		private Constants() {
 		}

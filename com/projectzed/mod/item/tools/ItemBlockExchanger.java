@@ -16,7 +16,7 @@ import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
 import com.hockeyhurd.hcorelib.api.util.TimerHelper;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.item.IItemAdjustable;
+import com.projectzed.mod.item.IItemAdjustableRadii;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
@@ -43,11 +43,7 @@ import java.util.Map;
  * @author hockeyhurd
  * @version 3/11/2016.
  */
-public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdjustable {
-
-	private static final String msgType = TextFormatting.GREEN + "[" + Reference.MOD_NAME + "]";
-	private static final String msgBlockSet = msgType + " Block set to: ";
-	private static final String msgRadiiSet = msgType + " Tool radii set to: ";
+public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdjustableRadii {
 
 	private int radii = 1;
 	private IBlockState blockToPlace;
@@ -62,17 +58,9 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		timer = new TimerHelper(20, 2);
 	}
 
-	/**
-	 * Gets the radii set.
-	 *
-	 * @return int.
-	 */
-	public int getRadii() {
-		return radii;
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
+	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
 		String blockName = blockToPlace != null ? blockToPlace.getBlock().getLocalizedName() : "<empty>";
 		list.add(TextFormatting.GREEN + "Block set to: " + TextFormatting.WHITE + blockName);
@@ -205,7 +193,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
-					player.addChatComponentMessage(ChatUtils.createComponent(false, msgBlockSet + blockToPlace.getBlock().getLocalizedName()));
+					player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_TYPE + blockToPlace.getBlock().getLocalizedName()));
 				}
 			}
 
@@ -228,7 +216,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii < ProjectZed.configHandler.getMaxExchangerRadii()) {
 			radii++;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, msgRadiiSet + radii));
+			player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
 		}
 	}
 
@@ -237,7 +225,7 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii > 0) {
 			radii--;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, msgRadiiSet + radii));
+			player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
 		}
 	}
 
@@ -248,7 +236,10 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 		NBTTagCompound comp = stack.getTagCompound();
 
-		// if (comp == null) comp = stack.stackTagCompound = new NBTTagCompound();
+		if (comp == null) {
+			comp = new NBTTagCompound();
+			stack.setTagCompound(comp);
+		}
 
 		comp.setInteger("ItemExchangerRadii", radii);
 	}
@@ -266,6 +257,11 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		Integer[] val = { num };
 
 		return val;
+	}
+
+	@Override
+	public int getRadii() {
+		return radii;
 	}
 
 }

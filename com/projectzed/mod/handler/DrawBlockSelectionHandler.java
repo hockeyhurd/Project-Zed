@@ -10,9 +10,10 @@
 
 package com.projectzed.mod.handler;
 
+import com.hockeyhurd.hcorelib.api.math.Color4f;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.item.tools.ItemBlockExchanger;
+import com.projectzed.mod.item.IItemAdjustableRadii;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -40,13 +42,14 @@ public class DrawBlockSelectionHandler {
 
 	private float pulse = 0.5f;
 	private boolean increasing = true;
+	private static Color4f selectionBoxColor; //  = ProjectZed.configHandler.getSelectionBoxColor();
 
 	@SubscribeEvent
 	public void onDrawBlockHighlightEvent(DrawBlockHighlightEvent event) {
 		final ItemStack stack = event.getPlayer().inventory.getCurrentItem();
 		if (stack != null && event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK) {
 
-			if (stack.getItem() == ProjectZed.blockExchanger)
+			if (stack.getItem() instanceof IItemAdjustableRadii)
 				drawSelectionBoxQuad(event.getContext(), event.getPlayer(), event.getTarget(), 0, event.getPartialTicks());
 		}
 	}
@@ -62,6 +65,8 @@ public class DrawBlockSelectionHandler {
 	 */
 	private void drawSelectionBoxQuad(RenderGlobal context, EntityPlayer player, RayTraceResult rayTrace, int x, float partialTicks) {
 		if (x == 0 && context != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
+			selectionBoxColor = ProjectZed.configHandler.getSelectionBoxColor();
+
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
@@ -72,7 +77,8 @@ public class DrawBlockSelectionHandler {
 			GL11.glDepthMask(false);
 
 			final float offsetY = 0.002f;
-			final int radii = ((ItemBlockExchanger) player.inventory.getCurrentItem().getItem()).getRadii();
+			// final int radii = ((IItemAdjustableRadii) player.inventory.getCurrentItem().getItem()).getRadii();
+			final int radii = getRadiiFromPlayer(player);
 			double xp, yp, zp;
 
 			IBlockState currentBlock;
@@ -97,14 +103,14 @@ public class DrawBlockSelectionHandler {
 
 						// RenderGlobal.drawOutlinedBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 						RenderGlobal.drawSelectionBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
-								0.0f, 0.0f, 0.0f, 0.0f);
+								selectionBoxColor.getR(), selectionBoxColor.getG(), selectionBoxColor.getB(), getNextPulse());
 						// RenderGlobal.drawSelectionBoundingBox(
 						//		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
 
 					else if (rayTrace.sideHit == EnumFacing.NORTH || rayTrace.sideHit == EnumFacing.SOUTH) {
 						blockPos = BlockUtils
-								.createBlockPos(rayTrace.getBlockPos().getX() + i, rayTrace.getBlockPos().getY(), rayTrace.getBlockPos().getZ() + j);
+								.createBlockPos(rayTrace.getBlockPos().getX() + i, rayTrace.getBlockPos().getY() + j, rayTrace.getBlockPos().getZ());
 						currentBlock = BlockUtils.getBlock(player.worldObj, blockPos);
 						if (currentBlock.getMaterial() == Material.AIR) continue;
 
@@ -120,7 +126,7 @@ public class DrawBlockSelectionHandler {
 										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
 
 						RenderGlobal.drawSelectionBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
-								0.0f, 0.0f, 0.0f, 0.0f);
+								selectionBoxColor.getR(), selectionBoxColor.getG(), selectionBoxColor.getB(), getNextPulse());
 						// RenderGlobal.drawSelectionBoundingBox(
 						// 		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
 					}
@@ -143,7 +149,7 @@ public class DrawBlockSelectionHandler {
 										.expand((double) offsetY, (double) offsetY, (double) offsetY).getOffsetBoundingBox(-xp, -yp, -zp), -1);*/
 
 						RenderGlobal.drawSelectionBoundingBox(boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp),
-								0.0f, 0.0f, 0.0f, 0.0f);
+								selectionBoxColor.getR(), selectionBoxColor.getG(), selectionBoxColor.getB(), getNextPulse());
 
 						// RenderGlobal.drawSelectionBoundingBox(
 						//		boundingBox.expand((double) offsetY, (double) offsetY, (double) offsetY).offset(-xp, -yp, -zp));
@@ -163,12 +169,34 @@ public class DrawBlockSelectionHandler {
 	 * @return float.
 	 */
 	private float getNextPulse() {
-		if (pulse >= 1.0f) increasing = false;
+		if (pulse >= 0.75f) increasing = false;
 		else if (pulse <= 0.25f) increasing = true;
 
-		pulse += increasing ? 0.0125f : -0.0125f;
+		pulse += increasing ? (0.0015625f) : (-0.0015625f);
 
 		return pulse;
+	}
+
+	/**
+	 * Gets the radius from either item in player's hands.
+	 *
+	 * @param player EntityPlayer to check from.
+	 * @return int radii result.
+	 */
+	private static int getRadiiFromPlayer(EntityPlayer player) {
+		if (player == null) return 1;
+
+		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
+
+		if (stack.getItem() instanceof IItemAdjustableRadii)
+			return ((IItemAdjustableRadii) stack.getItem()).getRadii();
+
+		stack = player.getHeldItem(EnumHand.OFF_HAND);
+
+		if (stack.getItem() instanceof IItemAdjustableRadii)
+			return ((IItemAdjustableRadii) stack.getItem()).getRadii();
+
+		return 1;
 	}
 
 }

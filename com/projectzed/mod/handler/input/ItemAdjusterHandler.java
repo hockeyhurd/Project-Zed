@@ -13,8 +13,8 @@ package com.projectzed.mod.handler.input;
 import com.hockeyhurd.hcorelib.api.handler.input.AbstractKeyBinding;
 import com.projectzed.mod.item.IItemAdjustable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,12 +54,26 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
 			// ItemStack current = player.getCurrentEquippedItem();
-			ItemStack current = player.getActiveItemStack();
+			/*ItemStack current = player.getHeldItem(player.swingingHand);
 
 			if (current != null) {
 				Item item = current.getItem();
 
 				if (item instanceof IItemAdjustable) ((IItemAdjustable) item).increment(player, current);
+			}*/
+
+			ItemStack current = player.getHeldItem(EnumHand.MAIN_HAND);
+
+			if (current != null) {
+				if (current.getItem() instanceof IItemAdjustable)
+					((IItemAdjustable) current.getItem()).increment(player, current);
+			}
+
+			else {
+				current = player.getHeldItem(EnumHand.OFF_HAND);
+
+				if (current != null && current.getItem() instanceof IItemAdjustable)
+					((IItemAdjustable) current.getItem()).increment(player, current);
 			}
 		}
 
@@ -81,12 +95,26 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 			EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
 			// ItemStack current = player.getCurrentEquippedItem();
-			ItemStack current = player.getActiveItemStack();
+			/*ItemStack current = player.getHeldItem(player.swingingHand);
 
 			if (current != null) {
 				Item item = current.getItem();
 
 				if (item instanceof IItemAdjustable) ((IItemAdjustable) item).decrement(player, current);
+			}*/
+
+			ItemStack current = player.getHeldItem(EnumHand.MAIN_HAND);
+
+			if (current != null) {
+				if (current.getItem() instanceof IItemAdjustable)
+					((IItemAdjustable) current.getItem()).decrement(player, current);
+			}
+
+			else {
+				current = player.getHeldItem(EnumHand.OFF_HAND);
+
+				if (current != null && current.getItem() instanceof IItemAdjustable)
+					((IItemAdjustable) current.getItem()).decrement(player, current);
 			}
 		}
 

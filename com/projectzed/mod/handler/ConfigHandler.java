@@ -7,6 +7,7 @@
 package com.projectzed.mod.handler;
 
 import com.hockeyhurd.hcorelib.api.handler.config.AbstractConfigHandler;
+import com.hockeyhurd.hcorelib.api.math.Color4f;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -34,6 +35,8 @@ public class ConfigHandler extends AbstractConfigHandler {
 
 	// tools:
 	private int maxExchangerRadii;
+	private int maxDrillRadii;
+	private Color4f selectionBoxColor = new Color4f();
 
 	// Upgrade components:
 	private float burnRateModifier;
@@ -69,6 +72,26 @@ public class ConfigHandler extends AbstractConfigHandler {
 		// tools:
 		this.maxExchangerRadii = this.getSuggestedConfig().getInt("max exchanger radii", "Tools", 5, 1, 15,
 				"Sets the max radii allotted for exchanger to be.");
+		this.maxDrillRadii = this.getSuggestedConfig().getInt("max drill radii", "Tools", 2, 1, 9, "Sets the max radii allotted for drill to be.");
+
+		int color = this.getSuggestedConfig().getInt("selection box color - red", "Tools", 255, 0, 255,
+				"Sets the (red) color of the selection box with the above tools.");
+
+		selectionBoxColor.setR(color);
+		// color <<= 0x10;
+
+		color = this.getSuggestedConfig().getInt("selection box color - green", "Tools", 0, 0, 255,
+				"Sets the (green) color of the selection box with the above tools.");
+		selectionBoxColor.setG(color);
+
+		color = this.getSuggestedConfig().getInt("selection box color - blue", "Tools", 0, 0, 255,
+				"Sets the (blue) color of the selection box with the above tools.");
+		selectionBoxColor.setB(color);
+
+		// Alpha:
+		// color |= (0xff << 0x18);
+
+		// selectionBoxColor = new Color4f(color);
 
 		// Upgrade components:
 		this.burnRateModifier = this.getSuggestedConfig()
@@ -165,4 +188,17 @@ public class ConfigHandler extends AbstractConfigHandler {
 		return maxExchangerRadii;
 	}
 
+	/**
+	 * @return max drill radii.
+	 */
+	public int getMaxDrillRadii() {
+		return maxDrillRadii;
+	}
+
+	/**
+	 * @return Gets the selection box color.
+	 */
+	public Color4f getSelectionBoxColor() {
+		return selectionBoxColor;
+	}
 }
