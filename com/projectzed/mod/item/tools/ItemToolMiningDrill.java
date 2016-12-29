@@ -122,7 +122,7 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 								.createBlockPos(rayTrace.getBlockPos().getX(), rayTrace.getBlockPos().getY() + j, rayTrace.getBlockPos().getZ() + i);
 					}
 
-					final IBlockState blockToBreak = BlockUtils.getBlock(world, rayTrace.getBlockPos());
+					final IBlockState blockToBreak = BlockUtils.getBlock(world, breakPos);
 
 					if (!(i != j && i == 0 && j == 0) && blockToBreak != null && reg.matContains(blockToBreak.getBlock()))
 						BlockUtils.destroyBlock(world, breakPos);

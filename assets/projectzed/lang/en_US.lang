@@ -88,6 +88,15 @@ item.screw.name=Screw
 item.conductiveCoil.name=Conductive Coil
 item.electricMotor.name=Electric Motor
 item.photoviolicCell.name=Photoviolic Cell
+
+// Circuitry:
+item.memCell_1k.name=1k Memory Cell
+item.memCell_4k.name=4k Memory Cell
+item.memCell_16k.name=16k Memory Cell
+item.memCell_64k.name=64k Memory Cell
+item.circuitBasic.name=Basic Circuit
+item.circuitAdvanced.name=Advanced Circuit
+
 item.plateAluminium.name=Aluminium Plate
 item.plateCopper.name=Copper Plate
 item.plateNickel.name=Nickel Plate

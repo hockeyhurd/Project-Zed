@@ -27,6 +27,8 @@ import com.projectzed.mod.creativetabs.ProjectZedCreativeTab;
 import com.projectzed.mod.handler.ConfigHandler;
 import com.projectzed.mod.item.*;
 import com.projectzed.mod.item.armor.ArmorSetZPlated;
+import com.projectzed.mod.item.circuitry.ItemCircuit;
+import com.projectzed.mod.item.circuitry.ItemMemCell;
 import com.projectzed.mod.item.metals.*;
 import com.projectzed.mod.item.tools.ItemBlockExchanger;
 import com.projectzed.mod.item.tools.ItemToolChainsaw;
@@ -177,6 +179,18 @@ public final class ProjectZed implements IForgeMod {
 	public static Item conductiveCoil;
 	public static Item electricMotor;
 	public static Item photoviolicCell;
+
+	// Circuitry:
+	// public static Item dFlipFlop;
+	public static Item memCell;
+	// public static Item advancedCircuit;
+	// public static Item basicCircuit;
+	public static Item circuit;
+	// public static Item basicProcessor;
+	// public static Item intermediateProcessor;
+	// public static Item advancedProcessor;
+	// public static Item calculator;
+
 	public static Item plateAluminium;
 	public static Item plateCopper;
 	public static Item plateNickel;
@@ -480,6 +494,11 @@ public final class ProjectZed implements IForgeMod {
 		conductiveCoil = new ItemConductiveCoil("conductiveCoil", assetDir);
 		electricMotor = new ItemElectricMotor("electricMotor", assetDir);
 		photoviolicCell = new ItemPhotoviolicCell("photoviolicCell", assetDir);
+
+		// Circuitry:
+		memCell = new ItemMemCell(modCreativeTab, "memCell", assetDir);
+		circuit = new ItemCircuit(modCreativeTab, "circuit", assetDir);
+
 		plateAluminium = new ItemPlateAluminium("plateAluminium", assetDir);
 		plateCopper = new ItemPlateCopper("plateCopper", assetDir);
 		plateNickel = new ItemPlateNickel("plateNickel", assetDir);
