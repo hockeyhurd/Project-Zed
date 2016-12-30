@@ -46,11 +46,22 @@ public class ItemForgingHammer extends AbstractHCoreItem {
 	}*/
 
 	@Override
+	public boolean hasContainerItem() {
+		return true;
+	}
+
+	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		// if (stack.attemptDamageItem(1, itemRand)) return new ItemStack(Items.bowl);
-		if (stack.attemptDamageItem(1, itemRand)) return null;
+		// if (stack.attemptDamageItem(1, itemRand)) return null;
+		// return stack;
 
-		return stack;
+		if (stack.getItemDamage() >= 256) return null;
+
+		final ItemStack returnStack = stack.copy();
+		returnStack.setItemDamage(stack.getItemDamage() + 1);
+
+		return returnStack;
 	}
 
 	@Override

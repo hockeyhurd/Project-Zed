@@ -278,24 +278,22 @@ public class ContainerFabricationTable extends Container {
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
 		final boolean isClient = player.getEntityWorld().isRemote;
-		/*for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
-			if (isClient) this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
-			else craftMatrix.setInventorySlotContents(i, te.getStackInSlot(i));
-		}*/
 
 		if (isClient) {
 			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 				this.te.setInventorySlotContents(i, this.craftMatrix.getStackInSlot(i));
 			}
+
+			PacketHandler.INSTANCE.sendToServer(new MessageTileEntityFabricationTable(te));
 		}
 
 		else {
 			for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
 				craftMatrix.setInventorySlotContents(i, te.getStackInSlot(i));
 			}
-		}
 
-		this.onCraftMatrixChanged(this.craftMatrix);
+			this.onCraftMatrixChanged(this.craftMatrix);
+		}
 	}
 
 	@Override

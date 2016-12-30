@@ -98,7 +98,7 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos blockPos, EntityLivingBase e) {
-		if (super.onBlockDestroyed(stack, world, blockState, blockPos, e) && !world.isRemote && radii > 0 && e instanceof EntityPlayer) {
+		if (!world.isRemote && radii > 0 && e instanceof EntityPlayer) {
 			final EntityPlayer player = (EntityPlayer) e;
 			final RayTraceResult rayTrace = rayTrace(world, player, false);
 			// ProjectZed.logHelper.info(rayTrace.hitInfo, player.getLookVec());
@@ -124,8 +124,14 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 
 					final IBlockState blockToBreak = BlockUtils.getBlock(world, breakPos);
 
-					if (!(i != j && i == 0 && j == 0) && blockToBreak != null && reg.matContains(blockToBreak.getBlock()))
-						BlockUtils.destroyBlock(world, breakPos);
+					if (blockToBreak != null && reg.matContains(blockToBreak.getBlock())) {
+						if (stack.getItemDamage() + 1 <= stack.getMaxDamage()) {
+							stack.damageItem(1, e);
+							BlockUtils.destroyBlock(world, breakPos);
+						}
+
+						else break; // Can't damage drill anymore, escape this loop!
+					}
 
 				}
 			}
