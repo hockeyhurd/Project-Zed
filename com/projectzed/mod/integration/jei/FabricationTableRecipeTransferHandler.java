@@ -71,6 +71,8 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients = itemStacks.getGuiIngredients();
 
+		// final int limitTransfer = maxTransfer ? 0x40 : 1;
+
 		for (int i = 0; i < 9; i++) {
 			final int slotOffset = i + 1;
 
@@ -79,6 +81,7 @@ public class FabricationTableRecipeTransferHandler implements IRecipeTransferHan
 				if (!allIngredients.isEmpty()) {
 					if (containerContainsIngredient(containerFabTable, allIngredients))
 						ingredients[i] = allIngredients.toArray(new ItemStack[allIngredients.size()]);
+
 					else missingItemSlots.add(slotOffset);
 				}
 			}

@@ -8,6 +8,7 @@ package com.projectzed.mod.container;
 
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
 import com.hockeyhurd.hcorelib.api.math.Vector3;
+import com.hockeyhurd.hcorelib.api.tileentity.AbstractTile;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
 import com.projectzed.mod.handler.message.MessageTileEntityFabricationTable;
@@ -21,10 +22,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Class containing container code for FabricationTable.
@@ -32,7 +31,7 @@ import java.util.List;
  * @author hockeyhurd
  * @version Nov 22, 2014
  */
-public class ContainerFabricationTable extends Container {
+public class ContainerFabricationTable extends Container implements ITileContainer {
 
 	/**
 	 * The crafting matrix inventory (3x3).
@@ -75,7 +74,8 @@ public class ContainerFabricationTable extends Container {
 		}
 
 		// Add crafting result.
-		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult, craftMatrix.getSizeInventory(), 161, 24));
+		this.addSlotToContainer(new SlotCrafting(inv.player, this.craftMatrix, this.craftResult,
+				craftMatrix.getSizeInventory(), 161, 24));
 
 		// Add 'chest' slots
 		for (int y = 0; y < 6; y++) {
@@ -106,6 +106,7 @@ public class ContainerFabricationTable extends Container {
 			craftResult.setInventorySlotContents(craftMatrix.getSizeInventory(),
 					CraftingManager.getInstance().findMatchingRecipe(craftMatrix, te.getWorld()));
 		}
+
 		super.onCraftMatrixChanged(inv);
 	}
 
@@ -134,7 +135,7 @@ public class ContainerFabricationTable extends Container {
 				if (sortType <= 2) map.put(id, tempList);
 				else if (sortType > 2) map2.put(name, tempList);
 
-				te.setInventorySlotContents(i, (ItemStack) null);
+				te.setInventorySlotContents(i, null);
 			}
 		}
 
@@ -204,25 +205,72 @@ public class ContainerFabricationTable extends Container {
 		this.onCraftMatrixChanged(craftMatrix);
 	}
 
+	@Override
 	public void fillCraftingGrid(ItemStack[][] stacks, int limitAmount) {
 
 		if (te.getWorld().isRemote) {
 
+			// Format: Item name -> StackNode { amount, slotIndexes, ItemStack (copy) }
+			Map<String, StackNode> inventoryMapping = new HashMap<String, StackNode>(te.getSizeInventory() << 1);
+			buildInventoryMap(inventoryMapping);
+
+			if (inventoryMapping.isEmpty()) return;
+
+			/*
+			 * We should only need to calculate occurances if limit amount is something other than '1'
+			 * Since this was already checked in the JEI transfer handler!
+			 */
+			if (limitAmount > 1) {
+				Map<String, Integer> occurrencesMapping = new TreeMap<String, Integer>();
+
+				// Simulation:
+				// Pass 1
+				for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
+					if (stacks[stackIndex] == null || stacks[stackIndex].length == 0) continue;
+					for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
+						if (stacks[stackIndex][itemOptionIndex] == null) continue;
+
+						ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
+						// stack.stackSize = limitAmount;
+						final String key = stack.getUnlocalizedName();
+
+						if (inventoryMapping.containsKey(key)) {
+							if (!occurrencesMapping.containsKey(key)) occurrencesMapping.put(key, 1);
+							else occurrencesMapping.put(key, occurrencesMapping.get(key) + 1);
+
+							break;
+						}
+					}
+				}
+
+				// Pass 2 calculate limiting amount:
+				for (Entry<String, Integer> entry : occurrencesMapping.entrySet()) {
+					limitAmount = Math.min(limitAmount, (int) Math.floor(inventoryMapping.get(entry.getKey()).amount / entry.getValue()));
+					limitAmount = Math.max(limitAmount, 1);
+					inventoryMapping.get(entry.getKey()).amount -= limitAmount;
+				}
+			}
+
+			// limitAmount = Math.max(limitAmount, 1);
+			ProjectZed.logHelper.info("limitAmount:", limitAmount);
+
+			// Do moving:
 			for (int stackIndex = 0; stackIndex < stacks.length; stackIndex++) {
 				if (stacks[stackIndex] == null || stacks[stackIndex].length == 0) continue;
 				for (int itemOptionIndex = 0; itemOptionIndex < stacks[stackIndex].length; itemOptionIndex++) {
 					if (stacks[stackIndex][itemOptionIndex] == null) continue;
 
 					ItemStack stack = stacks[stackIndex][itemOptionIndex].copy();
-					// ItemStack stack = stacks[stackIndex][0].copy();
-					// ProjectZed.logHelper.info(stack.getDisplayName());
+					stack.stackSize = limitAmount;
+					ItemStack removeStack = stack.copy();
 
-					stack.stackSize = Math.min(limitAmount, stack.stackSize);
-
-					if (removeItemStack(stack.copy())) {
+					// if (removeItemStack(removeStack, false)) {
+					if (removeItemStack(removeStack, inventoryMapping)) {
+						stack.stackSize = limitAmount;
 						craftMatrix.setInventorySlotContents(stackIndex, stack);
 						te.setInventorySlotContents(stackIndex, stack);
 						putStackInSlot(stackIndex, stack);
+
 						break;
 					}
 				}
@@ -236,6 +284,8 @@ public class ContainerFabricationTable extends Container {
 
 		else {
 			for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
+				if (stacks[i] == null) continue;
+
 				final ItemStack stack = stacks[i][0];
 				// final ItemStack stack = te.getStackInSlot(i);
 				// craftMatrix.setInventorySlotContents(i, stack);
@@ -252,7 +302,8 @@ public class ContainerFabricationTable extends Container {
 		}
 	}
 
-	private boolean removeItemStack(ItemStack stackToRemove) {
+	@Deprecated
+	private boolean removeItemStack(ItemStack stackToRemove, boolean simulate) {
 		if (stackToRemove == null || stackToRemove.stackSize == 0) return false;
 
 		for (int i = 10; i < te.getSizeInventory() && stackToRemove.stackSize > 0; i++) {
@@ -265,14 +316,88 @@ public class ContainerFabricationTable extends Container {
 			// if (stackToRemove.isItemEqual(stack)) {
 			if (ItemStack.areItemStacksEqual(stackToRemove, copyComp)) {
 				int grabAmount = Math.min(stack.stackSize, stackToRemove.stackSize);
-				stack.stackSize -= grabAmount;
 				stackToRemove.stackSize -= grabAmount;
 
-				if (stack.stackSize == 0) te.setInventorySlotContents(i, null);
+				if (!simulate) {
+					stack.stackSize -= grabAmount;
+					if (stack.stackSize == 0) te.setInventorySlotContents(i, null);
+				}
 			}
 		}
 
 		return stackToRemove.stackSize == 0;
+	}
+
+	private boolean removeItemStack(ItemStack stackToRemove, Map<String, StackNode> inventoryMap) {
+		if (stackToRemove == null || stackToRemove.stackSize <= 0 || inventoryMap == null || inventoryMap.isEmpty())
+			return false;
+
+		ItemStack removeStackCopy = stackToRemove.copy();
+
+		List<Integer> slotList = inventoryMap.get(stackToRemove.getUnlocalizedName()).slotIndexes;
+		List<Integer> removeList = new LinkedList<Integer>();
+
+		for (int slotIndex : slotList) {
+			ItemStack stack = te.getStackInSlot(slotIndex);
+			removeStackCopy.stackSize = stack.stackSize;
+
+			if (ItemStack.areItemStacksEqual(removeStackCopy, stack)) {
+				final int grabAmount = Math.min(stack.stackSize, stackToRemove.stackSize);
+				stackToRemove.stackSize -= grabAmount;
+				stack.stackSize -= grabAmount;
+
+				if (stack.stackSize == 0) {
+					removeList.add(slotIndex);
+					te.setInventorySlotContents(slotIndex, null);
+				}
+			}
+
+			if (stackToRemove.stackSize == 0) break;
+		}
+
+		for (Integer i : removeList) {
+			slotList.remove(i);
+		}
+
+		return stackToRemove == null || stackToRemove.stackSize == 0;
+	}
+
+	/**
+	 * Builds a Map of the tileentity's inventory.
+	 *
+	 * @param map Map to reference.
+	 */
+	private void buildInventoryMap(Map<String, StackNode> map) {
+		if (map == null) return;
+
+		// We need a fresh map!
+		if (!map.isEmpty()) map.clear();
+
+		for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
+			final ItemStack stack = craftMatrix.getStackInSlot(i);
+			if (stack == null) continue;
+
+			final String key = stack.getUnlocalizedName();
+			if (!map.containsKey(key)) map.put(key, new StackNode(stack.stackSize, i, stack));
+			else {
+				final StackNode stackNode = map.get(key);
+				stackNode.slotIndexes.add(i);
+				stackNode.amount += stack.stackSize;
+			}
+		}
+
+		for (int i = 10; i < te.getSizeInventory(); i++) {
+			final ItemStack stack = te.getStackInSlot(i);
+			if (stack == null) continue;
+
+			final String key = stack.getUnlocalizedName();
+			if (!map.containsKey(key)) map.put(key, new StackNode(stack.stackSize, i, stack));
+			else {
+				final StackNode stackNode = map.get(key);
+				stackNode.slotIndexes.add(i);
+				stackNode.amount += stack.stackSize;
+			}
+		}
 	}
 
 	@Override
@@ -347,6 +472,35 @@ public class ContainerFabricationTable extends Container {
 		}
 
 		return itemstack;
+	}
+
+	@Override
+	public Container getContainer() {
+		return this;
+	}
+
+	@Override
+	public AbstractTile getTile() {
+		return te;
+	}
+
+	private static class StackNode {
+		int amount;
+		ItemStack itemStack;
+		List<Integer> slotIndexes;
+
+		StackNode(int amount, ItemStack itemStack) {
+			this.amount = amount;
+			this.itemStack = itemStack;
+			slotIndexes = new LinkedList<Integer>();
+		}
+
+		StackNode(int amount, int index, ItemStack itemStack) {
+			this.amount = amount;
+			this.itemStack = itemStack;
+			slotIndexes = new LinkedList<Integer>();
+			slotIndexes.add(index);
+		}
 	}
 
 }
