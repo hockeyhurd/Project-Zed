@@ -10,6 +10,7 @@
 
 package com.projectzed.mod.item;
 
+import com.projectzed.api.util.SidedInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -33,6 +34,20 @@ public interface IItemAdjustable {
 	void decrement(EntityPlayer player, ItemStack stack);
 
 	/**
+	 * Gets the data.
+	 *
+	 * @return All the datas.
+	 */
+	Object[] getData();
+
+	/**
+	 * Sets the data.
+	 *
+	 * @param data Datas to set.
+	 */
+	void setData(ItemStack stack, Object... data);
+
+	/**
 	 * Writes NBT data to an ItemStack.
 	 *
 	 * @param stack ItemStack to write.
@@ -46,5 +61,14 @@ public interface IItemAdjustable {
 	 * @return Read object(s).
 	 */
 	Object[] readFromNBT(ItemStack stack);
+
+	/**
+	 * Callback handleing packet sending to a given (destination) side.
+	 *
+	 * @param stack ItemStack to send.
+	 * @param sidedInfo SidedInfo containing packet related information.
+	 * @param data data to send.
+	 */
+	void sendPacket(ItemStack stack, SidedInfo sidedInfo, Object... data);
 
 }

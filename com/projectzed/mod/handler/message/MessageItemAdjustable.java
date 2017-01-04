@@ -15,6 +15,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,43 +28,44 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 public class MessageItemAdjustable implements IMessage, IMessageHandler<MessageItemAdjustable, IMessage> {
 
-	protected boolean increment;
+	protected ItemStack stack;
+	protected int data;
 
 	@Deprecated
 	public MessageItemAdjustable() {
-		this.increment = false;
+		this.data = 0;
 	}
 
-	/**
-	 * @param increment boolean toggle whether to increment data or not.
-	 */
-	public MessageItemAdjustable(boolean increment) {
-		this.increment = increment;
+	public MessageItemAdjustable(ItemStack stack, int data) {
+		this.stack = stack;
+		this.data = data;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.increment = buf.readBoolean();
+		this.stack = ByteBufUtils.readItemStack(buf);
+		this.data = buf.readInt();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeBoolean(increment);
+		if (stack != null) ByteBufUtils.writeItemStack(buf, stack);
+		buf.writeInt(data);
 	}
 
 	@Override
 	public IMessage onMessage(MessageItemAdjustable message, MessageContext ctx) {
 		final EntityPlayer player = ctx.getServerHandler().playerEntity;
 
-		if (player != null) {
-			final ItemStack stack = player.inventory.getCurrentItem();
+		if (player != null && message.stack != null) {
 
-			if (stack != null) {
-				final Item item = stack.getItem();
+			if (message.stack != null) {
+				final Item item = message.stack.getItem();
 
 				if (item instanceof IItemAdjustable) {
-					if (message.increment) ((IItemAdjustable) item).increment(player, stack);
-					else ((IItemAdjustable) item).decrement(player, stack);
+					// (message.increment) ((IItemAdjustable) item).increment(player, message.stack);
+					// else ((IItemAdjustable) item).decrement(player, message.stack);
+					((IItemAdjustable) item).setData(message.stack, message.data);
 				}
 
 			}

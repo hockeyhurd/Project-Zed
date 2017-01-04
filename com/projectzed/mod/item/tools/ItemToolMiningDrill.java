@@ -8,11 +8,16 @@ package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.ChatUtils;
+import com.hockeyhurd.hcorelib.api.util.SidedHelper;
 import com.hockeyhurd.hcorelib.api.util.TimerHelper;
+import com.projectzed.api.util.SidedInfo;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageItemAdjustable;
 import com.projectzed.mod.item.IItemAdjustableRadii;
 import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.registry.tools.DrillSetRegistry;
+import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.util.Reference.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
@@ -156,7 +161,9 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 		if (radii < ProjectZed.configHandler.getMaxDrillRadii()) {
 			radii++;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, Constants.RADII_MSG_RADII_SET + radii));
+
+			if (SidedHelper.isClient())
+				player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
 		}
 	}
 
@@ -165,7 +172,22 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 		if (radii > 0) {
 			radii--;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, Constants.RADII_MSG_RADII_SET + radii));
+
+			if (SidedHelper.isClient())
+				player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
+		}
+	}
+
+	@Override
+	public Object[] getData() {
+		return new Object[] { radii };
+	}
+
+	@Override
+	public void setData(ItemStack stack, Object... data) {
+		if (stack != null && data != null && data.length == 1) {
+			radii = (Integer) data[0];
+			writeToNBT(stack);
 		}
 	}
 
@@ -196,5 +218,17 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 		Integer[] val = { num };
 
 		return val;
+	}
+
+	@Override
+	public void sendPacket(ItemStack stack, SidedInfo sidedInfo, Object... data) {
+		if (stack == null || stack.stackSize == 0 || sidedInfo == null || data == null || data.length == 0)
+			return;
+
+		else if (sidedInfo.isSideServer()) {
+			PacketHandler.INSTANCE.sendToServer(new MessageItemAdjustable(stack, (Integer) data[0]));
+		}
+
+		// We don't need to send packets to the client?
 	}
 }

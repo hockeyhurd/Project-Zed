@@ -11,6 +11,7 @@
 package com.projectzed.mod.handler.input;
 
 import com.hockeyhurd.hcorelib.api.handler.input.AbstractKeyBinding;
+import com.projectzed.api.util.SidedInfo;
 import com.projectzed.mod.item.IItemAdjustable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -65,15 +66,21 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 			ItemStack current = player.getHeldItem(EnumHand.MAIN_HAND);
 
 			if (current != null) {
-				if (current.getItem() instanceof IItemAdjustable)
+				if (current.getItem() instanceof IItemAdjustable) {
 					((IItemAdjustable) current.getItem()).increment(player, current);
+					((IItemAdjustable) current.getItem()).sendPacket(current, new SidedInfo(Side.SERVER),
+							((IItemAdjustable) current.getItem()).getData());
+				}
 			}
 
 			else {
 				current = player.getHeldItem(EnumHand.OFF_HAND);
 
-				if (current != null && current.getItem() instanceof IItemAdjustable)
+				if (current != null && current.getItem() instanceof IItemAdjustable) {
 					((IItemAdjustable) current.getItem()).increment(player, current);
+					((IItemAdjustable) current.getItem()).sendPacket(current, new SidedInfo(Side.SERVER),
+							((IItemAdjustable) current.getItem()).getData());
+				}
 			}
 		}
 
@@ -106,15 +113,21 @@ public abstract class ItemAdjusterHandler extends AbstractKeyBinding {
 			ItemStack current = player.getHeldItem(EnumHand.MAIN_HAND);
 
 			if (current != null) {
-				if (current.getItem() instanceof IItemAdjustable)
+				if (current.getItem() instanceof IItemAdjustable) {
 					((IItemAdjustable) current.getItem()).decrement(player, current);
+					((IItemAdjustable) current.getItem()).sendPacket(current, new SidedInfo(Side.SERVER),
+							((IItemAdjustable) current.getItem()).getData());
+				}
 			}
 
 			else {
 				current = player.getHeldItem(EnumHand.OFF_HAND);
 
-				if (current != null && current.getItem() instanceof IItemAdjustable)
+				if (current != null && current.getItem() instanceof IItemAdjustable) {
 					((IItemAdjustable) current.getItem()).decrement(player, current);
+					((IItemAdjustable) current.getItem()).sendPacket(current, new SidedInfo(Side.SERVER),
+							((IItemAdjustable) current.getItem()).getData());
+				}
 			}
 		}
 

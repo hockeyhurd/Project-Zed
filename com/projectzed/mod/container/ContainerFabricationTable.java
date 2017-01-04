@@ -7,7 +7,6 @@
 package com.projectzed.mod.container;
 
 import com.hockeyhurd.hcorelib.api.math.TimeLapse;
-import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.tileentity.AbstractTile;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
@@ -20,7 +19,6 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -296,9 +294,9 @@ public class ContainerFabricationTable extends Container implements ITileContain
 			onCraftMatrixChanged(craftMatrix);
 			detectAndSendChanges();
 
-			final Vector3<Double> vec = te.worldVec().getVector3d();
-			PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityFabricationTable(te),
-					new NetworkRegistry.TargetPoint(te.getWorld().provider.getDimension(), vec.x, vec.y, vec.z, 16.0f));
+			// final Vector3<Double> vec = te.worldVec().getVector3d();
+			// PacketHandler.INSTANCE.sendToAllAround(new MessageTileEntityFabricationTable(te),
+			//		new NetworkRegistry.TargetPoint(te.getWorld().provider.getDimension(), vec.x, vec.y, vec.z, 16.0f));
 		}
 	}
 

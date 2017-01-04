@@ -11,11 +11,11 @@
 package com.projectzed.mod.item.tools;
 
 import com.hockeyhurd.hcorelib.api.math.VectorHelper;
-import com.hockeyhurd.hcorelib.api.util.BlockUtils;
-import com.hockeyhurd.hcorelib.api.util.ChatUtils;
-import com.hockeyhurd.hcorelib.api.util.NumberFormatter;
-import com.hockeyhurd.hcorelib.api.util.TimerHelper;
+import com.hockeyhurd.hcorelib.api.util.*;
+import com.projectzed.api.util.SidedInfo;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.message.MessageItemAdjustable;
 import com.projectzed.mod.item.IItemAdjustableRadii;
 import com.projectzed.mod.util.Reference;
 import net.minecraft.block.BlockContainer;
@@ -86,17 +86,18 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 				// ProjectZed.logHelper.info("Side:", side, blockToPlace.getLocalizedName());
 
-				int amountToPlace = radii * 2 + 1;
+				int amountToPlace = (radii << 1) + 1;
 				amountToPlace *= amountToPlace;
 
-				Map<Integer, Integer> invMap = new HashMap<Integer, Integer>(player.inventory.getSizeInventory() * 3 / 2, 2.0f / 3.0f);
+				Map<Integer, Integer> invMap = new HashMap<Integer, Integer>((player.inventory.getSizeInventory() * 3) >> 1, 2.0f / 3.0f);
 				int itemCount = 0;
 
+				final ItemStack blockToPlaceStack = new ItemStack(blockToPlace.getBlock());
 				ItemStack current;
 				for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 					current = player.inventory.getStackInSlot(i);
 
-					if (current != null && BlockUtils.getBlockFromItem(current.getItem()) == blockToPlace) {
+					if (current != null && ItemStack.areItemsEqual(current, blockToPlaceStack)) {
 						invMap.put(i, current.stackSize);
 						itemCount += current.stackSize;
 					}
@@ -193,7 +194,8 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 
 				if (newBlock != blockToPlace && !(newBlock instanceof BlockContainer)) {
 					blockToPlace = newBlock;
-					player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_TYPE + blockToPlace.getBlock().getLocalizedName()));
+					player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_TYPE +
+							' ' + blockToPlace.getBlock().getLocalizedName()));
 				}
 			}
 
@@ -216,7 +218,9 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii < ProjectZed.configHandler.getMaxExchangerRadii()) {
 			radii++;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
+
+			if (SidedHelper.isClient())
+				player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
 		}
 	}
 
@@ -225,7 +229,22 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 		if (radii > 0) {
 			radii--;
 			writeToNBT(stack);
-			player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
+
+			if (SidedHelper.isClient())
+				player.addChatComponentMessage(ChatUtils.createComponent(false, Reference.Constants.RADII_MSG_RADII_SET + radii));
+		}
+	}
+
+	@Override
+	public Object[] getData() {
+		return new Object[] { radii };
+	}
+
+	@Override
+	public void setData(ItemStack stack, Object... data) {
+		if (stack != null && data != null && data.length == 1) {
+			radii = (Integer) data[0];
+			writeToNBT(stack);
 		}
 	}
 
@@ -262,6 +281,18 @@ public class ItemBlockExchanger extends AbstractItemPowered implements IItemAdju
 	@Override
 	public int getRadii() {
 		return radii;
+	}
+
+	@Override
+	public void sendPacket(ItemStack stack, SidedInfo sidedInfo, Object... data) {
+		if (stack == null || stack.stackSize == 0 || sidedInfo == null || data == null || data.length == 0)
+			return;
+
+		else if (sidedInfo.isSideServer()) {
+			PacketHandler.INSTANCE.sendToServer(new MessageItemAdjustable(stack, (Integer) data[0]));
+		}
+
+		// We don't need to send packets to the client?
 	}
 
 }
