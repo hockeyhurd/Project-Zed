@@ -88,6 +88,8 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 
 	@Override
 	public void toBytes(ByteBuf buf) {
+		if (vec == null) vec = new Vector3<Integer>();
+
 		buf.writeInt(vec.x);
 		buf.writeInt(vec.y);
 		buf.writeInt(vec.z);

@@ -29,12 +29,18 @@ public class DrillSetRegistry implements IToolSetRegistry {
 	public static final Material[] mats = new Material[] {
 		Material.ROCK,
 		Material.IRON,
+		Material.ANVIL,
+		Material.TNT,
+		Material.GOURD,
 		Material.GRASS,
 		Material.GROUND,
 		Material.SAND,
 		Material.GLASS,
-		Material.PISTON,
 		Material.SNOW,
+		Material.CRAFTED_SNOW,
+		Material.PACKED_ICE,
+		Material.CLAY,
+		Material.PISTON,
 		Material.CIRCUITS,
 	};
 	
