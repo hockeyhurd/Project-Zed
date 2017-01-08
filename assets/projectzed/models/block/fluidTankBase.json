@@ -1,0 +1,23 @@
+{
+    "textures": {
+        "side": "projectzed:blocks/fluidTankTier0_item",
+        "base": "projectzed:blocks/fluidTankTier0_item_top",
+        "top": "#base",
+        "particle": "#side"
+    },
+    "elements": [
+        {
+            "name": "Cube",
+            "from": [ 3.0, 0.0, 3.0 ], 
+            "to": [ 13.0, 16.0, 13.0 ], 
+            "faces": {
+                "north": { "texture": "#side", "uv": [ 1.0, 1.0, 15.0, 15.0 ], "cullface": "north" },
+                "east": { "texture": "#side", "uv": [ 1.0, 1.0, 15.0, 15.0 ], "cullface": "east" },
+                "south": { "texture": "#side", "uv": [ 1.0, 1.0, 15.0, 15.0 ], "cullface": "south" },
+                "west": { "texture": "#side", "uv": [ 1.0, 1.0, 15.0, 15.0 ] },
+                "up": { "texture": "#top", "uv": [ 1.0, 1.0, 15.0, 15.0 ], "cullface": "up" },
+                "down": { "texture": "#base", "uv": [ 1.0, 1.0, 15.0, 15.0 ], "cullface": "down" }
+            }
+        }
+    ]
+}

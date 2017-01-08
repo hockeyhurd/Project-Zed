@@ -79,19 +79,21 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 				IItemChargeable itemChargeable = (IItemChargeable) stack.getItem();
 
 				int chargeRate = itemChargeable.getChargeRate();
-				int left = (itemChargeable.getCapacity() - itemChargeable.getStored(stack)) / chargeRate;
-
-				this.energyBurnRate = chargeRate;
-				
-				int amountToCharge = Math.min(itemChargeable.getChargeRate(), energyBurnRate);
-				amountToCharge = Math.min(amountToCharge, getEnergyStored());
+				// int amountToCharge = Math.min(itemChargeable.getChargeRate(), chargeRate);
+				// amountToCharge = Math.min(amountToCharge, getEnergyStored());
+				int amountToCharge = Math.min(chargeRate, getEnergyStored());
+				this.energyBurnRate = amountToCharge;
 
 				boolean result = itemChargeable.addPower(stack, amountToCharge, true) > 0;
 
 				if (result) {
-					if (this.cookTime == 0) this.scaledTime = left;
+					// if (this.cookTime == 0)
+						this.scaledTime = (itemChargeable.getCapacity() - itemChargeable.getStored(stack)) / amountToCharge;
+
 					itemChargeable.addPower(stack, amountToCharge, false);
 				}
+
+				else energyBurnRate = 0;
 			}
 
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).

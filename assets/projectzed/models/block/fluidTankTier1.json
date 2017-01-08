@@ -1,0 +1,8 @@
+{
+    "parent": "projectzed:block/fluidTankBase",
+
+    "textures": {
+        "side": "projectzed:blocks/fluidTankTier1_item",
+        "base": "projectzed:blocks/fluidTankTier1_item_top"
+    }
+}
