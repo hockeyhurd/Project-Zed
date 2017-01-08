@@ -142,7 +142,7 @@ public class MessageTileEntityMachine implements IMessage, IMessageHandler<Messa
 				te.setEnergyStored(message.stored);
 				te.setEnergyBurnRate(message.energyBurnRate);
 				te.setPowerMode(message.powerMode);
-				te.scaledTime = message.energyBurnRate;
+				// te.scaledTime = message.scaledCookTime;
 				te.setRedstoneType(message.redstoneType);
 				
 				for (int i = 0; i < message.openSides.length; i++) {

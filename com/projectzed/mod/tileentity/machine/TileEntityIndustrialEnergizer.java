@@ -50,7 +50,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 	}
 
 	public boolean isItemValid(ItemStack stack) {
-		return stack.stackSize == 1 && stack.getItem() instanceof IItemChargeable && stack.getItemDamage() > 0;
+		return stack.stackSize == 1 && stack.getItem() instanceof IItemChargeable && stack.getItemDamage() >= 0;
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 
 	@Override
 	protected boolean canSmelt() {
-		if (this.slots[0] == null || this.stored - this.energyBurnRate <= 0) return false;
+		if (this.slots[0] == null || this.stored /*- this.energyBurnRate*/ <= 0) return false;
 		else {
 			ItemStack stack = this.slots[0];
 			boolean valid = this.isItemValid(stack);
@@ -82,22 +82,23 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 				// int amountToCharge = Math.min(itemChargeable.getChargeRate(), chargeRate);
 				// amountToCharge = Math.min(amountToCharge, getEnergyStored());
 				int amountToCharge = Math.min(chargeRate, getEnergyStored());
-				this.energyBurnRate = amountToCharge;
+				this.energyBurnRate = this.originalEnergyBurnRate = amountToCharge;
 
 				boolean result = itemChargeable.addPower(stack, amountToCharge, true) > 0;
 
 				if (result) {
-					// if (this.cookTime == 0)
-						this.scaledTime = (itemChargeable.getCapacity() - itemChargeable.getStored(stack)) / amountToCharge;
+					if (this.cookTime == 0) {
+						this.scaledTime = this.originalScaledTime = ((itemChargeable.getCapacity() - itemChargeable.getStored(stack)) / amountToCharge) + 1;
+					}
 
 					itemChargeable.addPower(stack, amountToCharge, false);
 				}
 
-				else energyBurnRate = 0;
+				else energyBurnRate = originalEnergyBurnRate = 0;
 			}
 
 			// Check if the item in the slot 1 can be smelted (has a set furnace recipe).
-			ItemStack endStack =  valid ? this.slots[0] : (ItemStack) null;
+			ItemStack endStack =  valid ? this.slots[0] : null;
 			if (endStack == null) return false;
 			if (this.slots[1] == null) return true;
 			if (!this.slots[1].isItemEqual(endStack)) return false;
@@ -112,7 +113,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 
 	@Override
 	public void smeltItem() {
-		if (this.canSmelt()) {
+		// if (this.canSmelt()) {
 			// this.slots[0].setItemDamage(this.slots[0].getItemDamage() - 1);
 			ItemStack itemStack = this.slots[0];
 			itemStack.setItemDamage(0);
@@ -123,7 +124,7 @@ public class TileEntityIndustrialEnergizer extends AbstractTileEntityMachine {
 			this.slots[0].stackSize--;
 
 			if (this.slots[0].stackSize <= 0) this.slots[0] = null;
-		}
+		// }
 	}
 
 	@Override

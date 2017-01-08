@@ -103,7 +103,7 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos blockPos, EntityLivingBase e) {
-		if (!world.isRemote && radii > 0 && e instanceof EntityPlayer) {
+		if (!world.isRemote /*&& radii > 0*/ && e instanceof EntityPlayer) {
 			final EntityPlayer player = (EntityPlayer) e;
 			final RayTraceResult rayTrace = rayTrace(world, player, false);
 			// ProjectZed.logHelper.info(rayTrace.hitInfo, player.getLookVec());
