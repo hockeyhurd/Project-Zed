@@ -141,7 +141,7 @@ public class CentrifugeRecipeRegistry {
 			return temp;
 		}
 		
-		else return (ItemStack) null;
+		else return null;
 	}
 
 }

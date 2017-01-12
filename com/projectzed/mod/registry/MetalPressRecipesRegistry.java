@@ -109,17 +109,20 @@ public class MetalPressRecipesRegistry {
 		// Else not found, prepare data for collection from the Ore Dictionary.
 		if (mapModded.size() > 0) {
 
-			int currentID = OreDictionary.getOreIDs(stack)[0];
-			if (currentID == -1) return (ItemStack) null;
+			int[] oreIDs = OreDictionary.getOreIDs(stack);
+			if (oreIDs == null || oreIDs.length == 0) return null;
+
+			int currentID = oreIDs[0];
+			if (currentID == -1) return null;
 			
 			String inputName = OreDictionary.getOreName(currentID);
-			if (!mapModded.containsKey(inputName)) return (ItemStack) null;
+			if (!mapModded.containsKey(inputName)) return null;
 			
 			String outputName = mapModded.get(inputName);
-			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).size() == 0) return (ItemStack) null;
+			if (OreDictionary.getOres(outputName) == null || OreDictionary.getOres(outputName).size() == 0) return null;
 			temp = OreDictionary.getOres(outputName).get(0);
 			
-			if (temp == null) return (ItemStack) null;
+			if (temp == null) return null;
 			
 			flag = true;
 			Block block = null;
@@ -142,7 +145,7 @@ public class MetalPressRecipesRegistry {
 			return temp;
 		}
 
-		else return (ItemStack) null;
+		return null;
 	}
 
 }
