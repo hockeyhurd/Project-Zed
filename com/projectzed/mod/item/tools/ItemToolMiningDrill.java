@@ -9,7 +9,6 @@ package com.projectzed.mod.item.tools;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.hockeyhurd.hcorelib.api.util.ChatUtils;
 import com.hockeyhurd.hcorelib.api.util.SidedHelper;
-import com.hockeyhurd.hcorelib.api.util.TimerHelper;
 import com.projectzed.api.util.SidedInfo;
 import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.handler.PacketHandler;
@@ -19,17 +18,12 @@ import com.projectzed.mod.registry.interfaces.IToolSetRegistry;
 import com.projectzed.mod.registry.tools.DrillSetRegistry;
 import com.projectzed.mod.util.Reference;
 import com.projectzed.mod.util.Reference.Constants;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -43,7 +37,7 @@ import net.minecraft.world.World;
 public class ItemToolMiningDrill extends AbstractItemToolPowered implements IItemAdjustableRadii {
 
 	private int radii;
-	private TimerHelper timerTorch;
+	// private TimerHelper timerTorch;
 
 	/**
 	 * @param mat tool material of drill.
@@ -62,10 +56,10 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 	 */
 	public ItemToolMiningDrill(ToolMaterial mat, String name, int capacity, int chargeRate, IToolSetRegistry reg) {
 		super(mat, name, capacity, chargeRate, reg);
-		timerTorch = new TimerHelper(20, 2);
+		// timerTorch = new TimerHelper(20, 2);
 	}
 	
-	@Override
+	/*@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos blockPos, EnumHand hand, EnumFacing side,
 			float clickX, float clickY, float clickZ) {
 		EnumActionResult used = EnumActionResult.FAIL;
@@ -99,11 +93,11 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 
 		if (!timerTorch.getUse()) player.swingArm(hand);
 		return used;
-	}
+	}*/
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState blockState, BlockPos blockPos, EntityLivingBase e) {
-		if (!world.isRemote /*&& radii > 0*/ && e instanceof EntityPlayer) {
+		if (!world.isRemote && e instanceof EntityPlayer) {
 			final EntityPlayer player = (EntityPlayer) e;
 			final RayTraceResult rayTrace = rayTrace(world, player, false);
 			// ProjectZed.logHelper.info(rayTrace.hitInfo, player.getLookVec());
@@ -132,7 +126,9 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 					if (blockToBreak != null && reg.matContains(blockToBreak.getBlock())) {
 						if (stack.getItemDamage() + 1 <= stack.getMaxDamage()) {
 							stack.damageItem(1, e);
-							BlockUtils.destroyBlock(world, breakPos);
+
+							if (i != 0 || j != 0)
+								BlockUtils.destroyBlock(world, breakPos);
 						}
 
 						else break; // Can't damage drill anymore, escape this loop!
@@ -145,11 +141,11 @@ public class ItemToolMiningDrill extends AbstractItemToolPowered implements IIte
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public void onUpdate(ItemStack stack, World world, Entity e, int i, boolean f) {
 		super.onUpdate(stack, world, e, i, f);
 		timerTorch.update();
-	}
+	}*/
 
 	@Override
 	public int getRadii() {

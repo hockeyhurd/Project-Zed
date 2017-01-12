@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Main armor class for ZPlated Armoring.
- * 
+ *
  * @author hockeyhurd
  * @version Jun 2, 2015
  */
@@ -36,9 +36,9 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 	private ItemStack[] armorInventory;
 
 	/**
-	 * @param material armor material to use.
+	 * @param material    armor material to use.
 	 * @param renderIndex render index of item.
-	 * @param armorType armor type ordinal.
+	 * @param armorType   armor type ordinal.
 	 */
 	public ArmorSetZPlated(ArmorMaterial material, int renderIndex, EnumArmorType armorType) {
 		// super(material, renderIndex, armorType, ProjectZed.assetDir, "zPlatedArmor", PATH_MAT);
@@ -61,7 +61,7 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 		
 		return ProjectZed.assetDir + PATH_MAT + "_1.png";
 	}*/
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
@@ -74,11 +74,11 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 		list.add(TextFormatting.GREEN + "Stored: " + TextFormatting.WHITE + NumberFormatter.format(getStored(stack)) + " McU");
 		list.add(TextFormatting.GREEN + "Capacity: " + TextFormatting.WHITE + NumberFormatter.format(this.capacity) + " McU");
 	}
-	
+
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
 		super.onArmorTick(world, player, stack);
-		
+
 		// handle flight checks:
 		if (armorInventory == null || (world.getTotalWorldTime() % 20L == 0 && !player.capabilities.isCreativeMode)) {
 			boolean flag = true;
@@ -90,61 +90,61 @@ public class ArmorSetZPlated extends AbstractArmor implements IItemChargeable {
 				flag = false;
 				counter++;
 			}
-			
+
 			if (armorInventory[1] == null || armorInventory[1].getItem() != ProjectZed.zPlatedLeg) {
 				flag = false;
 				counter++;
 			}
-			
+
 			if (armorInventory[2] == null || armorInventory[2].getItem() != ProjectZed.zPlatedChest) {
 				flag = false;
 				counter++;
 			}
-			
+
 			if (armorInventory[3] == null || armorInventory[3].getItem() != ProjectZed.zPlatedHelm) {
 				flag = false;
 				counter++;
 			}
-			
+
 			if (counter == 4) return;
-			
+
 			if (flag) player.capabilities.allowFlying = true;
 			else player.capabilities.allowFlying = false;
 		}
-		
+
 		// handle individual armor abilities:
 		if (player.capabilities.isCreativeMode) return;
-		
+
 		if (armorInventory[0] != null && armorInventory[0].getItem() == ProjectZed.zPlatedBoot) {
 			if (!player.isCollidedVertically) player.fallDistance = 0f;
 		}
-		
+
 		if (armorInventory[1] != null && armorInventory[1].getItem() == ProjectZed.zPlatedLeg) {
 			if (!player.isSneaking()) {
 				if (player.stepHeight < 1f) player.stepHeight = 1f;
 			}
-			
+
 			else {
 				if (player.stepHeight > 0.5f) player.stepHeight = 0.5f;
 			}
 		}
-		
+
 		if (armorInventory[2] != null && armorInventory[2].getItem() == ProjectZed.zPlatedChest) {
 			if (player.isBurning()) player.addPotionEffect(new PotionEffect(Potion.getPotionById(12), 5, 0)); // Fire resistance.
 			// if (player.on)
 			player.fireResistance = Integer.MAX_VALUE;
 			// player.hurtResistantTime = Integer.MAX_VALUE;
 		}
-		
+
 		else player.fireResistance = 1;
-		
+
 		if (armorInventory[3] != null && armorInventory[3].getItem() == ProjectZed.zPlatedHelm) {
 			if (player.isInWater()) {
-				player.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 5, 0)); // Water breathing.
+				player.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 300, 0)); // Water breathing.
 				// player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 5, 0)); // Night vision.
 			}
 
-			player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 5, 0)); // Night vision.
+			player.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 300, 0)); // Night vision.
 		}
 	}
 
