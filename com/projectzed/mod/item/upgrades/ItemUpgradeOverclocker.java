@@ -35,7 +35,8 @@ public class ItemUpgradeOverclocker extends AbstractItemUpgrade {
 	 */
 	public ItemUpgradeOverclocker(String name) {
 		super(name);
-		this.maxStackSize = 0xc;
+		// this.maxStackSize = 0xc;
+		setMaxStackSize(0x10);
 	}
 
 	@Override

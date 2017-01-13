@@ -34,6 +34,7 @@ import com.projectzed.mod.item.tools.ItemBlockExchanger;
 import com.projectzed.mod.item.tools.ItemToolChainsaw;
 import com.projectzed.mod.item.tools.ItemToolMiningDrill;
 import com.projectzed.mod.item.tools.ItemWrench;
+import com.projectzed.mod.item.upgrades.ItemRadialUpgrade;
 import com.projectzed.mod.item.upgrades.ItemUpgradeEfficiency;
 import com.projectzed.mod.item.upgrades.ItemUpgradeOverclocker;
 import com.projectzed.mod.item.upgrades.ItemUpgradeSilkTouch;
@@ -211,6 +212,7 @@ public final class ProjectZed implements IForgeMod {
 	public static Item overclockerUpgrade;
 	public static Item silkTouchUpgrade;
 	public static Item efficiencyUpgrade;
+	public static Item radialUpgrade;
 	public static Item blankCraftingPattern;
 	public static Item craftingPattern;
 
@@ -520,6 +522,7 @@ public final class ProjectZed implements IForgeMod {
 		overclockerUpgrade = new ItemUpgradeOverclocker("overclockerUpgrade");
 		silkTouchUpgrade = new ItemUpgradeSilkTouch("silkTouchUpgrade");
 		efficiencyUpgrade = new ItemUpgradeEfficiency("efficiencyUpgrade");
+		radialUpgrade = new ItemRadialUpgrade("radialUpgrade");
 		blankCraftingPattern = new ItemCraftingPattern("blankCraftingPattern", false);
 		craftingPattern = new ItemCraftingPattern("craftingPattern", true);
 
