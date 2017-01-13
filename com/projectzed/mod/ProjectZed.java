@@ -474,7 +474,7 @@ public final class ProjectZed implements IForgeMod {
 		industrialQuarry = new BlockIndustrialQuarry(Material.ROCK);
 		
 		// RF STUFF:
-		if (ModsLoadedHelper.instance().cofhCore) { 
+		if (ModsLoadedHelper.instance().cofhCore) {
 			bridgeMcUToRF = new BlockRFBridge(Material.ROCK, false);
 			bridgeRFToMcU = new BlockRFBridge(Material.ROCK, true);
 		}

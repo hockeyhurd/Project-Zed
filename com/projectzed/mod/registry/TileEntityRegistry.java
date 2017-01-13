@@ -103,7 +103,7 @@ public final class TileEntityRegistry {
 		reg.map.put(TileEntityEnergyPipeClear.class,  "energyPipeTileEntityClear");
 		reg.idMap.put(TileEntityEnergyPipeClear.class, getNextID());
 		
-		if (ModsLoadedHelper.instance().cofhCore) { 
+		if (ModsLoadedHelper.instance().cofhCore) {
 			reg.map.put(TileEntityRFBridge.class, "bridgeRFTileEntity");
 			reg.idMap.put(TileEntityRFBridge.class, getNextID());
 		}

@@ -332,7 +332,11 @@ public class ContainerFabricationTable extends Container implements ITileContain
 
 		ItemStack removeStackCopy = stackToRemove.copy();
 
-		List<Integer> slotList = inventoryMap.get(stackToRemove.getUnlocalizedName()).slotIndexes;
+		// List<Integer> slotList = inventoryMap.get(stackToRemove.getUnlocalizedName()).slotIndexes;
+		final StackNode stackNode = inventoryMap.get(stackToRemove.getUnlocalizedName());
+		if (stackNode == null) return false;
+
+		List<Integer> slotList = stackNode.slotIndexes;
 		List<Integer> removeList = new LinkedList<Integer>();
 
 		for (int slotIndex : slotList) {

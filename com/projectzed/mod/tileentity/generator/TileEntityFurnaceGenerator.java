@@ -135,6 +135,11 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 	}
 
 	@Override
+	public boolean canProducePower() {
+		return super.canProducePower() && burnTime > 0;
+	}
+
+	@Override
 	public void update() {
 		super.update();
 
@@ -148,9 +153,9 @@ public class TileEntityFurnaceGenerator extends AbstractTileEntityGenerator {
 					}
 				}
 
-				if (this.burnTime > 0) this.burnTime--;
 			}
 
+			if (this.burnTime > 0) this.burnTime--;
 			this.powerMode = this.burnTime > 0 && this.stored < this.maxStored;
 
 			if (worldObj.getTotalWorldTime() % 20L == 0) {

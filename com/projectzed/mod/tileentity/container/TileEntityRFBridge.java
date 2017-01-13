@@ -231,11 +231,6 @@ public class  TileEntityRFBridge extends AbstractTileEntityEnergyContainer imple
 	protected void exportContents() {
 		if (worldObj.isRemote) return;
 
-		// Helper variables.
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
-
 		// *Converting to RF*
 		if (this.storedRF > 0 && !flip) {
 

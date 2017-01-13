@@ -94,20 +94,25 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 
 		this.hasFluidTank = buf.readBoolean();
 
-		this.fluidNameLen = buf.readInt();
+		if (this.hasFluidTank) {
+			this.fluidNameLen = buf.readInt();
 
-		char[] arr = new char[fluidNameLen];
-		for (int i = 0; i < fluidNameLen; i++)
-			arr[i] = buf.readChar();
+			char[] arr = new char[fluidNameLen];
+			for (int i = 0; i < fluidNameLen; i++)
+				arr[i] = buf.readChar();
 
-		this.fluidName = new String(arr);
+			this.fluidName = new String(arr);
 
-		this.fluidAmount = buf.readInt();
+			this.fluidAmount = buf.readInt();
+		}
 
 		this.hasHeatLogic = buf.readBoolean();
-		this.heatAmount = buf.readInt();
-		this.maxHeatAmount = buf.readInt();
-		this.heatResistance = buf.readFloat();
+
+		if (this.hasHeatLogic) {
+			this.heatAmount = buf.readInt();
+			this.maxHeatAmount = buf.readInt();
+			this.heatResistance = buf.readFloat();
+		}
 	}
 
 	@Override
@@ -122,17 +127,23 @@ public class MessageTileEntityGenerator implements IMessage, IMessageHandler<Mes
 		if (this.tierable) buf.writeByte(tier);
 
 		buf.writeBoolean(hasFluidTank);
-		buf.writeInt(fluidNameLen);
 
-		for (int i = 0; i < fluidNameLen; i++)
-			buf.writeChar(fluidName.charAt(i));
+		if (hasFluidTank) {
+			buf.writeInt(fluidNameLen);
 
-		buf.writeInt(fluidAmount);
+			for (int i = 0; i < fluidNameLen; i++)
+				buf.writeChar(fluidName.charAt(i));
+
+			buf.writeInt(fluidAmount);
+		}
 
 		buf.writeBoolean(hasHeatLogic);
-		buf.writeInt(heatAmount);
-		buf.writeInt(maxHeatAmount);
-		buf.writeFloat(heatResistance);
+
+		if (hasHeatLogic) {
+			buf.writeInt(heatAmount);
+			buf.writeInt(maxHeatAmount);
+			buf.writeFloat(heatResistance);
+		}
 	}
 
 	@Override
