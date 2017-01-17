@@ -16,7 +16,6 @@ import com.hockeyhurd.hcorelib.api.math.Vector3;
 import com.hockeyhurd.hcorelib.api.util.BlockUtils;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
-import com.projectzed.mod.ProjectZed;
 import com.projectzed.mod.item.upgrades.ItemRadialUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSapling;
@@ -151,7 +150,7 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		super.calculateDataFromUpgrades();
 
 		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 && getSizeUpgradeSlots() > 0) {
-			ProjectZed.logHelper.info("boundedRect:", boundedRect, "currentCheckingVec:", currentCheckingVec);
+			// ProjectZed.logHelper.info("boundedRect:", boundedRect, "currentCheckingVec:", currentCheckingVec);
 			// if (true) return;
 			final ItemStack[] upgrades = getCurrentUpgrades();
 
@@ -169,7 +168,6 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 			currentSize = Math.max(max, 1);
 
 			if (lastSize != currentSize) {
-				// boundedRect
 				final int dif = currentSize - lastSize;
 				boundedRect.min.x -= dif;
 				boundedRect.min.y -= dif;
@@ -185,9 +183,8 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 		super.update();
 
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
-			// if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY() + 2, boundedRect.min.y.intValue());
-
-			// if (currentCheckingVec.z == 1011 && (currentCheckingVec.x >= -325)) ProjectZed.logHelper.info("break!");
+			if (currentCheckingVec == null)
+				currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY(), boundedRect.min.y.intValue());
 
 			final IBlockState currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec);
 			final IBlockState blockBelow = BlockUtils.getBlock(worldObj, currentCheckingVec.x, currentCheckingVec.y - 1, currentCheckingVec.z);
@@ -241,7 +238,6 @@ public class TileEntityIndustrialPlanter extends AbstractTileEntityMachine {
 			comp.setInteger("BoundedMaxX", boundedRect.max.x);
 			comp.setInteger("BoundedMaxY", boundedRect.max.y);
 
-			// if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
 			if (currentCheckingVec == null)
 				currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY() + 2, boundedRect.min.y.intValue());
 

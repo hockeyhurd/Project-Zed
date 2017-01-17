@@ -250,13 +250,51 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 				}
 			}
 
+			if (max > 0) max++;
+
 			currentSize = Math.max(max, 1);
 
 			// We need to update the bounded box:
-			// if (lastSize != currentSize) {}
+			if (lastSize != currentSize) {
+				final int dif = currentSize - lastSize;
 
-			// boundedRect
-			// ProjectZed.logHelper.info(boundedRect);
+				// Expand boundedRect:
+				boundedRect.min.x -= dif;
+				boundedRect.min.y -= dif;
+
+				boundedRect.max.x += dif;
+				boundedRect.max.y += dif;
+
+				// Translate boundedRect such that the boundedRect is in-front of the harvester:
+				switch (getCurrentFacing()) {
+					case NORTH:
+						// boundedRect.translate(new Vector2<Integer>(0, -dif));
+						boundedRect.min.y += dif;
+						boundedRect.max.y += dif;
+						break;
+
+					case SOUTH:
+						// boundedRect.translate(new Vector2<Integer>(0, dif));
+						boundedRect.min.y -= dif;
+						boundedRect.max.y -= dif;
+						break;
+
+					case EAST:
+						// boundedRect.translate(new Vector2<Integer>(dif, 0));
+						boundedRect.min.x -= dif;
+						boundedRect.max.x -= dif;
+						break;
+
+					case WEST:
+						// boundedRect.translate(new Vector2<Integer>(-dif, 0));
+						boundedRect.min.x += dif;
+						boundedRect.max.x += dif;
+						break;
+
+					default:
+						ProjectZed.logHelper.severe("Unknown error has occurred on boundedRect translation! Current facing:", getCurrentFacing());
+				}
+			}
 		}
 	}
 
@@ -265,15 +303,14 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 		super.update();
 
 		if (!worldObj.isRemote && boundedRect != null && worldObj.getTotalWorldTime() % 20L == 0) {
-			if (currentCheckingVec == null) currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY(), boundedRect.min.y.intValue());
+			if (currentCheckingVec == null)
+				currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY(), boundedRect.min.y.intValue());
 
-			// ProjectZed.logHelper.info(boundedRect.min, currentCheckingVec);
-			// ProjectZed.logHelper.info(boundedRect.min, boundedRect.max);
+			// ProjectZed.logHelper.info("boundedRect", boundedRect, "currentCheckingVec", currentCheckingVec, getCurrentFacing());
 
 			final Block currentBlock = BlockUtils.getBlock(worldObj, currentCheckingVec).getBlock();
 			final int currentMeta = BlockUtils.getBlockMetadata(worldObj, currentCheckingVec);
 
-			// ProjectZed.logHelper.info(currentCheckingVec);
 			if (currentBlock instanceof BlockLog || (currentBlock instanceof BlockCrops && currentMeta >= 7)) {
 				// chopTree((BlockLog) currentBlock);
 				chopTree();
@@ -317,7 +354,8 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 			comp.setInteger("BoundedMaxX", boundedRect.max.x);
 			comp.setInteger("BoundedMaxY", boundedRect.max.y);
 
-			if (currentCheckingVec == null) currentCheckingVec = Vector3.zero.getVector3i();
+			if (currentCheckingVec == null)
+				currentCheckingVec = new Vector3<Integer>(boundedRect.min.x.intValue(), pos.getY(), boundedRect.min.y.intValue());
 
 			comp.setInteger("CurrentCheckingVecX", currentCheckingVec.x);
 			comp.setInteger("CurrentCheckingVecY", currentCheckingVec.y);
