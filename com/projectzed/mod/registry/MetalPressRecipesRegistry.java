@@ -58,6 +58,10 @@ public class MetalPressRecipesRegistry {
 		mapModded.put("ingotTitanium", "plateTitanium");
 		mapModded.put("ingotNickel", "plateNickel");
 		mapModded.put("ingotUranium", "plateUranium");
+		mapModded.put("ingotElectrum", "plateElectrum");
+		mapModded.put("ingotLead", "plateLead");
+		mapModded.put("ingotSilver", "plateSilver");
+		mapModded.put("ingotSteel", "plateSteel");
 
 		initEntries();
 	}

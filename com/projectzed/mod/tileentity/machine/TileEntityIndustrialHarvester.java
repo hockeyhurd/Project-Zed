@@ -19,6 +19,7 @@ import com.projectzed.api.item.IItemUpgradeComponent;
 import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
+import com.projectzed.mod.item.upgrades.ItemRadialUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
@@ -230,6 +231,33 @@ public class TileEntityIndustrialHarvester extends AbstractTileEntityMachine {
 	 */
 	private int getVolume() {
 		return Math.abs(Math.abs(boundedRect.max.x) + 5 - Math.abs(boundedRect.min.x) - 5) * (Math.abs(boundedRect.max.y) + 5 - Math.abs(boundedRect.min.y) - 5) * (32);
+	}
+
+	@Override
+	protected void calculateDataFromUpgrades() {
+		super.calculateDataFromUpgrades();
+
+		// checks once per second or every 20th tick for updating upgrade info.
+		if (!worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0 && getSizeUpgradeSlots() > 0) {
+			final ItemStack[] upgrades = getCurrentUpgrades();
+
+			final int lastSize = currentSize;
+			int max = Integer.MIN_VALUE;
+
+			for (ItemStack upgradeComp : upgrades) {
+				if (upgradeComp != null && upgradeComp.getItem() instanceof ItemRadialUpgrade) {
+					max = Math.max(max, upgradeComp.getMetadata() + 1);
+				}
+			}
+
+			currentSize = Math.max(max, 1);
+
+			// We need to update the bounded box:
+			// if (lastSize != currentSize) {}
+
+			// boundedRect
+			// ProjectZed.logHelper.info(boundedRect);
+		}
 	}
 
 	@Override

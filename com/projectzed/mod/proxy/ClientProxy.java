@@ -33,12 +33,11 @@ import org.lwjgl.input.Keyboard;
 
 /**
  * Client proxy for client related registering only!
- * 
+ *
  * @author hockeyhurd
  * @version Oct 19, 2014
  */
-@SideOnly(Side.CLIENT)
-public class ClientProxy extends CommonProxy {
+@SideOnly(Side.CLIENT) public class ClientProxy extends CommonProxy {
 
 	// private static final RenderWorldHandler renderWorldHandler = RenderWorldHandler.instance();
 	// private static final ChunkLoaderWorldRenderer chunkLoaderWorldRenderer = ChunkLoaderWorldRenderer.instance();
@@ -58,35 +57,14 @@ public class ClientProxy extends CommonProxy {
 	/*public static KeyBindingHandler getKeyBindingHandler() {
 		return keyBindingHandler;
 	}*/
-
 	@Override
 	protected void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
 		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
 			if (b != null) {
-
-				/*if (b instanceof AbstractBlockFluid) {
-					GameRegistry.register(b.getBlock());
-					GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
-
-					// final ModelResourceLocation model = new ModelResourceLocation(new ResourceLocation(ProjectZed.assetDir, b.getName()), "fluid");
-					final ModelResourceLocation model = new ModelResourceLocation(b.getResourceLocation(), "fluid");
-
-					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b.getBlock()), 0, model);
-
-					ModelLoader.setCustomStateMapper(b.getBlock(), new StateMapperBase() {
-						@Override
-						protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-							return model;
-						}
-					});
-				}*/
-
-				// else {
-					GameRegistry.register(b.getBlock());
-					GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
-					ModelRegistry.registerBlock(b);
-				// }
+				GameRegistry.register(b.getBlock());
+				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
+				ModelRegistry.registerBlock(b);
 			}
 		}
 	}
@@ -200,7 +178,8 @@ public class ClientProxy extends CommonProxy {
 		// keyBindingHandler = new KeyBindingHandler(new ChunkToggleKeyBind(chunkLoaderWorldRenderer));
 		// FMLCommonHandler.instance().bus().register(keyBindingHandler);
 
-		keyBindingHandler = new KeyBindingHandler(new ItemAdjusterHandler.ItemAdjusterIncrementorHandler("radii increase", Keyboard.KEY_ADD, Reference.MOD_NAME),
+		keyBindingHandler = new KeyBindingHandler(
+				new ItemAdjusterHandler.ItemAdjusterIncrementorHandler("radii increase", Keyboard.KEY_ADD, Reference.MOD_NAME),
 				new ItemAdjusterHandler.ItemAdjusterDecrementorHandler("radii decrease", Keyboard.KEY_SUBTRACT, Reference.MOD_NAME));
 		FMLCommonHandler.instance().bus().register(keyBindingHandler);
 	}

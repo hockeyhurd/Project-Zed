@@ -583,10 +583,12 @@ public abstract class AbstractTileEntityDigger extends AbstractTileEntityEnergyC
 			int qY1= comp.getInteger("QuarryMaxY");
 			
 			quarryRect = new Rect<Integer>(new Vector2<Integer>(qX0, qY0), new Vector2<Integer>(qX1, qY1));
-		
-			currentMineVec.x = comp.getInteger("CurrentMineVecX");
-			currentMineVec.y = comp.getInteger("CurrentMineVecY");
-			currentMineVec.z = comp.getInteger("CurrentMineVecZ");
+
+			// if (currentMineVec == null) {
+				currentMineVec.x = comp.getInteger("CurrentMineVecX");
+				currentMineVec.y = comp.getInteger("CurrentMineVecY");
+				currentMineVec.z = comp.getInteger("CurrentMineVecZ");
+			// }
 		}
 		
 		currentTickTime = comp.getInteger("CurrentTickTime");

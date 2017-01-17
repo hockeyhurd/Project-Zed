@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -87,11 +88,13 @@ public class ItemRadialUpgrade extends AbstractItemUpgrade {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected void addInfo(ItemStack stack, EntityPlayer player, List list) {
-
+		list.add(TextFormatting.GREEN + "Increases radius by: " + TextFormatting.WHITE + stack.getMetadata());
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected int addShiftInfo(ItemStack stack, EntityPlayer player, List list, boolean simulate) {
 		return 0;
 	}
