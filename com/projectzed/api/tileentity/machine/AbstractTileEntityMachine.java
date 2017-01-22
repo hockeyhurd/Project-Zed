@@ -82,7 +82,9 @@ public abstract class AbstractTileEntityMachine extends AbstractTileEntityGeneri
 	public abstract int getSizeInventory();
 
 	@Override
-	public abstract int getInventoryStackLimit();
+	public int getInventoryStackLimit() {
+		return 0x40;
+	}
 
 	@Override
 	protected abstract void initContentsArray();

@@ -32,10 +32,10 @@ public class ContainerMachine extends Container {
 	protected final int NUM_SLOTS;
 
 	/** Time left for this furnace to burn for. */
-	public int lastBurnTime;
+	// public int lastBurnTime;
 
 	/** The start time for this fuel. */
-	public int lastItemBurnTime;
+	// public int lastItemBurnTime;
 
 	/** How long time left before item is cooked. */
 	public int lastCookTime;
@@ -170,7 +170,8 @@ public class ContainerMachine extends Container {
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
 		ItemStack stack = null;
-		Slot slot = (Slot) this.inventorySlots.get(index);
+		Slot slot = this.inventorySlots.get(index);
+
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();

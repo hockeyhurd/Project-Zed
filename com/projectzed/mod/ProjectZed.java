@@ -146,6 +146,7 @@ public final class ProjectZed implements IForgeMod {
 	public static Block industrialLoader;
 	public static Block industrialPlanter;
 	public static Block industrialHarvester;
+	public static Block industrialStorageUnit;
 
 	// Containers:
 	public static Block energyPipeRed;
@@ -453,6 +454,7 @@ public final class ProjectZed implements IForgeMod {
 		industrialLoader = new BlockIndustrialLoader();
 		industrialPlanter = new BlockIndustrialPlanter();
 		industrialHarvester = new BlockIndustrialHarvester();
+		industrialStorageUnit = new BlockIndustrialStorageUnit("industrialStorageUnit");
 
 		// Containers:
 		energyPipeRed = new BlockEnergyPipeRed(Material.ROCK, "energyPipeRed", EnumColor.RED);

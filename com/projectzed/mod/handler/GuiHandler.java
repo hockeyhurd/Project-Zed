@@ -47,6 +47,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialLoader) return new ContainerLoader(player.inventory, (TileEntityIndustrialLoader) te);
 		else if (te instanceof TileEntityIndustrialPlanter) return new ContainerPlanter(player.inventory, (TileEntityIndustrialPlanter) te);
 		else if (te instanceof TileEntityIndustrialHarvester) return new ContainerHarvester(player.inventory, (TileEntityIndustrialHarvester) te);
+		else if (te instanceof TileEntityIndustrialStorageUnit) return new ContainerMachine(player.inventory, (TileEntityIndustrialStorageUnit) te);
 		else if (te instanceof TileEntityFabricationTable) return new ContainerFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityStoneCraftingTable) return new ContainerStoneCraftingTable(player.inventory, (TileEntityStoneCraftingTable) te);
 		else if (te instanceof TileEntityPatternEncoder) return new ContainerPatternEncoder(player.inventory, (TileEntityPatternEncoder) te);
@@ -77,6 +78,7 @@ public class GuiHandler implements IGuiHandler {
 		else if (te instanceof TileEntityIndustrialLoader) return new GuiLoader(player.inventory, (TileEntityIndustrialLoader) te);
 		else if (te instanceof TileEntityIndustrialPlanter) return new GuiPlanter(player.inventory, (TileEntityIndustrialPlanter) te);
 		else if (te instanceof TileEntityIndustrialHarvester) return new GuiHarvester(player.inventory, (TileEntityIndustrialHarvester) te);
+		else if (te instanceof TileEntityIndustrialStorageUnit) return new GuiStorageUnit(player.inventory, (TileEntityIndustrialStorageUnit) te);
 		else if (te instanceof TileEntityFabricationTable) return new GuiFabricationTable(player.inventory, (TileEntityFabricationTable) te);
 		else if (te instanceof TileEntityStoneCraftingTable) return new GuiStoneCraftingTable(player.inventory, (TileEntityStoneCraftingTable) te);
 		else if (te instanceof TileEntityPatternEncoder) return new GuiPatternEncoder(player.inventory, (TileEntityPatternEncoder) te);
