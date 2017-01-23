@@ -22,7 +22,6 @@ import com.projectzed.mod.tileentity.TileEntityWickedClearGlass;
 import com.projectzed.mod.tileentity.container.*;
 import com.projectzed.mod.tileentity.container.pipe.*;
 import com.projectzed.mod.util.Reference;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -60,7 +59,7 @@ import org.lwjgl.input.Keyboard;
 	@Override
 	protected void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
-		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
+		for (IHBlock b : BlockRegistry.instance().getBlocks().values()) {
 			if (b != null) {
 				GameRegistry.register(b.getBlock());
 				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
@@ -72,12 +71,13 @@ import org.lwjgl.input.Keyboard;
 	@Override
 	protected void registerItems() {
 		ItemRegistry.instance().init(ProjectZed.class);
-		for (Item item : ItemRegistry.instance().getItems()) {
-			if (item != null) {
-				GameRegistry.register(item);
+		for (IHItem i : ItemRegistry.instance().getItems().values()) {
+			if (i != null) {
+				GameRegistry.register(i.getItem());
+				ModelRegistry.registerItem(i);
 
-				if (item instanceof IHItem) ModelRegistry.registerItem((IHItem) item);
-				else ProjectZed.logHelper.warn("Item:", item.getUnlocalizedName(), "is not an IHItem!");
+				// if (item instanceof IHItem) ModelRegistry.registerItem((IHItem) item);
+				// else ProjectZed.logHelper.warn("Item:", item.getUnlocalizedName(), "is not an IHItem!");
 			}
 		}
 	}

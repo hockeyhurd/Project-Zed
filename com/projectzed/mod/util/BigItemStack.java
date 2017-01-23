@@ -13,11 +13,24 @@ public class BigItemStack {
 	private ItemStack stack;
 	private int amount;
 
+	public BigItemStack() {
+		stack = null;
+		amount = 0;
+	}
+
 	public BigItemStack(ItemStack stack, int amount) {
 		this.stack = stack;
 		this.amount = amount;
 
 		if (stack.stackSize > amount) amount = stack.stackSize;
+	}
+
+	public BigItemStack copy() {
+		return new BigItemStack(stack != null ? stack.copy() : null, amount);
+	}
+
+	public boolean isEmpty() {
+		return stack == null || amount == 0;
 	}
 
 	public int getAmount() {
@@ -26,6 +39,13 @@ public class BigItemStack {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+
+	public BigItemStack empty() {
+		stack = null;
+		amount = 0;
+
+		return this;
 	}
 
 	public int addAmount(int amount) {
@@ -54,6 +74,18 @@ public class BigItemStack {
 		ret.stackSize = stackSize;
 
 		return ret;
+	}
+
+	public void setItemStack(ItemStack stack, int amount) {
+		if (stack == null || amount == 0) {
+			this.stack = null;
+			this.amount = 0;
+		}
+
+		else {
+			this.stack = stack;
+			this.amount = amount;
+		}
 	}
 
 }

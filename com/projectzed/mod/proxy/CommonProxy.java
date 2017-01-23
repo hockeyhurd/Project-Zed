@@ -9,10 +9,14 @@ package com.projectzed.mod.proxy;
 import com.hockeyhurd.hcorelib.api.block.IHBlock;
 import com.hockeyhurd.hcorelib.api.handler.NotifyPlayerOnJoinHandler;
 import com.hockeyhurd.hcorelib.api.handler.UpdateHandler;
+import com.hockeyhurd.hcorelib.api.item.IHItem;
 import com.hockeyhurd.hcorelib.api.util.interfaces.IProxy;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.ProjectZed;
-import com.projectzed.mod.handler.*;
+import com.projectzed.mod.handler.GuiHandler;
+import com.projectzed.mod.handler.PacketHandler;
+import com.projectzed.mod.handler.PlayerEventHandler;
+import com.projectzed.mod.handler.WorldChunkHandler;
 import com.projectzed.mod.registry.*;
 import com.projectzed.mod.registry.tools.ChainsawSetRegistry;
 import com.projectzed.mod.registry.tools.DrillSetRegistry;
@@ -84,28 +88,33 @@ public class CommonProxy implements IProxy {
 
 	protected void registerBlocks() {
 		BlockRegistry.instance().init(ProjectZed.class);
-		for (IHBlock b : BlockRegistry.instance().getBlocks()) {
+
+		for (IHBlock b : BlockRegistry.instance().getBlocks().values()) {
 			if (b != null) {
 				GameRegistry.register(b.getBlock());
 				GameRegistry.register(b.getItemBlock().setRegistryName(b.getBlock().getRegistryName()));
+				ProjectZed.logHelper.info("Registering:", b.getName());
 			}
 		}
 	}
 
 	protected void registerItems() {
 		ItemRegistry.instance().init(ProjectZed.class);
-		for (Item i : ItemRegistry.instance().getItems()) {
-			if (i != null) GameRegistry.register(i);
+		for (IHItem i : ItemRegistry.instance().getItems().values()) {
+			if (i != null) {
+				GameRegistry.register(i.getItem());
+				ProjectZed.logHelper.info("Registering:", i.getName());
+			}
 		}
 	}
 	
 	private void registerOreDictionaryEntries() {
-		for (IHBlock b : BlockRegistry.instance().getOreBlocks()) {
+		for (IHBlock b : BlockRegistry.instance().getOreBlocks().values()) {
 			if (b != null) OreDictionary.registerOre(BlockRegistry.getBlockName(b.getBlock()), b.getBlock());
 		}
 		
-		for (Item i : ItemRegistry.instance().getItemOres()) {
-			if (i != null) OreDictionary.registerOre(ItemRegistry.getBlockName(i), i);
+		for (IHItem i : ItemRegistry.instance().getItemOres().values()) {
+			if (i != null) OreDictionary.registerOre(i.getName(), i.getItem());
 		}
 
 		OreDictionary.registerOre("stoneBricks", ProjectZed.stoneBricksDefault);

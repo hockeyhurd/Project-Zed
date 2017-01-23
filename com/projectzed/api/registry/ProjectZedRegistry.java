@@ -7,12 +7,13 @@
 package com.projectzed.api.registry;
 
 import com.hockeyhurd.hcorelib.api.block.IHBlock;
+import com.hockeyhurd.hcorelib.api.item.IHItem;
 import com.projectzed.mod.registry.BlockRegistry;
 import com.projectzed.mod.registry.ItemRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Goal of this class is to provide a simplistic
@@ -24,8 +25,8 @@ import java.util.List;
  */
 public class ProjectZedRegistry {
 
-	private static List<IHBlock> blockReg;
-	private static List<Item> itemReg;
+	private static Map<String, IHBlock> blockReg;
+	private static Map<String, IHItem> itemReg;
 	private static ProjectZedRegistry reg = new ProjectZedRegistry();
 	
 	private ProjectZedRegistry() {

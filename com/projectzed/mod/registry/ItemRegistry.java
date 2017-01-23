@@ -6,11 +6,13 @@
 */
 package com.projectzed.mod.registry;
 
+import com.hockeyhurd.hcorelib.api.item.IHItem;
+import com.hockeyhurd.hcorelib.api.util.interfaces.IForgeMod;
 import net.minecraft.item.Item;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class used for initializing and containing all items that are registered for this mod.
@@ -20,20 +22,20 @@ import java.util.List;
  */
 public final class ItemRegistry {
 
-	private static List<Item> items;
-	private static List<Item> itemOres;
+	private static Map<String, IHItem> items;
+	private static Map<String, IHItem> itemOres;
 	private static ItemRegistry reg = new ItemRegistry();
 	
 	private ItemRegistry() {
-		items = new LinkedList<Item>();
-		itemOres = new LinkedList<Item>();
+		items = new HashMap<String, IHItem>(0x80, 2.0f / 3.0f);
+		itemOres = new HashMap<String, IHItem>(0x80, 2.0f / 3.0f);
 	}
 	
 	/**
 	 * Create new instance of this class and register all items with this registry.
 	 * @param mainClass = class containing all item objects.
 	 */
-	public void init(Class<?> mainClass) {
+	public void init(Class<? extends IForgeMod> mainClass) {
 		Field[] fields = mainClass.getFields();
 		if (fields.length == 0) return; // if there are no objects declared, nothing to do.
 		
@@ -41,10 +43,12 @@ public final class ItemRegistry {
 			try {
 				if (f.get(mainClass) instanceof Item) {
 					Item item = (Item) f.get(mainClass); // cast object to a item.
-					if (item != null) {
-						items.add(item); // add block to list if not null.
+					if (item instanceof IHItem) {
+						items.put(((IHItem) item).getName(), (IHItem) item); // add block to list if not null.
 						if (item.getUnlocalizedName().toLowerCase().contains("ingot") || item.getUnlocalizedName().toLowerCase().contains("dust")
-								|| item.getUnlocalizedName().toLowerCase().contains("nugget") || item.getUnlocalizedName().toLowerCase().contains("plate")) reg.itemOres.add(item);
+								|| item.getUnlocalizedName().toLowerCase().contains("nugget") || item.getUnlocalizedName().toLowerCase().contains("plate")) {
+								itemOres.put(((IHItem) item).getName(), (IHItem) item);
+						}
 					}
 				}
 			}
@@ -68,7 +72,7 @@ public final class ItemRegistry {
 	 * Gets the list of registered items.
 	 * @return list of items registered in this current instance.
 	 */
-	public List<Item> getItems() {
+	public Map<String, IHItem> getItems() {
 		return items;
 	}
 	
@@ -76,7 +80,7 @@ public final class ItemRegistry {
 	 * Gets the list for ore dictionary.
 	 * @return list of items to be registered in ore dictionary.
 	 */
-	public List<Item> getItemOres() {
+	public Map<String, IHItem> getItemOres() {
 		return itemOres;
 	}
 	
@@ -86,17 +90,11 @@ public final class ItemRegistry {
 	 * @return item if found, else null.
 	 */
 	public Item getItemByName(String name) {
-		Item item = null;
-		if (reg == null || items == null || items.size() == 0) return null; // if null or no objects, return null.
-		
-		for (Item i : items) {
-			if (i.getUnlocalizedName().equals(name)) { // if found, exit loop.
-				item = i;
-				break;
-			}
-		}
-		
-		return item;
+		if (name == null || name.isEmpty() || items.isEmpty()) return null;
+
+		final IHItem result = items.get(name);
+
+		return result != null ? result.getItem() : null;
 	}
 	
 	/**

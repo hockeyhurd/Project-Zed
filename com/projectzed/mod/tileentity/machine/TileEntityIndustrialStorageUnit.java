@@ -19,6 +19,7 @@ public class TileEntityIndustrialStorageUnit extends AbstractTileEntityMachine {
 		super("industrialStorageUnit");
 
 		energyBurnRate = 5;
+		bigItemStack = new BigItemStack();
 	}
 
 	@Override
@@ -49,16 +50,41 @@ public class TileEntityIndustrialStorageUnit extends AbstractTileEntityMachine {
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		super.setInventorySlotContents(slot, stack);
 
-		if (!worldObj.isRemote) {
-			if (stack == null) bigItemStack = null;
-			else if (bigItemStack == null) bigItemStack = new BigItemStack(stack, stack.stackSize);
-			else bigItemStack.setAmount(stack.stackSize);
+		if (slot == 0) {
+			if (stack == null) bigItemStack.empty();
+			else if (bigItemStack.isEmpty()) bigItemStack.setItemStack(stack, stack.stackSize);
+			else if (ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack)) bigItemStack.addAmount(stack.stackSize);
+
+			if (slots[1] == null) {
+				slots[1] = slots[0];
+				slots[0] = null;
+			}
+
+			else {
+				slots[1].stackSize += Math.min(slots[0].stackSize, slots[1].getMaxStackSize() - slots[1].stackSize);
+				slots[0] = null;
+			}
 		}
+
+		/*else {
+			if (slots[1] == null) return;
+			else if (slots[1] != null) {
+				ItemStack slotStack = slots[1];
+				bigItemStack.removeAmount(slots[1].stackSize);
+				final int remaining = Math.min(slotStack.getMaxStackSize(), bigItemStack.getAmount());
+
+				if (remaining > 0) {
+					slotStack.stackSize = remaining;
+				}
+
+				else slotStack = null;
+			}
+		}*/
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 0 && (bigItemStack == null || ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack));
+		return slot == 0 && (bigItemStack.isEmpty() || ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack));
 	}
 
 	@Override
@@ -83,6 +109,10 @@ public class TileEntityIndustrialStorageUnit extends AbstractTileEntityMachine {
 		/*if (!worldObj.isRemote) {
 
 		}*/
+	}
+
+	public BigItemStack getBigItemStack() {
+		return bigItemStack;
 	}
 
 }
