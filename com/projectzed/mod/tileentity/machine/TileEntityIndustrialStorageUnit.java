@@ -4,6 +4,7 @@ import com.projectzed.api.tileentity.machine.AbstractTileEntityMachine;
 import com.projectzed.api.util.Sound;
 import com.projectzed.mod.util.BigItemStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * industrialStorageUnit class.
@@ -13,106 +14,124 @@ import net.minecraft.item.ItemStack;
  */
 public class TileEntityIndustrialStorageUnit extends AbstractTileEntityMachine {
 
-	private BigItemStack bigItemStack;
+    private BigItemStack bigItemStack;
 
-	public TileEntityIndustrialStorageUnit() {
-		super("industrialStorageUnit");
+    public TileEntityIndustrialStorageUnit() {
+        super("industrialStorageUnit");
 
-		energyBurnRate = 5;
-		bigItemStack = new BigItemStack();
-	}
+        energyBurnRate = 5;
+        bigItemStack = new BigItemStack();
+    }
 
-	@Override
-	public int getSizeInventory() {
-		return slots.length;
-	}
+    @Override
+    public int getSizeInventory() {
+        return slots.length;
+    }
 
-	@Override
-	public int getInventoryStackLimit() {
-		return 0x40;
-	}
+    @Override
+    public int getInventoryStackLimit() {
+        return 0x40;
+    }
 
-	@Override
-	protected void initContentsArray() {
-	}
+    @Override
+    protected void initContentsArray() {
+    }
 
-	@Override
-	protected void initSlotsArray() {
-		slots = new ItemStack[2 + getSizeUpgradeSlots()];
-	}
+    @Override
+    protected void initSlotsArray() {
+        slots = new ItemStack[2 + getSizeUpgradeSlots()];
+    }
 
-	@Override
-	public int getSizeUpgradeSlots() {
-		return 0;
-	}
+    @Override
+    public int getSizeUpgradeSlots() {
+        return 0;
+    }
 
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		super.setInventorySlotContents(slot, stack);
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack stack) {
+        super.setInventorySlotContents(slot, stack);
 
-		if (slot == 0) {
-			if (stack == null) bigItemStack.empty();
-			else if (bigItemStack.isEmpty()) bigItemStack.setItemStack(stack, stack.stackSize);
-			else if (ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack)) bigItemStack.addAmount(stack.stackSize);
+        if (slot == 0) {
+            if (stack != null && ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack))
+                 bigItemStack.addAmount(stack.stackSize);
 
-			if (slots[1] == null) {
-				slots[1] = slots[0];
-				slots[0] = null;
-			}
+            if (slots[1] == null && stack != null) {
+                // slots[1] = slots[0];
+                bigItemStack.setItemStack(stack.copy(), stack.stackSize);
+            }
 
-			else {
-				slots[1].stackSize += Math.min(slots[0].stackSize, slots[1].getMaxStackSize() - slots[1].stackSize);
-				slots[0] = null;
-			}
+            slots[0] = null;
+        }
+
+        else if (slot == 1) {
+            // if (slots[1] == null)
+                // bigItemStack.setItemStack(slots[1], slots[1] != null ? slots[1].stackSize : 0);
+            // else {
+            if (slots[1] != null) {
+                if (bigItemStack.isEmpty()) {
+                    bigItemStack.setItemStack(slots[1].copy(), slots[1].stackSize);
+                }
+
+                else
+                    bigItemStack.setAmount(Math.max(bigItemStack.getAmount(), slots[1].stackSize));
+
+                // if (bigItemStack.getAmount() == 0)
+                    // bigItemStack.empty();
+            }
+        }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        return slot == 0 && (bigItemStack.isEmpty() || ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack));
+    }
+
+    @Override
+    protected boolean canSmelt() {
+        return true;
+    }
+
+    @Override
+    public void smeltItem() {
+    }
+
+    @Override
+    public Sound getSound() {
+        return null;
+    }
+
+    @Override
+    public void update() {
+        cookTime = 0;
+        super.update();
+
+		if (!worldObj.isRemote) {
+		    // if (slots[1] == null)
+            if (bigItemStack.getItemStack() != null)
+                slots[1] = bigItemStack.getItemStack();
+            else if (slots[1] != null)
+                bigItemStack.setItemStack(slots[1].copy(), slots[1].stackSize);
 		}
+    }
 
-		/*else {
-			if (slots[1] == null) return;
-			else if (slots[1] != null) {
-				ItemStack slotStack = slots[1];
-				bigItemStack.removeAmount(slots[1].stackSize);
-				final int remaining = Math.min(slotStack.getMaxStackSize(), bigItemStack.getAmount());
+    public BigItemStack getBigItemStack() {
+        return bigItemStack;
+    }
 
-				if (remaining > 0) {
-					slotStack.stackSize = remaining;
-				}
+    @Override
+    public void readNBT(NBTTagCompound comp) {
+		super.readNBT(comp);
 
-				else slotStack = null;
-			}
-		}*/
-	}
+		final int bigItemStackSize = comp.getInteger("bigItemStackSize");
+		final ItemStack stack = slots[1];
+		bigItemStack.setItemStack(stack, bigItemStackSize);
+    }
 
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot == 0 && (bigItemStack.isEmpty() || ItemStack.areItemsEqual(bigItemStack.getItemStack(), stack));
-	}
+    @Override
+    public void saveNBT(NBTTagCompound comp) {
+        super.saveNBT(comp);
 
-	@Override
-	protected boolean canSmelt() {
-		return true;
-	}
-
-	@Override
-	public void smeltItem() {
-	}
-
-	@Override
-	public Sound getSound() {
-		return null;
-	}
-
-	@Override
-	public void update() {
-		cookTime = 0;
-		super.update();
-
-		/*if (!worldObj.isRemote) {
-
-		}*/
-	}
-
-	public BigItemStack getBigItemStack() {
-		return bigItemStack;
-	}
+        comp.setInteger("bigItemStackSize", bigItemStack.getAmount());
+    }
 
 }

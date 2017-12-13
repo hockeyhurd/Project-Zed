@@ -14,33 +14,54 @@ import javax.annotation.Nullable;
  */
 public class ContainerStorageUnit extends ContainerMachine {
 
-	public ContainerStorageUnit(InventoryPlayer inventory, TileEntityIndustrialStorageUnit te) {
-		super(inventory, te);
+    public ContainerStorageUnit(InventoryPlayer inventory, TileEntityIndustrialStorageUnit te) {
+        super(inventory, te);
 
-		addPlayerInventorySlots(inventory);
-	}
+        addPlayerInventorySlots(inventory);
+    }
 
-	@Nullable
-	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		if (slotId == 1) {
-			if (te.getStackInSlot(slotId) == null) super.slotClick(slotId, dragType, clickTypeIn, player);
-			else {
-				ItemStack slotStack = te.getStackInSlot(slotId);
-				((TileEntityIndustrialStorageUnit) te).getBigItemStack().removeAmount(slotStack.stackSize);
-				final int remaining = Math.min(slotStack.getMaxStackSize(), ((TileEntityIndustrialStorageUnit) te).getBigItemStack().getAmount());
+    @Nullable
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+        if (slotId == 1) {
+            if (te.getStackInSlot(slotId) == null)
+                super.slotClick(slotId, dragType, clickTypeIn, player);
+            else {
+                final TileEntityIndustrialStorageUnit tileEntity = (TileEntityIndustrialStorageUnit) te;
 
-				if (remaining > 0) {
-					slotStack.stackSize = remaining;
-				}
+                ItemStack slotStack = tileEntity.getStackInSlot(slotId);
 
-				else {
-					slotStack = null;
-					te.setInventorySlotContents(slotId, null);
-				}
-			}
-		}
+                if (dragType == 0) {
+                    tileEntity.getBigItemStack().removeAmount(slotStack.stackSize);
+                }
 
-		return super.slotClick(slotId, dragType, clickTypeIn, player);
-	}
+                else if (dragType == 1) {
+                    slotStack.stackSize >>>= 1;
+                    tileEntity.getBigItemStack().removeAmount(slotStack.stackSize);
+                }
+
+                super.slotClick(slotId, dragType, clickTypeIn, player);
+            }
+        }
+
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+        final ItemStack ret = super.transferStackInSlot(player, index);
+
+        if (index > 1 && ret != null) {
+            final TileEntityIndustrialStorageUnit tileEntity = (TileEntityIndustrialStorageUnit) te;
+
+            if (tileEntity.getBigItemStack().getAmount() < ret.getMaxStackSize()) {
+                if (!tileEntity.getBigItemStack().isEmpty())
+                    tileEntity.getBigItemStack().addAmount(ret.stackSize);
+                else
+                    tileEntity.getBigItemStack().setItemStack(ret, ret.stackSize);
+            }
+        }
+
+        return ret;
+    }
 }

@@ -49,7 +49,7 @@ public class BigItemStack {
 	}
 
 	public int addAmount(int amount) {
-		this.amount += Math.max(0, amount);
+		this.amount += Math.min(Math.max(0, amount), Integer.MAX_VALUE);
 
 		stack.stackSize = Math.min(this.amount, stack.getMaxStackSize());
 
@@ -60,7 +60,7 @@ public class BigItemStack {
 		this.amount -= Math.max(0, amount);
 
 		stack.stackSize = Math.max(0, Math.min(this.amount, stack.getMaxStackSize()));
-		if (stack.stackSize == 0) stack = null;
+		// if (stack.stackSize == 0) stack = null;
 
 		return this.amount;
 	}
